@@ -1,0 +1,63 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Universe.Core.Entities;
+using Universe.Infrastructure.SeedData;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
+
+public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+{
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+    {
+        builder.OwnsMany(u => u.RefreshTokens).ToTable("RefreshTokens")
+            .WithOwner().HasForeignKey("UserId");
+
+        builder.HasIndex(u => u.Name)
+            .IsUnique();
+
+        builder.HasIndex(u => u.UserName)
+            .IsUnique();
+
+        builder.Property(u => u.Email)
+            .IsRequired(false);
+
+        builder.Property(u => u.Name)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(u => u.ImageUrl)
+            .HasMaxLength(500);
+
+        builder.HasData([
+            new ApplicationUser
+            {
+                Id = DefaultUsers.SVNUId,
+                Name = DefaultUsers.SVNU,
+                UserName = DefaultUsers.SVNU,
+                NormalizedUserName = DefaultUsers.SVNU.ToUpper(),
+                Email = DefaultUsers.SVNUEmail,
+                NormalizedEmail = DefaultUsers.SVNUEmail.ToUpper(),
+                SecurityStamp = DefaultUsers.SVNUSecurityStamp,
+                ConcurrencyStamp = DefaultUsers.SVNUConcurrencyStamp,
+                EmailConfirmed = true,
+                PasswordHash = DefaultUsers.SVNUPassword,
+                CollegeId = DefaultCollege.Id
+            },
+            new ApplicationUser{
+                Id = DefaultUsers.AcadimicAdvisingId,
+                Name = DefaultUsers.AcadimicAdvising,
+                UserName = DefaultUsers.AcadimicAdvising,
+                NormalizedUserName = DefaultUsers.AcadimicAdvising.ToUpper(),
+                Email = DefaultUsers.AcadimicAdvisingEmail,
+                NormalizedEmail = DefaultUsers.AcadimicAdvisingEmail.ToUpper(),
+                SecurityStamp = DefaultUsers.AcadimicAdvisingSecurityStamp,
+                ConcurrencyStamp = DefaultUsers.AcadimicAdvisingConcurrencyStamp,
+                EmailConfirmed = true,
+                PasswordHash = DefaultUsers.AcadimicAdvisingPassword,
+                CollegeId = DefaultCollege.Id
+            }]);
+    }
+}
