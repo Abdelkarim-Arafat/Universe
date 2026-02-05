@@ -15,6 +15,7 @@ using Universe.Infrastructure.Messaging.Email;
 using Universe.Infrastructure.Persistence;
 using System.Reflection;
 using System.Text;
+using Hangfire;
 
 
 namespace Universe.Infrastructure;
@@ -37,9 +38,24 @@ public static class InfrastructureDependences
         services.AddScoped<IEmailSender, EmailSender>();
 
         services.AddFluentValidationConfig();
+        services.AddBackgroundJobsConfig(configuration);
         services.AddAuthConfig(configuration);
 
         services.Configure<MailSettings>(configuration.GetSection(MailSettings.SectionName));
+
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundJobsConfig(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+        services.AddHangfireServer();
 
         return services;
     }

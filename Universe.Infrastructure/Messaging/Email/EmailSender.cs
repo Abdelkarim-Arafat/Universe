@@ -17,11 +17,11 @@ public class EmailSender(
 {
     private readonly MailSettings _mailSettings = options.Value;
     private readonly ILogger<EmailSender> _logger = logger;
-    private readonly IHttpContextAccessor _http = http;
+    private readonly IHttpContextAccessor _httpContextAccessor = http;
 
     public async Task SendConfirmationEmail(ApplicationUser user, string code)
     {
-        var origin = _http.HttpContext?.Request.Headers.Origin;
+        var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
 
         var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",
             templateModel: new Dictionary<string, string>
@@ -32,6 +32,23 @@ public class EmailSender(
         );
 
         await SendEmailAsync(user.Email!, "✅ Survey Basket: Email Confirmation", emailBody);
+
+        await Task.CompletedTask;
+    }
+
+    public async Task SendResetPasswordEmail(ApplicationUser user, string code)
+    {
+        var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+
+        var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
+            templateModel: new Dictionary<string, string>
+            {
+                { "{{name}}", user.Name },
+                { "{{action_url}}", $"{origin}/auth/forgetPassword?email={user.Email}&code={code}" }
+            }
+        );
+
+        await SendEmailAsync(user.Email!, "✅ Universe: Change Password", emailBody);
 
         await Task.CompletedTask;
     }

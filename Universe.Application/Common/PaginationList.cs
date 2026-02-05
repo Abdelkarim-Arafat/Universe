@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Universe.Application.Common;
 
 public class PaginationList<T>

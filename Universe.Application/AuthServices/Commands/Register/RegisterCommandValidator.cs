@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Universe.Application.AuthServices.Commands.Register;
 
 public class RegisterCommandValidator : AbstractValidator<RegisterCommand>

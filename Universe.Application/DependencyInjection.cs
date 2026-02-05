@@ -1,14 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.AspNetCore;
-using Mapster;
-using MapsterMapper;
-using MediatR;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Universe.Application.Common;
-using System.Reflection;
-
-
+﻿
 namespace Universe.Infrastructure;
 
 public static class ApplicationsDependences

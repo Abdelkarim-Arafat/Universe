@@ -5,7 +5,7 @@ using System.Text;
 using Universe.Application.AuthServices.AuthDtos;
 using Universe.Core.Abstractions;
 
-namespace Universe.Application.AuthServices.Queries.Login;
+namespace Universe.Application.AuthServices.Commands.Login;
 
 public record LoginCommand(
     string UserName,

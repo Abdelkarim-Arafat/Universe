@@ -11,7 +11,7 @@ using Universe.Core.Entities;
 using Universe.Core.Errors;
 using Universe.Core.Interfaces;
 
-namespace Universe.Application.AuthServices.Queries.Login;
+namespace Universe.Application.AuthServices.Commands.Login;
 
 public class LoginCommandHandler(
     UserManager<ApplicationUser> userManager,

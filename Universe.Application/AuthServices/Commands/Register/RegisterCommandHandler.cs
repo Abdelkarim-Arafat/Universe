@@ -1,17 +1,4 @@
-﻿using Mapster;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Universe.Core.Abstractions;
-using Universe.Core.Entities;
-using Universe.Core.Errors;
-using Universe.Core.Interfaces;
-using System;
-using System.Text;
-
+﻿
 namespace Universe.Application.AuthServices.Commands.Register;
 
 public class RegisterCommandHandler(

@@ -3,8 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using Universe.Core.Abstractions.Options;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
