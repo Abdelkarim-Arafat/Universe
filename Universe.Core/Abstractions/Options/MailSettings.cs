@@ -2,6 +2,7 @@
 
 namespace Universe.Core.Abstractions;
 
+
 public class MailSettings
 {
     public static readonly string SectionName = "MailSettings";

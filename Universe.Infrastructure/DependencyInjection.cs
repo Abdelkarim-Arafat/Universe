@@ -97,9 +97,19 @@ public static class InfrastructureDependences
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.Key!)),
                 ValidIssuer = jwtSettings?.Issuer,
                 ValidAudience = jwtSettings?.Audience
+            };
+
+            o.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["access_token"];
+                    return Task.CompletedTask;
+                },
             };
         });
 

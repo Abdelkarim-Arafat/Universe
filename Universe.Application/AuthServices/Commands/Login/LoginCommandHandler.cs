@@ -53,6 +53,8 @@ public class LoginCommandHandler(
                 user.Id.ToString(),
                 user.Name,
                 user.Email!,
+                userRoles,
+                userPermissions,
                 accesstoken,
                 ExpiryIn,
                 refreshToken,

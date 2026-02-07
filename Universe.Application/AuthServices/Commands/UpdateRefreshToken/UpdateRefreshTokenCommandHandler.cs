@@ -21,7 +21,7 @@ public class UpdateRefreshTokenCommandHandler(
         if(user.IsDeleted) 
             return Result.Failure<AuthResponse>(AuthErrors.DisabledUser);
 
-        if(user.LockoutEnd >  DateTime.UtcNow)
+        if(user.LockoutEnd > DateTime.UtcNow)
             return Result.Failure<AuthResponse>(AuthErrors.LockedUser);
 
         if(user.RefreshTokens.SingleOrDefault(x => x.Token == request.refreshToken && x.IsActive) is not { } userRefreshToken)
@@ -50,6 +50,8 @@ public class UpdateRefreshTokenCommandHandler(
             user.Id.ToString(),
             user.Name,
             user.Email,
+            userRoles,
+            userPermissions,
             newToken,
             expiresIn,
             newRefreshToken,

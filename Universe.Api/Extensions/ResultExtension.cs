@@ -42,7 +42,6 @@ public static class ResultExtensions
             problemDetails!.Extensions["errors"] = result.Error.Failures;
         else problemDetails!.Extensions["errors"] = new[] { result.Error.Description };
 
-
         return new ObjectResult(problemDetails);
     }
 }

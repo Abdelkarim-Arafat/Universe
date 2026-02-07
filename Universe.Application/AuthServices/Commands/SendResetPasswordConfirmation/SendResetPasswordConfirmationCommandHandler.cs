@@ -16,6 +16,9 @@ public class SendResetPasswordConfirmationCommandHandler(
         if(await _userManager.FindByNameAsync(request.UserName) is not { } user)
             return Result.Success();
 
+        if(user.Email != request.Email)
+            return Result.Success();
+
         if (!user.EmailConfirmed)
             return Result.Failure(AuthErrors.EmailNotConfirmed);
 

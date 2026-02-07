@@ -43,4 +43,8 @@
     <ProjectReference Include="..\Universe.Infrastructure\Universe.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
