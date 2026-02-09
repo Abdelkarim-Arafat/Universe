@@ -104,7 +104,6 @@ public class AuthController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
-
     private void SetTokensInCookie(AuthResponse response)
     {
         var accessTokenCookieOptions = new CookieOptions

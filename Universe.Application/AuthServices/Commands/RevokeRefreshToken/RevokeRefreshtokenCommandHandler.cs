@@ -22,6 +22,9 @@ public class RevokeRefreshtokenCommandHandler(
             .OrderByDescending(x => x.CreatedOn)
             .First(rt => rt.Token == request.refreshToken);
 
+        if(refreshToken.IsExpired || refreshToken.RevokedOn != null)
+            return Result.Failure<AuthResponse>(AuthErrors.InvalidRefreshToken);
+
         refreshToken.RevokedOn = DateTime.UtcNow;
         await _userManager.UpdateAsync(user);
         return Result.Success();
