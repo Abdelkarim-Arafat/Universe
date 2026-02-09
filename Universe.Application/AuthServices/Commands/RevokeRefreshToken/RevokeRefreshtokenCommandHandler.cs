@@ -1,29 +1,29 @@
 ﻿
+using Microsoft.AspNetCore.Identity.Data;
+
 namespace Universe.Application.AuthServices.Commands.RevokeRefreshToken;
 
-internal class RevokeRefreshtokenCommandHandler(
-    UserManager<ApplicationUser> userManager,
-    IJwtProvider jwtProvider) : IRequestHandler<RevokeRefreshTokenCommand, Result>
+public class RevokeRefreshtokenCommandHandler(
+    UserManager<ApplicationUser> userManager
+    ) : IRequestHandler<RevokeRefreshTokenCommand, Result>
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly IJwtProvider _jwtProvider = jwtProvider;
 
     public async Task<Result> Handle(RevokeRefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        if(_jwtProvider.ValidateToken(request.accessToken) is not { } userId)
-            return Result.Failure(UserErrors.InvalidJwtToken);
+        var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.RefreshTokens.Any(rt => rt.Token == request.refreshToken), cancellationToken);
 
-        if (await _userManager.FindByIdAsync(userId) is not { } user)
-            return Result.Failure(UserErrors.InvalidJwtToken);
+        if (user is null)
+            return Result.Failure<AuthResponse>(AuthErrors.InvalidRefreshToken);
 
-        if(user.RefreshTokens.SingleOrDefault(rt => rt.Token == request.refreshToken && rt.IsActive) is not { } refreshToken)
-            return Result.Failure(UserErrors.InvalidRefreshToken);
-
+        var refreshToken = user.RefreshTokens
+            .OrderByDescending(x => x.CreatedOn)
+            .First(rt => rt.Token == request.refreshToken);
 
         refreshToken.RevokedOn = DateTime.UtcNow;
-
         await _userManager.UpdateAsync(user);
-
         return Result.Success();
     }
 }

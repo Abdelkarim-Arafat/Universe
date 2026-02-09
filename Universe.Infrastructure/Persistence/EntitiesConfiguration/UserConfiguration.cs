@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Universe.Core.Entities;
 using Universe.Infrastructure.SeedData;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -13,6 +11,9 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         builder.OwnsMany(u => u.RefreshTokens).ToTable("RefreshTokens")
+            .WithOwner().HasForeignKey("UserId");
+
+        builder.OwnsMany(u => u.passwordResetOtps).ToTable("PasswordResetOtps")
             .WithOwner().HasForeignKey("UserId");
 
         builder.HasIndex(u => u.Name)

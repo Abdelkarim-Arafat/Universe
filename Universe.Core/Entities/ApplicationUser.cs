@@ -24,4 +24,5 @@ public sealed class ApplicationUser : IdentityUser<Guid> , ISoftDeleteable
     }
 
     public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+    public ICollection<PasswordResetOtp> passwordResetOtps { get; set; } = [];
 }

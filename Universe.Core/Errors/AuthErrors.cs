@@ -11,6 +11,12 @@ public record AuthErrors
     public static readonly Error InvalidCredentials =
         new("User.InvalidCredentials", "Invalid email/password", StatusCodes.Status401Unauthorized);
 
+    public static readonly Error InvalidOrExpiredCode =
+        new("User.InvalidOrExpiredCode", "Invalid or expired code", StatusCodes.Status400BadRequest);
+
+    public static readonly Error FailedChangedPassword 
+        = new("User.FailedChangedPassword", "Failed to change password, please try again", StatusCodes.Status500InternalServerError);
+
     public static readonly Error DisabledUser =
         new("User.DisabledUser", "Disabled user, please contact your administrator", StatusCodes.Status401Unauthorized);
 

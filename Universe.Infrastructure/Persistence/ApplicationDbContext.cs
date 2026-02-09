@@ -15,6 +15,8 @@ public class ApplicationDbContext(
     ): IdentityDbContext<ApplicationUser , ApplicationRole , Guid>(options)
 {
     public DbSet<College> Colleges { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

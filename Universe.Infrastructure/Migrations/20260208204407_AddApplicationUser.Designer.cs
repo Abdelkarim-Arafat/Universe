@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260205090414_AddBackgroundJob")]
-    partial class AddBackgroundJob
+    [Migration("20260208204407_AddApplicationUser")]
+    partial class AddApplicationUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -449,6 +449,35 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.OwnsMany("Universe.Core.Entities.PasswordResetOtp", "passwordResetOtps", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<int>("Attempts")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("CodeHash")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<DateTime>("ExpiresAt")
+                                .HasColumnType("datetime2");
+
+                            b1.HasKey("UserId", "Id");
+
+                            b1.ToTable("PasswordResetOtps", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsMany("Universe.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -484,6 +513,8 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("College");
 
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("passwordResetOtps");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.College", b =>

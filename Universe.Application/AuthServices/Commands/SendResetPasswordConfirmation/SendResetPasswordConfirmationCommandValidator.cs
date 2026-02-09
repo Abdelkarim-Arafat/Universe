@@ -5,12 +5,17 @@ using Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
 
 namespace Universe.Application.AuthServices.Commands.SendResetPasswordConfirmation;
 
-public class SendResetPasswordConfirmationCommandValidator : AbstractValidator<SendResetPasswordConfirmationCommand>
+public class VerificationResetPasswordCodeCommandValidator : AbstractValidator<SendResetPasswordConfirmationCommand>
 {
-    public SendResetPasswordConfirmationCommandValidator()
+    public VerificationResetPasswordCodeCommandValidator()
     {
+        RuleFor(x => x.UserName)
+            .NotEmpty()
+            .WithMessage("Username is required.");
+
         RuleFor(x => x.Email)
             .NotEmpty()
-            .EmailAddress();
+            .EmailAddress()
+            .WithMessage("email address is required.");
     }
 }

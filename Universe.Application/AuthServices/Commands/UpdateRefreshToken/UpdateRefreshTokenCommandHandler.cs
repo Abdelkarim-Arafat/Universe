@@ -12,22 +12,24 @@ public class UpdateRefreshTokenCommandHandler(
 
     public async Task<Result<AuthResponse>> Handle(UpdateRefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        if (_jwtProvider.ValidateToken(request.accessToken) is not { } userId)
-            return Result.Failure<AuthResponse>(AuthErrors.InvalidJwtToken);
+        var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.RefreshTokens.Any(rt => rt.Token == request.refreshToken), cancellationToken);
 
-        if (await _userManager.FindByIdAsync(userId) is not { } user)
-            return Result.Failure<AuthResponse>(AuthErrors.InvalidJwtToken);
-
-        if(user.IsDeleted) 
-            return Result.Failure<AuthResponse>(AuthErrors.DisabledUser);
-
-        if(user.LockoutEnd > DateTime.UtcNow)
-            return Result.Failure<AuthResponse>(AuthErrors.LockedUser);
-
-        if(user.RefreshTokens.SingleOrDefault(x => x.Token == request.refreshToken && x.IsActive) is not { } userRefreshToken)
+        if (user is null)
             return Result.Failure<AuthResponse>(AuthErrors.InvalidRefreshToken);
 
-        userRefreshToken.RevokedOn = DateTime.UtcNow;
+        var refreshToken = user.RefreshTokens
+            .OrderByDescending(x => x.CreatedOn)
+            .First(rt => rt.Token == request.refreshToken);
+
+        if(refreshToken.IsExpired)
+            return Result.Failure<AuthResponse>(AuthErrors.InvalidRefreshToken);
+
+        if (user.LockoutEnd > DateTime.UtcNow)
+            return Result.Failure<AuthResponse>(AuthErrors.LockedUser);
+
+        refreshToken.RevokedOn = DateTime.UtcNow;
 
         var userRoles = await _userManager.GetRolesAsync(user);
         var userPermissions = await _unitOfWork.RoleRepository.GetUserPermissionsAsync(userRoles , cancellationToken);
@@ -36,7 +38,7 @@ public class UpdateRefreshTokenCommandHandler(
 
         var newRefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-        var refreshTokenExpiration = DateTime.UtcNow.AddDays(7);
+        var refreshTokenExpiration = refreshToken.ExpiresOn.AddMinutes(10);
 
         user.RefreshTokens.Add(new RefreshToken
         {

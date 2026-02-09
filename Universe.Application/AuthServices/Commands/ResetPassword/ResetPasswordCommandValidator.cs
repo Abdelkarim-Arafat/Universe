@@ -12,9 +12,6 @@ public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordComm
             .NotEmpty()
             .EmailAddress();
 
-        RuleFor(x => x.Code)
-            .NotEmpty();
-
         RuleFor(x => x.NewPassword)
             .NotEmpty()
             .MinimumLength(8);

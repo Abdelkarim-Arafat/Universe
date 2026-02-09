@@ -11,5 +11,6 @@ public interface IUnitOfWork: IAsyncDisposable
 {
     IGenericRepository<T> Repository<T>() where T : BaseEntity;
     IRoleRepository RoleRepository { get; }
+    IUserRepository Userepository { get; }
     Task<int> CompleteAsync();
 }

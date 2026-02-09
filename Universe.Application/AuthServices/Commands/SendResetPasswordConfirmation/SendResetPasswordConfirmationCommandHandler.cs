@@ -1,14 +1,16 @@
 ﻿
+using static System.Net.WebRequestMethods;
+
 namespace Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
 
-public class SendResetPasswordConfirmationCommandHandler(
+public class VerificationRsetPasswordCodeCommandHandler(
     UserManager<ApplicationUser> userManager,
-    ILogger<SendResetPasswordConfirmationCommandHandler> logger,
+    ILogger<VerificationRsetPasswordCodeCommandHandler> logger,
     IEmailSender emailSender
     ) : IRequestHandler<SendResetPasswordConfirmationCommand, Result>
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly ILogger<SendResetPasswordConfirmationCommandHandler> _logger = logger;
+    private readonly ILogger<VerificationRsetPasswordCodeCommandHandler> _logger = logger;
     private readonly IEmailSender _emailSender = emailSender;
 
     public async Task<Result> Handle(SendResetPasswordConfirmationCommand request, CancellationToken cancellationToken)
@@ -22,11 +24,20 @@ public class SendResetPasswordConfirmationCommandHandler(
         if (!user.EmailConfirmed)
             return Result.Failure(AuthErrors.EmailNotConfirmed);
 
-        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var otp = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
+        var hash = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(otp)));
 
-        _logger.LogInformation("Reset code: {code}", code);
+        user.passwordResetOtps.Add(new PasswordResetOtp
+        {
+            CodeHash = hash,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(10),
+        });
 
-        await _emailSender.SendResetPasswordEmail(user, code);
+        await _userManager.UpdateAsync(user);
+
+        _logger.LogInformation("Reset code: {code}", otp);
+
+        await _emailSender.SendResetPasswordEmail(user , otp);
 
         return Result.Success();
     }

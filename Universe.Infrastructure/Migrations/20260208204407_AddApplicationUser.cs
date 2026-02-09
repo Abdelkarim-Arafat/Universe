@@ -189,6 +189,51 @@ namespace Universe.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PasswordResetOtps",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodeHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Attempts = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PasswordResetOtps", x => new { x.UserId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_PasswordResetOtps_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiresOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RevokedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => new { x.UserId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "IsDefault", "IsDeleted", "Name", "NormalizedName" },
@@ -204,6 +249,24 @@ namespace Universe.Infrastructure.Migrations
                 table: "Colleges",
                 columns: new[] { "Id", "CreatedAt", "DeletedAt", "Description", "ImageUrl", "IsDeleted", "Name", "UpdatedAt" },
                 values: new object[] { new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), null, null, null, null, false, "Computers and Artificial Intelligence", null });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "CollegeId", "ConcurrencyStamp", "DeletedAt", "Email", "EmailConfirmed", "ImageUrl", "IsDeleted", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { new Guid("019c0582-3473-7802-8f11-50cc1e6513d5"), 0, new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), "01993360-1c17-7054-bdee-1d5a9e780f23", null, "SVNU@Universe.com", true, null, false, false, null, "SVNU", "SVNU@UNIVERSE.COM", "SVNU", "AQAAAAIAAYagAAAAEFhcy5yaaQ5/9U5cfv8MnI3DBzUZ0ido47Hf7N0qKI20sJp8yGuUPuwPOIGdkNQJjA==", null, false, "55BF92C9EF0249CDA210D85D1A851BC9", false, "SVNU" },
+                    { new Guid("019c1e76-6f5a-7522-8327-a2a72adbbbe8"), 0, new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), "019c1e76-a7da-76a1-a6c8-96163fb4a2fc", null, "Admin@Universe.com", true, null, false, false, null, "Admin", "ADMIN@UNIVERSE.COM", "ADMIN", "AQAAAAIAAYagAAAAEFhcy5yaaQ5/9U5cfv8MnI3DBzUZ0ido47Hf7N0qKI20sJp8yGuUPuwPOIGdkNQJjA==", null, false, "96A84AD3C17B4EBD95CE5AC8266BD761", false, "Admin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { new Guid("0191a4b6-c4fc-752e-9d95-40b5e4e68054"), new Guid("019c0582-3473-7802-8f11-50cc1e6513d5") },
+                    { new Guid("019c1e6e-5518-7479-b749-b1c5d4a21430"), new Guid("019c1e76-6f5a-7522-8327-a2a72adbbbe8") }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -286,6 +349,12 @@ namespace Universe.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "PasswordResetOtps");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -17,6 +17,10 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public IRoleRepository RoleRepository
         => field ??= new RoleRepository(_context);
 
+    public IUserRepository UserRepository
+        => field ??= new UserRepository(_context);
+
+    public IUserRepository Userepository => throw new NotImplementedException();
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 

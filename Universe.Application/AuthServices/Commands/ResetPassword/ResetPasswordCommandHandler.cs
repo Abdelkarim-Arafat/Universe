@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
+
 namespace Universe.Application.AuthServices.Commands.ResetPassword;
 
 internal class ResetPasswordCommandHandler(
@@ -9,28 +11,30 @@ internal class ResetPasswordCommandHandler(
 
     public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _userManager.Users
+            .Include(x => x.passwordResetOtps)
+            .SingleOrDefaultAsync(u => u.Email == request.Email);
 
         if (user is null || !user.EmailConfirmed)
-            return Result.Failure(UserErrors.InvalidCode);
+            return Result.Failure(UserErrors.UserNotFound);
 
-        IdentityResult result;
+        var otp = user.passwordResetOtps.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
 
-        try
-        {
-            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
-            result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
-        }
-        catch (FormatException)
-        {
-            result = IdentityResult.Failed(_userManager.ErrorDescriber.InvalidToken());
-        }
+        if(otp is null || otp.IsExpired || !otp.IsVerified)
+            return Result.Failure(AuthErrors.InvalidOrExpiredCode);
+        
+        otp.isUsed = true;
 
-        if (result.Succeeded)
-            return Result.Success();
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var resetResult = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
 
-        var error = result.Errors.First();
+        if (!resetResult.Succeeded)
+            return Result.Failure(AuthErrors.FailedChangedPassword);
 
-        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status401Unauthorized));
+        await _userManager.UpdateSecurityStampAsync(user);
+
+        await _userManager.UpdateAsync(user);
+
+        return Result.Success();
     }
 }
