@@ -39,7 +39,6 @@
 
         public async Task SendResetPasswordEmail(ApplicationUser user, string code)
         {
-            var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin ?? "";
 
             var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
                 templateModel: new Dictionary<string, string>
