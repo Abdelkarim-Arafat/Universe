@@ -13,16 +13,16 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("Frontend", policy =>
-//    {
-//        policy.WithOrigins("https://yourfrontend.com")
-//              .AllowAnyHeader()
-//              .AllowAnyMethod()
-//              .AllowCredentials();
-//    });
-//});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MO", policy =>
+            policy.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            );
+});
+
 
 builder.Services.AddInfrastructureDependences(builder.Configuration);
 builder.Services.AddApplicationsDependences(builder.Configuration);
@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment())
 //app.UseStaticFiles();
 
 
-//app.UseCors("Frontend");
+app.UseCors("MO");
 
 app.UseSerilogRequestLogging();
 

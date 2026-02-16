@@ -7,7 +7,7 @@ namespace Universe.Core.Interfaces.Repositories;
 
 public interface IGenericRepository<T> where T : BaseEntity
 {
-    void Add(T entity);
+    Task AddAsync(T entity , CancellationToken cancellationToken);
     void Update(T entity);
     void SoftDelete(T entity);
     Task<int> CountAsync(T entity);

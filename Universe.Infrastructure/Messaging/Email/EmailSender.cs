@@ -60,7 +60,7 @@
                 Subject = subject
             };
 
-            message.To.Add(MailboxAddress.Parse("karimarafat52@gmail.com"));
+            message.To.Add(MailboxAddress.Parse(email));
 
             var builder = new BodyBuilder { HtmlBody = htmlMessage };
 

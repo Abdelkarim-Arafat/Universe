@@ -19,3 +19,6 @@ global using Universe.Core.Abstractions;
 global using Universe.Core.Entities;
 global using Universe.Core.Errors;
 global using Universe.Core.Interfaces;
+global using System.ComponentModel.DataAnnotations;
+
+

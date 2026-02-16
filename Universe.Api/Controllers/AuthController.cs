@@ -38,6 +38,7 @@ public class AuthController(IMediator mediator) : ControllerBase
         return Ok(new
         {
             result.Value.Id,
+            result.Value.CollegeId,
             result.Value.Name,
             result.Value.Email,
             result.Value.Roles,
@@ -59,6 +60,7 @@ public class AuthController(IMediator mediator) : ControllerBase
         return Ok(new
         {
             result.Value.Id,
+            result.Value.CollegeId,
             result.Value.Name,
             result.Value.Email,
             result.Value.Roles,
@@ -96,7 +98,7 @@ public class AuthController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
-    [HttpPut("reset-password")]
+    [HttpPatch("reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand request)
     {
         var result = await _mediator.Send(request);
@@ -110,14 +112,14 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             HttpOnly = true,
             Expires = DateTime.UtcNow.AddSeconds(response.ExpiresIn),
-            Secure = true,
+            Secure = false,
             SameSite = SameSiteMode.None
         };
         var refreshTokenCookieOptions = new CookieOptions
         {
             HttpOnly = true,
             Expires = response.RefreshTokenExpiration,
-            Secure = true,
+            Secure = false,
             SameSite = SameSiteMode.None
         };
 

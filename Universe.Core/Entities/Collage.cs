@@ -12,6 +12,7 @@ public class College : BaseEntity
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
-
+    public ICollection<Department> Departments { get; set; } = [];
+    public ICollection<Course> Courses { get; set; } = [];  
     public List<ApplicationUser> Users { get; set; } = [];
 }

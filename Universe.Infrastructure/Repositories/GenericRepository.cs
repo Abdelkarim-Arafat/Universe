@@ -11,10 +11,10 @@ namespace Universe.Infrastructure.Repositories;
 public class GenericRepository<T>(ApplicationDbContext context) : IGenericRepository<T> where T : BaseEntity
 {
     protected readonly ApplicationDbContext _context = context;
-    public void Add(T entity)
+    public async Task AddAsync(T entity , CancellationToken cancellationToken)
     {
         entity.CreatedAt = DateTime.UtcNow;
-        _context.Set<T>().Add(entity);
+        await _context.Set<T>().AddAsync(entity , cancellationToken);
     }
     public async Task<int> CountAsync(T entity) => await _context.Set<T>().CountAsync(e => !e.IsDeleted);
     public void DeletePermanently(T entity) => _context.Set<T>().Remove(entity);

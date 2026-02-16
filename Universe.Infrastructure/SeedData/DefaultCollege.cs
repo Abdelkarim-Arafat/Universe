@@ -8,5 +8,4 @@ public class DefaultCollege
 {
     public static readonly Guid Id = Guid.Parse("019c1ea6-1738-71cb-8cfd-a90e126d177e");
     public const string Name = "Computers and Artificial Intelligence";
-
 }

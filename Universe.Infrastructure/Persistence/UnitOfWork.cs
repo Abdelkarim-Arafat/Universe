@@ -20,9 +20,15 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public IUserRepository UserRepository
         => field ??= new UserRepository(_context);
 
-    public IUserRepository Userepository => throw new NotImplementedException();
+    public IDepartmentRepository DepartmentRepository
+        => field ??= new DepartmentRepository(_context);
 
-    public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
+    public ICourseRepository CourseRepository
+        => field ??= new CourseRepository(_context);
+
+
+    public async Task<int> CompleteAsync(CancellationToken cancellationToken)
+        => await _context.SaveChangesAsync(cancellationToken);
 
     public ValueTask DisposeAsync() => _context.DisposeAsync();
 

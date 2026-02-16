@@ -51,6 +51,7 @@ public class LoginCommandHandler(
 
             var response = new AuthResponse(
                 user.Id.ToString(),
+                user.CollegeId.ToString(),
                 user.Name,
                 user.Email!,
                 userRoles,

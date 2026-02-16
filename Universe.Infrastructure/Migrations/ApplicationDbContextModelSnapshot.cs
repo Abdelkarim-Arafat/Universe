@@ -228,6 +228,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("DepartmentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -283,6 +286,8 @@ namespace Universe.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CollegeId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -387,6 +392,151 @@ namespace Universe.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Universe.Core.Entities.Course", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("CollegeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code");
+
+                    b.HasIndex("CollegeId");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.CourseDepartment", b =>
+                {
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CourseId", "DepartmentId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("CourseDepartments");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.CoursePrerequisite", b =>
+                {
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PrerequisiteCourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CourseId", "PrerequisiteCourseId");
+
+                    b.HasIndex("PrerequisiteCourseId");
+
+                    b.ToTable("CoursePrerequisites");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.Department", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("CollegeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("RequiredCreditHours")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollegeId");
+
+                    b.ToTable("Departments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Universe.Core.Entities.ApplicationRole", null)
@@ -445,6 +595,10 @@ namespace Universe.Infrastructure.Migrations
                         .HasForeignKey("CollegeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Universe.Core.Entities.Department", null)
+                        .WithMany("Users")
+                        .HasForeignKey("DepartmentId");
 
                     b.OwnsMany("Universe.Core.Entities.PasswordResetOtp", "passwordResetOtps", b1 =>
                         {
@@ -523,7 +677,76 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("passwordResetOtps");
                 });
 
+            modelBuilder.Entity("Universe.Core.Entities.Course", b =>
+                {
+                    b.HasOne("Universe.Core.Entities.College", "College")
+                        .WithMany("Courses")
+                        .HasForeignKey("CollegeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("College");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.CourseDepartment", b =>
+                {
+                    b.HasOne("Universe.Core.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Universe.Core.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.CoursePrerequisite", b =>
+                {
+                    b.HasOne("Universe.Core.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Universe.Core.Entities.Course", "PrerequisiteCourse")
+                        .WithMany()
+                        .HasForeignKey("PrerequisiteCourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("PrerequisiteCourse");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.Department", b =>
+                {
+                    b.HasOne("Universe.Core.Entities.College", "College")
+                        .WithMany("Departments")
+                        .HasForeignKey("CollegeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("College");
+                });
+
             modelBuilder.Entity("Universe.Core.Entities.College", b =>
+                {
+                    b.Navigation("Courses");
+
+                    b.Navigation("Departments");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.Department", b =>
                 {
                     b.Navigation("Users");
                 });

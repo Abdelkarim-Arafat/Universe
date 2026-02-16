@@ -15,6 +15,10 @@ public class ApplicationDbContext(
     ): IdentityDbContext<ApplicationUser , ApplicationRole , Guid>(options)
 {
     public DbSet<College> Colleges { get; set; }
+    public DbSet<Department> Departments { get; set; }
+    public DbSet<Course> Courses { get; set; }
+    public DbSet<CourseDepartment> CourseDepartments { get; set; }
+    public DbSet<CoursePrerequisite> CoursePrerequisites { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -6,6 +6,7 @@ namespace Universe.Application.AuthServices.AuthDtos;
 
 public record AuthResponse(
     string Id,
+    string CollegeId,
     string Name,
     string? Email,
     IEnumerable<string> Roles,
