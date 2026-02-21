@@ -8,5 +8,5 @@ namespace Universe.Application.RoomServices.Queries.GetRoom;
 
 public record GetRoomQuery
 (
- Guid Id
+ [Required]Guid Id
 ) : IRequest<Result<RoomResponse>>;

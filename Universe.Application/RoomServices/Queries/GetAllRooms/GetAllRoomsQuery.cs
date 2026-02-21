@@ -2,5 +2,5 @@
 
 namespace Universe.Application.RoomServices.Queries.GetAllRooms;
 
-public class GetAllRoomsQuery
-() : IRequest<Result<List<RoomResponse>>>;
+public record GetAllRoomsQuery
+(FilterRequest filter) : IRequest<Result<PaginationList<RoomResponse>>>;

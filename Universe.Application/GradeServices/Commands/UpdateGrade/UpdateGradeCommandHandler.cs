@@ -5,34 +5,30 @@ namespace Universe.Application.GradeServices.Commands.UpdateGrade;
 public class UpdateGradeCommandHandler
     (IUnitOfWork unitOfWork) : IRequestHandler<UpdateGradeCommand, Result<GradeResponse>>
 {
-    private readonly IUnitOfWork _unitofwork = unitOfWork;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<GradeResponse>> Handle(UpdateGradeCommand command, CancellationToken cancellationToken = default)
     {
 
-        var check = await _unitofwork.GradeRepository
+        var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
             .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, command.Id, cancellationToken);
+        if (isGradeWithOverLabExist)
+            return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
 
-        if (check.IsFailure)
-            return Result.Failure<GradeResponse>(check.Error);
 
-
-        var result = await _unitofwork.GradeRepository.GetByIdAsync(command.Id);
-
-        if (result.IsFailure)
-            return Result.Failure<GradeResponse>(result.Error);
-
-        var grade = result.Value;
+        var grade = await _unitOfWork.GradeRepository.GetByIdAsync(command.Id);
+        if (grade is null)
+            return Result.Failure<GradeResponse>(GradeErrors.NotFound);
 
         grade.Name = command.Name;
         grade.Code = command.Code;
         grade.MinScore = command.MinScore;
         grade.MaxScore = command.MaxScore;
 
-        _unitofwork.Repository<Grade>().Update(grade);
+        _unitOfWork.Repository<Grade>().Update(grade);
         try
         {
-            await _unitofwork.CompleteAsync(cancellationToken);
+            await _unitOfWork.CompleteAsync(cancellationToken);
         }
         catch (DbUpdateException ex)
         {

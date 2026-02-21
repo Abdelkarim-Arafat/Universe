@@ -4,7 +4,7 @@ namespace Universe.Application.LevelServices.Commands.UpdateLevel;
 
 public record UpdateLevelCommand
 (
-    Guid Id,
+   [Required] Guid Id,
     string Name,
     int MinHours,
     int MaxHours

@@ -8,10 +8,10 @@ public class GetGradeQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetG
 
     public async Task<Result<GradeResponse>> Handle(GetGradeQuery request, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.GradeRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (result.IsFailure)
-            return Result.Failure<GradeResponse>(result.Error);
-        var grade = result.Value.Adapt<GradeResponse>();
-        return Result.Success(grade);
+        var grade = await _unitOfWork.GradeRepository.GetByIdAsync(request.Id, cancellationToken);
+        if (grade is null)
+            return Result.Failure<GradeResponse>(GradeErrors.NotFound);
+
+        return Result.Success(grade.Adapt<GradeResponse>());
     }
 }

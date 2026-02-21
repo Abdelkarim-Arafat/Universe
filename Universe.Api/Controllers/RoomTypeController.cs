@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
-using Universe.Application.RoomServices.Commands.CreateRoom;
+using Universe.Application.Common;
 using Universe.Application.RoomTypeServices.Commands.CreateRoomType;
 using Universe.Application.RoomTypeServices.Commands.DeleteRoomType;
 using Universe.Application.RoomTypeServices.Commands.UpdateRoomType;
@@ -19,7 +19,7 @@ public class RoomTypeController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    // room-Type
+   
 
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateRoomTypeCommand command, CancellationToken cancellationToken)
@@ -30,9 +30,9 @@ public class RoomTypeController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
     [HttpGet("all")]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter, CancellationToken cancellationToken)
     {
-        var query = new GetAllTypesQuery();
+        var query = new GetAllTypesQuery(filter);
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }

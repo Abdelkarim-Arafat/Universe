@@ -5,30 +5,38 @@ namespace Universe.Application.LevelServices.Commands.UpdateLevel;
 public class UpdateLevelCommandHandler
     (IUnitOfWork unitOfWork) : IRequestHandler<UpdateLevelCommand, Result<LevelResponse>>
 {
-    private readonly IUnitOfWork _unitofwork = unitOfWork;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<LevelResponse>> Handle(UpdateLevelCommand command, CancellationToken cancellationToken)
     {
-        var check = await _unitofwork.LevelRepository.CheckOverLabedHoursAsync(command.MinHours, command.MaxHours,command.Id, cancellationToken);
-        if (check.IsSuccess)
+        var level = await _unitOfWork.LevelRepository.GetByIdAsync(command.Id, cancellationToken);
+        if (level is null)
+            return Result.Failure<LevelResponse>(LevelErrors.NotFound);
+
+        var isLevelWithOverLabExist = await _unitOfWork.LevelRepository
+            .CheckOverLabedHoursAsync(command.MinHours, command.MaxHours, command.Id, cancellationToken);
+        if (isLevelWithOverLabExist)
+            return Result.Failure<LevelResponse>(LevelErrors.InvalidHours);
+
+
+
+        level.Name = command.Name;
+        level.MinHours = command.MinHours;
+        level.MaxHours = command.MaxHours;
+
+        _unitOfWork.Repository<Level>().Update(level);
+
+        try
         {
-            var result = await _unitofwork.LevelRepository.GetByIdAsync(command.Id, cancellationToken);
-            if (result.IsSuccess)
-            {
-                var level = result.Value;
-
-                level.Name = command.Name;
-                level.MinHours = command.MinHours;
-                level.MaxHours = command.MaxHours;
-
-                _unitofwork.Repository<Level>().Update(level);
-
-                await _unitofwork.CompleteAsync(cancellationToken);
-                return Result.Success(level.Adapt<LevelResponse>());
-            }
-            return Result.Failure<LevelResponse>(result.Error);
+            await _unitOfWork.CompleteAsync(cancellationToken);
         }
-        var error = check.Error;
-        return Result.Failure<LevelResponse>(error);
+        catch (DbUpdateException)
+        {
+            return Result.Failure<LevelResponse>(
+                new Error("DatabaseError", "Failed to update level", StatusCodes.Status409Conflict));
+        }
+
+
+        return Result.Success(level.Adapt<LevelResponse>());
     }
 }

@@ -1,17 +1,36 @@
 ﻿namespace Universe.Application.GradeServices.Queries.GetCollegeGrades;
 
-public class GetCollegeGradesQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetCollegeGradesQuery, Result<List<GradeResponse>>>
+public class GetCollegeGradesQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetCollegeGradesQuery, Result<PaginationList<GradeResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<List<GradeResponse>>> Handle(GetCollegeGradesQuery request, CancellationToken cancellationToken = default)
+    public async Task<Result<PaginationList<GradeResponse>>> Handle(GetCollegeGradesQuery request, CancellationToken cancellationToken = default)
     {
-        var result = await _unitOfWork.GradeRepository.GetCollegeGradesAsync(request.CollegeId, cancellationToken);
-        if (result.IsFailure)
-            return Result.Failure<List<GradeResponse>>(result.Error);
+        var isCollegeExist = await _unitOfWork.CollegeRepository.CheckCollegeIsExistAsync(request.CollegeId, cancellationToken);
+        if (!isCollegeExist)
+            return Result.Failure<PaginationList<GradeResponse>>(CollegeErrors.NotFound);
 
-        var grades = result.Value.Adapt<List<GradeResponse>>();
 
-        return Result.Success(grades);
+        var query = _unitOfWork.Repository<Grade>().GetQueryable();
+
+        query = query.Where(x => x.CollegeId == request.CollegeId);
+        var filter = request.Filter;
+
+        if (!string.IsNullOrEmpty(filter.SearchValue))
+        {
+            query = query.Where(x => x.Name.Contains(filter.SearchValue));
+        }
+
+        if (!string.IsNullOrEmpty(filter.SortColumn))
+        {
+            query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+        }
+
+        var source = query.ProjectToType<GradeResponse>();
+
+        var response = await PaginationList<GradeResponse>
+            .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
+
+        return Result.Success(response);
     }
 }

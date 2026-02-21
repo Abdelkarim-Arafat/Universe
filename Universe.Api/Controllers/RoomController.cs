@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
+using Universe.Application.Common;
 using Universe.Application.RoomServices.Commands.CreateRoom;
 using Universe.Application.RoomServices.Commands.DeleteRoom;
 using Universe.Application.RoomServices.Commands.UpdateRoom;
@@ -50,9 +51,9 @@ public class RoomController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("all")]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter, CancellationToken cancellationToken)
     {
-        var query = new GetAllRoomsQuery();
+        var query = new GetAllRoomsQuery(filter);
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }

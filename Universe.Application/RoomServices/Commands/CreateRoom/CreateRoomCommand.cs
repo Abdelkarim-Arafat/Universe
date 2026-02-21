@@ -8,5 +8,5 @@ public record CreateRoomCommand
   int RoomNumber,
   int Capacity,
   Guid RoomTypeId,
-  Guid BuildingId
+  [Required] Guid BuildingId
 ) : IRequest<Result<RoomResponse>>;

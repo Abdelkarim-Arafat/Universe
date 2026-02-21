@@ -12,22 +12,20 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
     public async Task<Result<RoomResponse>> Handle(UpdateRoomCommand command, CancellationToken cancellationToken)
     {
-        var checkRoomExist = await _unitOfWork.RoomRepository.GetByIdAsync(command.Id, cancellationToken);
+        var room = await _unitOfWork.RoomRepository.GetByIdAsync(command.Id, cancellationToken);
 
-        if (checkRoomExist.IsFailure)
+        if (room is null)
             return Result.Failure<RoomResponse>(RoomErrors.RoomNotFound);
-
-        var room = checkRoomExist.Value;
 
         var isRoomTypeExist = await _unitOfWork.RoomTypeRepository.CheckIfRoomTypeExist(command.RoomTypeId, cancellationToken);
 
-        if (isRoomTypeExist.IsFailure)
+        if (!isRoomTypeExist)
             return Result.Failure<RoomResponse>(RoomErrors.RoomTypeNotFound);
 
-        var isValidRoomNumber = await _unitOfWork.RoomRepository
+        var isSameRoomNumberExist = await _unitOfWork.RoomRepository
             .CheckValidRoomNumberAsync(room.Id, room.BuildingId, command.RoomNumber, cancellationToken);
 
-        if (isValidRoomNumber.IsFailure)
+        if (isSameRoomNumberExist)
             return Result.Failure<RoomResponse>(RoomErrors.UnvalidRoomNumber);
 
         room.Name = command.Name;
@@ -41,18 +39,17 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
         {
             await _unitOfWork.CompleteAsync(cancellationToken);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
 
             return Result.Failure<RoomResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
+                new Error("DatabaseError", "failed to update room", StatusCodes.Status409Conflict));
         }
 
-        var result = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(room.Id, cancellationToken);
-        room = result.Value;
+        room = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(room.Id, cancellationToken);
 
         var response = new RoomResponse
-            (room.Id,
+            (room.Id!,
             room.Name,
             room.RoomNumber,
             room.Capacity,

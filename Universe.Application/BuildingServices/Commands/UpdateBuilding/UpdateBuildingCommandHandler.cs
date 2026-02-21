@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.BuildingServices.Commands.CreateBuilding;
-using Universe.Application.BuildingServices.Dtos;
-
-namespace Universe.Application.BuildingServices.Commands.UpdateBuilding;
+﻿namespace Universe.Application.BuildingServices.Commands.UpdateBuilding;
 
 public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateBuildingCommand, Result<BuildingResponse>>
 {
@@ -12,11 +6,10 @@ public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
     public async Task<Result<BuildingResponse>> Handle(UpdateBuildingCommand command, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.BuildingRepository.GetByIdAsync(command.Id, cancellationToken);
-        if (result.IsFailure)
+        var building = await _unitOfWork.BuildingRepository.GetByIdAsync(command.Id, cancellationToken);
+        if (building is null)
             return Result.Failure<BuildingResponse>(BuildingErrors.NotFound);
 
-        var building = result.Value;
         building.Name = command.Name;
         building.Code = command.Code;
 

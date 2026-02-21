@@ -15,17 +15,17 @@ public class CreateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
     {
         var isRoomTypeExist = await _unitOfWork.RoomTypeRepository.CheckIfRoomTypeExist(command.RoomTypeId, cancellationToken);
 
-        if (isRoomTypeExist.IsFailure)
+        if (!isRoomTypeExist)
             return Result.Failure<RoomResponse>(RoomErrors.RoomTypeNotFound);
 
         var isBuildingExist = await _unitOfWork.BuildingRepository.CheckIfBuildingExistAsync(command.BuildingId, cancellationToken);
 
-        if (isBuildingExist.IsFailure)
+        if (!isBuildingExist)
             return Result.Failure<RoomResponse>(BuildingErrors.NotFound);
 
-        var isValidRoomNumber = await _unitOfWork.RoomRepository.CheckValidRoomNumberAsync(command.BuildingId, command.RoomNumber, cancellationToken);
+        var isSameRoomNumberExist = await _unitOfWork.RoomRepository.CheckValidRoomNumberAsync(command.BuildingId, command.RoomNumber, cancellationToken);
 
-        if (isValidRoomNumber.IsFailure)
+        if (isSameRoomNumberExist)
             return Result.Failure<RoomResponse>(RoomErrors.UnvalidRoomNumber);
 
         var room = command.Adapt<Room>();
@@ -35,17 +35,16 @@ public class CreateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
         {
             await _unitOfWork.CompleteAsync(cancellationToken);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
 
             return Result.Failure<RoomResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
+                new Error("DatabaseError", "Failed to craete new room", StatusCodes.Status409Conflict));
         }
-        var result  = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(room.Id, cancellationToken);
-        room = result.Value;
-
+       room = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(room.Id, cancellationToken);
+     
         var response = new RoomResponse
-            (room.Id,
+            (room.Id!,
             room.Name,
             room.RoomNumber,
             room.Capacity,

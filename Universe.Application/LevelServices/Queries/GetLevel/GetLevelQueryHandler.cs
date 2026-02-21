@@ -8,12 +8,10 @@ public class GetLevelQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetL
 
     public async Task<Result<LevelResponse>> Handle(GetLevelQuery request, CancellationToken cancellationToken = default)
     {
-        var result = await unitOfWork.LevelRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (result.IsSuccess)
-        {
-            var response = result.Value.Adapt<LevelResponse>();
-            return Result.Success(response);
-        }
-        return Result.Failure<LevelResponse>(result.Error);
+        var level = await unitOfWork.LevelRepository.GetByIdAsync(request.Id, cancellationToken);
+        if (level is null)
+            return Result.Failure<LevelResponse>(LevelErrors.NotFound);
+
+        return Result.Success(level.Adapt<LevelResponse>());
     }
 }

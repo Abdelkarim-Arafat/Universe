@@ -20,7 +20,7 @@ global using Universe.Core.Entities;
 global using Universe.Core.Errors;
 global using Universe.Core.Interfaces;
 global using System.ComponentModel.DataAnnotations;
-
+global using System.Linq.Dynamic.Core;
 global using Universe.Application.GradeServices.GradeDtos;
 global using Universe.Application.BuildingServices.Dtos;
 

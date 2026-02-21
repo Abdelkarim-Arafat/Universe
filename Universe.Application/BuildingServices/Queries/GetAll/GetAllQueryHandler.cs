@@ -1,19 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.BuildingServices.Dtos;
+﻿namespace Universe.Application.BuildingServices.Queries.GetAll;
 
-namespace Universe.Application.BuildingServices.Queries.GetAll;
-
-public class GetAllQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllQuery, Result<List<BuildingResponse>>>
+public class GetAllQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllQuery, Result<PaginationList<BuildingResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<List<BuildingResponse>>> Handle(GetAllQuery request, CancellationToken cancellationToken = default)
+    public async Task<Result<PaginationList<BuildingResponse>>> Handle(GetAllQuery request, CancellationToken cancellationToken = default)
     {
-        var result = await _unitOfWork.BuildingRepository.GetAllAsync(cancellationToken);
-        return result.IsSuccess
-            ? Result.Success(result.Value.Adapt<List<BuildingResponse>>())
-            : Result.Failure<List<BuildingResponse>>(result.Error);
+        var query = _unitOfWork.Repository<Building>().GetQueryable();
+
+        var filter = request.Filter;
+
+        if (!string.IsNullOrEmpty(filter.SearchValue))
+        {
+            query = query.Where(x => x.Name.Contains(filter.SearchValue));
+        }
+
+        if (!string.IsNullOrEmpty(filter.SortColumn))
+        {
+            query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+        }
+
+        var source = query.ProjectToType<BuildingResponse>();
+
+        var response = await PaginationList<BuildingResponse>
+            .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
+
+        return Result.Success(response);
     }
 }

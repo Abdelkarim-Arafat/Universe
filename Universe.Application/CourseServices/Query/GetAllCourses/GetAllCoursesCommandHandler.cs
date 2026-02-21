@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.CourseServices.Dtos;
-using System.Linq.Dynamic.Core;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+﻿using Universe.Application.CourseServices.Dtos;
+ 
 
 namespace Universe.Application.CourseServices.Query.GetAllCourses;
 
@@ -13,7 +9,9 @@ public class GetAllCoursesCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
 
     public async Task<Result<PaginationList<CourseResponse>>> Handle(GetAllCoursesCommand request, CancellationToken cancellationToken)
     {
-        var query = _unitOfWork.Repository<Course>().GetQueryable();
+        var query = _unitOfWork.Repository<Course>()
+            .GetQueryable()
+            .Where(x => x.CollegeId == request.CollegeId);
 
         var filter = request.filter;
 
@@ -26,6 +24,7 @@ public class GetAllCoursesCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
         {
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
+
 
         var source = query.ProjectToType<CourseResponse>();
 

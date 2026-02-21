@@ -4,5 +4,6 @@ namespace Universe.Application.GradeServices.Queries.GetCollegeGrades;
 
 public record GetCollegeGradesQuery
 (
-    Guid CollegeId
-) : IRequest<Result<List<GradeResponse>>>;
+   [Required] Guid CollegeId,
+    FilterRequest Filter
+) : IRequest<Result<PaginationList<GradeResponse>>>;

@@ -8,12 +8,10 @@ public class GetRoomTypeQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
     public async Task<Result<RoomTypeResponse>> Handle(GetRoomTypeQuery command, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.RoomTypeRepository.GetByIdAsync(command.Id, cancellationToken);
+        var type = await _unitOfWork.RoomTypeRepository.GetByIdAsync(command.Id, cancellationToken);
+        if (type is null)
+            return Result.Failure<RoomTypeResponse>(RoomErrors.RoomTypeNotFound);
 
-        if (result.IsFailure)
-            return Result.Failure<RoomTypeResponse>(result.Error);
-
-        var type = result.Value;
         return Result.Success(type.Adapt<RoomTypeResponse>());
     }
 }

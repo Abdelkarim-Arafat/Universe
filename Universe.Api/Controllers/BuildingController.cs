@@ -9,7 +9,7 @@ using Universe.Application.BuildingServices.Commands.DeleteBuilding;
 using Universe.Application.BuildingServices.Commands.UpdateBuilding;
 using Universe.Application.BuildingServices.Queries.GetAll;
 using Universe.Application.BuildingServices.Queries.GetBuilding;
-using Universe.Application.GradeServices.Commands.DeleteGrade;
+using Universe.Application.Common;
 
 namespace Universe.Api.Controllers;
 
@@ -28,9 +28,9 @@ public class BuildingController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("all")]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter,CancellationToken cancellationToken)
     {
-        var query = new GetAllQuery();
+        var query = new GetAllQuery(filter);
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }

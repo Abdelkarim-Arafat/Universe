@@ -8,11 +8,10 @@ public class GetBuildingQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
     public async Task<Result<BuildingResponse>> Handle(GetBuildingQuery request, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.BuildingRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (result.IsFailure)
-            return Result.Failure<BuildingResponse>(result.Error);
+        var building = await _unitOfWork.BuildingRepository.GetByIdAsync(request.Id, cancellationToken);
+        if (building is null)
+            return Result.Failure<BuildingResponse>(BuildingErrors.NotFound);
 
-        var building = result.Value.Adapt<BuildingResponse>();
-        return Result.Success(building);
+        return Result.Success(building.Adapt<BuildingResponse>());
     }
 }

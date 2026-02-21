@@ -10,11 +10,9 @@ public class DeleteGradeCommandHandler
     public async Task<Result> Handle(DeleteGradeCommand command, CancellationToken cancellationToken = default)
     {
 
-        var result = await _unitofwork.GradeRepository.GetByIdAsync(command.Id);
-        if (result.IsFailure)
-            return Result.Failure(result.Error);
-
-        var grade = result.Value;
+        var grade = await _unitofwork.GradeRepository.GetByIdAsync(command.Id);
+        if (grade is null)
+            return Result.Failure(GradeErrors.NotFound);
 
         _unitofwork.Repository<Grade>().SoftDelete(grade);
 

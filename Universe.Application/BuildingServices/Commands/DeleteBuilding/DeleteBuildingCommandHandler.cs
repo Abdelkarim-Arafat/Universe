@@ -6,17 +6,16 @@ public class DeleteBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
     public async Task<Result> Handle(DeleteBuildingCommand command, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.BuildingRepository.GetByIdAsync(command.Id, cancellationToken);
+        var building = await _unitOfWork.BuildingRepository.GetByIdAsync(command.Id, cancellationToken);
 
-        if (result.IsFailure)
+        if (building is null)
             return Result.Failure(BuildingErrors.NotFound);
 
-        var check = await _unitOfWork.BuildingRepository.CheckIfRoomExistAsync(command.Id, cancellationToken);
+        var isRoomExistInBuilding = await _unitOfWork.BuildingRepository.CheckIfRoomExistAsync(command.Id, cancellationToken);
 
-        if (check.IsFailure)
-            return Result.Failure(check.Error);
+        if (isRoomExistInBuilding)
+            return Result.Failure(BuildingErrors.RoomsFounded);
 
-        var building = result.Value;
 
         _unitOfWork.Repository<Building>().SoftDelete(building);
 

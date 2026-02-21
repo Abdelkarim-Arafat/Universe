@@ -4,5 +4,6 @@ namespace Universe.Application.LevelServices.Queries.GetCollegeLevels;
 
 public record GetCollegeLevelsQuery
 (
-    Guid CollegeId
-) : IRequest<Result<List<LevelResponse>>>;
+    [Required]Guid CollegeId,
+    FilterRequest Filter
+) : IRequest<Result<PaginationList<LevelResponse>>>;

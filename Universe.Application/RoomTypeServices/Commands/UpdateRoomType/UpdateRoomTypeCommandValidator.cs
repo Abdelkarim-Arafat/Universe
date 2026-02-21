@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.RoomTypeServices.Commands.CreateRoomType;
-
+﻿
 namespace Universe.Application.RoomTypeServices.Commands.UpdateRoomType;
 
 public class UpdateRoomTypeCommandValidator : AbstractValidator<UpdateRoomTypeCommand>

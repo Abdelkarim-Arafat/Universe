@@ -9,18 +9,18 @@ public class CreateRoomTypeCommandHandler(
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     public async Task<Result<RoomTypeResponse>> Handle(CreateRoomTypeCommand command, CancellationToken cancellationToken)
     {
-        var building = command.Adapt<RoomType>();
-        await _unitOfWork.Repository<RoomType>().AddAsync(building , cancellationToken);
+        var type = command.Adapt<RoomType>();
+        await _unitOfWork.Repository<RoomType>().AddAsync(type , cancellationToken);
 
         try
         {
             await _unitOfWork.CompleteAsync(cancellationToken);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
             return Result.Failure<RoomTypeResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
+                new Error("DatabaseError", "Failed to create roomtype", StatusCodes.Status409Conflict));
         }
-        return Result.Success(building.Adapt<RoomTypeResponse>());
+        return Result.Success(type.Adapt<RoomTypeResponse>());
     }
 }

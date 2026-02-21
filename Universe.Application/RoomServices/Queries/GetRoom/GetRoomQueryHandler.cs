@@ -9,10 +9,9 @@ public class GetRoomQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetRo
 
     public async Task<Result<RoomResponse>> Handle(GetRoomQuery query, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(query.Id, cancellationToken);
-        if (result.IsFailure)
-            return Result.Failure<RoomResponse>(result.Error);
-        var room = result.Value;
+        var room = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(query.Id, cancellationToken);
+        if (room is null)
+            return Result.Failure<RoomResponse>(RoomErrors.RoomNotFound);
 
         var response = new RoomResponse
         (

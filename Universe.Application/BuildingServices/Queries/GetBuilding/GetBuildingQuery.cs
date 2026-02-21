@@ -4,5 +4,5 @@ namespace Universe.Application.BuildingServices.Queries.GetBuilding;
 
 public record GetBuildingQuery
 (
-   Guid Id
+   [Required]Guid Id
 ): IRequest<Result<BuildingResponse>>;

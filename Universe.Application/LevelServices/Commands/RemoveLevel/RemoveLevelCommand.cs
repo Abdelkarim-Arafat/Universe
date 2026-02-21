@@ -2,5 +2,5 @@
 
 public record RemoveLevelCommand
 (
-    Guid Id
+   [Required] Guid Id
 ) : IRequest<Result>;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
+using Universe.Application.Common;
 using Universe.Application.GradeServices.Commands.CreateGrade;
 using Universe.Application.GradeServices.Commands.DeleteGrade;
 using Universe.Application.GradeServices.Commands.UpdateGrade;
@@ -27,9 +28,9 @@ public class GradeController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("{CollegeId}-all")]
-    public async Task<IActionResult> GetAll(Guid CollegeId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAll(Guid CollegeId,[FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
     {
-        var query = new GetCollegeGradesQuery(CollegeId);
+        var query = new GetCollegeGradesQuery(CollegeId, filter);
         var result = await _mediator.Send(query, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();

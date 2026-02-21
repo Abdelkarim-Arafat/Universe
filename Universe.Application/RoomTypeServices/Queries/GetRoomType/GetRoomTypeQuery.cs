@@ -7,5 +7,5 @@ namespace Universe.Application.RoomTypeServices.Queries.GetRoomType;
 
 public record GetRoomTypeQuery
 (
- Guid Id
+ [Required] Guid Id
 ) : IRequest<Result<RoomTypeResponse>>;

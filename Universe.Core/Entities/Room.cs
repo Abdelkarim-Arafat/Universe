@@ -13,7 +13,7 @@ public class Room : BaseEntity
     public int RoomNumber { get; set; }
     public int Capacity { get; set; }
     public Guid RoomTypeId { get; set; }
-    public RoomType RoomType { get; set; }
+    public RoomType RoomType { get; set; } = default!;
     public Guid BuildingId { get; set; }
-    public Building Building { get; set; }
+    public Building Building { get; set; } = default!;
 }

@@ -1,19 +1,38 @@
-﻿using Universe.Application.LevelServices.LevelDtos;
+﻿using Universe.Application.CourseServices.Dtos;
+using Universe.Application.LevelServices.LevelDtos;
  
 namespace Universe.Application.LevelServices.Queries.GetCollegeLevels;
 
-public class GetCollegeLevelsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetCollegeLevelsQuery, Result<List<LevelResponse>>>
+public class GetCollegeLevelsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetCollegeLevelsQuery, Result<PaginationList<LevelResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<List<LevelResponse>>> Handle(GetCollegeLevelsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationList<LevelResponse>>> Handle(GetCollegeLevelsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.LevelRepository.GetCollegeLevelsAsync(request.CollegeId);
-        if (result.IsSuccess)
+        var isCollegeExist = await _unitOfWork.CollegeRepository.CheckCollegeIsExistAsync(request.CollegeId, cancellationToken);
+        if (!isCollegeExist)
+            return Result.Failure<PaginationList<LevelResponse>>(CollegeErrors.NotFound);
+
+        var query = _unitOfWork.Repository<Level>().GetQueryable();
+
+        query = query.Where(l => l.CollegeId == request.CollegeId);
+        var filter = request.Filter;
+
+        if (!string.IsNullOrEmpty(filter.SearchValue))
         {
-            var levels = result.Value.Adapt<List<LevelResponse>>();
-            return Result.Success(levels);
+            query = query.Where(x => x.Name.Contains(filter.SearchValue));
         }
-        return Result.Failure<List<LevelResponse>>(result.Error);
+
+        if (!string.IsNullOrEmpty(filter.SortColumn))
+        {
+            query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+        }
+
+        var source = query.ProjectToType<LevelResponse>();
+
+        var response = await PaginationList<LevelResponse>
+            .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
+
+        return Result.Success(response);
     }
 }

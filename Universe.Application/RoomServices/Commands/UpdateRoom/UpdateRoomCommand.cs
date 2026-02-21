@@ -10,6 +10,6 @@ public record UpdateRoomCommand
   string Name,
   int RoomNumber,
   int Capacity,
-  Guid Id,
-  Guid RoomTypeId
+  [Required]Guid Id,
+  [Required]Guid RoomTypeId
 ) : IRequest<Result<RoomResponse>>;

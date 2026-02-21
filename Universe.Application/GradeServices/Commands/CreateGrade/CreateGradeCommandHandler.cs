@@ -9,10 +9,14 @@ public class CreateGradeCommandHandler
 
     public async Task<Result<GradeResponse>> Handle(CreateGradeCommand command, CancellationToken cancellationToken = default)
     {
+        var isCollegeExist = await _unitofWork.CollegeRepository.CheckCollegeIsExistAsync(command.CollegeId, cancellationToken);
+        if(!isCollegeExist)
+            return Result.Failure<GradeResponse>(CollegeErrors.NotFound);
 
-        var result = await _unitofWork.GradeRepository.CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, cancellationToken);
-        if (result.IsFailure)
-            return Result.Failure<GradeResponse>(result.Error);
+        var isGradeWithOverLabExist = await _unitofWork.GradeRepository
+            .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, cancellationToken);
+        if (isGradeWithOverLabExist)
+            return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
 
 
         var grade = command.Adapt<Grade>();

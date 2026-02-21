@@ -8,11 +8,10 @@ public class DeleteRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
     public async Task<Result> Handle(DeleteRoomCommand command, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.RoomRepository.GetByIdAsync(command.Id, cancellationToken);
-        if (result.IsFailure)
-            return Result.Failure(result.Error);
-        var room = result.Value;
-
+        var room = await _unitOfWork.RoomRepository.GetByIdAsync(command.Id, cancellationToken);
+        if (room is null)
+            return Result.Failure(RoomErrors.RoomNotFound);
+         
         _unitOfWork.Repository<Room>().SoftDelete(room);
         _unitOfWork.Repository<Room>().Update(room);
 
@@ -20,11 +19,11 @@ public class DeleteRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
         {
             await _unitOfWork.CompleteAsync(cancellationToken);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
 
             return Result.Failure<RoomResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
+                new Error("DatabaseError", "Failed to delete room", StatusCodes.Status409Conflict));
         }
 
         return Result.Success();

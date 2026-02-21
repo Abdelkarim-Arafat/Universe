@@ -40,6 +40,8 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 
     public IGradeRepository GradeRepository
         => field ??= new GradeRepository(_context);
+    public ICollegeRepository CollegeRepository
+        => field ??= new CollegeRepository(_context);
 
 
     public async Task<int> CompleteAsync(CancellationToken cancellationToken)

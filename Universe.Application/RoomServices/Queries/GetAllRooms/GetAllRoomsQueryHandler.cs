@@ -1,28 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.RoomServices.Dtos;
+﻿using Universe.Application.RoomServices.Dtos;
 
 namespace Universe.Application.RoomServices.Queries.GetAllRooms;
 
-public class GetAllRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllRoomsQuery, Result<List<RoomResponse>>>
+public class GetAllRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllRoomsQuery, Result<PaginationList<RoomResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<List<RoomResponse>>> Handle(GetAllRoomsQuery query, CancellationToken cancellationToken)
+    public async Task<Result<PaginationList<RoomResponse>>> Handle(GetAllRoomsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.RoomRepository.GetAllRoomsIncludingRoomTypeAsync(cancellationToken);
+        var query = _unitOfWork.Repository<Room>().GetQueryable();
 
-        var rooms = result.Value;
+        var filter = request.filter;
 
-        var response = rooms.Select(room => new RoomResponse(
+        if (!string.IsNullOrEmpty(filter.SearchValue))
+        {
+            query = query.Where(x => x.Name.Contains(filter.SearchValue));
+        }
+
+        if (!string.IsNullOrEmpty(filter.SortColumn))
+        {
+            query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+        }
+        query = query.Include(room => room.RoomType);
+
+        var source = query.Select(room => new RoomResponse(
             room.Id,
             room.Name,
             room.RoomNumber,
             room.Capacity,
             room.RoomType.Name
-        )).ToList();
+        ));
 
+        var response = await PaginationList<RoomResponse>
+            .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
 
         return Result.Success(response);
     }

@@ -14,7 +14,9 @@ public class GetAllDepartmentsCommandHandler(
 
     public async Task<Result<PaginationList<DepartmentResponse>>> Handle(GetDepartmentsCommand request, CancellationToken cancellationToken)
     {
-        var query = _unitOfWork.Repository<Department>().GetQueryable();
+        var query = _unitOfWork.Repository<Department>()
+            .GetQueryable()
+            .Where(d => d.CollegeId == request.CollegeId);
 
         var filter = request.Filter;
 

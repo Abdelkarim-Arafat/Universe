@@ -2,5 +2,5 @@
 
 public record DeleteBuildingCommand
 (
-    Guid Id
+    [Required]Guid Id
 ) : IRequest<Result>;

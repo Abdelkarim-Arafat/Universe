@@ -12,11 +12,10 @@ public class UpdateRoomTypeCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
     public async Task<Result<RoomTypeResponse>> Handle(UpdateRoomTypeCommand command, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.RoomTypeRepository.GetByIdAsync(command.Id, cancellationToken);
-        if (result.IsFailure)
-            return Result.Failure<RoomTypeResponse>(result.Error);
+        var type = await _unitOfWork.RoomTypeRepository.GetByIdAsync(command.Id, cancellationToken);
+        if (type is null)
+            return Result.Failure<RoomTypeResponse>(RoomErrors.RoomTypeNotFound);
 
-        var type = result.Value;
         type.Name = command.Name;
         _unitOfWork.Repository<RoomType>().Update(type);
 
@@ -24,11 +23,11 @@ public class UpdateRoomTypeCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
         {
             await _unitOfWork.CompleteAsync(cancellationToken);
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException)
         {
 
             return Result.Failure<RoomTypeResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
+                new Error("DatabaseError", "failed to update room type", StatusCodes.Status409Conflict));
         }
         return Result.Success(type.Adapt<RoomTypeResponse>());
     }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.BuildingServices.Commands.CreateBuilding;
-
-namespace Universe.Application.RoomTypeServices.Commands.CreateRoomType;
+﻿namespace Universe.Application.RoomTypeServices.Commands.CreateRoomType;
 
 public class CreateRoomTypeCommandValidator : AbstractValidator<CreateRoomTypeCommand>
 {

@@ -4,5 +4,5 @@ namespace Universe.Application.LevelServices.Queries.GetLevel;
 
 public record GetLevelQuery
 (
-    Guid Id
+    [Required]Guid Id
 ) : IRequest<Result<LevelResponse>>;

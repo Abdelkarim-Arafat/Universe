@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
-using Universe.Application.GradeServices.Queries.GetCollegeGrades;
+using Universe.Application.Common;
 using Universe.Application.LevelServices.Commands.CreateLevel;
 using Universe.Application.LevelServices.Commands.RemoveLevel;
 using Universe.Application.LevelServices.Commands.UpdateLevel;
@@ -17,10 +17,10 @@ namespace Universe.Api.Controllers;
 public class LevelController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-    [HttpGet("{CollegeId}-all")]
-    public async Task<IActionResult> GetAll(Guid CollegeId, CancellationToken cancellationToken = default)
+    [HttpGet("college-{CollegeId}-all")]
+    public async Task<IActionResult> GetAll(Guid CollegeId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
     {
-        var request = new GetCollegeLevelsQuery(CollegeId);
+        var request = new GetCollegeLevelsQuery(CollegeId, filter);
         var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
@@ -33,7 +33,7 @@ public class LevelController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpPost("{CollegeId}-create")]
+    [HttpPost("{CollegeId}")]
     public async Task<IActionResult> Create([FromBody] CreateLevelCommand command, Guid CollegeId, CancellationToken cancellationToken = default)
     {
         command = command with { CollegeId = CollegeId };
@@ -42,14 +42,14 @@ public class LevelController(IMediator mediator) : ControllerBase
 
         return result.IsSuccess ? CreatedAtAction(nameof(Get), new { result.Value.Id }, result.Value) : result.ToProblem();
     }
-    [HttpDelete("remove-{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(Guid id, CancellationToken cancellationToken = default)
     {
         var command = new RemoveLevelCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
-    [HttpPut("update-{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromBody] UpdateLevelCommand command, Guid id, CancellationToken cancellationToken = default)
     {
         command = command with { Id = id };
