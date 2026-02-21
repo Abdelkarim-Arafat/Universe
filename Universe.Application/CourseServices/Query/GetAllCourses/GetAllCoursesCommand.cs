@@ -5,6 +5,7 @@ using Universe.Application.CourseServices.Dtos;
 
 namespace Universe.Application.CourseServices.Query.GetAllCourses;
 
-public record GetAllCoursesCommand(
-    [Required] Guid CollegeId
-) : IRequest<Result<List<CourseResponse>>>;
+public record GetAllCoursesCommand (
+    [Required] Guid CollegeId ,
+    FilterRequest filter
+) : IRequest<Result<PaginationList<CourseResponse>>>;

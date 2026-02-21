@@ -13,6 +13,11 @@ public interface IUnitOfWork: IAsyncDisposable
     IRoleRepository RoleRepository { get; }
     IDepartmentRepository DepartmentRepository { get; }
     ICourseRepository CourseRepository { get; }
+    IBuildingRepository BuildingRepository { get; }
+    IRoomRepository RoomRepository { get; }
+    IRoomTypeRepository RoomTypeRepository { get; }
+    ILevelRepository LevelRepository { get; }
+    IGradeRepository GradeRepository { get; }
     IUserRepository UserRepository { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);
 }

@@ -31,6 +31,11 @@ public class CollegeConfiguration : IEntityTypeConfiguration<College>
                .WithOne(cou => cou.College)
                .HasForeignKey(cou => cou.CollegeId);
 
+        builder.HasMany(c => c.Students)
+               .WithOne(s => s.College)
+               .HasForeignKey(s => s.CollegeId);
+
+
         builder.HasData(
             new College
             {

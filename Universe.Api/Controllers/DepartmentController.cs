@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
+using Universe.Application.Common;
 using Universe.Application.DepartmentServices.Commands.AddDepartment;
 using Universe.Application.DepartmentServices.Commands.RemoveDepartment;
 using Universe.Application.DepartmentServices.Commands.UpdateDepartment;
@@ -26,9 +27,9 @@ public class DepartmentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAll([FromRoute] Guid collegeId , CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromRoute] Guid collegeId , [FromQuery] FilterRequest filter , CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetDepartmentsCommand(collegeId), cancellationToken);
+        var result = await _mediator.Send(new GetDepartmentsCommand(collegeId , filter), cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();

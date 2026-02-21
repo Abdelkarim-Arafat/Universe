@@ -9,5 +9,6 @@ public record AddCourseCommand(
     [Required] Guid CollegeId,
     string Name,
     string Description,
-    string Code
+    string Code,
+    List<Guid> PreRequisiteIds
 ) : IRequest<Result<CourseResponse>>;

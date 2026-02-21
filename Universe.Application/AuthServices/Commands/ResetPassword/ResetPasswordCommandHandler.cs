@@ -16,7 +16,7 @@ internal class ResetPasswordCommandHandler(
             .SingleOrDefaultAsync(u => u.Email == request.Email);
 
         if (user is null || !user.EmailConfirmed)
-            return Result.Failure(UserErrors.UserNotFound);
+            return Result.Failure(StudentErrors.UserNotFound);
 
         var otp = user.passwordResetOtps.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
 

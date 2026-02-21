@@ -16,6 +16,16 @@ public class GetCourseCommandHandler(
         if ((await _unitOfWork.CourseRepository.GetByIdAsync(request.Id, cancellationToken)) is not { } course)
             return Result.Failure<CourseResponse>(CourseErrors.CourseNotFound);
 
-        return Result.Success(course.Adapt<CourseResponse>());
+        var response = new CourseResponse(
+            course.Id.ToString(),
+            course.Name,
+            course.Description,
+            course.Code,
+            (await _unitOfWork.CourseRepository
+                .GetAllPreRequisiteAsync(course.Id, cancellationToken))
+                .Adapt<List<CourseResponse>>()
+        );
+
+        return Result.Success(response);
     }
 }

@@ -39,4 +39,31 @@ public class CourseRepository(ApplicationDbContext context) : ICourseRepository
     public async Task<bool> IsExistCoursePreRequisiteAsync(Guid courseId , Guid preRequisiteId , CancellationToken cancellationToken)
         => await _context.CoursePrerequisites
             .AnyAsync(d => d.CourseId == courseId && d.PrerequisiteCourseId == preRequisiteId, cancellationToken);
+
+    public async Task<IList<Guid>> ExistingPreRequisitesIdsAsync(List<Guid> preRequisitesIds , CancellationToken cancellationToken)
+        => await _context.Courses
+            .Where(c => preRequisitesIds.Contains(c.Id) && !c.IsDeleted)
+            .Select(c => c.Id)
+            .ToListAsync(cancellationToken);
+
+    public async Task<IList<Guid>> GetDirectPreRequisitesIdsAsync(Guid courseId, CancellationToken cancellationToken)
+        => await _context.CoursePrerequisites
+            .Where(c => c.CourseId == courseId)
+            .Select(c => c.PrerequisiteCourseId)
+            .ToListAsync(cancellationToken);
+
+    public async Task RemovePrerequisiteAsync(
+    Guid courseId,
+    Guid preReqId,
+    CancellationToken cancellationToken)
+    {
+        var entity = await _context.CoursePrerequisites
+            .FirstOrDefaultAsync(x =>
+                x.CourseId == courseId &&
+                x.PrerequisiteCourseId == preReqId,
+                cancellationToken);
+
+        if (entity != null)
+            _context.CoursePrerequisites.Remove(entity);
+    }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
+using Universe.Application.Common;
 using Universe.Application.CourseServices.Commands.AddCourse;
 using Universe.Application.CourseServices.Commands.AddCoursePrerequisite;
 using Universe.Application.CourseServices.Commands.RemoveCourse;
@@ -31,9 +32,9 @@ public class CourseController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAll([FromRoute] Guid collegeId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromRoute] Guid collegeId, [FromQuery] FilterRequest filter , CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAllCoursesCommand(collegeId), cancellationToken);
+        var result = await _mediator.Send(new GetAllCoursesCommand(collegeId , filter), cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();

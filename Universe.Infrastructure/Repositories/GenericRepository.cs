@@ -16,6 +16,9 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
         entity.CreatedAt = DateTime.UtcNow;
         await _context.Set<T>().AddAsync(entity , cancellationToken);
     }
+
+    public IQueryable<T> GetQueryable()
+        => _context.Set<T>().Where(x => !x.IsDeleted).AsQueryable();
     public async Task<int> CountAsync(T entity) => await _context.Set<T>().CountAsync(e => !e.IsDeleted);
     public void DeletePermanently(T entity) => _context.Set<T>().Remove(entity);
     public void DeletePermanentlyRange(IEnumerable<T> entities) => _context.Set<T>().RemoveRange(entities);

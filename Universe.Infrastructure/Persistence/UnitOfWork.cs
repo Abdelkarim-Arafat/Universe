@@ -26,6 +26,21 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public ICourseRepository CourseRepository
         => field ??= new CourseRepository(_context);
 
+    public IBuildingRepository BuildingRepository
+        => field ??= new BuildingRepository(_context);
+
+    public IRoomRepository RoomRepository
+        => field ??= new RoomRepository(_context);
+
+    public IRoomTypeRepository RoomTypeRepository
+        => field ??= new RoomTypeRepository(_context);
+
+    public ILevelRepository LevelRepository
+        => field ??= new LevelRepository(_context);
+
+    public IGradeRepository GradeRepository
+        => field ??= new GradeRepository(_context);
+
 
     public async Task<int> CompleteAsync(CancellationToken cancellationToken)
         => await _context.SaveChangesAsync(cancellationToken);

@@ -17,6 +17,8 @@ public sealed class ApplicationUser : IdentityUser<Guid> , ISoftDeleteable
     public Guid CollegeId { get; set; }
     public College College { get; set; } = default!;
 
+    public Guid? StudentId { get; set; }
+    public Student Student { get; set; } = default!;
     public void UndoDelete()
     {
         IsDeleted = false;

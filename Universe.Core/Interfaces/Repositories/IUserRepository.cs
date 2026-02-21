@@ -8,4 +8,7 @@ namespace Universe.Core.Interfaces.Repositories;
 public interface IUserRepository
 {
     Task<RefreshToken?> GetRefreshTokenAsync(string token , CancellationToken cancellationToken);
+    Task<bool> IsStudentCodeExistsAsync(Guid CollegeId, Guid? StudentId, string studentCode, CancellationToken cancellationToken);
+    Task<bool> IsStudentNationalIdExistsAsync(Guid CollegeId, Guid? StudentId , string studentCode, CancellationToken cancellationToken);
+    Task<Student?> GetStudentByIdAsync(Guid UserId, CancellationToken cancellationToken);
 }

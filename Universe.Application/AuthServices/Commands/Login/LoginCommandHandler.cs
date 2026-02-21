@@ -28,7 +28,7 @@ public class LoginCommandHandler(
     public async Task<Result<AuthResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByNameAsync(request.UserName);
-        if (user is null || user.IsDeleted) return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
+        if (user is null || user.IsDeleted) return Result.Failure<AuthResponse>(StudentErrors.InvalidCredentials);
 
         var result = await _signInManager.PasswordSignInAsync(user , request.Password , request.RememberMe , true);
 
@@ -65,10 +65,10 @@ public class LoginCommandHandler(
         }
 
         var error = result.IsNotAllowed
-            ? UserErrors.EmailNotConfirmed
+            ? StudentErrors.EmailNotConfirmed
             : result.IsLockedOut
-            ? UserErrors.LockedUser
-            : UserErrors.InvalidCredentials;
+            ? StudentErrors.LockedUser
+            : StudentErrors.InvalidCredentials;
 
         return Result.Failure<AuthResponse>(error);
     }

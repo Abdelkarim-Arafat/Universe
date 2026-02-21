@@ -16,6 +16,10 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
         builder.OwnsMany(u => u.passwordResetOtps).ToTable("PasswordResetOtps")
             .WithOwner().HasForeignKey("UserId");
 
+        builder.HasOne(u => u.Student)
+            .WithOne(s => s.ApplicationUser)
+            .HasForeignKey<Student>(s => s.UserId);
+
         builder.HasIndex(u => u.Name)
             .IsUnique();
 
