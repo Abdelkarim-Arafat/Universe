@@ -12,7 +12,7 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
     public async Task<List<Grade>> GetCollegeGradesAsync(Guid CollegeId, CancellationToken cancellationToken = default)
     {
         var grades = await _context.Grades
-            .Where(grade => grade.CollegeId == CollegeId && !grade.IsDeleted)
+            .Where(grade => grade.AcademicProgramId == CollegeId && !grade.IsDeleted)
             .OrderBy(grade => grade.MinScore)
             .ToListAsync(cancellationToken);
         return grades;

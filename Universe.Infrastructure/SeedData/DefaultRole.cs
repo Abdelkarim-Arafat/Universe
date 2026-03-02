@@ -12,9 +12,9 @@ public static class DefaultRoles
         public static readonly Guid Id = Guid.Parse("0191a4b6-c4fc-752e-9d95-40b5e4e68054");
         public const string ConcurrencyStamp = "0191a4b6-c4fc-752e-9d95-40b631d1866d";
     }
-    public partial class AcadimicAdvising
+    public partial class AcademicAdvising
     {
-        public const string Name = nameof(AcadimicAdvising);
+        public const string Name = nameof(AcademicAdvising);
         public static readonly Guid Id = Guid.Parse("019c1e6e-5518-7479-b749-b1c5d4a21430");
         public const string ConcurrencyStamp = "019c1e6e-8a41-7129-a8f1-28dc8a042458";
     }

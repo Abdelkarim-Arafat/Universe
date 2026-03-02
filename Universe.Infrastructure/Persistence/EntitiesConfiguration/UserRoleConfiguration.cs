@@ -21,8 +21,8 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<G
             },
             new IdentityUserRole<Guid>
             {
-                UserId = DefaultUsers.AcadimicAdvisingId,
-                RoleId = DefaultRoles.AcadimicAdvising.Id
+                UserId = DefaultUsers.AcademicAdvisingId,
+                RoleId = DefaultRoles.AcademicAdvising.Id
             });
     }
 }

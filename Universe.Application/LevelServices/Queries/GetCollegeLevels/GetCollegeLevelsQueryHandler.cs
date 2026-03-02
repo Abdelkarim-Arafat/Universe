@@ -15,7 +15,7 @@ public class GetCollegeLevelsQueryHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         var query = _unitOfWork.Repository<Level>().GetQueryable();
 
-        query = query.Where(l => l.CollegeId == request.CollegeId);
+        query = query.Where(l => l.AcademicProgramd == request.CollegeId);
         var filter = request.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))

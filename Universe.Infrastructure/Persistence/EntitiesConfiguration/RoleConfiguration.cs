@@ -23,10 +23,10 @@ public class RoleConfiguration : IEntityTypeConfiguration<ApplicationRole>
             },
             new ApplicationRole
             {
-                Id = DefaultRoles.AcadimicAdvising.Id,
-                Name = DefaultRoles.AcadimicAdvising.Name,
-                NormalizedName = DefaultRoles.AcadimicAdvising.Name.ToUpper(),
-                ConcurrencyStamp = DefaultRoles.AcadimicAdvising.ConcurrencyStamp,
+                Id = DefaultRoles.AcademicAdvising.Id,
+                Name = DefaultRoles.AcademicAdvising.Name,
+                NormalizedName = DefaultRoles.AcademicAdvising.Name.ToUpper(),
+                ConcurrencyStamp = DefaultRoles.AcademicAdvising.ConcurrencyStamp,
             },
             new ApplicationRole
             {

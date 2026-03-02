@@ -16,16 +16,18 @@ public class ApplicationDbContext(
 {
     public DbSet<Student> Students { get; set; }
     public DbSet<College> Colleges { get; set; }
-    public DbSet<Department> Departments { get; set; }
+    public DbSet<AcademicProgram> AcademicPrograms { get; set; }
     public DbSet<Course> Courses { get; set; }
-    public DbSet<CourseDepartment> CourseDepartments { get; set; }
     public DbSet<CoursePrerequisite> CoursePrerequisites { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
-
+    public DbSet<Semester> Semesters { get; set; }
+    public DbSet<AcademicYear> AcademicYears { get; set; }
+    public DbSet<StudentAcademicProgram> StudentAcademicPrograms { get; set; }
     public DbSet<Grade> Grades { get; set; }
     public DbSet<Building> Buildings { get; set; }
     public DbSet<Level> Levels { get; set; }
+    public DbSet<StudyLoadRule> StudyLoadRules { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<RoomType> RoomTypes { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

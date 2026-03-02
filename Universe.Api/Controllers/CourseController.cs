@@ -17,7 +17,7 @@ namespace Universe.Api.Controllers;
 
 
 [Route("college/{collegeId:guid}/course")]
-[ApiController , Authorize(Roles = "Admin , AcadimicAdvising")]
+[ApiController , Authorize(Roles = "Admin , AcademicAdvising")]
 public class CourseController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -30,7 +30,6 @@ public class CourseController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
-
     [HttpGet("")]
     public async Task<IActionResult> GetAll([FromRoute] Guid collegeId, [FromQuery] FilterRequest filter , CancellationToken cancellationToken)
     {

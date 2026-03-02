@@ -13,7 +13,7 @@ public class GetCollegeGradesQueryHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         var query = _unitOfWork.Repository<Grade>().GetQueryable();
 
-        query = query.Where(x => x.CollegeId == request.CollegeId);
+        query = query.Where(x => x.AcademicProgramId == request.CollegeId);
         var filter = request.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))

@@ -11,13 +11,15 @@ public interface IUnitOfWork: IAsyncDisposable
 {
     IGenericRepository<T> Repository<T>() where T : BaseEntity;
     IRoleRepository RoleRepository { get; }
-    IDepartmentRepository DepartmentRepository { get; }
+    IAcademicProgramRepository AcademicProgramRepository { get; }
+    IAcademicYearRepository AcademicYearRepository { get; }
     ICourseRepository CourseRepository { get; }
     IBuildingRepository BuildingRepository { get; }
     IRoomRepository RoomRepository { get; }
     IRoomTypeRepository RoomTypeRepository { get; }
     ILevelRepository LevelRepository { get; }
     IGradeRepository GradeRepository { get; }
+    public IStudyLoadRuleRepository StudyLoadRuleRepository { get; }
     IUserRepository UserRepository { get; }
     ICollegeRepository CollegeRepository { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);

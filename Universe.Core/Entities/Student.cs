@@ -33,9 +33,7 @@ public class Student : BaseEntity
     public PreviousQualification PreviousQualification { get; set; } = null!; // بيانات المؤهل السابق
     public MilitaryInfo MilitaryInfo { get; set; } = null!; // بيانات التجنيد
 
-    public Guid? DepartmentId { get; set; }
-    public Department Department { get; set; } = null!;
-
+    public ICollection<StudentAcademicProgram> studentAcademicPrograms { get; set; } = [];
     public Guid CollegeId { get; set; }
     public College College { get; set; } = null!;
 }

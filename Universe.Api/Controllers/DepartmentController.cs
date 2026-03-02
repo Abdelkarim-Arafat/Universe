@@ -3,24 +3,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
-using Universe.Application.DepartmentServices.Commands.AddDepartment;
-using Universe.Application.DepartmentServices.Commands.RemoveDepartment;
-using Universe.Application.DepartmentServices.Commands.UpdateDepartment;
-using Universe.Application.DepartmentServices.Query.GetDepartment;
-using Universe.Application.DepartmentServices.Query.GetDepartments;
+using Universe.Application.AcademicProgramServices.Commands.AddAcademicProgram;
+using Universe.Application.AcademicProgramServices.Commands.RemoveAcademicProgram;
+using Universe.Application.AcademicProgramServices.Commands.UpdateAcademicProgram;
+using Universe.Application.AcademicProgramServices.Query.GetAcademicProgram;
+using Universe.Application.AcademicProgramServices.Query.GetAcademicPrograms;
 
 namespace Universe.Api.Controllers;
 
-[Route("college/{collegeId:guid}/department")]
-[ApiController, Authorize(Roles = "Admin , AcadimicAdvising")]
-public class DepartmentController(IMediator mediator) : ControllerBase
+[Route("college/{collegeId:guid}/AcademicProgram")]
+[ApiController, Authorize(Roles = "Admin , AcademicAdvising")]
+public class AcademicProgramController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get([FromRoute] Guid id , CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetDepartmentCommand(id) , cancellationToken);
+        var result = await _mediator.Send(new GetAcademicProgramCommand(id) , cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
@@ -29,14 +29,14 @@ public class DepartmentController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     public async Task<IActionResult> GetAll([FromRoute] Guid collegeId , [FromQuery] FilterRequest filter , CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetDepartmentsCommand(collegeId , filter), cancellationToken);
+        var result = await _mediator.Send(new GetAcademicProgramsCommand(collegeId , filter), cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> Add([FromRoute] Guid collegeId , [FromBody] AddDepartmentCommand request , CancellationToken cancellationToken)
+    public async Task<IActionResult> Add([FromRoute] Guid collegeId , [FromBody] AddAcademicProgramCommand request , CancellationToken cancellationToken)
     {
         request = request with { CollegeId = collegeId };
 
@@ -46,7 +46,7 @@ public class DepartmentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update([FromRoute] Guid collegeId , [FromRoute] Guid id, UpdateDepartmentCommand request , CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromRoute] Guid collegeId , [FromRoute] Guid id, UpdateAcademicProgramCommand request , CancellationToken cancellationToken)
     {
         request = request with { CollegeId = collegeId , Id = id };
 
@@ -58,7 +58,7 @@ public class DepartmentController(IMediator mediator) : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id , CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new RemoveDepartmentCommand(id), cancellationToken);
+        var result = await _mediator.Send(new RemoveAcademicProgramCommand(id), cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
     }

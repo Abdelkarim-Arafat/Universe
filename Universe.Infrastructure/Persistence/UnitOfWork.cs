@@ -20,8 +20,8 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public IUserRepository UserRepository
         => field ??= new UserRepository(_context);
 
-    public IDepartmentRepository DepartmentRepository
-        => field ??= new DepartmentRepository(_context);
+    public IAcademicProgramRepository AcademicProgramRepository
+        => field ??= new AcademicProgramRepository(_context);
 
     public ICourseRepository CourseRepository
         => field ??= new CourseRepository(_context);
@@ -37,6 +37,12 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 
     public ILevelRepository LevelRepository
         => field ??= new LevelRepository(_context);
+
+    public IStudyLoadRuleRepository StudyLoadRuleRepository
+        => field ??= new StudyLoadRuleRepository(_context);
+
+    public IAcademicYearRepository AcademicYearRepository
+        => field ??= new AcademicYearRepository(_context);
 
     public IGradeRepository GradeRepository
         => field ??= new GradeRepository(_context);

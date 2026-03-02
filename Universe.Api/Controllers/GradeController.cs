@@ -27,6 +27,7 @@ public class GradeController(IMediator mediator) : ControllerBase
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
     [HttpGet("{CollegeId}-all")]
     public async Task<IActionResult> GetAll(Guid CollegeId,[FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
     {
@@ -35,6 +36,7 @@ public class GradeController(IMediator mediator) : ControllerBase
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
     [HttpPost("{CollegeId}-create")]
     public async Task<IActionResult> Create([FromBody] CreateGradeCommand command, Guid CollegeId, CancellationToken cancellationToken = default)
     {

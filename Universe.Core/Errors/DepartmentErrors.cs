@@ -6,13 +6,13 @@ using Universe.Core.Abstractions;
 
 namespace Universe.Core.Errors;
 
-public record DepartmentErrors
+public record AcademicProgramErrors
 {
-    public static readonly Error DepartmentAlreadyExists =
-    new("Department.AlreadyExists", "Department name or code already exists", StatusCodes.Status409Conflict);
+    public static readonly Error AcademicProgramAlreadyExists =
+    new("AcademicProgram.AlreadyExists", "AcademicProgram name or code already exists", StatusCodes.Status409Conflict);
 
-    public static readonly Error DepartmentNotFound = new(
-        "Department.NotFound",
-        "Department is not found",
+    public static readonly Error AcademicProgramNotFound = new(
+        "AcademicProgram.NotFound",
+        "AcademicProgram is not found",
         StatusCodes.Status404NotFound);
 }

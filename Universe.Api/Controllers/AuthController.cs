@@ -112,14 +112,14 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             HttpOnly = true,
             Expires = DateTime.UtcNow.AddSeconds(response.ExpiresIn),
-            Secure = false,
+            Secure = true,
             SameSite = SameSiteMode.None
         };
         var refreshTokenCookieOptions = new CookieOptions
         {
             HttpOnly = true,
             Expires = response.RefreshTokenExpiration,
-            Secure = false,
+            Secure = true,
             SameSite = SameSiteMode.None
         };
 

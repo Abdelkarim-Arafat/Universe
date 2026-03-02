@@ -52,16 +52,16 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
                 CollegeId = DefaultCollege.Id
             },
             new ApplicationUser{
-                Id = DefaultUsers.AcadimicAdvisingId,
-                Name = DefaultUsers.AcadimicAdvising,
-                UserName = DefaultUsers.AcadimicAdvising,
-                NormalizedUserName = DefaultUsers.AcadimicAdvising.ToUpper(),
-                Email = DefaultUsers.AcadimicAdvisingEmail,
-                NormalizedEmail = DefaultUsers.AcadimicAdvisingEmail.ToUpper(),
-                SecurityStamp = DefaultUsers.AcadimicAdvisingSecurityStamp,
-                ConcurrencyStamp = DefaultUsers.AcadimicAdvisingConcurrencyStamp,
+                Id = DefaultUsers.AcademicAdvisingId,
+                Name = DefaultUsers.AcademicAdvising,
+                UserName = DefaultUsers.AcademicAdvising,
+                NormalizedUserName = DefaultUsers.AcademicAdvising.ToUpper(),
+                Email = DefaultUsers.AcademicAdvisingEmail,
+                NormalizedEmail = DefaultUsers.AcademicAdvisingEmail.ToUpper(),
+                SecurityStamp = DefaultUsers.AcademicAdvisingSecurityStamp,
+                ConcurrencyStamp = DefaultUsers.AcademicAdvisingConcurrencyStamp,
                 EmailConfirmed = true,
-                PasswordHash = DefaultUsers.AcadimicAdvisingPassword,
+                PasswordHash = DefaultUsers.AcademicAdvisingPassword,
                 CollegeId = DefaultCollege.Id
             }]);
     }
