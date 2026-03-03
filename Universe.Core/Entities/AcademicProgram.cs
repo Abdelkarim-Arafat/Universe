@@ -15,6 +15,7 @@ public class AcademicProgram : BaseEntity
     public int RequiredCreditHours { get; set; }
     public Guid CollegeId { get; set; }
     public College College { get; set; } = default!;
+    public ICollection<CourseOffering> CourseOfferings { get; set; } = [];
     public ICollection<ApplicationUser> Users { get; set; } = [];
     public ICollection<Grade> Grades { get; set; } = [];
     public ICollection<Level> Levels { get; set; } = [];
