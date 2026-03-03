@@ -9,16 +9,15 @@ public class UpdateGradeCommandHandler
 
     public async Task<Result<GradeResponse>> Handle(UpdateGradeCommand command, CancellationToken cancellationToken = default)
     {
-
-        var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
-            .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, command.Id, cancellationToken);
-        if (isGradeWithOverLabExist)
-            return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
-
-
         var grade = await _unitOfWork.GradeRepository.GetByIdAsync(command.Id);
         if (grade is null)
             return Result.Failure<GradeResponse>(GradeErrors.NotFound);
+
+
+        var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
+            .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, grade.Id, grade.AcademicProgramId, cancellationToken);
+        if (isGradeWithOverLabExist)
+            return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
 
         grade.Name = command.Name;
         grade.Code = command.Code;

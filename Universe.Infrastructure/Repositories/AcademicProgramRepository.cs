@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -12,7 +9,6 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
 {
     private readonly ApplicationDbContext _context = context;
 
-
     public async Task<AcademicProgram?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => await _context.AcademicPrograms
                 .SingleOrDefaultAsync(d => d.Id == id && !d.IsDeleted, cancellationToken);
@@ -21,10 +17,14 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
         => await _context.AcademicPrograms
                 .AsNoTracking()
                 .Where(d => d.CollegeId == CollegeId && !d.IsDeleted).ToListAsync(cancellationToken);
-    public async Task<bool> IsExistAsync(Guid collegeId, string name, string code, Guid? excludeId, CancellationToken cancellationToken)
+    public async Task<bool> IsExistAsync(Guid AcademicProgramId, string Name, string Code, Guid? excludeId, CancellationToken cancellationToken)
     => await _context.AcademicPrograms
-        .AnyAsync(d => d.CollegeId == collegeId &&
+        .AnyAsync(d => d.Id == AcademicProgramId &&
                        !d.IsDeleted &&
-                       (d.Name == name || d.Code == code) &&
-                       (excludeId == null || d.Id != excludeId) , cancellationToken);
+                       (excludeId == null || d.Id != excludeId)
+        && (d.Name == Name || d.Code == Code), cancellationToken);
+    public async Task<bool> IsExistAsync(Guid AcademicProgramId, CancellationToken cancellationToken)
+    => await _context.AcademicPrograms
+        .AnyAsync(d => d.Id == AcademicProgramId &&
+                       !d.IsDeleted, cancellationToken);
 }

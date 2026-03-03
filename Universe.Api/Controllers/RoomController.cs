@@ -11,7 +11,7 @@ using Universe.Application.RoomServices.Queries.GetRoom;
 
 namespace Universe.Api.Controllers;
 
-[Route("[controller]")]
+[Route("buildings/{buildingId:guid}/rooms")]
 [ApiController]
 [Authorize]
 public class RoomController(IMediator mediator) : ControllerBase
@@ -19,7 +19,7 @@ public class RoomController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
   
-    [HttpPost("{buildingId}")]
+    [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateRoomCommand command, Guid buildingId, CancellationToken cancellationToken)
     {
         command = command with { BuildingId = buildingId };
@@ -57,5 +57,4 @@ public class RoomController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-
 }

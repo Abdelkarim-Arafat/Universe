@@ -21,7 +21,7 @@ public class AcademicProgramConfiguration : IEntityTypeConfiguration<AcademicPro
 
         builder.HasMany(p => p.Levels)
             .WithOne(p => p.AcademicProgram)
-            .HasForeignKey(p => p.AcademicProgramd);
+            .HasForeignKey(p => p.AcademicProgramId);
 
         builder.HasMany(p => p.Grades)
             .WithOne(p => p.AcademicProgram)

@@ -5,7 +5,7 @@ namespace Universe.Application.LevelServices.Commands.CreateLevel;
 
 public record CreateLevelCommand
 (
-   [Required] Guid CollegeId,
+   [Required] Guid AcademicProgramId,
     string Name,
     int MinHours,
     int MaxHours

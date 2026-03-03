@@ -14,11 +14,9 @@ public class UpdateLevelCommandHandler
             return Result.Failure<LevelResponse>(LevelErrors.NotFound);
 
         var isLevelWithOverLabExist = await _unitOfWork.LevelRepository
-            .CheckOverLabedHoursAsync(command.MinHours, command.MaxHours, command.Id, cancellationToken);
+            .CheckOverLabedHoursAsync(command.MinHours, command.MaxHours, level.Id, level.AcademicProgramId, cancellationToken);
         if (isLevelWithOverLabExist)
             return Result.Failure<LevelResponse>(LevelErrors.InvalidHours);
-
-
 
         level.Name = command.Name;
         level.MinHours = command.MinHours;

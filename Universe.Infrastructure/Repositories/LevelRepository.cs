@@ -10,20 +10,23 @@ public class LevelRepository(ApplicationDbContext context) : ILevelRepository
 {
     private readonly ApplicationDbContext context = context;
 
-    public async Task<bool> CheckOverLabedHoursAsync(int MinHours, int MaxHours, CancellationToken cancellationToken)
+    public async Task<bool> CheckOverLabedHoursAsync(int MinHours, int MaxHours, Guid AcademicProgramId, CancellationToken cancellationToken)
     {
         var isExist = await context.Levels
             .AnyAsync(lv => (!(lv.MinHours > MaxHours || lv.MaxHours < MinHours))
-            && !lv.IsDeleted, cancellationToken);
+            && !lv.IsDeleted
+            && lv.AcademicProgramId == AcademicProgramId, cancellationToken);
+
         return isExist;
     }
 
-    public async Task<bool> CheckOverLabedHoursAsync(int MinHours, int MaxHours, Guid Id, CancellationToken cancellationToken = default)
+    public async Task<bool> CheckOverLabedHoursAsync(int MinHours, int MaxHours, Guid Id, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         var isExist = await context.Levels
              .AnyAsync(lv => (!(lv.MinHours > MaxHours || lv.MaxHours < MinHours))
              && lv.Id != Id
-             && !lv.IsDeleted, cancellationToken);
+             && !lv.IsDeleted
+             && lv.AcademicProgramId == AcademicProgramId, cancellationToken);
         return isExist;
     }
     public async Task<Level?> GetByIdAsync(Guid id, CancellationToken cancellationToken)

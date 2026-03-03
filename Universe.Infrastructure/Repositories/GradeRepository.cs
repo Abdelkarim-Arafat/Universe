@@ -22,18 +22,20 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
     {
         return await _context.Grades.FirstOrDefaultAsync(grade => grade.Id == id && !grade.IsDeleted, cancellationToken);
     }
-    public async Task<bool> CheckOverLabedScoresAsync(int MinScore, int MaxScore, CancellationToken cancellationToken = default)
+    public async Task<bool> CheckOverLabedScoresAsync(int MinScore, int MaxScore, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         return await _context.Grades
             .AnyAsync(g => (!(g.MinScore > MaxScore || g.MaxScore < MinScore))
-            && !g.IsDeleted, cancellationToken);
+            && !g.IsDeleted
+            && g.AcademicProgramId == AcademicProgramId, cancellationToken);
     }
 
-    public async Task<bool> CheckOverLabedScoresAsync(int MinScore, int MaxScore, Guid Id, CancellationToken cancellationToken = default)
+    public async Task<bool> CheckOverLabedScoresAsync(int MinScore, int MaxScore, Guid Id, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         return await _context.Grades
            .AnyAsync(g => (!(g.MinScore > MaxScore || g.MaxScore < MinScore))
            && !g.IsDeleted
-           && g.Id != Id, cancellationToken);
+           && g.Id != Id
+           && g.AcademicProgramId == AcademicProgramId, cancellationToken);
     }
 }

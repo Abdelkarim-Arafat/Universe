@@ -4,7 +4,7 @@ namespace Universe.Application.GradeServices.Commands.CreateGrade;
 
 public record CreateGradeCommand
 (
-    Guid CollegeId,
+    Guid AcademicProgramId,
     string Name,
     string Code,
     int MinScore,

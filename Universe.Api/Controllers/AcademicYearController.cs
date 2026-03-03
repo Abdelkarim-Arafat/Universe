@@ -53,7 +53,7 @@ public class AcademicYearController(IMediator mediator) : ControllerBase
     //    return result.IsSuccess ? Ok() : result.ToProblem();
     //}
 
-    [HttpPost("")]
+    [HttpPost]
     public async Task<IActionResult> Add([FromRoute] Guid collegeId, [FromBody] StartAcademicYearCommand request, CancellationToken cancellationToken)
     {
         request = request with { CollegeId = collegeId };

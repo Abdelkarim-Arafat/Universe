@@ -9,6 +9,6 @@ public class Level : BaseEntity
     public string Name { get; set; } = string.Empty;
     public int MinHours { get; set; }
     public int MaxHours { get; set; }
-    public Guid AcademicProgramd { get; set; }
+    public Guid AcademicProgramId { get; set; }
     public AcademicProgram AcademicProgram { get; set; } = default!;
 }

@@ -1,7 +1,6 @@
-﻿using Universe.Application.CourseServices.Dtos;
-using Universe.Application.LevelServices.LevelDtos;
+﻿using Universe.Application.LevelServices.LevelDtos;
  
-namespace Universe.Application.LevelServices.Queries.GetCollegeLevels;
+namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 
 public class GetCollegeLevelsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetCollegeLevelsQuery, Result<PaginationList<LevelResponse>>>
 {
@@ -9,13 +8,13 @@ public class GetCollegeLevelsQueryHandler(IUnitOfWork unitOfWork) : IRequestHand
 
     public async Task<Result<PaginationList<LevelResponse>>> Handle(GetCollegeLevelsQuery request, CancellationToken cancellationToken)
     {
-        var isCollegeExist = await _unitOfWork.CollegeRepository.CheckCollegeIsExistAsync(request.CollegeId, cancellationToken);
-        if (!isCollegeExist)
-            return Result.Failure<PaginationList<LevelResponse>>(CollegeErrors.NotFound);
+        var isProgramExist = await _unitOfWork.AcademicProgramRepository.IsExistAsync(request.AcademicProgramId, cancellationToken);
+        if (!isProgramExist)
+            return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.AcademicProgramNotFound);
 
         var query = _unitOfWork.Repository<Level>().GetQueryable();
 
-        query = query.Where(l => l.AcademicProgramd == request.CollegeId);
+        query = query.Where(l => l.AcademicProgramId == request.AcademicProgramId);
         var filter = request.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
