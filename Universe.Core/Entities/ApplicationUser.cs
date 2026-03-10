@@ -10,6 +10,8 @@ public sealed class ApplicationUser : IdentityUser<Guid> , ISoftDeleteable
 {
     public ApplicationUser() { Id = Guid.CreateVersion7(); }
     public string Name { get; set; } = string.Empty;
+
+    public override string? Email { get => base.Email; set => base.Email = value; }
     public string? ImageUrl { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
@@ -27,4 +29,6 @@ public sealed class ApplicationUser : IdentityUser<Guid> , ISoftDeleteable
 
     public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
     public ICollection<PasswordResetOtp> passwordResetOtps { get; set; } = [];
+    public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } = [];
+    public ICollection<TeachingSession> TeachingSessions { get; set; } = [];
 }

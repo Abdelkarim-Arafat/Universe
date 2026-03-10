@@ -18,10 +18,9 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 
         builder.HasOne(u => u.Student)
             .WithOne(s => s.ApplicationUser)
-            .HasForeignKey<Student>(s => s.UserId);
+            .HasForeignKey<Student>(s => s.Id);
 
-        builder.HasIndex(u => u.Name)
-            .IsUnique();
+        builder.HasIndex(u => u.Name);
 
         builder.HasIndex(u => u.UserName)
             .IsUnique();

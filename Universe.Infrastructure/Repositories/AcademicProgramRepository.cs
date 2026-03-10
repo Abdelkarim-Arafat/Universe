@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -27,4 +28,10 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
     => await _context.AcademicPrograms
         .AnyAsync(d => d.Id == AcademicProgramId &&
                        !d.IsDeleted, cancellationToken);
+
+
+    public async Task<ProgramSchedule?> GetScheduleAsync(Guid ProgramId , Guid SemesterId , CancellationToken cancellationToken)
+        => await _context.ProgramSchedules
+        .Where(x => x.ProgramId == ProgramId && x.SemesterId == SemesterId)
+        .SingleOrDefaultAsync(cancellationToken);
 }

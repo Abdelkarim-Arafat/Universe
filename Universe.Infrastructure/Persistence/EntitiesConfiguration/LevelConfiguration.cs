@@ -20,5 +20,10 @@ public class LevelConfiguration : IEntityTypeConfiguration<Level>
         builder.Property(lv => lv.MaxHours)
              .IsRequired();
 
+        builder.HasMany(lv => lv.StudyLoadByLevels)
+            .WithOne(s => s.Level)
+            .HasForeignKey(s => s.LevelId);
+
+
     }
 }

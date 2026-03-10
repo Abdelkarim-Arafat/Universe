@@ -22,7 +22,6 @@ public class UpdateContactDataCommandValidator : AbstractValidator<UpdateContact
             .MaximumLength(300).WithMessage("Address cannot exceed 300 characters.");
 
         RuleFor(x => x.PostalCode)
-            .NotEmpty().WithMessage("Postal code is required.")
             .MaximumLength(20).WithMessage("Postal code cannot exceed 20 characters.");
     }
 }

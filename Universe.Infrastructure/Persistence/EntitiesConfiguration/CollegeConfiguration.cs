@@ -43,7 +43,8 @@ public class CollegeConfiguration : IEntityTypeConfiguration<College>
             new College
             {
                 Id = DefaultCollege.Id,
-                Name = DefaultCollege.Name
+                Name = DefaultCollege.Name,
+                CreatedAt = default
             }
         );
     }

@@ -12,16 +12,16 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
 {
     public void Configure(EntityTypeBuilder<Student> builder)
     {
-        builder.Property(s => s.ArabicName)
+        builder.HasKey(s => s.Id);
+
+        builder.Property(s => s.Id).ValueGeneratedNever();
+
+        builder.Property(s => s.Name)
             .IsRequired()
             .HasMaxLength(100);
 
         builder.Property(s => s.ImageUrl)
             .HasMaxLength(500);
-
-        builder.Property(s => s.EnglishName)
-            .IsRequired()
-            .HasMaxLength(100);
 
         builder.Property(s => s.StudentCode)
             .IsRequired()
@@ -61,7 +61,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
             contact.Property(c => c.PostalCode)
                 .HasMaxLength(20);
 
-            contact.Property(c => c.Mobile)
+            contact.Property(c => c.PhoneNumber)
                 .HasMaxLength(20)
                 .IsRequired();
 
@@ -81,19 +81,19 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
                 .HasMaxLength(150)
                 .IsRequired();
 
-            parent.Property(p => p.City)
+            parent.Property(p => p.GuardianCity)
                 .HasMaxLength(100)
                 .IsRequired();
 
-            parent.Property(p => p.Address)
+            parent.Property(p => p.GuardianAddress)
                 .HasMaxLength(300)
                 .IsRequired();
 
-            parent.Property(p => p.Phone)
+            parent.Property(p => p.GuardianPhoneNumber)
                 .HasMaxLength(20)
                 .IsRequired();
 
-            parent.Property(p => p.Email)
+            parent.Property(p => p.GuardianEmail)
                 .HasMaxLength(150);
 
             parent.Property(p => p.RelationshipDegree)

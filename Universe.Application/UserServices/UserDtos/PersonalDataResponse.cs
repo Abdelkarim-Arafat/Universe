@@ -9,9 +9,9 @@ public record PersonalDataResponse(
     string Name,
     string StudentCode,
     string NationalIdOrPassport,
-    Religion Religion,
-    Gender Gender,
+    Religion? Religion,
+    Gender? Gender,
     DateOnly? DateOfBirth,
-    DateOnly? PlaceOfBirth,
-    DateOnly? Nationality
+    string PlaceOfBirth,
+    string Nationality
 );

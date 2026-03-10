@@ -12,7 +12,7 @@ public record AuthErrors
         new("User.InvalidCredentials", "Invalid email/password", StatusCodes.Status401Unauthorized);
 
     public static readonly Error DuplicateUserName =
-        new("User.DuplicateUserName", "This userName already exist", StatusCodes.Status409Conflict);
+        new("User.DuplicateUserName", "Name or UserName Already Exist", StatusCodes.Status409Conflict);
 
     public static readonly Error InvalidOrExpiredCode =
         new("User.InvalidOrExpiredCode", "Invalid or expired code", StatusCodes.Status400BadRequest);

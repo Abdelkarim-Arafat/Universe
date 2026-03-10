@@ -19,5 +19,9 @@ internal class SemesterConfiguration : IEntityTypeConfiguration<Semester>
         builder.HasOne(x => x.AcademicYear)
             .WithMany(x => x.Semesters)
             .HasForeignKey(x => x.AcademicYearId);
+
+        builder.HasMany(x => x.StudyLoadByLevels)
+            .WithOne(x => x.Sememester)
+            .HasForeignKey(x => x.SemesterId);
     }
 }

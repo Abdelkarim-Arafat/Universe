@@ -3,14 +3,14 @@ using Universe.Application.UserServices.UserDtos;
 
 namespace Universe.Application.UserServices.Commands.UpdateFamilyData;
 
-public record UpdateFamilyDataCommand(
-    [Required] Guid UserId,
+public record UpdateParentDataCommand(
+    [Required] Guid StudentId,
     string GuardianName,
     string RelationshipDegree,
     string Job,
     string MotherName,
-    string City,
-    string Email,
-    string PhoneNumber,
-    string Address
-) : IRequest<Result<FamilyDataResponse>>;
+    string GuardianCity,
+    string GuardianEmail,
+    string GuardianPhoneNumber,
+    string GuardianAddress
+) : IRequest<Result<ParentDataResponse>>;

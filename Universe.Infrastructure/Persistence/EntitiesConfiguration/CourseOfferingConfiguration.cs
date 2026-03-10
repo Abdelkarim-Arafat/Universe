@@ -12,6 +12,10 @@ public class CourseOfferingConfiguration : IEntityTypeConfiguration<CourseOfferi
 {
     public void Configure(EntityTypeBuilder<CourseOffering> builder)
     {
+        builder.Property(co => co.OtionalGroupCode)
+            .HasMaxLength(50);
+
+
         builder.Property(co => co.CreditHours)
             .HasColumnType("decimal(5,2)");
 

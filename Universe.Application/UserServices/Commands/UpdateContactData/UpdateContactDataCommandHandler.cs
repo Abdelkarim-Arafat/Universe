@@ -15,7 +15,7 @@ internal class UpdateContactDataCommandHandler(
     public async Task<Result<ContactDataResponse>> Handle(UpdateContactDataCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.UserRepository
-            .GetStudentByIdAsync(request.UserId, cancellationToken) is not { } student)
+            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
             return Result.Failure<ContactDataResponse>(StudentErrors.UserNotFound);
 
         student.Adapt(request);

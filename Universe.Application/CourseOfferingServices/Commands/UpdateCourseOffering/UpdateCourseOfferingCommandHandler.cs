@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Universe.Application.CourseOfferingServices.Dtos;
+
+namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
+
+internal class UpdateCourseOfferingCommandHandler(
+    IUnitOfWork unitOfWork
+) : IRequestHandler<UpdateCourseOfferingCommand, Result<CourseOfferingResponse>>
+{
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public async Task<Result<CourseOfferingResponse>> Handle(UpdateCourseOfferingCommand request, CancellationToken cancellationToken)
+    {
+        if ((await _unitOfWork.CourseOfferingRepository
+            .GetByIdAsync(request.Id, cancellationToken)) is not { } course)
+            return Result.Failure<CourseOfferingResponse>(CourseOfferingErrors.NotFound);
+
+        if (!(await _unitOfWork.AcademicProgramRepository
+            .IsExistAsync(request.AcademicProgramId, cancellationToken)))
+            return Result.Failure<CourseOfferingResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+
+        course.Adapt(request);
+
+        var requestTypes = request.Assessments.Select(x => x.Type);
+
+        var currentAssessments = await _unitOfWork.CourseOfferingRepository
+            .GetCourseOfferingAssessments(course.CourseId , cancellationToken);
+
+        foreach (var assessment in currentAssessments)
+        {
+            if (requestTypes.Contains(assessment.Type))
+            {
+                var req = request.Assessments.First(r => r.Type == assessment.Type);
+                assessment.MaxScore = req.MaxScore;
+                _unitOfWork.Repository<CourseOfferingAssessment>().Update(assessment);
+            }
+            else _unitOfWork.Repository<CourseOfferingAssessment>().SoftDelete(assessment);
+        }
+
+        var existingTypes = currentAssessments.Select(a => a.Type);
+
+        var newAssessments = request.Assessments
+            .Where(r => !existingTypes.Contains(r.Type))
+            .Select(r => new CourseOfferingAssessment
+            {
+                Type = r.Type,
+                MaxScore = r.MaxScore,
+            });
+
+        await _unitOfWork.Repository<CourseOfferingAssessment>()
+            .AddRangeAsync(newAssessments, cancellationToken);
+
+        await _unitOfWork.CompleteAsync(cancellationToken);
+
+        var response = await _unitOfWork.Repository<CourseOffering>()
+            .GetQueryable()
+            .Include(c => c.Assessments)
+            .Where(x => x.Id == course.Id)
+            .ProjectToType<CourseOfferingResponse>()
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return Result.Success(response!);
+    }
+}

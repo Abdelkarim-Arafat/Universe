@@ -15,4 +15,16 @@ public record AcademicProgramErrors
         "AcademicProgram.NotFound",
         "AcademicProgram is not found",
         StatusCodes.Status404NotFound);
+
+    public static readonly Error ScheduleAlreadyExist = new Error(
+        "AcademicProgramErrors.ScheduleAlreadyExist",
+        "This Program Already having Scheudle",
+        StatusCodes.Status400BadRequest
+    );
+
+    public static readonly Error ScheduleNotFound = new Error(
+        "AcademicProgramErrors.ScheduleNotFound",
+        "The Shcedule of program is not found",
+        StatusCodes.Status404NotFound
+    );
 }

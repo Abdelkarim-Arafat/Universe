@@ -1,21 +1,20 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using Universe.Core.Entities.Core;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Entities;
 
-public class CourseOffering
+public class CourseOffering : BaseEntity
 {
     public Guid Id { get; set; }
     public CourseOffering(){ Id = Guid.CreateVersion7(); }
-
     public decimal CreditHours { get; set; }
     public decimal TotalGrade { get; set; }
     public decimal SuccessPercentage { get; set; }
     public bool IsOptional { get; set; }
     public bool IsIncludedInGpa { get; set; } = true;
+    public string OtionalGroupCode { get; set; } = string.Empty;
+    public int NumberOfGroups { get; set; } = 1;
     public RequirementType Type { get; set; }
 
     public Guid CourseId { get; set; }
@@ -31,4 +30,5 @@ public class CourseOffering
     public Level Level { get; set; } = default!;
 
     public ICollection<CourseOfferingAssessment> Assessments { get; set; } = [];
+    public ICollection<CourseOfferingSession> CourseOfferingSessions { get; set; } = [];
 }

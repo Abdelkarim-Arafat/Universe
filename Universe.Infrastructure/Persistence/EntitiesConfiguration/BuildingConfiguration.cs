@@ -13,6 +13,5 @@ public class BuildingConfiguration : IEntityTypeConfiguration<Building>
         builder.Property(b => b.Name)
             .IsRequired()
             .HasMaxLength(100);
-         
     }
 }

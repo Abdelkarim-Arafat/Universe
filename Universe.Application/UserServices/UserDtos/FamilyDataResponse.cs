@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Universe.Application.UserServices.UserDtos;
 
-public record FamilyDataResponse(
+public record ParentDataResponse(
     string GuardianName,
     string RelationshipDegree,
     string Job,
     string MotherName,
-    string City,
-    string Email,
-    string PhoneNumber,
-    string Address
+    string GuardianCity,
+    string GuardianEmail,
+    string GuardianPhoneNumber,
+    string GuardianAddress
 );

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Data.Common;
 
 namespace Universe.Infrastructure.Persistence;
 // dotnet ef migrations add InitialCreate --project Universe.Infrastructure --startup-project Universe.Api
@@ -24,10 +25,16 @@ public class ApplicationDbContext(
     public DbSet<Semester> Semesters { get; set; }
     public DbSet<AcademicYear> AcademicYears { get; set; }
     public DbSet<StudentAcademicProgram> StudentAcademicPrograms { get; set; }
+    public DbSet<CourseOffering> CourseOfferings { get; set; }
+    public DbSet<CourseOfferingAssessment> CourseOfferingAssessments { get; set; }
+    public DbSet<StudyLoadByLevel> StudyLoadByLevels { get; set; }
     public DbSet<Grade> Grades { get; set; }
+    public DbSet<ProgramSchedule> ProgramSchedules { get; set; }
     public DbSet<Building> Buildings { get; set; }
     public DbSet<Level> Levels { get; set; }
     public DbSet<StudyLoadRule> StudyLoadRules { get; set; }
+    public DbSet<TeachingSession> TeachingSessions { get; set; }
+    public DbSet<CourseOfferingSession> CourseOfferingSessions { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<RoomType> RoomTypes { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

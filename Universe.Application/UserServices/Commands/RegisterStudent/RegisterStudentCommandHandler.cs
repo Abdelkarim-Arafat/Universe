@@ -1,8 +1,10 @@
 ﻿
 using System.Runtime.CompilerServices;
 using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Entities.StudentInfo;
+using Universe.Infrastructure.SeedData;
 
-namespace Universe.Application.AuthServices.Commands.Register;
+namespace Universe.Application.UserServices.Commands.RegisterStudent;
 
 public class RegisterStudentCommandHandler(
     UserManager<ApplicationUser> userManager,
@@ -22,23 +24,24 @@ public class RegisterStudentCommandHandler(
         if(await _unitOfWork.UserRepository.IsStudentCodeExistsAsync(request.CollegeId , null , request.StudentCode , cancellationToken))
             return Result.Failure<RegisterStudentResponse>(StudentErrors.DuplicateStudentCode);
 
-        if (await _unitOfWork.UserRepository.IsStudentNationalIdExistsAsync(request.CollegeId , null , request.NationalId, cancellationToken))
+        if (await _unitOfWork.UserRepository.IsStudentNationalIdExistsAsync(request.CollegeId , null , request.NationalIdOrPassport, cancellationToken))
             return Result.Failure<RegisterStudentResponse>(StudentErrors.DuplicateNationalIdOrPassport);
 
         var user = new ApplicationUser
         {
             UserName = request.UserName,
             Name = request.Name,
+            Email = "test@gmail.com",
             CollegeId = request.CollegeId,
-            Student = new Student
-            {
-                ArabicName = request.Name,
-                StudentCode = request.StudentCode,
-                CollegeId = request.CollegeId,
-                NationalIdOrPassport = request.NationalId
-            }
+            Student = request.Adapt<Student>()
         };
 
+        user.Student.ContactInfo = request.Adapt<ContactInfo>();
+        user.Student.MilitaryInfo = request.Adapt<MilitaryInfo>();
+        user.Student.ParentInfo = request.Adapt<ParentInfo>();
+        user.Student.PreviousQualification = request.Adapt<PreviousQualification>();
+
+        user.Student.Id = user.Id;
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
@@ -46,7 +49,8 @@ public class RegisterStudentCommandHandler(
             var error = result.Errors.First();
             return Result.Failure<RegisterStudentResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
-        
+
+        await _userManager.AddToRoleAsync(user, DefaultRoles.Student.Name);
         return Result.Success(new RegisterStudentResponse(user.Id.ToString(), user.Name, user.UserName));
     }
 }

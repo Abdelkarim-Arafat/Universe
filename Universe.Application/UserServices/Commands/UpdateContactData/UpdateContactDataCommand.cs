@@ -4,7 +4,7 @@ using Universe.Application.UserServices.UserDtos;
 namespace Universe.Application.UserServices.Commands.UpdateContactData;
 
 public record UpdateContactDataCommand(
-    Guid UserId,
+    Guid StudentId,
     string City,
     string Email,
     string PhoneNumber,

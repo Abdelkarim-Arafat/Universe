@@ -12,10 +12,10 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
 {
     protected readonly ApplicationDbContext _context = context;
     public async Task AddAsync(T entity , CancellationToken cancellationToken)
-    {
-        entity.CreatedAt = DateTime.UtcNow;
-        await _context.Set<T>().AddAsync(entity , cancellationToken);
-    }
+        => await _context.Set<T>().AddAsync(entity , cancellationToken);
+
+    public async Task AddRangeAsync(IEnumerable<T> entity , CancellationToken cancellationToken)
+        => await _context.AddRangeAsync(entity , cancellationToken);
 
     public IQueryable<T> GetQueryable()
         => _context.Set<T>().Where(x => !x.IsDeleted).AsQueryable();

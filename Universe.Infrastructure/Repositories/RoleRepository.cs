@@ -1,10 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 
 namespace Universe.Infrastructure.Repositories;
 
-public class RoleRepository(ApplicationDbContext context) : IRoleRepository
+public class RoleRepository(
+    ApplicationDbContext context
+    ) : IRoleRepository
 {
     private readonly ApplicationDbContext _context = context;
 
@@ -19,6 +23,4 @@ public class RoleRepository(ApplicationDbContext context) : IRoleRepository
                 .Select(x => x.claim.ClaimValue!)
                 .Distinct()
                 .ToListAsync(cancellationToken);
-
-
 }

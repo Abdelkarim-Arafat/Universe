@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Core.Entities.Core;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Entities;
 
-public class CourseOfferingAssessment
+public class CourseOfferingAssessment : BaseEntity
 {
     public Guid Id { get; set; }
     public CourseOfferingAssessment(){ Id = Guid.CreateVersion7(); }

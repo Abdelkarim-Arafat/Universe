@@ -1,13 +1,13 @@
-﻿
-using Universe.Application.UserServices.UserDtos;
+﻿using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Enums;
 
-namespace Universe.Application.AuthServices.Commands.Register;
+namespace Universe.Application.UserServices.Commands.RegisterStudent;
 
 public record RegisterStudentCommand(
     [Required] Guid CollegeId,
     string Name,
     string StudentCode,
-    string NationalId,
+    string NationalIdOrPassport,
     string UserName,
     string Password
 ) : IRequest<Result<RegisterStudentResponse>>;

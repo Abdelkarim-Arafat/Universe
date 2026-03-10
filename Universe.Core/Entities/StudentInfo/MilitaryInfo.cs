@@ -10,10 +10,10 @@ namespace Universe.Core.Entities.StudentInfo;
 [Owned]
 public class MilitaryInfo
 {
-    public MilitaryStatus MilitaryStatus { get; set; } = MilitaryStatus.None;// الموقف من التجنيد
+    public MilitaryStatus? MilitaryStatus { get; set; } // الموقف من التجنيد
     public string MilitaryNumber { get; set; } = string.Empty; // الرقم العسكري
     public string DecisionNumber { get; set; } = string.Empty; // رقم قرار التجنيد
-    public DateOnly DecisionDate { get; set; } = default; // تاريخ قرار التجنيد
-    public DateOnly EnrollmentDate { get; set; } = default; // تاريخ الالتحاق
-    public DateOnly EndDate { get; set; } = default; // تاريخ نهاية الالتحاق
+    public DateOnly? DecisionDate { get; set; } // تاريخ قرار التجنيد
+    public DateOnly? EnrollmentDate { get; set; } // تاريخ الالتحاق
+    public DateOnly? EndDate { get; set; } // تاريخ نهاية الالتحاق
 }

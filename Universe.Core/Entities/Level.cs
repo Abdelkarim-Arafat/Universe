@@ -10,11 +10,10 @@ public class Level : BaseEntity
     public string Name { get; set; } = string.Empty;
     public int MinHours { get; set; }
     public int MaxHours { get; set; }
-<<<<<<< HEAD
+
+
     public Guid AcademicProgramId { get; set; }
-=======
     public ICollection<CourseOffering> CourseOfferings { get; set; } = [];
-    public Guid AcademicProgramd { get; set; }
->>>>>>> 3558604 (Add CourseOffering)
+    public ICollection<StudyLoadByLevel> StudyLoadByLevels { get; set; } = [];
     public AcademicProgram AcademicProgram { get; set; } = default!;
 }

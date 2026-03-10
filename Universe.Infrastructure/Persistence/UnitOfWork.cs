@@ -6,6 +6,7 @@ using Universe.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Core.Entities;
 
 namespace Universe.Infrastructure.Persistence;
 
@@ -19,6 +20,9 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 
     public IUserRepository UserRepository
         => field ??= new UserRepository(_context);
+
+    public ICourseOfferingRepository CourseOfferingRepository
+        => field ??= new CourseOfferingRepository(_context);
 
     public IAcademicProgramRepository AcademicProgramRepository
         => field ??= new AcademicProgramRepository(_context);
@@ -49,7 +53,11 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public ICollegeRepository CollegeRepository
         => field ??= new CollegeRepository(_context);
 
+    public IStudyLoadByLevelRepository StudyLoadByLevelRepository
+        => field ??= new StudyLoadByLevelRepository(_context);
 
+    public ISessionRepository SessionRepository
+        => field ??= new SessionRepository(_context);
     public async Task<int> CompleteAsync(CancellationToken cancellationToken)
         => await _context.SaveChangesAsync(cancellationToken);
 
