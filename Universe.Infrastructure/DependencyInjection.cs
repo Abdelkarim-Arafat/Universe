@@ -77,7 +77,10 @@ public static class InfrastructureDependences
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        services.AddIdentity<ApplicationUser, ApplicationRole>()
+        services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+        {
+            options.User.RequireUniqueEmail = false;
+        })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
@@ -116,8 +119,8 @@ public static class InfrastructureDependences
         services.Configure<IdentityOptions>(options =>
         {
             options.Password.RequiredLength = 8;
-            options.SignIn.RequireConfirmedEmail = true;
-            options.User.RequireUniqueEmail = true;
+            //options.SignIn.RequireConfirmedEmail = true;
+            //options.User.RequireUniqueEmail = true;
         });
         return services;
     }

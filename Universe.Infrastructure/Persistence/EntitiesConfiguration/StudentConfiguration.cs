@@ -41,8 +41,24 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         builder.Property(s => s.MaritalStatus)
             .HasConversion(
-                to => to.ToString(),
-                from => Enum.Parse<MaritalStatus>(from)
+                to => to.HasValue ? to.Value.ToString() : null,
+                from => from == null ? null : Enum.Parse<MaritalStatus>(from)
+            )
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(s => s.Gender)
+            .HasConversion(
+                to => to.HasValue ? to.Value.ToString() : null,
+                from => from == null ? null : Enum.Parse<Gender>(from)
+            )
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(s => s.Religion)
+            .HasConversion(
+                to => to.HasValue ? to.Value.ToString() : null,
+                from => from == null ? null : Enum.Parse<Religion>(from)
             )
             .HasMaxLength(50)
             .IsRequired();
@@ -121,8 +137,8 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
 
             qualification.Property(x => x.AdmissionType)
             .HasConversion(
-                to => to.ToString(),
-                from => Enum.Parse<AdmissionType>(from)
+                to => to.HasValue ? to.Value.ToString() : null,
+                from => from == null ? null : Enum.Parse<AdmissionType>(from)
             )
             .HasMaxLength(50)
             .IsRequired();
@@ -140,8 +156,8 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
 
             military.Property(x => x.MilitaryStatus)
             .HasConversion(
-                to => to.ToString(),
-                from => Enum.Parse<MilitaryStatus>(from)
+                to => to.HasValue ? to.Value.ToString() : null,
+                from => from == null ? null : Enum.Parse<MilitaryStatus>(from)
             )
             .HasMaxLength(50)
             .IsRequired();

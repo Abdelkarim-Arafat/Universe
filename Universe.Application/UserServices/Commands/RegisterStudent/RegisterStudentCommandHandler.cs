@@ -31,7 +31,7 @@ public class RegisterStudentCommandHandler(
         {
             UserName = request.UserName,
             Name = request.Name,
-            Email = "test@gmail.com",
+            //Email = "karimm@gmail.com",
             CollegeId = request.CollegeId,
             Student = request.Adapt<Student>()
         };
