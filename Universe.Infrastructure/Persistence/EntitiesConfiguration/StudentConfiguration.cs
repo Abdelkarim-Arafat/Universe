@@ -45,7 +45,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
                 from => from == null ? null : Enum.Parse<MaritalStatus>(from)
             )
             .HasMaxLength(50)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(s => s.Gender)
             .HasConversion(
@@ -53,15 +53,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
                 from => from == null ? null : Enum.Parse<Gender>(from)
             )
             .HasMaxLength(50)
-            .IsRequired();
-
-        builder.Property(s => s.Religion)
-            .HasConversion(
-                to => to.HasValue ? to.Value.ToString() : null,
-                from => from == null ? null : Enum.Parse<Religion>(from)
-            )
-            .HasMaxLength(50)
-            .IsRequired();
+            .IsRequired(false);
 
         // ================== Contact Info ==================
         builder.OwnsOne(s => s.ContactInfo, contact =>
@@ -141,7 +133,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
                 from => from == null ? null : Enum.Parse<AdmissionType>(from)
             )
             .HasMaxLength(50)
-            .IsRequired();
+            .IsRequired(false);
         });
 
         // ================== Military Info ==================
@@ -160,7 +152,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
                 from => from == null ? null : Enum.Parse<MilitaryStatus>(from)
             )
             .HasMaxLength(50)
-            .IsRequired();
+            .IsRequired(false);
         });
     }
 }

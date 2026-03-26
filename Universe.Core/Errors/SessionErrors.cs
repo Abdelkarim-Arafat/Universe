@@ -14,6 +14,12 @@ public class SessionErrors
         StatusCodes.Status400BadRequest
     );
 
+    public static readonly Error ExistingSessions = new Error(
+        "SessionErrors.ExistingSessions",
+        "Not allowed to update some sessions already created",
+        StatusCodes.Status400BadRequest
+    );
+
     public static readonly Error InstructoreIsBusy = new Error(
         "SessionErrors.InstructoreIsBusy",
         "This Instructore is busy in this time",

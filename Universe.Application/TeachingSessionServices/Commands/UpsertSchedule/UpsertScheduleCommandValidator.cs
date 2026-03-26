@@ -1,13 +1,13 @@
-﻿using Microsoft.Identity.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
 
-namespace Universe.Application.ProgramServices.Commands.AddSchedule;
+namespace Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
 
-internal class AddScheduleCommandValidator : AbstractValidator<AddScheduleCommand>
+public class UpsertScheduleCommandValidator : AbstractValidator<UpsertScheduleCommand>
 {
-    public AddScheduleCommandValidator()
+    public UpsertScheduleCommandValidator()
     {
         RuleFor(x => x.DayStartTime)
             .NotEmpty();
@@ -25,6 +25,6 @@ internal class AddScheduleCommandValidator : AbstractValidator<AddScheduleComman
             .Must(x => (x.DayEndTime - x.DayStartTime).TotalMinutes % x.SlotDurationMinutes == 0)
             .WithMessage("Slot duration must divide the total day time without remainder.")
             .When(x => x.SlotDurationMinutes > 0);
-            
+
     }
 }

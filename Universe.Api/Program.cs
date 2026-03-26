@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Scalar.AspNetCore;
 using Serilog;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
@@ -49,6 +50,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 //app.UseStaticFiles();

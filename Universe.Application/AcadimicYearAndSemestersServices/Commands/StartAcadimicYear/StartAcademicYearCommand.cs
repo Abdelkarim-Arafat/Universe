@@ -8,7 +8,6 @@ namespace Universe.Application.AcademicYearAndSemestersServices.Commands.StartAc
 
 public  record StartAcademicYearCommand(
     [Required] Guid CollegeId,
-    string Name,
     DateOnly StartDate,
     DateOnly EndDate,
     List<CreateSemesterDto> Semesters

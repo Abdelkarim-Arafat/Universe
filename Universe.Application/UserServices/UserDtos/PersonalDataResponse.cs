@@ -12,6 +12,7 @@ public record PersonalDataResponse(
     Religion? Religion,
     Gender? Gender,
     DateOnly? DateOfBirth,
+    MaritalStatus? MaritalStatus,
     string PlaceOfBirth,
     string Nationality
 );

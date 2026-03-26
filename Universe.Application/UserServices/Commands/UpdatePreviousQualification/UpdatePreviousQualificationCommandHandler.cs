@@ -18,9 +18,10 @@ public class UpdatePreviousQualificationCommandHandler(
             .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
             return Result.Failure<PreviousQualificationResponse>(StudentErrors.UserNotFound);
 
-        student.Adapt(request);
+        request.Adapt(student.PreviousQualification);
         _unitOfWork.Repository<Student>().Update(student);
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
-        return Result.Success(student.Adapt<PreviousQualificationResponse>());
+        return Result.Success(student.PreviousQualification.Adapt<PreviousQualificationResponse>());
     }
 }

@@ -29,7 +29,6 @@ public class Student : BaseEntity
     public PreviousQualification PreviousQualification { get; set; } = default!; // بيانات المؤهل السابق
     public MilitaryInfo? MilitaryInfo { get; set; } // بيانات التجنيد
     public ICollection<StudentAcademicProgram> StudentAcademicPrograms { get; set; } = [];
-
     public Guid CollegeId { get; set; }
     public College College { get; set; } = default!;
 }

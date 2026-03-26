@@ -16,7 +16,7 @@ using Universe.Application.CourseServices.Query.GetCoursePrerequisite;
 namespace Universe.Api.Controllers;
 
 
-[Route("college/{collegeId:guid}/course")]
+[Route("colleges/{collegeId:guid}/courses")]
 [ApiController , Authorize(Roles = "Admin , AcademicAdvising")]
 public class CourseController(IMediator mediator) : ControllerBase
 {

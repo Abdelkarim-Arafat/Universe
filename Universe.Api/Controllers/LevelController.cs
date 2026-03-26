@@ -40,7 +40,7 @@ public class LevelController(IMediator mediator) : ControllerBase
 
         var result = await _mediator.Send(command, cancellationToken);
 
-        return result.IsSuccess ? CreatedAtAction(nameof(Get), new { result.Value.Id }, result.Value) : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(Guid id, CancellationToken cancellationToken = default)

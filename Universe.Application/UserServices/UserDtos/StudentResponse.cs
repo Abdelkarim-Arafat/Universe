@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Universe.Core.Enums;
 
 namespace Universe.Application.UserServices.UserDtos;
 
@@ -8,5 +6,6 @@ public record StudentResponse(
     Guid Id,
     string Name,
     string StudentCode,
-    string NationalId
+    string NationalIdOrPassport,
+    Gender Gender
 );

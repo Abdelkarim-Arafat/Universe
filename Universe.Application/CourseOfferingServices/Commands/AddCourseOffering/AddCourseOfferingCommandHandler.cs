@@ -7,20 +7,20 @@ namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering
 
 internal class AddCourseOfferingCommandHandler(
     IUnitOfWork unitOfWork
-    ) : IRequestHandler<AddCourseOfferingCommand, Result<CourseOfferingResponse>>
+    ) : IRequestHandler<AddCourseOfferingCommand, Result<CourseOfferingWithDetailsResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<CourseOfferingResponse>> Handle(AddCourseOfferingCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CourseOfferingWithDetailsResponse>> Handle(AddCourseOfferingCommand request, CancellationToken cancellationToken)
     {
         if (!(await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.AcademicProgramId, cancellationToken))
-            ) return Result.Failure<CourseOfferingResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            ) return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
         if (await _unitOfWork.CourseOfferingRepository
             .IsExistAsync(request.AcademicProgramId, request.SemesterId,
                 request.LevelId, request.CourseId, cancellationToken)
-            ) return Result.Failure<CourseOfferingResponse>(CourseOfferingErrors.AlreadyExist);
+            ) return Result.Failure<CourseOfferingWithDetailsResponse>(CourseOfferingErrors.AlreadyExist);
 
         var courseOffering = new CourseOffering
         {
@@ -31,7 +31,7 @@ internal class AddCourseOfferingCommandHandler(
             TotalGrade = request.TotalGrade,
             SuccessPercentage = request.SuccessPercentage,
             IsOptional = request.IsOptional,
-            OtionalGroupCode = request.OptionalGroupCode,
+            OptionalGroupCode = request.OptionalGroupCode!,
             Type = request.Type,
             IsIncludedInGpa = request.IsIncludedInGpa,
             CreditHours = request.CreditHours,
@@ -45,6 +45,6 @@ internal class AddCourseOfferingCommandHandler(
         await _unitOfWork.Repository<CourseOffering>().AddAsync(courseOffering, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        return Result.Success(courseOffering.Adapt<CourseOfferingResponse>());
+        return Result.Success(courseOffering.Adapt<CourseOfferingWithDetailsResponse>());
     }
 }

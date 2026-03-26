@@ -16,7 +16,7 @@ public class CreateLevelCommandHandler
         if (!isProgramExist)
             return Result.Failure<LevelResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
-        // 
+        
         var isLevelWithOverLabExist = await _unitOfWork.LevelRepository
             .CheckOverLabedHoursAsync(command.MinHours, command.MaxHours, command.AcademicProgramId, cancellationToken);
         if (isLevelWithOverLabExist)
