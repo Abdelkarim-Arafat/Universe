@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.TeachingSessionServices.Commands.AddSession;
-using Universe.Application.TeachingSessionServices.Commands.AssignCourseToSession;
 using Universe.Application.TeachingSessionServices.Commands.RemoveSession;
 using Universe.Application.TeachingSessionServices.Queries.GetCourseSessions;
 using Universe.Application.TeachingSessionServices.SessionDtos;
@@ -21,17 +20,6 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
         [FromBody] AddSessionCommand request,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
-
-    [HttpPost("{sessionId:guid}/assign-course")]
-    public async Task<IActionResult> AssignCourseToSession(
-        [FromRoute] Guid sessionId,
-        [FromBody] AssignCourseToSessionCommand request,
-        CancellationToken cancellationToken)
-    {
-        request = request with { SessionId = sessionId };
         var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
