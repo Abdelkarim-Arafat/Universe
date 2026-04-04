@@ -14,7 +14,8 @@ public record UpdatePersonalDataCommand(
     string NationalIdOrPassport,
     Religion Religion,
     Gender Gender,
-    DateOnly DateOfBirth,
+    MaritalStatus MaritalStatus,
+    DateOnly? DateOfBirth,
     string PlaceOfBirth,
     string Nationality
 ) : IRequest<Result<PersonalDataResponse>>;

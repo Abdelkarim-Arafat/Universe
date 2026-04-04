@@ -10,7 +10,7 @@ public class MapsterConfiguration : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<CourseOffering, CourseOfferingResponse>()
+        config.NewConfig<CourseOffering, CourseOfferingWithDetailsResponse>()
             .Map(dest => dest.Assessments, src => src.Assessments.Where(a => !a.IsDeleted));
 
         config.NewConfig<UpdateCourseOfferingCommand , CourseOffering>()

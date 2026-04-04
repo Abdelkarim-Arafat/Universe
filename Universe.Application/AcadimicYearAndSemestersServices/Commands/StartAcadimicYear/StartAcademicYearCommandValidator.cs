@@ -9,10 +9,6 @@ public class StartAcademicYearCommandValidator : AbstractValidator<StartAcademic
 {
     public StartAcademicYearCommandValidator()
     {
-        RuleFor(x => x.Name)
-            .Matches(@"^\d{4}-\d{4}$")
-            .WithMessage("Academic year name must be in the format YYYY-YYYY, e.g., 2026-2027.");
-
         RuleFor(x => x.StartDate)
             .NotNull()
             .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow.Date)); 
@@ -30,7 +26,8 @@ public class CreateSemesterDtoValidator : AbstractValidator<CreateSemesterDto>
     {
         RuleFor(x => x.StartDate)
             .NotNull()
-            .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow.Date));
+            .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
+            .WithMessage("Start date must be greater than or equal the eurrent date");
 
         RuleFor(x => x.StartDate)
             .LessThan(x => x.EndDate)

@@ -17,9 +17,10 @@ public class UpdateMilitaryDataCommandHandler(
            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
             return Result.Failure<MilitaryDataResponse>(StudentErrors.UserNotFound);
 
-        student.Adapt(request);
+        request.Adapt(student.MilitaryInfo);
         _unitOfWork.Repository<Student>().Update(student);
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
-        return Result.Success(student.Adapt<MilitaryDataResponse>());
+        return Result.Success(student.MilitaryInfo.Adapt<MilitaryDataResponse>());
     }
 }

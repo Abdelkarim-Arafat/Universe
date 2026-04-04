@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.ProgramServices.ProgramDtos;
+using Universe.Application.TeachingSessionServices.SessionDtos;
 
-namespace Universe.Application.ProgramServices.Commands.AddSchedule;
+namespace Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
 
-public record AddScheduleCommand (
+public record UpsertScheduleCommand(
     Guid ProgramId,
     Guid SemesterId,
     TimeOnly DayStartTime,
