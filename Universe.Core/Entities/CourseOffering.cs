@@ -31,4 +31,6 @@ public class CourseOffering : BaseEntity
 
     public ICollection<CourseOfferingAssessment> Assessments { get; set; } = [];
     public ICollection<CourseOfferingSession> CourseOfferingSessions { get; set; } = [];
+    public ICollection<Enrollment> Enrollments { get; set; } = [];
+
 }

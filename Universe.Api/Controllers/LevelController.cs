@@ -17,10 +17,10 @@ namespace Universe.Api.Controllers;
 public class LevelController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-    [HttpGet("all")]
+    [HttpGet()]
     public async Task<IActionResult> GetAll(Guid academicProgramId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
     {
-        var request = new GetCollegeLevelsQuery(academicProgramId, filter);
+        var request = new GetAcademicProgramLevelsQuery(academicProgramId, filter);
         var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }

@@ -37,6 +37,10 @@ public class ApplicationDbContext(
     public DbSet<CourseOfferingSession> CourseOfferingSessions { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<RoomType> RoomTypes { get; set; }
+    public DbSet<Enrollment> Enrollments { get; set; }
+    public DbSet<TeachingSessionEnrollment> TeachingSessionEnrollments { get; set; }
+    public DbSet<StudentAssessment> StudentAssessments { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

@@ -14,7 +14,7 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
     public async Task<AcademicYear?> GetByIdAsync(Guid Id , CancellationToken cancellationToken)
         => await _context.AcademicYears.FirstOrDefaultAsync(x => x.Id == Id , cancellationToken);
 
-    public async Task<bool> IsExistSemesterAsync(Guid Id, CancellationToken cancellationToken)
+    public async Task<bool> IsSemesterExistAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.Semesters.AnyAsync(x => x.Id == Id , cancellationToken);
 
     public async Task<bool> IsMakeConflictAsync(Guid CollegeId, string Name, DateOnly start, DateOnly end, Guid? Id, CancellationToken cancellationToken)

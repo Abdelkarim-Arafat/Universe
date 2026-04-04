@@ -49,4 +49,7 @@ public record StudentErrors
 
     public static readonly Error InvalideRegister =
         new("User.InvalideRegister", "Invalid register data", StatusCodes.Status400BadRequest);
+
+    public static readonly Error NoProgram =
+    new("User.NoProgram", "Student doesn't enrolled in any program", StatusCodes.Status409Conflict);
 }

@@ -18,7 +18,7 @@ public class AddScheduleCommandHandler(
             ) return Result.Failure<ScheduleResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
         if (!await _unitOfWork.AcademicYearRepository
-            .IsExistSemesterAsync(request.ProgramId, cancellationToken)
+            .IsSemesterExistAsync(request.ProgramId, cancellationToken)
             ) return Result.Failure<ScheduleResponse>(SemesterErrors.NotFound);
 
         if (await _unitOfWork.AcademicProgramRepository

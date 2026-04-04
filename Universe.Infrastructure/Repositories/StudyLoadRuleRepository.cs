@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -17,6 +14,12 @@ public class StudyLoadRuleRepository(ApplicationDbContext context) : IStudyLoadR
             (Id == null || x.Id != Id) && 
             ((MinGpa >= x.GpaFrom && MinGpa <= x.GpaTo)
             || (MaxGpa >= x.GpaFrom && MaxGpa <= x.GpaTo)) , cancellationToken);
+
+    public async Task<StudyLoadRule?> GetByGpaAsync(decimal Gpa, CancellationToken cancellationToken)
+    {
+        return await _context.StudyLoadRules
+           .FirstOrDefaultAsync(x => x.GpaFrom <= Gpa && x.GpaTo >= Gpa && !x.IsDeleted, cancellationToken);
+    }
 
     public async Task<StudyLoadRule?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => await _context.StudyLoadRules.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);

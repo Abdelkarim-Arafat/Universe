@@ -8,6 +8,6 @@ namespace Universe.Core.Interfaces.Repositories;
 public interface IAcademicYearRepository
 {
     Task<AcademicYear?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
-    Task<bool> IsExistSemesterAsync(Guid Id, CancellationToken cancellationToken);
+    Task<bool> IsSemesterExistAsync(Guid Id, CancellationToken cancellationToken);
     Task<bool> IsMakeConflictAsync(Guid CollegeId, string Name, DateOnly start, DateOnly end, Guid? Id, CancellationToken cancellationToken);
 }

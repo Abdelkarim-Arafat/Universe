@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <Folder Include="CourseOfferingServices\Query\" />
-    <Folder Include="TeachingSessionServices\Queries\" />
+    <Folder Include="TeachingSessionServices\Queries\Get\" />
   </ItemGroup>
 
   <ItemGroup>

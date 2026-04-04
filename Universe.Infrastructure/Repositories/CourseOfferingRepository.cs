@@ -30,4 +30,33 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
         .ToListAsync(cancellationToken);
 
+    public async Task<List<CourseOffering>> GetCourseOfferingsByLevelAndSemesterIncludingCourseAsync(Guid LevelId, Guid SemesterId, CancellationToken cancellationToken)
+    {
+        return await _context.CourseOfferings
+            .AsNoTracking()
+            .Include(c => c.Course) 
+            .Where(c=>c.LevelId == LevelId && c.SemesterId == SemesterId&& !c.IsDeleted)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Dictionary<Guid, List<CourseOfferingAssessment>>>
+        GetCourseOfferingsAssessmentsBulkAsync(
+            List<Guid> courseOfferingIds,
+            CancellationToken cancellationToken)
+    {
+
+        var data = await _context.CourseOfferingAssessments
+            .Where(a => courseOfferingIds.Contains(a.CourseOfferingId) && !a.IsDeleted)
+            .ToListAsync(cancellationToken);
+
+
+        var dict = data
+            .GroupBy(a => a.CourseOfferingId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.ToList()
+            );
+
+        return dict;
+    }
 }

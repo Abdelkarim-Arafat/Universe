@@ -30,15 +30,15 @@ public class CreateLevelCommandHandler
         try
         {
             await _unitOfWork.CompleteAsync(cancellationToken);
+            return Result.Success(level.Adapt<LevelResponse>());
         }
         catch (DbUpdateException)
         {
             
-
             return Result.Failure<LevelResponse>(
                 new Error("DatabaseError", "Failed to create level", StatusCodes.Status409Conflict));
         }
 
-        return Result.Success(level.Adapt<LevelResponse>());
+        
     }
 }

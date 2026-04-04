@@ -50,6 +50,7 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 
     public IGradeRepository GradeRepository
         => field ??= new GradeRepository(_context);
+
     public ICollegeRepository CollegeRepository
         => field ??= new CollegeRepository(_context);
 
@@ -58,6 +59,8 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 
     public ISessionRepository SessionRepository
         => field ??= new SessionRepository(_context);
+    public IEnrollmentRepository EnrollmentRepository
+       => field ??= new EnrollmentRepository(_context);
     public async Task<int> CompleteAsync(CancellationToken cancellationToken)
         => await _context.SaveChangesAsync(cancellationToken);
 

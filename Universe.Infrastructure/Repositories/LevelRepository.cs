@@ -19,7 +19,6 @@ public class LevelRepository(ApplicationDbContext context) : ILevelRepository
 
         return isExist;
     }
-
     public async Task<bool> CheckOverLabedHoursAsync(int MinHours, int MaxHours, Guid Id, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         var isExist = await context.Levels
@@ -32,5 +31,13 @@ public class LevelRepository(ApplicationDbContext context) : ILevelRepository
     public async Task<Level?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await context.Levels.FirstOrDefaultAsync(lv => lv.Id == id && !lv.IsDeleted, cancellationToken);
+    }
+
+    public async Task<List<Level>> GetLevelsByProgramId(Guid AcademicProgramId, CancellationToken cancellationToken = default)
+    {
+        return await context.Levels
+            .AsNoTracking()
+            .Where(lv => lv.AcademicProgramId == AcademicProgramId && !lv.IsDeleted)
+            .ToListAsync(cancellationToken);
     }
 }

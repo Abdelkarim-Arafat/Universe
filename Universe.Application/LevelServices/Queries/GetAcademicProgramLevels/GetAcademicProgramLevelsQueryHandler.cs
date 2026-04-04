@@ -2,11 +2,11 @@
  
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 
-public class GetCollegeLevelsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetCollegeLevelsQuery, Result<PaginationList<LevelResponse>>>
+public class GetAcademicProgramLevelsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAcademicProgramLevelsQuery, Result<PaginationList<LevelResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<PaginationList<LevelResponse>>> Handle(GetCollegeLevelsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationList<LevelResponse>>> Handle(GetAcademicProgramLevelsQuery request, CancellationToken cancellationToken)
     {
         var isProgramExist = await _unitOfWork.AcademicProgramRepository.IsExistAsync(request.AcademicProgramId, cancellationToken);
         if (!isProgramExist)

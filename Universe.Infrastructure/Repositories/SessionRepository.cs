@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -12,7 +9,7 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
 {
     private readonly ApplicationDbContext _context = context;
     public async Task<CourseOfferingSession?> GetCourseOfferingSessionByIdAsync(
-        Guid courseId ,
+        Guid courseId,
         Guid sessionId,
         CancellationToken cancellationToken)
     {
@@ -22,8 +19,8 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                 cancellationToken);
     }
 
-    public async Task<TeachingSession?> GetByIdAsync(Guid sessionId , CancellationToken cancellationToken)
-        => await _context.TeachingSessions.FirstOrDefaultAsync(x => x.Id == sessionId , cancellationToken);
+    public async Task<TeachingSession?> GetByIdAsync(Guid sessionId, CancellationToken cancellationToken)
+        => await _context.TeachingSessions.FirstOrDefaultAsync(x => x.Id == sessionId, cancellationToken);
 
     public async Task<bool> HasOtherCoursesAsync(Guid sessionId, Guid courseId, CancellationToken cancellationToken)
         => await _context.CourseOfferingSessions
@@ -66,7 +63,7 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                x.InstructorId == id &&
                x.Day == day &&
                ((start >= x.StartTime && start <= x.EndTime) ||
-               (end >= x.StartTime && end <= x.EndTime)) && 
+               (end >= x.StartTime && end <= x.EndTime)) &&
                x.CourseOfferingSessions.Any(cs =>
                    cs.CourseOffering.SemesterId == semesterId &&
                    !cs.CourseOffering.IsDeleted),
@@ -92,5 +89,49 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                    cs.CourseOffering.SemesterId == semesterId &&
                    !cs.CourseOffering.IsDeleted),
                cancellationToken);
+    }
+
+    public async Task<List<TeachingSession>> GetSessionsByIdIncludingCourseOfferingAsync(IEnumerable<Guid> SessionsIds, CancellationToken cancellationToken)
+    {
+        return await _context.TeachingSessions
+           .AsNoTracking()
+           .Include(session => session.CourseOfferingSessions)
+           .Where(x => SessionsIds.Contains(x.Id))
+           .ToListAsync();
+    }
+
+    public async Task<List<TeachingSession>> GetSessionsByCourseOfferingIncludingInstructor(Guid CourseOfferingId, CancellationToken cancellationToken)
+    {
+        var SessionsIds = await _context.CourseOfferingSessions
+            .AsNoTracking()
+            .Where(x => x.CourseOfferingId == CourseOfferingId)
+            .Select(x => x.TeachingSessionId)
+            .ToListAsync(cancellationToken);
+
+        return await _context.TeachingSessions
+            .AsNoTracking()
+            .Include(t => t.Instructor)
+            .Where(x => SessionsIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+    }
+     
+    public async Task<int> GetGroupNumberAsync(Guid SessionId, CancellationToken cancellationToken)
+    {
+        return await _context.TeachingSessions
+                    .Where(ts => ts.Id == SessionId)
+                    .Select(ts => ts.GroupNumber)
+                    .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Dictionary<Guid, (int GroupNumber, int Capacity)>>
+        GetGroupNumberAndCapacityBulkAsync(List<Guid> sessionIds, CancellationToken cancellationToken)
+    {
+        return await _context.TeachingSessions
+            .Where(ts => sessionIds.Contains(ts.Id))
+            .ToDictionaryAsync(
+                ts => ts.Id,                           // key
+                ts => (ts.GroupNumber, ts.Capacity),   // value
+                cancellationToken
+            );
     }
 }

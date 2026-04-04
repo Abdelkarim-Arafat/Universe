@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Universe.Core.Entities.Core;
-using Universe.Core.Interfaces.Repositories;
-using Universe.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Core.Entities.Core;
+using Universe.Core.Interfaces.Repositories;
+using Universe.Infrastructure.Persistence;
 
 namespace Universe.Infrastructure.Repositories;
 
@@ -33,5 +34,11 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
     {
         entity.UpdatedAt = DateTime.UtcNow;
         _context.Set<T>().Update(entity);
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionIsolatedAsync(CancellationToken cancellationToken)
+    {
+       return  await _context.Database
+        .BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
     }
 }

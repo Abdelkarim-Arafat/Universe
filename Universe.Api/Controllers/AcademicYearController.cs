@@ -5,7 +5,7 @@ using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcadem
 
 namespace Universe.Api.Controllers;
 
-[Route("college/{collegeId:guid}/[controller]")]
+[Route("colleges/{collegeId:guid}/academic-years")]
 [ApiController]
 public class AcademicYearController(IMediator mediator) : ControllerBase
 {

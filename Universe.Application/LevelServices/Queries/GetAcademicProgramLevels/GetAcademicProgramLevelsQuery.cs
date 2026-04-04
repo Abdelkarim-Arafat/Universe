@@ -2,7 +2,7 @@
  
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 
-public record GetCollegeLevelsQuery
+public record GetAcademicProgramLevelsQuery
 (
     [Required]Guid AcademicProgramId,
     FilterRequest Filter

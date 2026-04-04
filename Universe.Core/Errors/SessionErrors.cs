@@ -37,4 +37,19 @@ public class SessionErrors
         "This Session is not found",
         StatusCodes.Status404NotFound
     );
+    public static readonly Error NoAvailableSeats = new Error(
+       "SessionErrors.NoAvailableSeats",
+       "there is no availabe seats",
+       StatusCodes.Status409Conflict
+   );
+    public static readonly Error GroupNotFound = new Error(
+       "SessionErrors.GroupNotFound",
+       "This Group is not found",
+       StatusCodes.Status404NotFound
+   );
+    public static readonly Error SessionsNotFound = new Error(
+       "SessionErrors.SomeSessionsNotFound",
+       "Some Sessions do not exist",
+       StatusCodes.Status404NotFound
+   );
 }
