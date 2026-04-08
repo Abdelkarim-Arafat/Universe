@@ -25,7 +25,7 @@ public class RoomController(IMediator mediator) : ControllerBase
         command = command with { BuildingId = buildingId };
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess
-            ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
+            ? Ok(result.Value)
             : result.ToProblem();
     }
     [HttpDelete("{id}")]

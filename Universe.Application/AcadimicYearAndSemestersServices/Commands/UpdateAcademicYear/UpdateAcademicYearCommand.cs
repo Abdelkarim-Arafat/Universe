@@ -6,7 +6,6 @@ namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateA
 public record UpdateAcademicYearCommand(
     [Required] Guid CollegeId,
     [Required] Guid Id,
-    string Name,
     DateOnly StartDate,
     DateOnly EndDate,
     List<UpdateSemesterDto> Semesters

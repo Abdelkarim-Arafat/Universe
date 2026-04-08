@@ -25,8 +25,9 @@ public class UpdatePersonalDataCommandHandler(
             .IsStudentNationalIdExistsAsync(request.CollegeId, student.Id , request.NationalIdOrPassport, cancellationToken))
             return Result.Failure<PersonalDataResponse>(StudentErrors.DuplicateNationalIdOrPassport);
 
-        student.Adapt(request);
-        _unitOfWork.Repository<Student>().Update(student); 
+        request.Adapt(student);
+        _unitOfWork.Repository<Student>().Update(student);
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success(student.Adapt<PersonalDataResponse>());
     }

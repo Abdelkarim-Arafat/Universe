@@ -5,28 +5,28 @@ using Universe.Application.CourseOfferingServices.Dtos;
 
 namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 
-internal class UpdateCourseOfferingCommandHandler(
+internal class UpdateCourseOfferingCommandHandler (
     IUnitOfWork unitOfWork
-) : IRequestHandler<UpdateCourseOfferingCommand, Result<CourseOfferingResponse>>
+) : IRequestHandler<UpdateCourseOfferingCommand, Result<CourseOfferingWithDetailsResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<CourseOfferingResponse>> Handle(UpdateCourseOfferingCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CourseOfferingWithDetailsResponse>> Handle(UpdateCourseOfferingCommand request, CancellationToken cancellationToken)
     {
         if ((await _unitOfWork.CourseOfferingRepository
             .GetByIdAsync(request.Id, cancellationToken)) is not { } course)
-            return Result.Failure<CourseOfferingResponse>(CourseOfferingErrors.NotFound);
+            return Result.Failure<CourseOfferingWithDetailsResponse>(CourseOfferingErrors.NotFound);
 
         if (!(await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.AcademicProgramId, cancellationToken)))
-            return Result.Failure<CourseOfferingResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
-        course.Adapt(request);
+        request.Adapt(course);
 
         var requestTypes = request.Assessments.Select(x => x.Type);
 
         var currentAssessments = await _unitOfWork.CourseOfferingRepository
-            .GetCourseOfferingAssessments(course.CourseId , cancellationToken);
+            .GetCourseOfferingAssessments(course.Id , cancellationToken);
 
         foreach (var assessment in currentAssessments)
         {
@@ -47,6 +47,7 @@ internal class UpdateCourseOfferingCommandHandler(
             {
                 Type = r.Type,
                 MaxScore = r.MaxScore,
+                CourseOfferingId = course.Id
             });
 
         await _unitOfWork.Repository<CourseOfferingAssessment>()
@@ -54,12 +55,13 @@ internal class UpdateCourseOfferingCommandHandler(
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        var response = await _unitOfWork.Repository<CourseOffering>()
+        var courseEntity = await _unitOfWork.Repository<CourseOffering>()
             .GetQueryable()
             .Include(c => c.Assessments)
             .Where(x => x.Id == course.Id)
-            .ProjectToType<CourseOfferingResponse>()
             .FirstOrDefaultAsync(cancellationToken);
+
+        var response = courseEntity!.Adapt<CourseOfferingWithDetailsResponse>();
 
         return Result.Success(response!);
     }

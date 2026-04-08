@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 
@@ -11,4 +13,28 @@ public class StudyLoadByLevelRepository(
     ) : IStudyLoadByLevelRepository
 {
     private readonly ApplicationDbContext _context = context;
+
+
+    public async Task<bool> IsExistAsync(
+        Guid programId,
+        Guid levelId,
+        Guid semesterId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.StudyLoadByLevels
+                .AnyAsync(x => x.AcademicProgramId == programId && x.LevelId == levelId && x.SemesterId == semesterId);
+    }
+
+    public async Task<StudyLoadByLevel?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        => await _context.StudyLoadByLevels
+        .Include(x => x.Sememester)
+        .Include(x => x.Level)
+        .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+
+    public async Task<IQueryable<StudyLoadByLevel>> GetAllStudyLoadByLevelAsync(Guid programId, CancellationToken cancellationToken)
+        => _context.StudyLoadByLevels
+        .Include(x => x.Sememester)
+        .Include(x => x.Level)
+        .Where(x => x.AcademicProgramId == programId);
 }

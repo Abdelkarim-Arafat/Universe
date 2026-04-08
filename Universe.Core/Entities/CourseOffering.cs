@@ -13,7 +13,7 @@ public class CourseOffering : BaseEntity
     public decimal SuccessPercentage { get; set; }
     public bool IsOptional { get; set; }
     public bool IsIncludedInGpa { get; set; } = true;
-    public string OtionalGroupCode { get; set; } = string.Empty;
+    public string? OptionalGroupCode { get; set; }
     public int NumberOfGroups { get; set; } = 1;
     public RequirementType Type { get; set; }
 

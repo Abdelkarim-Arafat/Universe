@@ -40,7 +40,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         .AnyAsync(x => x.CollegeId == CollegeId &&
         x.StudentCode == studentCode &&
         !x.IsDeleted &&
-        (UserId == null || x.Id == UserId), cancellationToken);
+        (UserId == null || x.Id != UserId), cancellationToken);
 
     public async Task<bool> IsStudentNationalIdExistsAsync(Guid CollegeId, Guid? UserId, string NationalId, CancellationToken cancellationToken)
         => await _context.Students
@@ -98,4 +98,5 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
              && !ass.IsDeleted)
              .ToListAsync(cancellationToken);
     }
+        
 }

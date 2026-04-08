@@ -6,7 +6,7 @@ namespace Universe.Application.BuildingServices.Dtos;
 
 public record BuildingResponse
 (
-    Guid Id,
+    string Id,
     string Name,
     string Code
 );

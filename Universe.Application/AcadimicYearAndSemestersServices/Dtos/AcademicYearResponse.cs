@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Application.AcadimicYearAndSemestersServices.Dtos;
 using Universe.Core.Enums;
 
 namespace Universe.Application.AcademicYearAndSemestersServices.Dtos;
@@ -11,11 +12,4 @@ public record AcademicYearResponse(
     DateOnly StartDate,
     DateOnly EndDate,
     List<SemesterResponse> Semesters
-);
-
-public record SemesterResponse(
-    string Id,
-    TermType Name,
-    DateOnly StartDate,
-    DateOnly EndDate
 );
