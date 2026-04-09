@@ -23,8 +23,6 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         if (StudentLevel is null)
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.NotFound);
 
-      
-
         var StudyLoad = await _unitOfWork.StudyLoadByLevelRepository
             .GetByLevelIdAndSemesterIdAsync(StudentLevel.Id, query.SemesterId, cancellationToken);
         if (StudyLoad is null)
@@ -47,7 +45,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
 
 
         var CourseOfferings = await _unitOfWork.CourseOfferingRepository
-            .GetCourseOfferingsByLevelAndSemesterIncludingCourseAsync(query.LevelId, query.SemesterId, cancellationToken);
+            .GetAvailableCourseOfferingsAsync(Level.Id, query.SemesterId, query.StudentId, cancellationToken);
 
 
         var teachingSessionEnrollments = await _unitOfWork.EnrollmentRepository
@@ -94,7 +92,8 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
                  s.Session.Day,
                  s.Session.StartTime,
                  s.Session.EndTime,
-                 s.Session.Capacity - s.EnrolledCount)).ToList();
+                 s.Session.Capacity - s.EnrolledCount))
+                .ToList();
 
             var CourseRegistration = new CourseRegistrationResponse
                 (courseOffering.Id,
@@ -120,7 +119,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         var StudentInfo = new StudentInfoResponse
            (
            Student.Name, StudentLevel.Name,
-           Student.StudentCode, 0,
+           Student.StudentCode, 0, // ظبط الساعات المسجله
            StudyLoad.MaxHours, StudyLoad.MinHours, Gpa);
 
         var Response = new EnrollmentPageResponse(StudentInfo, LevelResponse, EnrollmentInfos);

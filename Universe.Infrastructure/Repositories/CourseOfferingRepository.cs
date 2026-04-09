@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Entities;
+using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 
@@ -30,12 +31,22 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
         .ToListAsync(cancellationToken);
 
-    public async Task<List<CourseOffering>> GetCourseOfferingsByLevelAndSemesterIncludingCourseAsync(Guid LevelId, Guid SemesterId, CancellationToken cancellationToken)
+    public async Task<List<CourseOffering>> GetAvailableCourseOfferingsAsync(
+        Guid levelId,
+        Guid semesterId,
+        Guid studentId,
+        CancellationToken cancellationToken)
     {
         return await _context.CourseOfferings
             .AsNoTracking()
-            .Include(c => c.Course) 
-            .Where(c=>c.LevelId == LevelId && c.SemesterId == SemesterId&& !c.IsDeleted)
+            .Include(c => c.Course)
+            .Where(c => c.LevelId == levelId
+                     && c.SemesterId == semesterId
+                     && !c.IsDeleted
+                     
+                     && !c.Enrollments.Any(e => e.StudentId == studentId
+                                             && !e.IsDeleted
+                                             && e.Status == EnrollmentStatus.Passed))
             .ToListAsync(cancellationToken);
     }
 

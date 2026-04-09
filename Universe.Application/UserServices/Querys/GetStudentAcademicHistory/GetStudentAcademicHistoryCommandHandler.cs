@@ -1,24 +1,30 @@
 ﻿
 using System.Linq;
+using System.Security.Claims;
 using Universe.Application.UserServices.UserDtos;
 
 namespace Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 public class GetStudentAcademicHistoryCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    IHttpContextAccessor httpContextAccessor
     ) : IRequestHandler<GetStudentAcademicHistoryCommand, Result<List<TranscriptSemesterResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Result<List<TranscriptSemesterResponse>>> Handle(GetStudentAcademicHistoryCommand request, CancellationToken cancellationToken)
     {
-        var IsStudentExist = await _unitOfWork.UserRepository.UserIsExistAsync(request.StudentId, cancellationToken);
+        var User = _httpContextAccessor.HttpContext?.User;
+        var value = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var StudentId = Guid.TryParse(value, out var userId) ? userId : Guid.Empty;
+        var IsStudentExist = await _unitOfWork.UserRepository.UserIsExistAsync(StudentId, cancellationToken);
         if (!IsStudentExist)
             return Result.Failure<List<TranscriptSemesterResponse>>(StudentErrors.UserNotFound);
-        var enrollments = await _unitOfWork.EnrollmentRepository.GetStudentEnrollmentsAsync(request.StudentId, cancellationToken);
+        var enrollments = await _unitOfWork.EnrollmentRepository.GetStudentEnrollmentsAsync(StudentId, cancellationToken);
 
         var summaries = await _unitOfWork.StudentSemesterSummaryRepository.
-            GetStudentSummariesAsync(request.StudentId, cancellationToken);
+            GetStudentSummariesAsync(StudentId, cancellationToken);
 
 
         var response = summaries.Select(summary =>

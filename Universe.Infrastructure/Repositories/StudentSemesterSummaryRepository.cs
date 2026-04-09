@@ -11,7 +11,7 @@ public class StudentSemesterSummaryRepository(ApplicationDbContext context) : IS
 
     public async Task<List<StudentSemesterSummary>> GetStudentSummariesAsync(Guid studentId, CancellationToken cancellationToken)
     {
-        return await _context.StudentSemesterSummaries
+        return await _context.StudentSemesterSummarys
          .AsNoTracking()
          .Include(s => s.Semester)
              .ThenInclude(sem => sem.AcademicYear)

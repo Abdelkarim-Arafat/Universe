@@ -42,6 +42,6 @@ public class StudyLoadByLevelRepository(
         (Guid LevelId, Guid SemesterId, CancellationToken cancellationToken)
     {
         return await _context.StudyLoadByLevels
-            .FirstOrDefaultAsync(s => s.LevelId == LevelId && s.SemesterId == SemesterId, cancellationToken);
+            .FirstOrDefaultAsync(s => s.LevelId == LevelId && s.SemesterId == SemesterId && !s.IsDeleted, cancellationToken);
     }
 }

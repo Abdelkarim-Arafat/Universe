@@ -4,5 +4,4 @@ namespace Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 public record GetStudentAcademicHistoryCommand
 (
-    [Required] Guid StudentId
 ) : IRequest<Result<List<TranscriptSemesterResponse>>>;

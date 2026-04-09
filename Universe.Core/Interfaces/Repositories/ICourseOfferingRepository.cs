@@ -12,6 +12,6 @@ public interface ICourseOfferingRepository
 
     Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<List<CourseOfferingAssessment>> GetCourseOfferingAssessments(Guid CourseOfferingId, CancellationToken cancellationToken);
-    Task<List<CourseOffering>> GetCourseOfferingsByLevelAndSemesterIncludingCourseAsync(Guid LevelId, Guid SemesterId, CancellationToken cancellationToken);
+    Task<List<CourseOffering>> GetAvailableCourseOfferingsAsync(Guid LevelId, Guid SemesterId, Guid StudentId, CancellationToken cancellationToken);
     Task<Dictionary<Guid, List<CourseOfferingAssessment>>> GetCourseOfferingsAssessmentsBulkAsync(List<Guid> CourseOfferingIds, CancellationToken cancellationToken);
 }

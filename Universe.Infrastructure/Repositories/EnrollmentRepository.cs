@@ -71,7 +71,7 @@ public class EnrollmentRepository(
             .Where(x => x.CourseOfferingId == courseOfferingId)
             .Select(x => new
             {
-                // بنسحب الـ Session والـ Instructor والعدد في خبطة واحدة
+                
                 Session = x.TeachingSession,
                 Instructor = x.TeachingSession.Instructor,
                 EnrolledCount = x.TeachingSession.TeachingSessionEnrollments.Count()
@@ -85,19 +85,40 @@ public class EnrollmentRepository(
             return (r.Session, r.EnrolledCount);
         }).ToList();
     }
+
+    //public async Task<List<SessionOptionResponse>> GetSessionOptionsAsync(
+    //Guid courseOfferingId,
+    //Guid studentId,
+    //CancellationToken cancellationToken)
+    //{
+    //    return await _context.CourseOfferingSessions
+    //        .AsNoTracking()
+    //        .Where(x => x.CourseOfferingId == courseOfferingId && !x.IsDeleted)
+    //        .Select(x => new SessionOptionResponse(
+    //            x.TeachingSession.Id,
+    //            x.TeachingSession.Instructor.Name,
+    //            x.TeachingSession.Type,
+    //            x.TeachingSession.GroupNumber,
+    //            x.TeachingSession.Day,
+    //            x.TeachingSession.StartTime,
+    //            x.TeachingSession.EndTime,
+    //            x.TeachingSession.Capacity - x.TeachingSession.TeachingSessionEnrollments.Count(e => !e.IsDeleted),
+    //            x.TeachingSession.TeachingSessionEnrollments.Any(e => e.Enrollment.StudentId == studentId && !e.IsDeleted)
+    //        ))
+    //        .ToListAsync(cancellationToken);
+    //}
+
     public async Task<List<TeachingSessionEnrollment>> GetTeachingSessionEnrollmentAsync(Guid StudentId, CancellationToken cancellationToken)
     {
-        var EnrollmentsIds = await _context.Enrollments
-            .Where(e => e.StudentId == StudentId && !e.IsDeleted
-             && e.Status == Core.Enums.EnrollmentStatus.InProgress)
-            .Select(e => e.Id)
-            .ToListAsync(cancellationToken);
         return await _context.TeachingSessionEnrollments
-            .AsNoTracking()
-            .Include(x => x.Enrollment)
-            .Include(x => x.TeachingSession)
-            .Where(x => EnrollmentsIds.Contains(x.EnrollmentId) && !x.IsDeleted)
-            .ToListAsync(cancellationToken);
+    .AsNoTracking()
+    .Include(x => x.Enrollment)
+    .Include(x => x.TeachingSession)
+    .Where(x => !x.IsDeleted
+             && x.Enrollment.StudentId == StudentId
+             && !x.Enrollment.IsDeleted
+             && x.Enrollment.Status == Core.Enums.EnrollmentStatus.InProgress)
+    .ToListAsync(cancellationToken);
     }
 
     public async Task<List<Enrollment>> GetStudentEnrollmentsAsync(Guid studentId, CancellationToken cancellationToken)

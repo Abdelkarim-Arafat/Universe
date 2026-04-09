@@ -28,7 +28,7 @@ public class GetAcademicProgramGradesQueryHandler(IUnitOfWork unitOfWork) : IReq
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.ProjectToType<GradeResponse>();
+        var source = query.Select(g => g.Adapt<GradeResponse>());
 
         var response = await PaginationList<GradeResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
