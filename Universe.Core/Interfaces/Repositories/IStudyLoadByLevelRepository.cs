@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Entities;
@@ -9,4 +10,13 @@ public interface IStudyLoadByLevelRepository
 {
     Task<StudyLoadByLevel?> GetByLevelIdAndSemesterIdAsync
         (Guid LevelId, Guid SemesterId, CancellationToken cancellationToken);
+    Task<bool> IsExistAsync(
+        Guid programId,
+        Guid levelId,
+        Guid semesterId,
+        CancellationToken cancellationToken);
+
+
+    Task<StudyLoadByLevel?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<IQueryable<StudyLoadByLevel>> GetAllStudyLoadByLevelAsync(Guid programId, CancellationToken cancellationToken);
 }

@@ -20,7 +20,11 @@ public class GetAllQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAll
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.ProjectToType<BuildingResponse>();
+        var source = query.Select(x => new BuildingResponse(
+            x.Id.ToString(),
+            x.Name,
+            x.Code
+        ));
 
         var response = await PaginationList<BuildingResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

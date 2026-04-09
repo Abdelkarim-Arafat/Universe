@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using Universe.Api.Extensions;
 using Universe.Application.BuildingServices.Commands.CreateBuilding;
 using Universe.Application.BuildingServices.Commands.DeleteBuilding;

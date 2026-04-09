@@ -1,83 +1,96 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
+using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
+using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateCurrentSemester;
+using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYear;
+using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentSemester;
+using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentYear;
 
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/academic-years")]
 [ApiController]
-public class AcademicYearController(IMediator mediator) : ControllerBase
+public class AcademicYearsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    //[HttpGet("{id:guid}")]
-    //public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken cancellationToken)
-    //{
-    //    var result = await _mediator.Send(new GetCourseCommand(id), cancellationToken);
-    //    return result.IsSuccess
-    //        ? Ok(result.Value)
-    //        : result.ToProblem();
-    //}
-    //[HttpGet("")]
-    //public async Task<IActionResult> GetAll([FromRoute] Guid collegeId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken)
-    //{
-    //    var result = await _mediator.Send(new GetAllCoursesCommand(collegeId, filter), cancellationToken);
-    //    return result.IsSuccess
-    //        ? Ok(result.Value)
-    //        : result.ToProblem();
-    //}
-    //[HttpGet("{id:guid}/pre-requisites")]
-    //public async Task<IActionResult> GetCoursePreRequisites([FromRoute] Guid id, CancellationToken cancellationToken)
-    //{
-    //    var result = await _mediator.Send(new GetCoursePreRequisiteCommand(id), cancellationToken);
-    //    return result.IsSuccess
-    //        ? Ok(result.Value)
-    //        : result.ToProblem();
-    //}
-
-    //[HttpPost("{id:guid}/pre-requisite/{preRequisiteId:guid}")]
-    //public async Task<IActionResult> AddCoursePreRequisite([FromRoute] Guid id, [FromRoute] Guid preRequisiteId, CancellationToken cancellationToken)
-    //{
-
-    //    var result = await _mediator.Send(new AddCoursePreRequisiteCommand(id, preRequisiteId), cancellationToken);
-    //    return result.IsSuccess
-    //        ? Ok(result.Value)
-    //        : result.ToProblem();
-    //}
-
-    //[HttpDelete("{id:guid}/pre-requisite/{preRequisiteId:guid}")]
-    //public async Task<IActionResult> DeleteCoursePreRequisite([FromRoute] Guid id, [FromRoute] Guid preRequisiteId, CancellationToken cancellationToken)
-    //{
-    //    var result = await _mediator.Send(new RemoveCoursePrerequisiteCommand(id, preRequisiteId), cancellationToken);
-    //    return result.IsSuccess ? Ok() : result.ToProblem();
-    //}
-
-    [HttpPost]
-    public async Task<IActionResult> Add([FromRoute] Guid collegeId, [FromBody] StartAcademicYearCommand request, CancellationToken cancellationToken)
+    [HttpGet("current")]
+    public async Task<IActionResult> GetCurrentYear([FromRoute] Guid collegeId, CancellationToken cancellationToken)
     {
-        request = request with { CollegeId = collegeId };
+        var result = await _mediator.Send(new GetCurrentYearCommand(collegeId), cancellationToken);
 
-        var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
     }
-    //[HttpPut("{id:guid}")]
-    //public async Task<IActionResult> Update([FromRoute] Guid collegeId, [FromRoute] Guid id, UpdateCourseCommand request, CancellationToken cancellationToken)
-    //{
-    //    request = request with { CollegeId = collegeId, Id = id };
 
-    //    var result = await _mediator.Send(request, cancellationToken);
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetAcademicYear([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetAcademicYearCommand(id), cancellationToken);
 
-    //    return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    //}
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
 
-    //[HttpDelete("{id:guid}")]
-    //public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
-    //{
-    //    var result = await _mediator.Send(new RemoveCourseCommand(id), cancellationToken);
+    [HttpGet("{academicYearId:guid}/current-semester")]
+    public async Task<IActionResult> GetCurrentSemester([FromRoute] Guid academicYearId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetCurrentSemesterCommand(academicYearId), cancellationToken);
 
-    //    return result.IsSuccess ? Ok() : result.ToProblem();
-    //}
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
+
+    [HttpPost("")]
+    public async Task<IActionResult> StartAcademicYear(
+        [FromRoute] Guid collegeId,
+        [FromBody] StartAcademicYearCommand request,
+        CancellationToken cancellationToken)
+    {
+        request = request with { CollegeId = collegeId };
+
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateAcademicYear(
+        [FromRoute] Guid collegeId,
+        [FromRoute] Guid id,
+        [FromBody] UpdateAcademicYearCommand request,
+        CancellationToken cancellationToken)
+    {
+        request = request with { CollegeId = collegeId, Id = id };
+
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
+
+    [HttpPatch("{academicYearId:guid}/current-semester")]
+    public async Task<IActionResult> UpdateCurrentSemester(
+        [FromRoute] Guid academicYearId,
+        [FromBody] UpdateCurrentSemesterCommand request,
+        CancellationToken cancellationToken)
+    {
+        request = request with { AcademicYearId = academicYearId };
+
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
 }

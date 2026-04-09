@@ -9,10 +9,6 @@ internal class UpdateAcademicYearCommandValidator : AbstractValidator<UpdateAcad
 {
     public UpdateAcademicYearCommandValidator()
     { 
-        RuleFor(x => x.Name)
-            .Matches(@"^\d{4}-\d{4}$")
-            .WithMessage("Academic year name must be in the format YYYY-YYYY, e.g., 2026-2027.");
-
         RuleFor(x => x.StartDate)
             .NotNull()
             .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow.Date));

@@ -12,6 +12,6 @@ public record UpdateMilitaryDataCommand(
     string MilitaryNumber, // الرقم العسكري
     string DecisionNumber, // رقم قرار التجنيد
     DateOnly? DecisionDate, // تاريخ قرار التجنيد
-    DateOnly? EnrollmentDateault, // تاريخ الالتحاق
+    DateOnly? EnrollmentDate, // تاريخ الالتحاق
     DateOnly? EndDate // تاريخ نهاية الالتحاق
 ) : IRequest<Result<MilitaryDataResponse>>;

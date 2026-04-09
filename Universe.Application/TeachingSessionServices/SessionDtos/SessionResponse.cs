@@ -7,12 +7,14 @@ namespace Universe.Application.TeachingSessionServices.SessionDtos;
 
 
 public record SessionResponse(
-    Guid Id,
+    string Id,
     TimeOnly StartTime,
     TimeOnly EndTime,
     SessionType Type,
     Core.Enums.DayOfWeek Day,
-    Guid InstructorId,
-    Guid RoomId,
+    string InstructorId,
+    string InstructorName,
+    string RoomId,
+    string RoomName,
     int GroupNumber
 );  

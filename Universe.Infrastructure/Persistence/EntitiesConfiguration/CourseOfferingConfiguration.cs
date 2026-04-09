@@ -12,7 +12,8 @@ public class CourseOfferingConfiguration : IEntityTypeConfiguration<CourseOfferi
 {
     public void Configure(EntityTypeBuilder<CourseOffering> builder)
     {
-        builder.Property(co => co.OtionalGroupCode)
+        builder.Property(co => co.OptionalGroupCode)
+            .IsRequired(false)
             .HasMaxLength(50);
 
 
@@ -24,9 +25,6 @@ public class CourseOfferingConfiguration : IEntityTypeConfiguration<CourseOfferi
 
         builder.Property(co => co.SuccessPercentage)
             .HasColumnType("decimal(5,2)");
-
-        builder.Property(co => co.IsOptional)
-            .IsRequired();
 
         builder.Property(s => s.Type)
             .HasConversion(

@@ -14,6 +14,6 @@ public class GetPreviousQualificationDataCommandHandler(
         if (await _unitOfWork.UserRepository.GetStudentByIdAsync(request.StudentId , cancellationToken)
             is not { } student) return Result.Failure<PreviousQualificationResponse>(StudentErrors.UserNotFound);
 
-        return Result.Success(student.Adapt<PreviousQualificationResponse>());
+        return Result.Success(student.PreviousQualification.Adapt<PreviousQualificationResponse>());
     }
 }

@@ -8,6 +8,6 @@ public record ContactDataResponse(
     string City, // المدينة
     string Address, // العنوان
     string PostalCode, //
-    string Mobile, // الموبايل
+    string PhoneNumber, // الموبايل
     string Email // البريد الالكتروني
 );

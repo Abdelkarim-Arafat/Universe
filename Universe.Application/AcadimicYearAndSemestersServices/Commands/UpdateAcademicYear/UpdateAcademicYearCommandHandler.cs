@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Universe.Application.AcademicYearAndSemestersServices.Dtos;
+using Universe.Application.AcadimicYearAndSemestersServices.Dtos;
 using Universe.Core.Enums;
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
@@ -12,8 +13,11 @@ public class UpdateAcademicYearCommandHandler(
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<AcademicYearResponse>> Handle(UpdateAcademicYearCommand request, CancellationToken cancellationToken)
+    public async Task<Result<AcademicYearResponse>> Handle(UpdateAcademicYearCommand request , CancellationToken cancellationToken)
     {
+
+        string Name = $"{request.StartDate.Year}-{request.EndDate.Year}";
+
         if (await _unitOfWork.CollegeRepository.CheckCollegeIsExistAsync(request.CollegeId) is false)
             return Result.Failure<AcademicYearResponse>(CollegeErrors.NotFound);
 
@@ -22,7 +26,7 @@ public class UpdateAcademicYearCommandHandler(
             ) return Result.Failure<AcademicYearResponse>(AcademicYearErrors.NotFound);
 
         if (await _unitOfWork.AcademicYearRepository
-            .IsMakeConflictAsync(request.CollegeId, request.Name, request.StartDate, request.EndDate, request.Id, cancellationToken)
+            .IsMakeConflictAsync(request.CollegeId, Name , request.StartDate, request.EndDate, request.Id, cancellationToken)
             ) return Result.Failure<AcademicYearResponse>(AcademicYearErrors.MakeConflict);
 
         var semesters = request.Semesters.OrderBy(s => s.StartDate).ToList();
@@ -39,7 +43,7 @@ public class UpdateAcademicYearCommandHandler(
             }
         }
 
-        academicYear.Name = request.Name;
+        academicYear.Name = Name;
         academicYear.StartDate = request.StartDate;
         academicYear.EndDate = request.EndDate;
 

@@ -18,9 +18,11 @@ internal class UpdateContactDataCommandHandler(
             .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
             return Result.Failure<ContactDataResponse>(StudentErrors.UserNotFound);
 
-        student.Adapt(request);
+        request.Adapt(student.ContactInfo);
         _unitOfWork.Repository<Student>().Update(student);
 
-        return Result.Success(student.Adapt<ContactDataResponse>());
+        await _unitOfWork.CompleteAsync(cancellationToken);
+
+        return Result.Success(student.ContactInfo.Adapt<ContactDataResponse>());
     }
 }

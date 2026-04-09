@@ -5,19 +5,19 @@ using Universe.Core.Enums;
 namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 
 public record AddCourseOfferingCommand(
-    Guid AcademicProgramId,
+    [Required] Guid AcademicProgramId,
     decimal CreditHours,
     decimal TotalGrade,
     decimal SuccessPercentage,
     bool IsOptional,
-    string OptionalGroupCode,
+    string? OptionalGroupCode,
     bool IsIncludedInGpa,
     RequirementType Type,
     Guid CourseId,
     Guid SemesterId,
     Guid LevelId,
     List<CourseOfferingAssessmentCommand> Assessments
-) : IRequest<Result<CourseOfferingResponse>>;
+) : IRequest<Result<CourseOfferingWithDetailsResponse>>;
 
 public record CourseOfferingAssessmentCommand(
     AssessmentType Type,

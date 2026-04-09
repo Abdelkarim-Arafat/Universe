@@ -24,6 +24,7 @@ public class UpdatePreviousQualificationCommandValidator : AbstractValidator<Upd
             .MaximumLength(10).WithMessage("Graduation year cannot exceed 10 characters.");
 
         RuleFor(x => x.AdmissionType)
+            .NotNull().NotEmpty()
             .IsInEnum().WithMessage("Invalid admission type value.");
 
         RuleFor(x => x.TotalGrade)
