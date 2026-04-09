@@ -65,6 +65,16 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
             && !x.CourseOffering.IsDeleted)
            .SumAsync(x => x.CourseOffering.CreditHours, cancellationToken);
     }
+    public async Task<decimal> CalculateCreditHoursAsync(Guid StudentId,Guid SemesterId, CancellationToken cancellationToken)
+    {
+        return await _context.Enrollments
+            .Where(x => x.StudentId == StudentId
+            && x.Status == Core.Enums.EnrollmentStatus.Passed
+            && x.CourseOffering.SemesterId == SemesterId
+            && !x.IsDeleted
+            && !x.CourseOffering.IsDeleted)
+           .SumAsync(x => x.CourseOffering.CreditHours, cancellationToken);
+    }
 
     public async Task<Level?> GetCurrentLevelAsync(Guid StudentId, CancellationToken cancellationToken)
     {
@@ -86,7 +96,21 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 
         var totalEarnedCreditHours = await CalculateCreditHoursAsync(StudentId, cancellationToken);
 
-        return (decimal)totalQualityPoints / totalEarnedCreditHours;
+        return totalEarnedCreditHours == 0 ? 0 : (decimal)totalQualityPoints / totalEarnedCreditHours;
+    }
+    public async Task<decimal> CalculateSemesterGpaAsync(Guid StudentId,Guid SemesterId, CancellationToken cancellationToken)
+    {
+        var totalQualityPoints = await _context.Enrollments
+            .Where(e => e.StudentId == StudentId
+            && e.Status == Core.Enums.EnrollmentStatus.Passed
+            && e.CourseOffering.IsIncludedInGpa
+            && e.CourseOffering.SemesterId == SemesterId
+            && !e.IsDeleted)
+            .SumAsync(x => x.GradePoint * x.CourseOffering.CreditHours, cancellationToken);
+
+        var totalEarnedCreditHours = await CalculateCreditHoursAsync(StudentId, SemesterId, cancellationToken);
+
+        return totalEarnedCreditHours == 0 ? 0 : (decimal)totalQualityPoints / totalEarnedCreditHours;
     }
 
     public async Task<List<StudentAssessment>> GetStudentAssessmentByCourseOfferingBulkAsync

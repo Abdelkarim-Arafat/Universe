@@ -62,6 +62,29 @@ public class EnrollmentRepository(
             .ToDictionaryAsync(x => x.SessionId, x => x.Count, cancellationToken);
     }
 
+    public async Task<List<(TeachingSession Session, int EnrolledCount)>> GetSessionsWithAvailabilityBulk(
+     Guid courseOfferingId,
+     CancellationToken cancellationToken)
+    {
+        var results = await _context.CourseOfferingSessions
+            .AsNoTracking()
+            .Where(x => x.CourseOfferingId == courseOfferingId)
+            .Select(x => new
+            {
+                // بنسحب الـ Session والـ Instructor والعدد في خبطة واحدة
+                Session = x.TeachingSession,
+                Instructor = x.TeachingSession.Instructor,
+                EnrolledCount = x.TeachingSession.TeachingSessionEnrollments.Count()
+            })
+            .ToListAsync(cancellationToken);
+
+       
+        return results.Select(r =>
+        {    
+            r.Session.Instructor = r.Instructor;
+            return (r.Session, r.EnrolledCount);
+        }).ToList();
+    }
     public async Task<List<TeachingSessionEnrollment>> GetTeachingSessionEnrollmentAsync(Guid StudentId, CancellationToken cancellationToken)
     {
         var EnrollmentsIds = await _context.Enrollments
@@ -75,5 +98,15 @@ public class EnrollmentRepository(
             .Include(x => x.TeachingSession)
             .Where(x => EnrollmentsIds.Contains(x.EnrollmentId) && !x.IsDeleted)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<Enrollment>> GetStudentEnrollmentsAsync(Guid studentId, CancellationToken cancellationToken)
+    {
+        return await _context.Enrollments
+            .AsNoTracking()
+            .Include(e => e.CourseOffering)
+                .ThenInclude(co => co.Course)
+            .Where(e => e.StudentId == studentId)
+            .ToListAsync();
     }
 }
