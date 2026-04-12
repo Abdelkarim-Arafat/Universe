@@ -12,15 +12,15 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260312153644_EnrollmentAndTeachingSessionEnrollment")]
-    partial class EnrollmentAndTeachingSessionEnrollment
+    [Migration("20260412185705_UpdateGradeTAbl")]
+    partial class UpdateGradeTAbl
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -614,8 +614,7 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("NumberOfGroups")
                         .HasColumnType("int");
 
-                    b.Property<string>("OtionalGroupCode")
-                        .IsRequired()
+                    b.Property<string>("OptionalGroupCode")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -743,6 +742,9 @@ namespace Universe.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("CourseOfferingId")
                         .HasColumnType("uniqueidentifier");
 
@@ -757,6 +759,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
@@ -796,8 +801,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("MaxGradePoint")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("MaxScore")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("MinGradePoint")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("MinScore")
                         .HasColumnType("int");
@@ -989,6 +1000,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1027,7 +1041,6 @@ namespace Universe.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -1040,7 +1053,6 @@ namespace Universe.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MaritalStatus")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -1064,10 +1076,8 @@ namespace Universe.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Religion")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int?>("Religion")
+                        .HasColumnType("int");
 
                     b.Property<string>("StudentCode")
                         .IsRequired()
@@ -1118,6 +1128,45 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("AcademicProgramId");
 
                     b.ToTable("StudentAcademicPrograms");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.StudentAssessment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseOfferingAssessmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseOfferingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("degree")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseOfferingAssessmentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentAssessments");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
@@ -1209,6 +1258,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -1707,7 +1759,6 @@ namespace Universe.Infrastructure.Migrations
                                 .HasColumnType("nvarchar(50)");
 
                             b1.Property<string>("MilitaryStatus")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("nvarchar(50)");
 
@@ -1778,7 +1829,6 @@ namespace Universe.Infrastructure.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("AdmissionType")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("nvarchar(50)");
 
@@ -1849,6 +1899,25 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("Universe.Core.Entities.StudentAssessment", b =>
+                {
+                    b.HasOne("Universe.Core.Entities.CourseOfferingAssessment", "CourseOfferingAssessment")
+                        .WithMany("StudentAssessments")
+                        .HasForeignKey("CourseOfferingAssessmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Universe.Core.Entities.Student", "Student")
+                        .WithMany("StudentAssessments")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CourseOfferingAssessment");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
                 {
                     b.HasOne("Universe.Core.Entities.AcademicProgram", "AcademicProgram")
@@ -1909,13 +1978,13 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.TeachingSessionEnrollment", b =>
                 {
                     b.HasOne("Universe.Core.Entities.Enrollment", "Enrollment")
-                        .WithMany()
+                        .WithMany("TeachingSessionEnrollments")
                         .HasForeignKey("EnrollmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Universe.Core.Entities.TeachingSession", "TeachingSession")
-                        .WithMany()
+                        .WithMany("TeachingSessionEnrollments")
                         .HasForeignKey("TeachingSessionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1982,6 +2051,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("Enrollments");
                 });
 
+            modelBuilder.Entity("Universe.Core.Entities.CourseOfferingAssessment", b =>
+                {
+                    b.Navigation("StudentAssessments");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.Enrollment", b =>
+                {
+                    b.Navigation("TeachingSessionEnrollments");
+                });
+
             modelBuilder.Entity("Universe.Core.Entities.Level", b =>
                 {
                     b.Navigation("CourseOfferings");
@@ -2013,11 +2092,15 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("Enrollments");
 
                     b.Navigation("StudentAcademicPrograms");
+
+                    b.Navigation("StudentAssessments");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.TeachingSession", b =>
                 {
                     b.Navigation("CourseOfferingSessions");
+
+                    b.Navigation("TeachingSessionEnrollments");
                 });
 #pragma warning restore 612, 618
         }

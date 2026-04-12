@@ -33,7 +33,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             return Result.Failure<List<EnrollmentInfo>>(EnrollmentErrors.DublicatedSessions);
 
 
-        var StudentLevel = await _unitOfWork.UserRepository.GetCurrentLevelAsync(command.StudentId, cancellationToken);
+        var StudentLevel = await _unitOfWork.LevelRepository.GetStudentCurrentLevelAsync(command.StudentId, cancellationToken);
 
         if (StudentLevel is null)
             return Result.Failure<List<EnrollmentInfo>>(LevelErrors.NotFound);
@@ -46,11 +46,15 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
 
         var StudyLoad = await _unitOfWork.StudyLoadByLevelRepository
             .GetByLevelIdAndSemesterIdAsync(StudentLevel.Id, command.SemesterId, cancellationToken);
+
         if (StudyLoad is null)
             return Result.Failure<List<EnrollmentInfo>>(StudyLoadRuleErrors.NotFound);
+
         var courseOfferingsIds = command.newSessions.Select(e => e.CourseOfferingId).ToList();
+
         decimal registredHours = await _unitOfWork.CourseOfferingRepository
             .RegistredHours(courseOfferingsIds, cancellationToken);
+
         if(registredHours < StudyLoad.MinHours || registredHours > StudyLoad.MaxHours)
             return Result.Failure<List<EnrollmentInfo>>(StudyLoadRuleErrors.NotAllowedHours);
 
@@ -72,14 +76,14 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         var existingEnrollments = await _unitOfWork.EnrollmentRepository
             .GetStudentEnrollmentsWithSessions(command.StudentId, cancellationToken);
 
-        // List<Enrollment> + Navigation: TeachingSessionEnrollments
+        //List<Enrollment> + TeachingSessionEnrollments
 
         var existingCourseOfferingIds = existingEnrollments
             .Select(x => x.CourseOfferingId)
             .ToHashSet();
 
    
-        //  Diff Courses
+        //Diff Courses
      
 
         var toAddCourses = incomingCourseOfferingIds.Except(existingCourseOfferingIds).ToList();
@@ -88,7 +92,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
 
         
 
-        //   (GroupNumber + Capacity)
+        //(GroupNumber + Capacity)
         var sessionsData = await _unitOfWork.SessionRepository
                 .GetGroupNumberAndCapacityBulkAsync(sessionIds, cancellationToken);
 
@@ -301,11 +305,11 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             await _unitOfWork.Repository<StudentAssessment>()
                 .AddRangeAsync(AssessmentsToAdd, cancellationToken);
 
+            _unitOfWork.Repository<TeachingSessionEnrollment>()
+              .DeletePermanentlyRange(sessionEnrollmentsToDelete);
+
             _unitOfWork.Repository<Enrollment>()
                .DeletePermanentlyRange(enrollmentsToDelete);
-
-            _unitOfWork.Repository<TeachingSessionEnrollment>()
-               .DeletePermanentlyRange(sessionEnrollmentsToDelete);
 
             _unitOfWork.Repository<StudentAssessment>()
                .DeletePermanentlyRange(AssessmentsToRemove);

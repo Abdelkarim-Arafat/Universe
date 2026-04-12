@@ -25,6 +25,11 @@ public class CourseOfferingErrors
         "This Group Number is not valid",
         StatusCodes.Status400BadRequest
     );
+    public static readonly Error NotOpenForControl = new Error(
+      "CourseOffering.NotOpenForControl",
+      "This course not open for control",
+      StatusCodes.Status400BadRequest
+  );
 }
 
 

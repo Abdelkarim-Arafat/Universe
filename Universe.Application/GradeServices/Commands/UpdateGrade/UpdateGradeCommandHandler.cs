@@ -15,7 +15,10 @@ public class UpdateGradeCommandHandler
 
 
         var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
-            .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, grade.Id, grade.AcademicProgramId, cancellationToken);
+            .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, grade.Id, grade.AcademicProgramId, cancellationToken)
+            || await _unitOfWork.GradeRepository
+            .CheckOverLabedPointsAsync(command.MinGradePoint, command.MaxGradePoint, grade.Id, grade.AcademicProgramId, cancellationToken)
+            ;
         if (isGradeWithOverLabExist)
             return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
 

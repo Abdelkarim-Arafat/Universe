@@ -45,7 +45,7 @@ public class GradeController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(command, cancellationToken);
 
         return result.IsSuccess
-            ? CreatedAtAction(nameof(Get), new { result.Value.Id }, result.Value)
+            ? CreatedAtAction(nameof(Get), result.Value.Id)
             : result.ToProblem();
     }
     [HttpPut("{id}")]

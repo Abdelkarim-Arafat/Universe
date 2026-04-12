@@ -22,4 +22,6 @@ public interface ICourseOfferingRepository
     Task<decimal> RegistredHours(List<Guid> CourseOfferingIds, CancellationToken cancellationToken);
     Task<Dictionary<Guid, Guid>> 
         CourseOfferingIdsToCourseIdAsync(List<Guid> CourseOfferingsIds, CancellationToken cancellationToken);
+    Task<bool> IsOpenForControlAsync(Guid courseOfferingId, CancellationToken cancellationToken);
+    Task<CourseOffering?> GetByIdIncludingEnrollmentsAsync(Guid courseOfferingId, CancellationToken cancellationToken);
 }

@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260409104552_new")]
-    partial class @new
+    [Migration("20260412191049_RemoveRoomType")]
+    partial class RemoveRoomType
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -605,6 +605,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<bool>("IsIncludedInGpa")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOpenForControl")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsOptional")
                         .HasColumnType("bit");
 
@@ -754,20 +757,11 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("FinalGrade")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("GradePoint")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("GroupNumber")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LetterGrade")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -810,8 +804,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("MaxGradePoint")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("MaxScore")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("MinGradePoint")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("MinScore")
                         .HasColumnType("int");
@@ -940,6 +940,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
 
+                    b.Property<int>("RoomType")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("RoomTypeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -950,39 +953,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("BuildingId");
 
-                    b.HasIndex("RoomTypeId");
-
                     b.ToTable("Rooms");
-                });
-
-            modelBuilder.Entity("Universe.Core.Entities.RoomType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("RoomTypes");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -1160,7 +1131,7 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("degree")
+                    b.Property<decimal?>("degree")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -1170,62 +1141,6 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("StudentAssessments");
-                });
-
-            modelBuilder.Entity("Universe.Core.Entities.StudentSemesterSummary", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AttemptedHours")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("CumulativeGPA")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("CumulativeGrade")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFinalized")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("SemesterGPA")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("SemesterGrade")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SemesterId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("TotalHoursEarned")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SemesterId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentSemesterSummaries");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
@@ -1719,15 +1634,7 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Universe.Core.Entities.RoomType", "RoomType")
-                        .WithMany("Rooms")
-                        .HasForeignKey("RoomTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Building");
-
-                    b.Navigation("RoomType");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -1977,25 +1884,6 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("Universe.Core.Entities.StudentSemesterSummary", b =>
-                {
-                    b.HasOne("Universe.Core.Entities.Semester", "Semester")
-                        .WithMany()
-                        .HasForeignKey("SemesterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Universe.Core.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Semester");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
                 {
                     b.HasOne("Universe.Core.Entities.AcademicProgram", "AcademicProgram")
@@ -2149,11 +2037,6 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.Room", b =>
                 {
                     b.Navigation("TeachingSessions");
-                });
-
-            modelBuilder.Entity("Universe.Core.Entities.RoomType", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>

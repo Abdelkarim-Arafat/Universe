@@ -14,6 +14,7 @@ public class CourseOffering : BaseEntity
     public bool IsOptional { get; set; }
     public bool IsIncludedInGpa { get; set; } = true;
     public string? OptionalGroupCode { get; set; }
+    public bool IsOpenForControl { get; set; }
     public int NumberOfGroups { get; set; } = 1;
     public RequirementType Type { get; set; }
 

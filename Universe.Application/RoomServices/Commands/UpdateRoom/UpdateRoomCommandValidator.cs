@@ -14,9 +14,7 @@ public class UpdateRoomCommandValidator : AbstractValidator<UpdateRoomCommand>
         RuleFor(x => x.RoomNumber)
            .NotEmpty().WithMessage("RoomNumber is required.")
            .GreaterThanOrEqualTo(1);
-
-        RuleFor(x => x.RoomTypeId)
-          .NotEmpty().WithMessage("RoomTypeId is required.");
+ 
 
     }
 }

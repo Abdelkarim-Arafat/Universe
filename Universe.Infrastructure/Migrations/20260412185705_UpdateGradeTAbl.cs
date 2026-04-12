@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Universe.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddStudyLoadByLevel : Migration
+    public partial class UpdateGradeTAbl : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -263,6 +263,8 @@ namespace Universe.Infrastructure.Migrations
                     Code = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
                     MinScore = table.Column<int>(type: "int", nullable: false),
                     MaxScore = table.Column<int>(type: "int", nullable: false),
+                    MinGradePoint = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MaxGradePoint = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AcademicProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -340,6 +342,7 @@ namespace Universe.Infrastructure.Migrations
                     AcademicYearId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    IsCurrent = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -531,13 +534,13 @@ namespace Universe.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     StudentCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Religion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Religion = table.Column<int>(type: "int", nullable: true),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true),
                     PlaceOfBirth = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     NationalIdOrPassport = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MaritalStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MaritalStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ContactInfo_City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ContactInfo_Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     ContactInfo_PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
@@ -557,7 +560,7 @@ namespace Universe.Infrastructure.Migrations
                     PreviousQualification_Qualification = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     PreviousQualification_GraduationYear = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PreviousQualification_TotalGrade = table.Column<decimal>(type: "decimal(6,2)", nullable: false),
-                    PreviousQualification_AdmissionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PreviousQualification_AdmissionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MilitaryInfo_MilitaryStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MilitaryInfo_MilitaryNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MilitaryInfo_DecisionNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -597,6 +600,7 @@ namespace Universe.Infrastructure.Migrations
                     StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     GroupNumber = table.Column<int>(type: "int", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
                     InstructorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -631,7 +635,7 @@ namespace Universe.Infrastructure.Migrations
                     SuccessPercentage = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     IsOptional = table.Column<bool>(type: "bit", nullable: false),
                     IsIncludedInGpa = table.Column<bool>(type: "bit", nullable: false),
-                    OtionalGroupCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    OptionalGroupCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     NumberOfGroups = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -824,6 +828,97 @@ namespace Universe.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Enrollments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupNumber = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CourseOfferingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enrollments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Enrollments_CourseOfferings_CourseOfferingId",
+                        column: x => x.CourseOfferingId,
+                        principalTable: "CourseOfferings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Enrollments_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentAssessments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    degree = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CourseOfferingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CourseOfferingAssessmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentAssessments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StudentAssessments_CourseOfferingAssessments_CourseOfferingAssessmentId",
+                        column: x => x.CourseOfferingAssessmentId,
+                        principalTable: "CourseOfferingAssessments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StudentAssessments_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeachingSessionEnrollments",
+                columns: table => new
+                {
+                    TeachingSessionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EnrollmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeachingSessionEnrollments", x => new { x.EnrollmentId, x.TeachingSessionId });
+                    table.ForeignKey(
+                        name: "FK_TeachingSessionEnrollments_Enrollments_EnrollmentId",
+                        column: x => x.EnrollmentId,
+                        principalTable: "Enrollments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TeachingSessionEnrollments_TeachingSessions_TeachingSessionId",
+                        column: x => x.TeachingSessionId,
+                        principalTable: "TeachingSessions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "IsDefault", "IsDeleted", "Level", "Name", "NormalizedName" },
@@ -992,6 +1087,16 @@ namespace Universe.Infrastructure.Migrations
                 column: "CollegeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_CourseOfferingId",
+                table: "Enrollments",
+                column: "CourseOfferingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enrollments_StudentId",
+                table: "Enrollments",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Grades_AcademicProgramId",
                 table: "Grades",
                 column: "AcademicProgramId");
@@ -1044,6 +1149,16 @@ namespace Universe.Infrastructure.Migrations
                 column: "AcademicProgramId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StudentAssessments_CourseOfferingAssessmentId",
+                table: "StudentAssessments",
+                column: "CourseOfferingAssessmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentAssessments_StudentId",
+                table: "StudentAssessments",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Students_CollegeId",
                 table: "Students",
                 column: "CollegeId");
@@ -1067,6 +1182,11 @@ namespace Universe.Infrastructure.Migrations
                 name: "IX_StudyLoadRules_AcademicProgramId",
                 table: "StudyLoadRules",
                 column: "AcademicProgramId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingSessionEnrollments_TeachingSessionId",
+                table: "TeachingSessionEnrollments",
+                column: "TeachingSessionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeachingSessions_InstructorId",
@@ -1098,9 +1218,6 @@ namespace Universe.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CourseOfferingAssessments");
-
-            migrationBuilder.DropTable(
                 name: "CourseOfferingSessions");
 
             migrationBuilder.DropTable(
@@ -1122,22 +1239,37 @@ namespace Universe.Infrastructure.Migrations
                 name: "StudentAcademicPrograms");
 
             migrationBuilder.DropTable(
+                name: "StudentAssessments");
+
+            migrationBuilder.DropTable(
                 name: "StudyLoadByLevels");
 
             migrationBuilder.DropTable(
                 name: "StudyLoadRules");
 
             migrationBuilder.DropTable(
+                name: "TeachingSessionEnrollments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CourseOfferings");
+                name: "CourseOfferingAssessments");
+
+            migrationBuilder.DropTable(
+                name: "Enrollments");
 
             migrationBuilder.DropTable(
                 name: "TeachingSessions");
 
             migrationBuilder.DropTable(
+                name: "CourseOfferings");
+
+            migrationBuilder.DropTable(
                 name: "Students");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Courses");
@@ -1149,19 +1281,16 @@ namespace Universe.Infrastructure.Migrations
                 name: "Semesters");
 
             migrationBuilder.DropTable(
-                name: "Rooms");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "AcademicYears");
 
             migrationBuilder.DropTable(
                 name: "Buildings");
 
             migrationBuilder.DropTable(
                 name: "RoomTypes");
+
+            migrationBuilder.DropTable(
+                name: "AcademicYears");
 
             migrationBuilder.DropTable(
                 name: "AcademicPrograms");

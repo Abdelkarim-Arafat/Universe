@@ -18,7 +18,6 @@ public interface IUnitOfWork: IAsyncDisposable
     ISessionRepository SessionRepository { get; }
     IBuildingRepository BuildingRepository { get; }
     IRoomRepository RoomRepository { get; }
-    IRoomTypeRepository RoomTypeRepository { get; }
     ILevelRepository LevelRepository { get; }
     IGradeRepository GradeRepository { get; }
     IStudyLoadRuleRepository StudyLoadRuleRepository { get; }
@@ -26,6 +25,5 @@ public interface IUnitOfWork: IAsyncDisposable
     IUserRepository UserRepository { get; }
     ICollegeRepository CollegeRepository { get; }
     IEnrollmentRepository EnrollmentRepository { get; }
-    IStudentSemesterSummaryRepository StudentSemesterSummaryRepository { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);
 }

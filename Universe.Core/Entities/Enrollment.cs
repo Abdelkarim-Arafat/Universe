@@ -9,9 +9,6 @@ public class Enrollment : BaseEntity
     public Enrollment() { Id = Guid.CreateVersion7(); }
     public int GroupNumber { get; set; }
     public EnrollmentStatus Status { get; set; }
-    public decimal? FinalGrade { get; set; }
-    public string? LetterGrade { get; set; }
-    public decimal? GradePoint { get; set; }
     public Guid CourseId { get; set; }
     public Guid StudentId { get; set; }
     public Student Student { get; set; } = default!;

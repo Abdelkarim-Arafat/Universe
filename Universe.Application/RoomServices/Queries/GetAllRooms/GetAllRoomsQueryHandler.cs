@@ -21,14 +21,13 @@ public class GetAllRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
         {
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
-        query = query.Include(room => room.RoomType);
-
+        
         var source = query.Select(room => new RoomResponse(
             room.Id,
             room.Name,
             room.RoomNumber,
             room.Capacity,
-            room.RoomType.Name
+            room.RoomType.ToString()
         ));
 
         var response = await PaginationList<RoomResponse>

@@ -18,7 +18,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         if (Student is null)
             return Result.Failure<EnrollmentPageResponse>(StudentErrors.UserNotFound);
 
-        var StudentLevel = await _unitOfWork.UserRepository.GetCurrentLevelAsync(Student.Id, cancellationToken);
+        var StudentLevel = await _unitOfWork.LevelRepository.GetStudentCurrentLevelAsync(Student.Id, cancellationToken);
 
         if (StudentLevel is null)
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.NotFound);
@@ -113,7 +113,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             );
 
         decimal Gpa = await _unitOfWork.UserRepository
-            .CalculateComulativeGpaAsync(Student.Id, cancellationToken);
+            .CalculateGpaAsync(Student.Id, null, cancellationToken);
 
         decimal RegistredHours = await _unitOfWork.EnrollmentRepository
             .CalculateRegistredHoursAsync(Student.Id, cancellationToken);

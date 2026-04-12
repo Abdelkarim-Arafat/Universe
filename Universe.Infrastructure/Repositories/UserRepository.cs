@@ -5,9 +5,14 @@ using Universe.Infrastructure.Persistence;
 
 namespace Universe.Infrastructure.Repositories;
 
-public class UserRepository(ApplicationDbContext context) : IUserRepository
+public class UserRepository
+    (ApplicationDbContext context,
+    IAcademicProgramRepository academicProgramRepository,
+    IGradeRepository gradeRepository) : IUserRepository
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly IAcademicProgramRepository _academicProgramRepository = academicProgramRepository;
+    private readonly IGradeRepository _gradeRepository = gradeRepository;
 
     public async Task<bool> UserIsExistAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.Users.AnyAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);
@@ -35,14 +40,16 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
             setter.SetProperty(x => x.Name, x => x.Name)
         );
 
-    public async Task<bool> IsStudentCodeExistsAsync(Guid CollegeId, Guid? UserId, string studentCode, CancellationToken cancellationToken)
+    public async Task<bool> IsStudentCodeExistsAsync
+        (Guid CollegeId, Guid? UserId, string studentCode, CancellationToken cancellationToken)
         => await _context.Students
         .AnyAsync(x => x.CollegeId == CollegeId &&
         x.StudentCode == studentCode &&
         !x.IsDeleted &&
         (UserId == null || x.Id != UserId), cancellationToken);
 
-    public async Task<bool> IsStudentNationalIdExistsAsync(Guid CollegeId, Guid? UserId, string NationalId, CancellationToken cancellationToken)
+    public async Task<bool> IsStudentNationalIdExistsAsync
+        (Guid CollegeId, Guid? UserId, string NationalId, CancellationToken cancellationToken)
         => await _context.Students
         .AnyAsync(x => x.CollegeId == CollegeId &&
         x.NationalIdOrPassport == NationalId &&
@@ -56,61 +63,57 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
          .Select(x => x.AcademicProgramId)
          .FirstOrDefaultAsync(cancellationToken);
 
-    public async Task<decimal> CalculateCreditHoursAsync(Guid StudentId, CancellationToken cancellationToken)
+    public async Task<decimal> CalculateCreditHoursAsync
+        (Guid StudentId,Guid? SemesterId, CancellationToken cancellationToken)
     {
         return await _context.Enrollments
             .Where(x => x.StudentId == StudentId
             && x.Status == Core.Enums.EnrollmentStatus.Passed
+            && ((SemesterId == null)|| (x.CourseOffering.SemesterId == SemesterId))
             && !x.IsDeleted
             && !x.CourseOffering.IsDeleted)
            .SumAsync(x => x.CourseOffering.CreditHours, cancellationToken);
     }
-    public async Task<decimal> CalculateCreditHoursAsync(Guid StudentId, Guid SemesterId, CancellationToken cancellationToken)
+    public async Task<decimal> CalculateGpaAsync
+        (Guid StudentId,Guid? SemesterId, CancellationToken cancellationToken)
     {
-        return await _context.Enrollments
-            .Where(x => x.StudentId == StudentId
-            && x.Status == Core.Enums.EnrollmentStatus.Passed
-            && x.CourseOffering.SemesterId == SemesterId
-            && !x.IsDeleted
-            && !x.CourseOffering.IsDeleted)
-           .SumAsync(x => x.CourseOffering.CreditHours, cancellationToken);
-    }
+        var studentCourseGrades = await _context.Enrollments
+          .AsNoTracking()
+          .Where(e => e.StudentId == StudentId
+                 && e.Status == Core.Enums.EnrollmentStatus.Passed
+                 && e.CourseOffering.IsIncludedInGpa
+                 && ((SemesterId == null)|| (e.CourseOffering.SemesterId == SemesterId))
+                 && !e.IsDeleted)
+          .Select(e => new
+          {
+            e.CourseOffering.CreditHours,
+            TotalStudentDegree = e.Student.StudentAssessments
+             .Where(sa => sa.CourseOfferingId == e.CourseOfferingId && !sa.IsDeleted)
+             .Sum(sa => sa.degree ?? 0)
+          })
+        .ToListAsync(cancellationToken);
 
-    public async Task<Level?> GetCurrentLevelAsync(Guid StudentId, CancellationToken cancellationToken)
-    {
-        int creditHours = (int)await CalculateCreditHoursAsync(StudentId, cancellationToken);
-        return await _context.Levels
-            .FirstOrDefaultAsync(lv => creditHours >= lv.MinHours
-            && creditHours <= lv.MaxHours
-            && !lv.IsDeleted, cancellationToken);
-    }
+        var AcademicProgramId = await _academicProgramRepository
+            .GetCurrentAcademicProgramIdAsync(StudentId, cancellationToken);
 
-    public async Task<decimal> CalculateComulativeGpaAsync(Guid StudentId, CancellationToken cancellationToken)
-    {
-        var totalQualityPoints = await _context.Enrollments
-            .Where(e => e.StudentId == StudentId
-            && e.Status == Core.Enums.EnrollmentStatus.Passed
-            && e.CourseOffering.IsIncludedInGpa
-            && !e.IsDeleted)
-            .SumAsync(x => x.GradePoint * x.CourseOffering.CreditHours, cancellationToken);
+        var gradeScales = await _gradeRepository.GetProgramGradesAsync(AcademicProgramId.Value, cancellationToken);
 
-        var totalEarnedCreditHours = await CalculateCreditHoursAsync(StudentId, cancellationToken);
+        decimal totalQualityPoints = 0;
 
-        return totalEarnedCreditHours == 0 ? 0 : (decimal)totalQualityPoints / totalEarnedCreditHours;
-    }
-    public async Task<decimal> CalculateSemesterGpaAsync(Guid StudentId, Guid SemesterId, CancellationToken cancellationToken)
-    {
-        var totalQualityPoints = await _context.Enrollments
-            .Where(e => e.StudentId == StudentId
-            && e.Status == Core.Enums.EnrollmentStatus.Passed
-            && e.CourseOffering.IsIncludedInGpa
-            && e.CourseOffering.SemesterId == SemesterId
-            && !e.IsDeleted)
-            .SumAsync(x => x.GradePoint * x.CourseOffering.CreditHours, cancellationToken);
+        foreach (var course in studentCourseGrades)
+        {
+            
+            var points = gradeScales
+                .FirstOrDefault(g => course.TotalStudentDegree >= g.MinScore
+                                  && course.TotalStudentDegree <= g.MaxScore)
+                ?.MinGradePoint ?? 0;
+
+            totalQualityPoints += (points * course.CreditHours);
+        }
 
         var totalEarnedCreditHours = await CalculateCreditHoursAsync(StudentId, SemesterId, cancellationToken);
 
-        return totalEarnedCreditHours == 0 ? 0 : (decimal)totalQualityPoints / totalEarnedCreditHours;
+        return totalEarnedCreditHours == 0 ? 0 : totalQualityPoints / totalEarnedCreditHours;
     }
 
     public async Task<List<StudentAssessment>> GetStudentAssessmentByCourseOfferingBulkAsync
@@ -122,6 +125,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
              && !ass.IsDeleted)
              .ToListAsync(cancellationToken);
     }
+
     // فصل كل شيء من بعضه
     public async Task<List<(Student Student, string StudentLevelName, List<StudentAssessment> Assessments)>>
         GetStudentsByCourseOfferingAndGroupNumberAsync(
@@ -176,5 +180,24 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
             .Include(sa=>sa.CourseOfferingAssessment)
             .Where(sa => StudentsIds.Contains(sa.StudentId) && !sa.IsDeleted)
             .ToListAsync(cancellationToken);
-    }   
+    }
+
+    public async Task<Dictionary<Guid, decimal>>
+        GetAllStudentDegreesInCoursesAsync(Guid studentId, CancellationToken cancellationToken)
+    {
+        return await _context.StudentAssessments
+            .AsNoTracking()
+            .Where(sa => sa.StudentId == studentId && !sa.IsDeleted)
+            .GroupBy(sa => sa.CourseOfferingId)
+            .Select(g => new
+            {
+                CourseOfferingId = g.Key,
+                TotalDegree = g.Sum(sa => sa.degree!.Value)
+            })
+            .ToDictionaryAsync(
+                x => x.CourseOfferingId,
+                x => x.TotalDegree,
+                cancellationToken
+            );
+    }
 }
