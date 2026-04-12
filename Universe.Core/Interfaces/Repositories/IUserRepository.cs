@@ -21,4 +21,11 @@ public interface IUserRepository
 
     Task<List<StudentAssessment>> GetStudentAssessmentByCourseOfferingBulkAsync
         (List<Guid> ToRemoveCourses, Guid StudentId, CancellationToken cancellationToken);
+    Task<List<(Student Student, string StudentLevelName, List<StudentAssessment> Assessments)>> GetStudentsByCourseOfferingAndGroupNumberAsync(
+     Guid courseOfferingId,
+     int groupNumber,
+     string? studentCodeOrName,
+     CancellationToken cancellationToken);
+
+    Task<List<StudentAssessment>> GetStudentsAssessmentsAsync(List<Guid> StudentsIds, CancellationToken cancellationToken);
 }

@@ -2,17 +2,14 @@
 
 namespace Universe.Application.EnrollmentServices.Commands.Update;
 
-public record UpdateEnrollmentCommand
-(
+public record UpdateEnrollmentCommand(
     [Required] Guid StudentId,
-     NeededHours Hours,
-     List<EnrollmentInfo> NewEnrollments
+    [Required] Guid SemesterId,
+    List<SessionAndCourseOfferingIds> newSessions  
 ) : IRequest<Result<List<EnrollmentInfo>>>;
 
-
-public record NeededHours
-(
-    int RegisterdHours,
-    int MaxAllowedHours,
-    int MinAllowedHours
+ 
+public record SessionAndCourseOfferingIds(
+    Guid SessionId,
+    Guid CourseOfferingId
 );

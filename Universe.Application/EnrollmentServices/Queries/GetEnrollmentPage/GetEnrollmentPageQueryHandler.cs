@@ -56,7 +56,6 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             x.EnrollmentId,
             x.TeachingSessionId,
             x.Enrollment.CourseOfferingId,
-            x.Enrollment.CourseId,
             x.TeachingSession.Type,
             x.TeachingSession.StartTime,
             x.TeachingSession.EndTime,
@@ -66,7 +65,6 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
 
         foreach (var courseOffering in CourseOfferings)
         {
-
             var preRequisitesIds = await _unitOfWork.CourseRepository
                 .GetDirectPreRequisitesIdsAsync(courseOffering.CourseId, cancellationToken);
 
@@ -114,12 +112,16 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
              CourseOfferingsResponse
             );
 
-        decimal Gpa = await _unitOfWork.UserRepository.CalculateComulativeGpaAsync(Student.Id, cancellationToken);
+        decimal Gpa = await _unitOfWork.UserRepository
+            .CalculateComulativeGpaAsync(Student.Id, cancellationToken);
+
+        decimal RegistredHours = await _unitOfWork.EnrollmentRepository
+            .CalculateRegistredHoursAsync(Student.Id, cancellationToken);
 
         var StudentInfo = new StudentInfoResponse
            (
            Student.Name, StudentLevel.Name,
-           Student.StudentCode, 0, // ظبط الساعات المسجله
+           Student.StudentCode, RegistredHours,
            StudyLoad.MaxHours, StudyLoad.MinHours, Gpa);
 
         var Response = new EnrollmentPageResponse(StudentInfo, LevelResponse, EnrollmentInfos);

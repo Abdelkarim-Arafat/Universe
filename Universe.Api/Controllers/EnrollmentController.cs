@@ -24,10 +24,9 @@ public class EnrollmentController(IMediator mediator) : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update(
         [FromBody] UpdateEnrollmentCommand command,
-        [FromQuery] NeededHours Hours,
-        [FromQuery] Guid StudentId, CancellationToken cancellationToken)
+        [FromQuery] Guid StudentId, [FromQuery] Guid SemesterId, CancellationToken cancellationToken)
     {
-        command = command with { Hours = Hours, StudentId = StudentId };
+        command = command with { StudentId = StudentId, SemesterId = SemesterId };
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }

@@ -6,7 +6,7 @@ namespace Universe.Core.Interfaces.Repositories;
 public interface IGradeRepository
 {
     Task<Grade?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<List<Grade>> GetCollegeGradesAsync(Guid CollegeId, CancellationToken cancellationToken = default);
+    Task<List<Grade>> GetProgramGradesAsync(Guid AcademicProgramId, CancellationToken cancellationToken = default);
     Task<bool> CheckOverLabedScoresAsync(int MinScore, int MaxScore, Guid AcademicProgramId, CancellationToken cancellationToken = default);
     Task<bool> CheckOverLabedScoresAsync(int MinScore, int MaxScore, Guid Id, Guid AcademicProgramId, CancellationToken cancellationToken = default);
 }

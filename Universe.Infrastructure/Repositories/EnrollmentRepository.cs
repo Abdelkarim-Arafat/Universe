@@ -55,10 +55,13 @@ public class EnrollmentRepository(
 
     public async Task<Dictionary<Guid, int>> GetOccupiedSeatsBulkAsync(List<Guid> SessionsIds, CancellationToken cancellationToken)
     {
-       return await _context.TeachingSessionEnrollments
-            .Where(tse => SessionsIds.Contains(tse.TeachingSessionId) && !tse.IsDeleted)
-            .GroupBy(tse => tse.TeachingSessionId)
-            .Select(g => new { SessionId = g.Key, Count = g.Count() })
+        return await _context.TeachingSessions
+            .Where(s => SessionsIds.Contains(s.Id) && !s.IsDeleted)
+            .Select(s => new
+            {
+                SessionId = s.Id,
+                Count = s.TeachingSessionEnrollments.Count(tse => !tse.IsDeleted)
+            })
             .ToDictionaryAsync(x => x.SessionId, x => x.Count, cancellationToken);
     }
 
@@ -129,5 +132,12 @@ public class EnrollmentRepository(
                 .ThenInclude(co => co.Course)
             .Where(e => e.StudentId == studentId)
             .ToListAsync();
+    }
+    public async Task<decimal> CalculateRegistredHoursAsync(Guid studentId, CancellationToken cancellationToken)
+    {
+        return await _context.Enrollments
+            .Where(e => e.StudentId == studentId && !e.IsDeleted
+             && e.Status == Core.Enums.EnrollmentStatus.InProgress)
+            .SumAsync(e => e.CourseOffering.CreditHours, cancellationToken);
     }
 }

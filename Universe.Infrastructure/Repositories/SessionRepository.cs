@@ -173,10 +173,29 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
         return await _context.TeachingSessions
             .Where(ts => sessionIds.Contains(ts.Id))
             .ToDictionaryAsync(
-                ts => ts.Id,                           // key
-                ts => (ts.GroupNumber, ts.Capacity),   // value
+                ts => ts.Id,                           
+                ts => (ts.GroupNumber, ts.Capacity),    
                 cancellationToken
             );
+    }
+    public async Task<List<CourseOfferingSession>>
+        GetSessionsWithCourseOfferingIdAsync
+        (List<(Guid SessionId, Guid CourseOfferingId)> newSessions, CancellationToken cancellationToken)
+    {
+        var sessionIds = newSessions.Select(x => x.SessionId).ToList();
+        var offeringIds = newSessions.Select(x => x.CourseOfferingId).ToList();
+ 
+        var currentSessions = await _context.CourseOfferingSessions
+            .Include(s => s.TeachingSession)
+            .Where(cos => sessionIds.Contains(cos.TeachingSessionId)
+                       && offeringIds.Contains(cos.CourseOfferingId))
+            .ToListAsync(cancellationToken);
+
+        return currentSessions
+            .Where(cos => newSessions
+            .Any(pair => pair.SessionId == cos.TeachingSessionId
+             && pair.CourseOfferingId == cos.CourseOfferingId))
+            .ToList();
     }
 
     public Task<IEnumerable<TeachingSession>> GetCourseOfferingSessionsAsync(Guid courseId, CancellationToken cancellationToken)

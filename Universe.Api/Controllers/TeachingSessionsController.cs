@@ -37,10 +37,10 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
 
     [HttpGet("")]
     public async Task<IActionResult> GetCourseSessions(
-        GetCourseSessionsCommand request,
+        [FromQuery]GetCourseSessionsCommand command,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }
