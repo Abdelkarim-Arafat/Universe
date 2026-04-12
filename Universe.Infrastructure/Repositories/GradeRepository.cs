@@ -9,10 +9,10 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<List<Grade>> GetCollegeGradesAsync(Guid CollegeId, CancellationToken cancellationToken = default)
+    public async Task<List<Grade>> GetProgramGradesAsync(Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         var grades = await _context.Grades
-            .Where(grade => grade.AcademicProgramId == CollegeId && !grade.IsDeleted)
+            .Where(grade => grade.AcademicProgramId == AcademicProgramId && !grade.IsDeleted)
             .OrderBy(grade => grade.MinScore)
             .ToListAsync(cancellationToken);
         return grades;

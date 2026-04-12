@@ -37,4 +37,11 @@ public class StudyLoadByLevelRepository(
         .Include(x => x.Sememester)
         .Include(x => x.Level)
         .Where(x => x.AcademicProgramId == programId);
+
+    public async Task<StudyLoadByLevel?> GetByLevelIdAndSemesterIdAsync
+        (Guid LevelId, Guid SemesterId, CancellationToken cancellationToken)
+    {
+        return await _context.StudyLoadByLevels
+            .FirstOrDefaultAsync(s => s.LevelId == LevelId && s.SemesterId == SemesterId && !s.IsDeleted, cancellationToken);
+    }
 }

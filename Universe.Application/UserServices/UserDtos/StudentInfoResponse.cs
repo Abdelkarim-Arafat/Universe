@@ -5,7 +5,7 @@ public record StudentInfoResponse
 string StudentName,
 string LevelName,
 string StudentCode,
-int RegisteredHours,
+decimal RegisteredHours,
 int MaxAllowedHours,
 int MinAllowedHours,
 decimal GPA

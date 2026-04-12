@@ -12,4 +12,5 @@ Core.Enums.DayOfWeek Day,
 TimeOnly Start,
 TimeOnly End,
 int AvailableSeats
+//bool IsRegistered
 );

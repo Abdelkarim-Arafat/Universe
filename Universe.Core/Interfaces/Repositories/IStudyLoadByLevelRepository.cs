@@ -8,6 +8,8 @@ namespace Universe.Core.Interfaces.Repositories;
 
 public interface IStudyLoadByLevelRepository
 {
+    Task<StudyLoadByLevel?> GetByLevelIdAndSemesterIdAsync
+        (Guid LevelId, Guid SemesterId, CancellationToken cancellationToken);
     Task<bool> IsExistAsync(
         Guid programId,
         Guid levelId,

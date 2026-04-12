@@ -17,7 +17,7 @@ public class CourseOfferingErrors
     public static readonly Error NotFound = new Error(
         "CourseOffering.NotFound",
         "This Course Not Found",
-        StatusCodes.Status400BadRequest
+        StatusCodes.Status404NotFound
     );
 
     public static readonly Error NotValidGroupNumber = new Error(

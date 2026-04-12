@@ -16,6 +16,7 @@ using Universe.Application.UserServices.Querys.GetMilitaryData;
 using Universe.Application.UserServices.Querys.GetParentData;
 using Universe.Application.UserServices.Querys.GetPersonalData;
 using Universe.Application.UserServices.Querys.GetPreviousQualificationData;
+using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 namespace Universe.Api.Controllers;
 
@@ -51,12 +52,12 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAllStudent (
+    public async Task<IActionResult> GetAllStudent(
         [FromRoute] Guid collegeId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAllStudentsCommand(collegeId , filter), cancellationToken);
+        var result = await _mediator.Send(new GetAllStudentsCommand(collegeId, filter), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -179,7 +180,7 @@ public class StudentController(IMediator mediator) : ControllerBase
         [FromBody] UpdatePersonalDataCommand request,
         CancellationToken cancellationToken)
     {
-        request = request with { StudentId = studentId , CollegeId = collegeId};
+        request = request with { StudentId = studentId, CollegeId = collegeId };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -201,5 +202,11 @@ public class StudentController(IMediator mediator) : ControllerBase
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
+    }
+    [HttpGet("academic-history")]
+    public async Task<IActionResult> GetStudentAcademicHistory(Guid StudentId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetStudentAcademicHistoryCommand(), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

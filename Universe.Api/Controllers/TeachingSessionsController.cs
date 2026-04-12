@@ -29,7 +29,7 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
     [HttpDelete("{sessionId:guid}")]
     public async Task<IActionResult> RemoveSession(
         [FromRoute] Guid sessionId,
-        [FromQuery] Guid courseOfferingId,
+        [FromBody] RemoveSessionCommand request,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new RemoveSessionCommand(sessionId , courseOfferingId), cancellationToken);

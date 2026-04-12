@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Universe.Application.CourseServices.Commands.AddCourse;
 
-internal class AddCourseCommandValidator : AbstractValidator<AddCourseCommand>
+public class AddCourseCommandValidator : AbstractValidator<AddCourseCommand>
 {
     public AddCourseCommandValidator()
     {

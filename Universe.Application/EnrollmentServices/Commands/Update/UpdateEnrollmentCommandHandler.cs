@@ -2,39 +2,36 @@
 using Universe.Core.Enums;
 
 namespace Universe.Application.EnrollmentServices.Commands.Update;
-
-public class UpdateEnrollmentCommandHandler(
-    IUnitOfWork unitOfWork
-    ) : IRequestHandler<UpdateEnrollmentCommand, Result<List<EnrollmentInfo>>>
+ 
+public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateEnrollmentCommand, Result<List<EnrollmentInfo>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<List<EnrollmentInfo>>> Handle(UpdateEnrollmentCommand command, CancellationToken ct)
+    public async Task<Result<List<EnrollmentInfo>>> Handle(UpdateEnrollmentCommand command, CancellationToken cancellationToken)
     {
-        // =========================
-        // ✅ Step 0: Validate
-        // =========================
+        // فاليديشنز
 
         var isUserExists = await _unitOfWork.UserRepository
-            .UserIsExistAsync(command.StudentId, ct);
+            .UserIsExistAsync(command.StudentId, cancellationToken);
 
         if (!isUserExists)
             return Result.Failure<List<EnrollmentInfo>>(StudentErrors.UserNotFound);
 
         var set = new HashSet<(Guid CourseOfferingId, SessionType Type)>();
+        var toFunction = command.newSessions.Select(x => (x.SessionId, x.CourseOfferingId)).ToList();
 
-        foreach (var item in command.NewEnrollments)
+        var newSessions =await _unitOfWork.SessionRepository
+            .GetSessionsWithCourseOfferingIdAsync(toFunction, cancellationToken);
+
+        foreach (var item in newSessions)
         {
-            if (!set.Add((item.CourseOfferingId, item.Type)))
+            if (!set.Add((item.CourseOfferingId, item.TeachingSession.Type)))
                 return Result.Failure<List<EnrollmentInfo>>(EnrollmentErrors.DublicatedSessionWithSameType);
         }
 
-        if (HasOverlapPerDay(command.NewEnrollments))
+        if (HasOverlapPerDay(newSessions))
             return Result.Failure<List<EnrollmentInfo>>(EnrollmentErrors.DublicatedSessions);
 
-        // =========================
-        // 🧠 Step 1: Group Incoming
-        // =========================
 
         var incomingSessionsGrouped = command.NewEnrollments
             .GroupBy(x => x.CourseOfferingId)
@@ -42,59 +39,49 @@ public class UpdateEnrollmentCommandHandler(
 
         var incomingCourseOfferingIds = incomingSessionsGrouped.Keys.ToHashSet();
 
-        var sessionIds = command.NewEnrollments
+        var sessionIds = command.newSessions
             .Select(x => x.SessionId)
             .ToList();
 
-        // =========================
-        // 🔥 Step 2: Get Existing (من الريبو)
-        // =========================
 
-        // 🧠 مطلوب:
         // يرجع كل enrollments + sessions بتاعتهم
         var existingEnrollments = await _unitOfWork.EnrollmentRepository
-            .GetStudentEnrollmentsWithSessions(command.StudentId, ct);
-        // لازم يرجع:
+            .GetStudentEnrollmentsWithSessions(command.StudentId, cancellationToken);
+
         // List<Enrollment> + Navigation: TeachingSessionEnrollments
 
         var existingCourseOfferingIds = existingEnrollments
             .Select(x => x.CourseOfferingId)
             .ToHashSet();
 
-        // =========================
-        // 🔥 Step 3: Diff Courses
-        // =========================
+   
+        //  Diff Courses
+     
 
         var toAddCourses = incomingCourseOfferingIds.Except(existingCourseOfferingIds).ToList();
         var toRemoveCourses = existingCourseOfferingIds.Except(incomingCourseOfferingIds).ToList();
         var toKeepCourses = existingCourseOfferingIds.Intersect(incomingCourseOfferingIds).ToList();
 
-        // =========================
-        // 🔥 Step 4: Bulk Data
-        // =========================
+        
 
-        // 🧠 Session data (GroupNumber + Capacity)
+        //   (GroupNumber + Capacity)
         var sessionsData = await _unitOfWork.SessionRepository
-                .GetGroupNumberAndCapacityBulkAsync(sessionIds, ct);
+                .GetGroupNumberAndCapacityBulkAsync(sessionIds, cancellationToken);
 
-        // 🧠 seats
+       
         var occupiedSeats = await _unitOfWork.EnrollmentRepository
-            .GetOccupiedSeatsBulkAsync(sessionIds, ct);
+            .GetOccupiedSeatsBulkAsync(sessionIds, cancellationToken);
 
-        // 🧠 assessments
+       
         var Assessments = await _unitOfWork.CourseOfferingRepository
-            .GetCourseOfferingsAssessmentsBulkAsync(toAddCourses, ct);
+            .GetCourseOfferingsAssessmentsBulkAsync(toAddCourses, cancellationToken);
 
 
-
-
-        // =========================
-        // 🔥 Step 5: Transaction
-        // =========================
+    
 
         using var trx = await _unitOfWork
             .Repository<Enrollment>()
-            .BeginTransactionIsolatedAsync(ct);
+            .BeginTransactionIsolatedAsync(cancellationToken);
 
         try
         {
@@ -106,13 +93,14 @@ public class UpdateEnrollmentCommandHandler(
 
             var AssessmentsToAdd = new List<StudentAssessment>();
             var AssessmentsToRemove = await _unitOfWork.UserRepository
-            .GetStudentAssessmentByCourseOfferingBulkAsync(toRemoveCourses, command.StudentId, ct);
+            .GetStudentAssessmentByCourseOfferingBulkAsync(toRemoveCourses, command.StudentId, cancellationToken);
 
 
-            // =========================
-            // ➕ Add Courses
-            // =========================
 
+            //  Add Courses
+
+            var CourseOfferingIdToCourseId = await _unitOfWork.CourseOfferingRepository
+                .CourseOfferingIdsToCourseIdAsync(toAddCourses, cancellationToken);
             foreach (var courseOfferingId in toAddCourses)
             {
                 if (!incomingSessionsGrouped.TryGetValue(courseOfferingId, out var sessions))
@@ -134,11 +122,15 @@ public class UpdateEnrollmentCommandHandler(
                 }
 
                 var first = sessions.First();
-
+                if(!CourseOfferingIdToCourseId.TryGetValue(courseOfferingId, out var courseId))
+                {
+                    return Result.Failure<List<EnrollmentInfo>>(
+                        CourseOfferingErrors.NotFound);
+                }
                 var enrollment = new Enrollment
                 {
                     StudentId = command.StudentId,
-                    CourseId = first.CourseId,
+                    CourseId = courseId,
                     CourseOfferingId = courseOfferingId,
                     GroupNumber = sessionsData[first.SessionId].GroupNumber,
                     Status = EnrollmentStatus.InProgress
@@ -185,14 +177,13 @@ public class UpdateEnrollmentCommandHandler(
                         StudentId = command.StudentId,
                         CourseOfferingAssessmentId = ass.Id,
                         CourseOfferingId = courseOfferingId,
-                        degree = 0
                     });
                 }
             }
 
-            // =========================
-            // ➖ Remove Courses
-            // =========================
+          
+            //   Remove Courses
+          
 
             foreach (var enrollment in existingEnrollments
                 .Where(x => toRemoveCourses.Contains(x.CourseOfferingId)))
@@ -209,9 +200,9 @@ public class UpdateEnrollmentCommandHandler(
                 enrollmentsToDelete.Add(enrollment);
             }
 
-            // =========================
-            // 🔁 Update (Keep Courses)
-            // =========================
+          
+            // Update Keep Courses
+            
 
             foreach (var enrollment in existingEnrollments
                      .Where(x => toKeepCourses.Contains(x.CourseOfferingId)))
@@ -242,7 +233,7 @@ public class UpdateEnrollmentCommandHandler(
                      
                 }
 
-                // ➕ Add new sessions
+                // Add new sessions
 
                 foreach (var sId in incomingSessions.Except(existingSessions))
                 {
@@ -265,7 +256,7 @@ public class UpdateEnrollmentCommandHandler(
                     occupiedSeats[sId]++;
                 }
                 var sessionsToRemove = existingSessions.Except(incomingSessions).ToHashSet();
-                // ➖ Remove sessions
+                // Remove sessions
                 foreach (var tse in enrollment.TeachingSessionEnrollments
                     .Where(x => !x.IsDeleted && sessionsToRemove.Contains(x.TeachingSessionId)))
                 {
@@ -276,18 +267,15 @@ public class UpdateEnrollmentCommandHandler(
                     }
                 }
             }
-            // =========================
-            // 💾 Save
-            // =========================
 
             await _unitOfWork.Repository<Enrollment>()
-                .AddRangeAsync(enrollmentsToAdd, ct);
+                .AddRangeAsync(enrollmentsToAdd, cancellationToken);
 
             await _unitOfWork.Repository<TeachingSessionEnrollment>()
-                .AddRangeAsync(sessionEnrollmentsToAdd, ct);
+                .AddRangeAsync(sessionEnrollmentsToAdd, cancellationToken);
 
             await _unitOfWork.Repository<StudentAssessment>()
-                .AddRangeAsync(AssessmentsToAdd, ct);
+                .AddRangeAsync(AssessmentsToAdd, cancellationToken);
 
             _unitOfWork.Repository<Enrollment>()
                .DeletePermanentlyRange(enrollmentsToDelete);
@@ -299,19 +287,18 @@ public class UpdateEnrollmentCommandHandler(
                .DeletePermanentlyRange(AssessmentsToRemove);
 
 
-            await _unitOfWork.CompleteAsync(ct);
-            await trx.CommitAsync(ct);
+            await _unitOfWork.CompleteAsync(cancellationToken);
+            await trx.CommitAsync(cancellationToken);
 
 
             var teachingSessionEnrollments = await _unitOfWork.EnrollmentRepository
-           .GetTeachingSessionEnrollmentAsync(command.StudentId, ct);
+           .GetTeachingSessionEnrollmentAsync(command.StudentId, cancellationToken);
 
             var response = teachingSessionEnrollments.Select(x => new EnrollmentInfo
             (
                 x.EnrollmentId,
                 x.TeachingSessionId,
                 x.Enrollment.CourseOfferingId,
-                x.Enrollment.CourseId,
                 x.TeachingSession.Type,
                 x.TeachingSession.StartTime,
                 x.TeachingSession.EndTime,
@@ -322,20 +309,20 @@ public class UpdateEnrollmentCommandHandler(
         }
         catch (Exception ex)
         {
-            await trx.RollbackAsync(ct);
+            await trx.RollbackAsync(cancellationToken);
             return Result.Failure<List<EnrollmentInfo>>(
                 new Error("500", ex.Message, StatusCodes.Status409Conflict));
         }
     }
-    private bool HasOverlapPerDay(IReadOnlyList<EnrollmentInfo> enrollmentInfos)
+    private bool HasOverlapPerDay(IReadOnlyList<CourseOfferingSession> enrollmentInfos)
     {
-        var groupedByDay = enrollmentInfos.GroupBy(e => e.DayOfWeek);
+        var groupedByDay = enrollmentInfos.GroupBy(e => e.TeachingSession.Day);
         foreach (var group in groupedByDay)
         {
-            var sessions = group.OrderBy(e => e.StartTime).ToList();
+            var sessions = group.OrderBy(e => e.TeachingSession.StartTime).ToList();
             for (int i = 0; i < sessions.Count - 1; i++)
             {
-                if (sessions[i].EndTime > sessions[i + 1].StartTime)
+                if (sessions[i].TeachingSession.EndTime > sessions[i + 1].TeachingSession.StartTime)
                 {
                     return true;
                 }

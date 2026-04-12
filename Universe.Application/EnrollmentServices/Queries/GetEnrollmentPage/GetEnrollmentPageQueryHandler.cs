@@ -23,11 +23,9 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         if (StudentLevel is null)
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.NotFound);
 
-        decimal Gpa = await _unitOfWork.UserRepository.CalculateComulativeGpaAsync(Student.Id, cancellationToken);
-
-        var StudyRules = await _unitOfWork.StudyLoadRuleRepository
-            .GetByGpaAsync(Gpa, cancellationToken);
-        if (StudyRules is null)
+        var StudyLoad = await _unitOfWork.StudyLoadByLevelRepository
+            .GetByLevelIdAndSemesterIdAsync(StudentLevel.Id, query.SemesterId, cancellationToken);
+        if (StudyLoad is null)
             return Result.Failure<EnrollmentPageResponse>(StudyLoadRuleErrors.NotFound);
 
         var isSemesterExist = await _unitOfWork.AcademicYearRepository
@@ -47,7 +45,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
 
 
         var CourseOfferings = await _unitOfWork.CourseOfferingRepository
-            .GetCourseOfferingsByLevelAndSemesterIncludingCourseAsync(query.LevelId, query.SemesterId, cancellationToken);
+            .GetAvailableCourseOfferingsAsync(Level.Id, query.SemesterId, query.StudentId, cancellationToken);
 
 
         var teachingSessionEnrollments = await _unitOfWork.EnrollmentRepository
@@ -58,7 +56,6 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             x.EnrollmentId,
             x.TeachingSessionId,
             x.Enrollment.CourseOfferingId,
-            x.Enrollment.CourseId,
             x.TeachingSession.Type,
             x.TeachingSession.StartTime,
             x.TeachingSession.EndTime,
@@ -68,7 +65,6 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
 
         foreach (var courseOffering in CourseOfferings)
         {
-
             var preRequisitesIds = await _unitOfWork.CourseRepository
                 .GetDirectPreRequisitesIdsAsync(courseOffering.CourseId, cancellationToken);
 
@@ -83,18 +79,19 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             if (Count != preRequisitesIds.Count())
                 continue;
 
-            var Sessions = await _unitOfWork.SessionRepository
-                .GetSessionsByCourseOfferingIncludingInstructor(courseOffering.Id, cancellationToken);
+            var Sessions = await _unitOfWork.EnrollmentRepository
+                .GetSessionsWithAvailabilityBulk(courseOffering.Id, cancellationToken);
 
-            var SessionsOption = Sessions.Select(async session => new SessionOptionResponse(
-                 session.Id,
-                 session.Instructor.Name,
-                 session.Type,
-                 session.GroupNumber,
-                 session.Day,
-                 session.StartTime,
-                 session.EndTime,
-                 await _unitOfWork.EnrollmentRepository.AvailableSeatsInSession(session.Id, cancellationToken)));
+            var SessionsOption = Sessions.Select(s => new SessionOptionResponse(
+                 s.Session.Id,
+                 s.Session.Instructor.Name,
+                 s.Session.Type,
+                 s.Session.GroupNumber,
+                 s.Session.Day,
+                 s.Session.StartTime,
+                 s.Session.EndTime,
+                 s.Session.Capacity - s.EnrolledCount))
+                .ToList();
 
             var CourseRegistration = new CourseRegistrationResponse
                 (courseOffering.Id,
@@ -104,7 +101,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
                 courseOffering.IsOptional,
                 courseOffering.CreditHours,
                 EnrollmentInfos.Any(x => x.CourseOfferingId == courseOffering.Id),
-                (List<SessionOptionResponse>)SessionsOption
+                SessionsOption
                 );
             CourseOfferingsResponse.Add(CourseRegistration);
         }
@@ -115,11 +112,17 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
              CourseOfferingsResponse
             );
 
+        decimal Gpa = await _unitOfWork.UserRepository
+            .CalculateComulativeGpaAsync(Student.Id, cancellationToken);
+
+        decimal RegistredHours = await _unitOfWork.EnrollmentRepository
+            .CalculateRegistredHoursAsync(Student.Id, cancellationToken);
+
         var StudentInfo = new StudentInfoResponse
            (
            Student.Name, StudentLevel.Name,
-           Student.StudentCode, 0,
-           StudyRules.MaxHours, StudyRules.MinHours, Gpa);
+           Student.StudentCode, RegistredHours,
+           StudyLoad.MaxHours, StudyLoad.MinHours, Gpa);
 
         var Response = new EnrollmentPageResponse(StudentInfo, LevelResponse, EnrollmentInfos);
 

@@ -14,9 +14,18 @@ public interface IUserRepository
     Task<Guid?> GetCurrentProgram(Guid StudentId, CancellationToken cancellationToken);
     Task<bool> UserIsExistAsync(Guid Id, CancellationToken cancellationToken);
     Task<decimal> CalculateCreditHoursAsync(Guid StudentId, CancellationToken cancellationToken);
+    Task<decimal> CalculateCreditHoursAsync(Guid StudentId, Guid SemesterId, CancellationToken cancellationToken);
     Task<Level?> GetCurrentLevelAsync(Guid StudentId, CancellationToken cancellationToken);
     Task<decimal> CalculateComulativeGpaAsync(Guid StudentId, CancellationToken cancellationToken);
+    Task<decimal> CalculateSemesterGpaAsync(Guid StudentId, Guid SemesterId, CancellationToken cancellationToken);
 
     Task<List<StudentAssessment>> GetStudentAssessmentByCourseOfferingBulkAsync
         (List<Guid> ToRemoveCourses, Guid StudentId, CancellationToken cancellationToken);
+    Task<List<(Student Student, string StudentLevelName, List<StudentAssessment> Assessments)>> GetStudentsByCourseOfferingAndGroupNumberAsync(
+     Guid courseOfferingId,
+     int groupNumber,
+     string? studentCodeOrName,
+     CancellationToken cancellationToken);
+
+    Task<List<StudentAssessment>> GetStudentsAssessmentsAsync(List<Guid> StudentsIds, CancellationToken cancellationToken);
 }
