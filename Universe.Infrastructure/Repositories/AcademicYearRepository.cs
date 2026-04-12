@@ -16,6 +16,7 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
         => await _context.AcademicYears.FirstOrDefaultAsync(x => x.Id == Id , cancellationToken);
 
     public async Task<bool> IsSemesterExistAsync(Guid Id, CancellationToken cancellationToken)
+        => await _context.Semesters.AnyAsync(x => x.Id == Id, cancellationToken);
     public async Task<AcademicYear?> GetByIdWithSemestersAsync(Guid id, CancellationToken cancellationToken)
         => await _context.AcademicYears
             .Include(x => x.Semesters)

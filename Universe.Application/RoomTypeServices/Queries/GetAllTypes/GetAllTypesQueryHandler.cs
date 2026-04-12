@@ -27,7 +27,7 @@ public class GetAllTypesQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.ProjectToType<RoomTypeResponse>();
+        var source = query.Select(x => new RoomTypeResponse(x.Id,x.Name));
 
         var response = await PaginationList<RoomTypeResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

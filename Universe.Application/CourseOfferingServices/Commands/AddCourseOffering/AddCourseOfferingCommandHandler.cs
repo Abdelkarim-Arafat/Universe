@@ -22,6 +22,20 @@ internal class AddCourseOfferingCommandHandler(
                 request.LevelId, request.CourseId, cancellationToken)
             ) return Result.Failure<CourseOfferingWithDetailsResponse>(CourseOfferingErrors.AlreadyExist);
 
+        // ??
+        if(await _unitOfWork.CourseRepository
+            .GetByIdAsync(request.CourseId , cancellationToken) is null) 
+            return Result.Failure<CourseOfferingWithDetailsResponse>(CourseErrors.CourseNotFound);
+
+        // ??
+        if (await _unitOfWork.LevelRepository
+            .GetByIdAsync(request.LevelId, cancellationToken) is null)
+            return Result.Failure<CourseOfferingWithDetailsResponse>(LevelErrors.NotFound);
+
+        if (await _unitOfWork.AcademicYearRepository
+            .IsExistSemesterAsync(request.SemesterId , cancellationToken) is false)
+            return Result.Failure<CourseOfferingWithDetailsResponse>(SemesterErrors.NotFound);
+
         var courseOffering = new CourseOffering
         {
             AcademicProgramId = request.AcademicProgramId,

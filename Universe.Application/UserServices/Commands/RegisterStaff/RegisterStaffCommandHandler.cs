@@ -20,14 +20,16 @@ public class RegisterStaffCommandHandler(
     public async Task<Result<StaffResponse>> Handle(RegisterStaffCommand request, CancellationToken cancellationToken)
     {
         if (await _userManager.Users
-            .AnyAsync(x => x.UserName == request.UserName, cancellationToken)
-            ) return Result.Failure<StaffResponse>(AuthErrors.DuplicateUserName);
+            .AnyAsync(x => x.UserName == request.UserName, cancellationToken))
+            return Result.Failure<StaffResponse>(AuthErrors.DuplicateUserName);
 
         var user = new ApplicationUser
         {
             UserName = request.UserName,
             Name = request.Name,
-            CollegeId = request.CollegeId
+            CollegeId = request.CollegeId,
+            PhoneNumber = request.PhoneNumber,
+            Email = request.Email
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);
@@ -38,10 +40,20 @@ public class RegisterStaffCommandHandler(
             return Result.Failure<StaffResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
 
-        if (!await _roleManager.RoleExistsAsync(request.Role))
-            return Result.Failure<StaffResponse>(AuthErrors.InvalidRoles);
+        foreach (var role in request.Roles)
+        {
+            if (!await _roleManager.RoleExistsAsync(role))
+                return Result.Failure<StaffResponse>(AuthErrors.InvalidRoles);
+        }
 
-        await _userManager.AddToRoleAsync(user, request.Role);
-        return Result.Success(new StaffResponse(user.Id.ToString(), user.Name, request.Role , user.UserName));
+        await _userManager.AddToRolesAsync(user, request.Roles);
+
+        return Result.Success(new StaffResponse(
+            user.Id.ToString(),
+            user.Name,
+            request.Roles,
+            user.UserName,
+            user.Email,
+            user.PhoneNumber));
     }
 }

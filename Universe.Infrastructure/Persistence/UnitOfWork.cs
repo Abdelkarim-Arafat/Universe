@@ -33,6 +33,9 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public IBuildingRepository BuildingRepository
         => field ??= new BuildingRepository(_context);
 
+    public IAcademicEventRepository AcademicEventRepository
+        => field ??= new AcademicEventRepository(_context);
+
     public IRoomRepository RoomRepository
         => field ??= new RoomRepository(_context);
 

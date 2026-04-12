@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Application.AuthServices.AuthDtos;
 using Universe.Application.CourseServices.Dtos;
+using Universe.Application.UserServices.UserDtos;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces;
 using Universe.Infrastructure.SeedData;
@@ -20,7 +21,7 @@ public class GetAllStuffCommandHandler(
         var query = _userManager.Users
         .Where(x => x.CollegeId == request.CollegeId
             && !x.IsDeleted
-            && x.UserRoles.Any(r => r.RoleId == DefaultRoles.Staff.Id 
+            && x.UserRoles.Any(r => r.RoleId == DefaultRoles.Staff.Id
                       || r.RoleId == DefaultRoles.AcademicAdvising.Id));
 
         var filter = request.filter;
@@ -35,7 +36,14 @@ public class GetAllStuffCommandHandler(
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.ProjectToType<StaffResponse>();
+        var source = query.Select(x => new StaffResponse (
+                x.Id.ToString(),
+                x.Name,
+                DefaultRoles.Staff.Name,
+                x.UserName!,
+                x.Email,
+                x.PhoneNumber
+            ));
 
         var response = await PaginationList<StaffResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

@@ -29,7 +29,7 @@ public class GetAllAcademicProgramsCommandHandler(
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.ProjectToType<AcademicProgramResponse>();
+        var source = query.Select(x => new AcademicProgramResponse(x.Id.ToString() , x.Name, x.Code, x.Description, x.RequiredCreditHours));
 
         var response = await PaginationList<AcademicProgramResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

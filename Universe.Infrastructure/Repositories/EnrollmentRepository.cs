@@ -69,6 +69,7 @@ public class EnrollmentRepository(
              && e.Status == Core.Enums.EnrollmentStatus.InProgress)
             .Select(e => e.Id)
             .ToListAsync(cancellationToken);
+
         return await _context.TeachingSessionEnrollments
             .AsNoTracking()
             .Include(x => x.Enrollment)

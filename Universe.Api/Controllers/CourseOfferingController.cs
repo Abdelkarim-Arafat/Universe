@@ -27,16 +27,17 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetLevelCourses(
-        GetLevelCoursesCommand request,
+    public async Task<IActionResult> GetLevelCourses (
+        [FromQuery] Guid levelId,
+        [FromQuery] Guid semesterId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(new GetLevelCoursesCommand(levelId , semesterId), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> AddCourseOffering(
+    public async Task<IActionResult> AddCourseOffering (
         [FromRoute] Guid programId,
         [FromBody] AddCourseOfferingCommand request,
         CancellationToken cancellationToken)

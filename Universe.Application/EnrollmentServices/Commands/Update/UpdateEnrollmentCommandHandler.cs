@@ -3,7 +3,9 @@ using Universe.Core.Enums;
 
 namespace Universe.Application.EnrollmentServices.Commands.Update;
 
-public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateEnrollmentCommand, Result<List<EnrollmentInfo>>>
+public class UpdateEnrollmentCommandHandler(
+    IUnitOfWork unitOfWork
+    ) : IRequestHandler<UpdateEnrollmentCommand, Result<List<EnrollmentInfo>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

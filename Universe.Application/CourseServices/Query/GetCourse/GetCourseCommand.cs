@@ -7,4 +7,4 @@ namespace Universe.Application.CourseServices.Query.GetCourse;
 
 public record GetCourseCommand(
     [Required] Guid Id
-) : IRequest<Result<CourseResponse>>;
+) : IRequest<Result<CourseWithPreRequisiteResponse>>;

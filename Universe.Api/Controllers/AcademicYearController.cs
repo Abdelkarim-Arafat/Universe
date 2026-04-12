@@ -7,8 +7,10 @@ using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcadem
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateCurrentSemester;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYear;
+using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAllYears;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentSemester;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentYear;
+using Universe.Application.Common;
 
 namespace Universe.Api.Controllers;
 
@@ -42,6 +44,18 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetCurrentSemester([FromRoute] Guid academicYearId, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetCurrentSemesterCommand(academicYearId), cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
+    [HttpGet("")]
+    public async Task<IActionResult> GetAllYears(
+        [FromRoute] Guid collegeId,
+        [FromQuery] FilterRequest filter,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetAllYearsCommand(collegeId , filter), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
