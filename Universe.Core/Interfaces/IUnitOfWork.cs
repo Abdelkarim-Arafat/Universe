@@ -14,6 +14,7 @@ public interface IUnitOfWork: IAsyncDisposable
     ICourseOfferingRepository CourseOfferingRepository { get; }
     IAcademicProgramRepository AcademicProgramRepository { get; }
     IAcademicYearRepository AcademicYearRepository { get; }
+    IAcademicEventRepository AcademicEventRepository { get; }
     ICourseRepository CourseRepository { get; }
     ISessionRepository SessionRepository { get; }
     IBuildingRepository BuildingRepository { get; }

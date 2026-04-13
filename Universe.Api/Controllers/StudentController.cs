@@ -16,6 +16,7 @@ using Universe.Application.UserServices.Querys.GetMilitaryData;
 using Universe.Application.UserServices.Querys.GetParentData;
 using Universe.Application.UserServices.Querys.GetPersonalData;
 using Universe.Application.UserServices.Querys.GetPreviousQualificationData;
+using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 namespace Universe.Api.Controllers;
 

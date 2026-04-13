@@ -33,7 +33,9 @@ public class GetAcademicProgramGradesQueryHandler(IUnitOfWork unitOfWork) : IReq
             x.Name,
             x.Code,
             x.MinScore,
-            x.MaxScore
+            x.MaxScore,
+            x.MinGradePoint,
+            x.MaxGradePoint
             ));
 
         var response = await PaginationList<GradeResponse>
