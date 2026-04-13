@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.BuildingServices.Commands.CreateBuilding;
@@ -9,6 +8,7 @@ using Universe.Application.BuildingServices.Commands.UpdateBuilding;
 using Universe.Application.BuildingServices.Queries.GetAll;
 using Universe.Application.BuildingServices.Queries.GetBuilding;
 using Universe.Application.Common;
+using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
 
@@ -52,5 +52,15 @@ public class BuildingController(IMediator mediator) : ControllerBase
         command = command with { Id = id };
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? NoContent() : result.ToProblem();
+    }
+
+    [HttpGet("room-types")]
+    public async Task<IActionResult> GetRoomTypes(CancellationToken cancellationToken)
+    {
+        var types = Enum.GetValues(typeof(RoomType))
+            .Cast<RoomType>()
+            .Select(v => new { Id = (int)v, Name = v.ToString() })
+            .ToList();
+        return Ok(types);
     }
 }
