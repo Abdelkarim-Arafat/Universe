@@ -6,7 +6,7 @@ public class StudentAssessment : BaseEntity
 {
     public Guid Id { get; set; }
     public StudentAssessment() { Id = Guid.CreateVersion7(); }
-    public decimal? degree { get; set; } = 0;
+    public decimal? degree { get; set; }
     public Guid CourseOfferingId { get; set; }
     public Guid StudentId { get; set; }
     public Student Student { get; set; } = default!;

@@ -10,6 +10,8 @@ public class Grade : BaseEntity
     public string Code { get; set; } = string.Empty;
     public int MinScore { get; set; }
     public int MaxScore { get; set; }
+    public decimal MinGradePoint { get; set; }
+    public decimal MaxGradePoint { get; set; }
     public Guid AcademicProgramId { get; set; }
     public AcademicProgram AcademicProgram { get; set; } = default!;
 }

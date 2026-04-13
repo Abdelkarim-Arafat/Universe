@@ -101,16 +101,19 @@ public class EnrollmentRepository(
              && x.Enrollment.Status == Core.Enums.EnrollmentStatus.InProgress)
     .ToListAsync(cancellationToken);
     }
-
+    // لازم تضيف dtos
     public async Task<List<Enrollment>> GetStudentEnrollmentsAsync(Guid studentId, CancellationToken cancellationToken)
     {
         return await _context.Enrollments
-            .AsNoTracking()
-            .Include(e => e.CourseOffering)
-                .ThenInclude(co => co.Course)
-            .Where(e => e.StudentId == studentId)
-            .ToListAsync();
-    }
+        .AsNoTracking()
+          .Where(e => e.StudentId == studentId && !e.IsDeleted)
+          .Include(e => e.CourseOffering)
+            .ThenInclude(co => co.Course)
+          .Include(e => e.CourseOffering.Semester)
+            .ThenInclude(s => s.AcademicYear)  
+            .AsSplitQuery()  
+            .ToListAsync(cancellationToken);
+    }   
     public async Task<decimal> CalculateRegistredHoursAsync(Guid studentId, CancellationToken cancellationToken)
     {
         return await _context.Enrollments

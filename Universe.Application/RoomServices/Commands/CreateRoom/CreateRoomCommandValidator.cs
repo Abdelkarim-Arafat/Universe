@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.RoomServices.Dtos;
-using Universe.Application.RoomTypeServices.Commands.CreateRoomType;
-
-namespace Universe.Application.RoomServices.Commands.CreateRoom;
+﻿namespace Universe.Application.RoomServices.Commands.CreateRoom;
 
 public class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
 {
@@ -19,11 +13,7 @@ public class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
 
         RuleFor(x => x.RoomNumber)
            .NotEmpty().WithMessage("RoomNumber is required.")
-           .GreaterThanOrEqualTo(1);
-
-        RuleFor(x => x.RoomTypeId)
-          .NotEmpty().WithMessage("RoomTypeId is required.");
-         
+           .GreaterThanOrEqualTo(1);    
     }
 }
 

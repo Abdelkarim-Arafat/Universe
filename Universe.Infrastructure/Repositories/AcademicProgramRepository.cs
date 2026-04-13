@@ -34,4 +34,14 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
         => await _context.ProgramSchedules
         .Where(x => x.ProgramId == ProgramId && x.SemesterId == SemesterId)
         .SingleOrDefaultAsync(cancellationToken);
+
+    public async Task<Guid?> GetCurrentAcademicProgramIdAsync(Guid StudentId, CancellationToken cancellationToken)
+    {
+        return await _context.StudentAcademicPrograms
+            .Where(pro => pro.StudentId == StudentId
+                   && pro.Currently
+                   && !pro.IsDeleted)
+            .Select(pro => pro.AcademicProgramId)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 }

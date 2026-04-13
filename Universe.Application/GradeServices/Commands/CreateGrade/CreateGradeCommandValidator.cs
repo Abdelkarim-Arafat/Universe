@@ -6,7 +6,7 @@ public class CreateGradeCommandValidator : AbstractValidator<CreateGradeCommand>
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Grade name is required.")
-            .MaximumLength(100).WithMessage("Grade name cannot exceed 100 characters.");
+            .MaximumLength(50).WithMessage("Grade name cannot exceed 50 characters.");
         RuleFor(x => x.Code)
             .NotEmpty().WithMessage("Grade code is required.")
             .MaximumLength(2).WithMessage("Grade code cannot exceed 2 characters.");
@@ -16,7 +16,15 @@ public class CreateGradeCommandValidator : AbstractValidator<CreateGradeCommand>
             .WithMessage("MinScore must be less than MaxScore.");
         RuleFor(x => x.MaxScore)
           .GreaterThanOrEqualTo(0)
-          .WithMessage("MinScore must be greater than or equal to 0.");
+          .WithMessage("MaxScore must be greater than or equal to 0.");
+
+        RuleFor(x => x.MinGradePoint)
+            .LessThan(x => x.MaxGradePoint)
+            .WithMessage("MinGradePoint must be less than MaxGradePoint.");
+        RuleFor(x => x.MaxGradePoint)
+          .GreaterThanOrEqualTo(0)
+          .WithMessage("MaxGradePoint must be greater than or equal to 0.");
+
         RuleFor(x => x)
             .Must(ValidCode)
             .WithMessage("Code should be 1 or 2 chars with uppercase letters and (+ or -) symbol");

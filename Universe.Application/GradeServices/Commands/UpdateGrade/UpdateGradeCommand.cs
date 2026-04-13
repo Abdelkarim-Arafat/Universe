@@ -8,5 +8,7 @@ public record UpdateGradeCommand
     string Name,
     string Code,
     int MinScore,
-    int MaxScore
+    int MaxScore,
+    decimal MinGradePoint,
+    decimal MaxGradePoint
 ) : IRequest<Result<GradeResponse>>;

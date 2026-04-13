@@ -1,4 +1,5 @@
 ﻿using Universe.Application.RoomServices.Dtos;
+using Universe.Core.Enums;
 
 namespace Universe.Application.RoomServices.Commands.CreateRoom;
 
@@ -7,6 +8,6 @@ public record CreateRoomCommand
   string Name,
   int RoomNumber,
   int Capacity,
-  Guid RoomTypeId,
+  RoomType RoomType,
   [Required] Guid BuildingId
 ) : IRequest<Result<RoomResponse>>;

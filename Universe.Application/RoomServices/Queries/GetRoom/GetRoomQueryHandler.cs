@@ -9,7 +9,7 @@ public class GetRoomQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetRo
 
     public async Task<Result<RoomResponse>> Handle(GetRoomQuery query, CancellationToken cancellationToken)
     {
-        var room = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(query.Id, cancellationToken);
+        var room = await _unitOfWork.RoomRepository.GetByIdAsync(query.Id, cancellationToken);
         if (room is null)
             return Result.Failure<RoomResponse>(RoomErrors.RoomNotFound);
 
@@ -19,7 +19,7 @@ public class GetRoomQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetRo
             room.Name,
             room.RoomNumber,
             room.Capacity,
-            room.RoomType.Name
+            room.RoomType.ToString()
         );
         return Result.Success(response);
     }

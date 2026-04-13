@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.RoomServices.Commands.CreateRoom;
-using Universe.Application.RoomServices.Dtos;
+﻿using Universe.Application.RoomServices.Dtos;
 
 namespace Universe.Application.RoomServices.Commands.UpdateRoom;
 
@@ -17,11 +13,6 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
         if (room is null)
             return Result.Failure<RoomResponse>(RoomErrors.RoomNotFound);
 
-        var isRoomTypeExist = await _unitOfWork.RoomTypeRepository.CheckIfRoomTypeExist(command.RoomTypeId, cancellationToken);
-
-        if (!isRoomTypeExist)
-            return Result.Failure<RoomResponse>(RoomErrors.RoomTypeNotFound);
-
         var isSameRoomNumberExist = await _unitOfWork.RoomRepository
             .CheckValidRoomNumberAsync(room.Id, room.BuildingId, command.RoomNumber, cancellationToken);
 
@@ -31,7 +22,7 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
         room.Name = command.Name;
         room.Capacity = command.Capacity;
         room.RoomNumber = command.RoomNumber;
-        room.RoomTypeId = command.RoomTypeId;
+        room.RoomType = command.RoomType;
 
         _unitOfWork.Repository<Room>().Update(room);
 
@@ -46,14 +37,13 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
                 new Error("DatabaseError", "failed to update room", StatusCodes.Status409Conflict));
         }
 
-        room = await _unitOfWork.RoomRepository.GetRoomByIdIncludingRoomTypeAsync(room.Id, cancellationToken);
 
         var response = new RoomResponse
-            (room.Id!,
+            (room.Id,
             room.Name,
             room.RoomNumber,
             room.Capacity,
-            room.RoomType.Name);
+            room.RoomType.ToString());
 
         return Result.Success(response);
     }

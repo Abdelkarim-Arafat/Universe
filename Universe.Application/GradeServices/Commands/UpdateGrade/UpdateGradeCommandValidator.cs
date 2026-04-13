@@ -13,12 +13,18 @@ public class UpdateGradeCommandValidator : AbstractValidator<UpdateGradeCommand>
             .MaximumLength(2).WithMessage("Grade code cannot exceed 2 characters.");
 
         RuleFor(x => x.MinScore)
-            .LessThan(x => x.MaxScore)
-            .WithMessage("MinScore must be less than MaxScore.");
-
+             .LessThan(x => x.MaxScore)
+             .WithMessage("MinScore must be less than MaxScore.");
         RuleFor(x => x.MaxScore)
           .GreaterThanOrEqualTo(0)
-          .WithMessage("MinScore must be greater than or equal to 0.");
+          .WithMessage("MaxScore must be greater than or equal to 0.");
+
+        RuleFor(x => x.MinGradePoint)
+            .LessThan(x => x.MaxGradePoint)
+            .WithMessage("MinGradePoint must be less than MaxGradePoint.");
+        RuleFor(x => x.MaxGradePoint)
+          .GreaterThanOrEqualTo(0)
+          .WithMessage("MaxGradePoint must be greater than or equal to 0.");
 
         RuleFor(x => x)
             .Must(ValidCode)

@@ -98,4 +98,18 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
               .Where(co => CourseOfferingsIds.Contains(co.Id) && !co.IsDeleted)
               .ToDictionaryAsync(co => co.Id, co => co.CourseId, cancellationToken);
     }
+    public async Task<bool> IsOpenForControlAsync(Guid courseOfferingId, CancellationToken cancellationToken)
+    {
+        return await _context.CourseOfferings
+            .Where(co => co.Id == courseOfferingId && !co.IsDeleted)
+            .Select(co => co.IsOpenForControl)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+    public async Task<CourseOffering?> GetByIdIncludingEnrollmentsAsync(Guid courseOfferingId, CancellationToken cancellationToken)
+    {
+        return await _context.CourseOfferings
+            .Where(co => co.Id == courseOfferingId && !co.IsDeleted)
+            .Include(co => co.Enrollments)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 }

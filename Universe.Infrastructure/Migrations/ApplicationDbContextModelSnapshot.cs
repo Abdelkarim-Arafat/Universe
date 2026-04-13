@@ -602,6 +602,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<bool>("IsIncludedInGpa")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOpenForControl")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsOptional")
                         .HasColumnType("bit");
 
@@ -751,20 +754,11 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("FinalGrade")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("GradePoint")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("GroupNumber")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LetterGrade")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -807,8 +801,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("MaxGradePoint")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("MaxScore")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("MinGradePoint")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("MinScore")
                         .HasColumnType("int");
@@ -937,6 +937,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
 
+                    b.Property<int>("RoomType")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("RoomTypeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -947,39 +950,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("BuildingId");
 
-                    b.HasIndex("RoomTypeId");
-
                     b.ToTable("Rooms");
-                });
-
-            modelBuilder.Entity("Universe.Core.Entities.RoomType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("RoomTypes");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -1157,7 +1128,7 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("degree")
+                    b.Property<decimal?>("degree")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -1660,15 +1631,7 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Universe.Core.Entities.RoomType", "RoomType")
-                        .WithMany("Rooms")
-                        .HasForeignKey("RoomTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Building");
-
-                    b.Navigation("RoomType");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -2071,11 +2034,6 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.Room", b =>
                 {
                     b.Navigation("TeachingSessions");
-                });
-
-            modelBuilder.Entity("Universe.Core.Entities.RoomType", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>

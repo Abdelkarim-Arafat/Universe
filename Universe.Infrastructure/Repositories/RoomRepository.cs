@@ -29,11 +29,4 @@ public class RoomRepository(ApplicationDbContext context) : IRoomRepository
         return await _context.Rooms
             .FirstOrDefaultAsync(room => room.Id == Id && !room.IsDeleted, cancellationToken);
     }
-
-    public async Task<Room?> GetRoomByIdIncludingRoomTypeAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        return await _context.Rooms
-            .Include(room => room.RoomType)
-            .FirstOrDefaultAsync(room => room.Id == id && !room.IsDeleted, cancellationToken);
-    }
 }
