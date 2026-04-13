@@ -33,7 +33,7 @@ public class GetStudentAcademicHistoryCommandHandler(
         var AcademicProgramId = await _unitOfWork.AcademicProgramRepository
            .GetCurrentAcademicProgramIdAsync(StudentId, cancellationToken);
 
-         if(AcademicProgramId is null)
+        if (!AcademicProgramId.HasValue)
             return Result.Failure<List<TranscriptSemesterResponse>>(StudentErrors.NoProgram);
 
 
@@ -70,14 +70,14 @@ public class GetStudentAcademicHistoryCommandHandler(
                 );
             }).ToList();
 
-             // حساب gpas
+            // حساب gpas
             decimal semesterPoints = 0;
             decimal semesterHours = enrollmentsInSemester.Sum(e => e.CourseOffering.CreditHours);
 
             foreach (var course in courseGradeDtos)
             {
                 var gradePoints = letterDegrees
-                   .FirstOrDefault(g => course.FinalGrade >=g.MinGradePoint && course.FinalGrade <g.MaxGradePoint)?
+                   .FirstOrDefault(g => course.FinalGrade >= g.MinScore && course.FinalGrade <= g.MaxScore)?
                    .MinGradePoint ?? 0; // لو شلتها هتضرب
 
                 semesterPoints += (gradePoints * course.CreditHours);
@@ -85,7 +85,7 @@ public class GetStudentAcademicHistoryCommandHandler(
 
             decimal semesterGpa = semesterHours > 0 ? semesterPoints / semesterHours : 0;
 
-             
+
             totalQualityPoints += semesterPoints;
             totalHours += semesterHours;
             decimal cumulativeGpa = totalHours > 0 ? totalQualityPoints / totalHours : 0;
@@ -97,7 +97,7 @@ public class GetStudentAcademicHistoryCommandHandler(
                 cumulativeGpa,
                 semesterHours,
                 enrollmentsInSemester.Where(e => e.Status == EnrollmentStatus.Passed).Sum(e => e.CourseOffering.CreditHours),
-                letterDegrees.FirstOrDefault(ld=>ld.MinGradePoint <= semesterGpa && ld.MaxGradePoint > semesterGpa)!.Code,
+                letterDegrees.FirstOrDefault(ld => ld.MinGradePoint <= semesterGpa && ld.MaxGradePoint > semesterGpa)!.Code,
                 letterDegrees.FirstOrDefault(ld => ld.MinGradePoint <= cumulativeGpa && ld.MaxGradePoint > cumulativeGpa)!.Code,
                 courseGradeDtos
             ));

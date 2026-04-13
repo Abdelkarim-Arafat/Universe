@@ -204,7 +204,7 @@ public class StudentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
     [HttpGet("academic-history")]
-    public async Task<IActionResult> GetStudentAcademicHistory(Guid StudentId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetStudentAcademicHistory(CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetStudentAcademicHistoryCommand(), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
