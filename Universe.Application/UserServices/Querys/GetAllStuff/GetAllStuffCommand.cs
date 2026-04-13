@@ -9,4 +9,4 @@ namespace Universe.Application.UserServices.Querys.GetAllStuff;
 public record GetAllStuffCommand(
     [Required] Guid CollegeId,
     FilterRequest filter
-) : IRequest<Result<PaginationList<StaffResponse>>>;
+) : IRequest<Result<PaginationList<StuffResponse>>>;

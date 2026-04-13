@@ -14,6 +14,7 @@ public record CourseOfferingWithDetailsResponse(
     string? OptionalGroupCode,
     bool IsIncludedInGpa,
     RequirementType Type,
+    TermType SemesterType,
     Guid CourseId,
     Guid SemesterId,
     Guid AcademicProgramId,

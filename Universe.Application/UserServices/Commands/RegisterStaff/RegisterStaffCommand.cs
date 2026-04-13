@@ -13,4 +13,4 @@ public record RegisterStaffCommand(
     List<string> Roles,
     string? Email,
     string? PhoneNumber
-) : IRequest<Result<StaffResponse>>;
+) : IRequest<Result<StuffWithDetailsResponse>>;

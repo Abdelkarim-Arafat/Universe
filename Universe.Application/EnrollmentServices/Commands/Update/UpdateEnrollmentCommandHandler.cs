@@ -33,7 +33,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             return Result.Failure<List<EnrollmentInfo>>(EnrollmentErrors.DublicatedSessions);
 
 
-        var incomingSessionsGrouped = command.NewEnrollments
+        var incomingSessionsGrouped = command.newSessions
             .GroupBy(x => x.CourseOfferingId)
             .ToDictionary(g => g.Key, g => g.ToList());
 

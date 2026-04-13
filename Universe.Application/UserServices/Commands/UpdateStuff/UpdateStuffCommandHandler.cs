@@ -8,22 +8,22 @@ namespace Universe.Application.UserServices.Commands.UpdateStuff;
 public class UpdateStuffCommandHandler(
     UserManager<ApplicationUser> userManager,
     RoleManager<ApplicationRole> roleManager
-) : IRequestHandler<UpdateStuffCommand, Result<StaffResponse>>
+) : IRequestHandler<UpdateStuffCommand, Result<StuffWithDetailsResponse>>
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
 
-    public async Task<Result<StaffResponse>> Handle(UpdateStuffCommand request, CancellationToken cancellationToken)
+    public async Task<Result<StuffWithDetailsResponse>> Handle(UpdateStuffCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.Users
             .FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
         if (user is null)
-            return Result.Failure<StaffResponse>(AuthErrors.UserNotFound);
+            return Result.Failure<StuffWithDetailsResponse>(AuthErrors.UserNotFound);
 
         if (await _userManager.Users
             .AnyAsync(x => x.UserName == request.UserName && x.Id != request.UserId, cancellationToken))
-            return Result.Failure<StaffResponse>(AuthErrors.DuplicateUserName);
+            return Result.Failure<StuffWithDetailsResponse>(AuthErrors.DuplicateUserName);
 
         user.Name = request.Name;
         user.UserName = request.UserName;
@@ -35,13 +35,13 @@ public class UpdateStuffCommandHandler(
         if (!updateResult.Succeeded)
         {
             var error = updateResult.Errors.First();
-            return Result.Failure<StaffResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+            return Result.Failure<StuffWithDetailsResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
 
         foreach (var role in request.Roles)
         {
             if (!await _roleManager.RoleExistsAsync(role))
-                return Result.Failure<StaffResponse>(AuthErrors.InvalidRoles);
+                return Result.Failure<StuffWithDetailsResponse>(AuthErrors.InvalidRoles);
         }
 
         var currentRoles = await _userManager.GetRolesAsync(user);
@@ -55,7 +55,7 @@ public class UpdateStuffCommandHandler(
         if (rolesToAdd.Any())
             await _userManager.AddToRolesAsync(user, rolesToAdd);
 
-        return Result.Success(new StaffResponse(
+        return Result.Success(new StuffWithDetailsResponse(
             user.Id.ToString(),
             user.Name,
             request.Roles,

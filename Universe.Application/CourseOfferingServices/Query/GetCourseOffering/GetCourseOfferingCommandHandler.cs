@@ -25,6 +25,7 @@ public class GetCourseOfferingCommandHandler (
                 x.OptionalGroupCode,
                 x.IsIncludedInGpa,
                 x.Type,
+                x.Semester.Name,
                 x.CourseId,
                 x.SemesterId,
                 x.AcademicProgramId,

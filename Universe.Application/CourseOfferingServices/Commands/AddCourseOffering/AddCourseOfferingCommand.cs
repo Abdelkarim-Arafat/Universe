@@ -6,6 +6,7 @@ namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering
 
 public record AddCourseOfferingCommand(
     [Required] Guid AcademicProgramId,
+    [Required] Guid AcademicYearId,
     decimal CreditHours,
     decimal TotalGrade,
     decimal SuccessPercentage,
@@ -14,7 +15,7 @@ public record AddCourseOfferingCommand(
     bool IsIncludedInGpa,
     RequirementType Type,
     Guid CourseId,
-    Guid SemesterId,
+    TermType SemesterType,
     Guid LevelId,
     List<CourseOfferingAssessmentCommand> Assessments
 ) : IRequest<Result<CourseOfferingWithDetailsResponse>>;

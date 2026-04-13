@@ -17,8 +17,12 @@ internal class AddCourseOfferingCommandHandler(
             .IsExistAsync(request.AcademicProgramId, cancellationToken))
             ) return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
+        if (await _unitOfWork.AcademicYearRepository
+            .GetSemesterByTypeAsync(request.AcademicYearId, request.SemesterType, cancellationToken) is not { } semester
+            ) return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicYearErrors.NotFound);
+
         if (await _unitOfWork.CourseOfferingRepository
-            .IsExistAsync(request.AcademicProgramId, request.SemesterId,
+            .IsExistAsync(request.AcademicProgramId, semester.Id,
                 request.LevelId, request.CourseId, cancellationToken)
             ) return Result.Failure<CourseOfferingWithDetailsResponse>(CourseOfferingErrors.AlreadyExist);
 
@@ -33,13 +37,13 @@ internal class AddCourseOfferingCommandHandler(
             return Result.Failure<CourseOfferingWithDetailsResponse>(LevelErrors.NotFound);
 
         if (await _unitOfWork.AcademicYearRepository
-            .IsExistSemesterAsync(request.SemesterId , cancellationToken) is false)
+            .IsExistSemesterAsync(semester.Id , cancellationToken) is false)
             return Result.Failure<CourseOfferingWithDetailsResponse>(SemesterErrors.NotFound);
 
         var courseOffering = new CourseOffering
         {
             AcademicProgramId = request.AcademicProgramId,
-            SemesterId = request.SemesterId,
+            SemesterId = semester.Id,
             LevelId = request.LevelId,
             CourseId = request.CourseId,
             TotalGrade = request.TotalGrade,
@@ -58,7 +62,8 @@ internal class AddCourseOfferingCommandHandler(
 
         await _unitOfWork.Repository<CourseOffering>().AddAsync(courseOffering, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
-
-        return Result.Success(courseOffering.Adapt<CourseOfferingWithDetailsResponse>());
+        var response = (courseOffering, request).Adapt<CourseOfferingWithDetailsResponse>();
+        
+        return Result.Success(response);
     }
 }

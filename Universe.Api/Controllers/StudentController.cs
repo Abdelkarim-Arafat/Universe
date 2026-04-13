@@ -16,7 +16,6 @@ using Universe.Application.UserServices.Querys.GetMilitaryData;
 using Universe.Application.UserServices.Querys.GetParentData;
 using Universe.Application.UserServices.Querys.GetPersonalData;
 using Universe.Application.UserServices.Querys.GetPreviousQualificationData;
-using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 namespace Universe.Api.Controllers;
 
@@ -202,11 +201,5 @@ public class StudentController(IMediator mediator) : ControllerBase
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
-    }
-    [HttpGet("academic-history")]
-    public async Task<IActionResult> GetStudentAcademicHistory(Guid StudentId, CancellationToken cancellationToken)
-    {
-        var result = await _mediator.Send(new GetStudentAcademicHistoryCommand(), cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

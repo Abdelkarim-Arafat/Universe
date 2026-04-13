@@ -27,6 +27,7 @@ public sealed class ApplicationUser : IdentityUser<Guid> , ISoftDeleteable
         DeletedAt = null;
     }
 
+    public ICollection<Student> AdvisedStudents { get; set; } = [];
     public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
     public ICollection<PasswordResetOtp> passwordResetOtps { get; set; } = [];
     public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } = [];

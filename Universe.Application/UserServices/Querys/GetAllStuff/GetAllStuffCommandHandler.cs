@@ -12,11 +12,11 @@ namespace Universe.Application.UserServices.Querys.GetAllStuff;
 
 public class GetAllStuffCommandHandler(
     UserManager<ApplicationUser> userManager
-    ) : IRequestHandler<GetAllStuffCommand, Result<PaginationList<StaffResponse>>>
+    ) : IRequestHandler<GetAllStuffCommand, Result<PaginationList<StuffResponse>>>
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
 
-    public async Task<Result<PaginationList<StaffResponse>>> Handle(GetAllStuffCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationList<StuffResponse>>> Handle(GetAllStuffCommand request, CancellationToken cancellationToken)
     {
         var query = _userManager.Users
         .Where(x => x.CollegeId == request.CollegeId
@@ -36,16 +36,12 @@ public class GetAllStuffCommandHandler(
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.Select(x => new StaffResponse (
+        var source = query.Select(x => new StuffResponse(
                 x.Id.ToString(),
-                x.Name,
-                DefaultRoles.Staff.Name,
-                x.UserName!,
-                x.Email,
-                x.PhoneNumber
+                x.Name
             ));
 
-        var response = await PaginationList<StaffResponse>
+        var response = await PaginationList<StuffResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
 
         return Result.Success(response);

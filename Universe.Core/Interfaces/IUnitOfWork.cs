@@ -26,7 +26,6 @@ public interface IUnitOfWork: IAsyncDisposable
     IUserRepository UserRepository { get; }
     ICollegeRepository CollegeRepository { get; }
     IEnrollmentRepository EnrollmentRepository { get; }
-    IStudentSemesterSummaryRepository StudentSemesterSummaryRepository { get; }
     IAcademicEventRepository AcademicEventRepository { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);
 }

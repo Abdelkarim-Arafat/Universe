@@ -26,8 +26,12 @@ public class UpdateCourseOfferingCommandValidator : AbstractValidator<UpdateCour
         RuleFor(x => x.CourseId)
             .NotEmpty();
 
-        RuleFor(x => x.SemesterId)
+        RuleFor(x => x.AcademicYearId)
             .NotEmpty();
+
+        RuleFor(x => x.SemesterType)
+            .NotEmpty()
+            .IsInEnum();
 
         RuleFor(x => x.LevelId)
             .NotEmpty();

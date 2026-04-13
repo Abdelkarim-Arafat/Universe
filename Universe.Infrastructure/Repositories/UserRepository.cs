@@ -28,6 +28,16 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
     //    await _context.SaveChangesAsync(cancellationToken);
     //}
 
+    public async Task<List<Student>> GetStudentsByIdsAsync(
+    List<Guid> studentIds,
+    CancellationToken cancellationToken)
+    {
+        return await _context.Students
+            .Where(s => studentIds.Contains(s.Id))
+            .ToListAsync(cancellationToken);
+    }
+
+
     public async Task UpdatePersonalDataAsync(Guid StudentId, CancellationToken cancellationToken)
         => await _context.Students
         .Where(x => x.Id == StudentId)

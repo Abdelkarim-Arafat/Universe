@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.ControlServices.Commands.UpsertStudentsDegrees;
+using Universe.Application.ControlServices.Queries;
 using Universe.Application.ControlServices.Queries.GetStudents;
  
 
@@ -34,6 +35,20 @@ public class ControlController(IMediator mediator) : ControllerBase
         var updatedRequest = command with { AcademicProgramId = AcademicProgramId, CourseOfferingId = CourseOfferingId };
 
         var result = await _mediator.Send(updatedRequest, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
+
+    [HttpGet("")]
+    public async Task<IActionResult> GetLevelsCoursesStatistics(
+       [FromQuery] Guid academicProgramId,
+       [FromQuery] Guid semesterId,
+       CancellationToken cancellationToken)
+    {
+
+        var result = await _mediator.Send(new GetLevelsCoursesStatisticsQuery(academicProgramId, semesterId), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)

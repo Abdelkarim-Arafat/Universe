@@ -4,11 +4,7 @@ using System.Text;
 
 namespace Universe.Application.UserServices.UserDtos;
 
-public record StaffResponse (
+public record StuffResponse(
     string Id,
-    string Name,
-    List<string> Roles,
-    string UserName,
-    string ?Email,
-    string ?PhoneNumber
+    string Name
 );
