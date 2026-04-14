@@ -23,6 +23,7 @@ public class ApplicationDbContext(
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
     public DbSet<Semester> Semesters { get; set; }
+    public DbSet<AcademicEvent> AcademicEvents { get; set; }
     public DbSet<AcademicYear> AcademicYears { get; set; }
     public DbSet<StudentAcademicProgram> StudentAcademicPrograms { get; set; }
     public DbSet<CourseOffering> CourseOfferings { get; set; }
@@ -39,7 +40,6 @@ public class ApplicationDbContext(
     public DbSet<Enrollment> Enrollments { get; set; }
     public DbSet<TeachingSessionEnrollment> TeachingSessionEnrollments { get; set; }
     public DbSet<StudentAssessment> StudentAssessments { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

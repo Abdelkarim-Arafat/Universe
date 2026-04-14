@@ -21,7 +21,12 @@ internal class UpdateCourseOfferingCommandHandler (
             .IsExistAsync(request.AcademicProgramId, cancellationToken)))
             return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
+        if (await _unitOfWork.AcademicYearRepository
+            .GetSemesterByTypeAsync(request.AcademicYearId, request.SemesterType, cancellationToken) is not { } semester
+            ) return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicYearErrors.NotFound);
+
         request.Adapt(course);
+        course.SemesterId = semester.Id;
 
         var requestTypes = request.Assessments.Select(x => x.Type);
 
@@ -57,11 +62,12 @@ internal class UpdateCourseOfferingCommandHandler (
 
         var courseEntity = await _unitOfWork.Repository<CourseOffering>()
             .GetQueryable()
+            .AsNoTracking()
             .Include(c => c.Assessments)
             .Where(x => x.Id == course.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
-        var response = courseEntity!.Adapt<CourseOfferingWithDetailsResponse>();
+        var response = (courseEntity!, request).Adapt<CourseOfferingWithDetailsResponse>();
 
         return Result.Success(response!);
     }

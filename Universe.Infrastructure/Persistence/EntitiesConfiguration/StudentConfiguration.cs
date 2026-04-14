@@ -14,6 +14,11 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.HasKey(s => s.Id);
 
+
+        builder.HasOne(s => s.Advisor)
+            .WithMany(u => u.AdvisedStudents)
+            .HasForeignKey(s => s.AdvisorId);
+
         builder.Property(s => s.Id).ValueGeneratedNever();
 
         builder.Property(s => s.Name)

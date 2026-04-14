@@ -28,7 +28,11 @@ public class Student : BaseEntity
     public ParentInfo ParentInfo { get; set; } = default!; // بيانات ولي الامر
     public PreviousQualification PreviousQualification { get; set; } = default!; // بيانات المؤهل السابق
     public MilitaryInfo? MilitaryInfo { get; set; } // بيانات التجنيد
-   
+
+
+
+    public Guid? AdvisorId { get; set; }
+    public ApplicationUser Advisor { get; set; } = default!;
 
     public Guid CollegeId { get; set; }
     public College College { get; set; } = default!;

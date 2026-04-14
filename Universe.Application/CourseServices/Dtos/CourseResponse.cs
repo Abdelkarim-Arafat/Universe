@@ -8,6 +8,5 @@ public record CourseResponse(
     string Id,
     string Name,
     string Description,
-    string Code,
-    List<CourseResponse> PreRequisites
+    string Code
 );

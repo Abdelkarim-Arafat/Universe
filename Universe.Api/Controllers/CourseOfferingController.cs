@@ -8,6 +8,7 @@ using Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 using Universe.Application.CourseOfferingServices.Dtos;
 using Universe.Application.CourseOfferingServices.Query.GetCourseOffering;
 using Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
+using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
 
@@ -27,16 +28,18 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetLevelCourses(
-        GetLevelCoursesCommand request,
+    public async Task<IActionResult> GetLevelCourses (
+        [FromQuery] Guid levelId,
+        [FromQuery] Guid academicYearId,
+        [FromQuery] TermType semesterType,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(new GetLevelCoursesCommand(levelId , academicYearId , semesterType), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> AddCourseOffering(
+    public async Task<IActionResult> AddCourseOffering (
         [FromRoute] Guid programId,
         [FromBody] AddCourseOfferingCommand request,
         CancellationToken cancellationToken)

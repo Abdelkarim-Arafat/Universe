@@ -6,6 +6,7 @@ namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffer
 public record UpdateCourseOfferingCommand(
     Guid Id,
     [Required] Guid AcademicProgramId,
+    [Required] Guid AcademicYearId,
     decimal CreditHours,
     decimal TotalGrade,
     decimal SuccessPercentage,
@@ -13,8 +14,8 @@ public record UpdateCourseOfferingCommand(
     string? OptionalGroupCode,
     bool IsIncludedInGpa,
     RequirementType Type,
+    TermType SemesterType,
     Guid CourseId,
-    Guid SemesterId,
     Guid LevelId,
     List<CourseOfferingAssessmentCommand> Assessments
 ) : IRequest<Result<CourseOfferingWithDetailsResponse>>;

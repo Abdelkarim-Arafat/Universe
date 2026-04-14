@@ -11,6 +11,9 @@ public record StudentErrors
     public static readonly Error DuplicateStudentCode = 
         new("Student.DuplicateStudentCode", "Another student with the same code is already exists", StatusCodes.Status409Conflict);
 
+    public static readonly Error InvalidStudentsIds = 
+        new("Student.InvalidStudentsIds", "Invalid student IDs", StatusCodes.Status400BadRequest);
+
     public static readonly Error DuplicateNationalIdOrPassport =
         new("Student.DuplicateNationalIdOrPassport", "Another student with the same national id or passport is already exists", StatusCodes.Status409Conflict);
     public static readonly Error InvalidCredentials =

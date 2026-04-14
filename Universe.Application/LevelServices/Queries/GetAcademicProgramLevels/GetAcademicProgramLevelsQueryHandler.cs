@@ -27,7 +27,13 @@ public class GetAcademicProgramLevelsQueryHandler(IUnitOfWork unitOfWork) : IReq
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.Select(l => l.Adapt<LevelResponse>());
+        var source = query.Select(x => new LevelResponse
+        (
+            x.Id,
+            x.Name,
+            x.MinHours,
+            x.MaxHours
+        ));
 
         var response = await PaginationList<LevelResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

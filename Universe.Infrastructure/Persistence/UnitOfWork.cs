@@ -35,6 +35,9 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public IBuildingRepository BuildingRepository
         => field ??= new BuildingRepository(_context);
 
+    public IAcademicEventRepository AcademicEventRepository
+        => field ??= new AcademicEventRepository(_context);
+
     public IRoomRepository RoomRepository
         => field ??= new RoomRepository(_context);
  
@@ -62,7 +65,8 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
         => field ??= new SessionRepository(_context);
     public IEnrollmentRepository EnrollmentRepository
        => field ??= new EnrollmentRepository(_context);
-
+    //public IStudentSemesterSummaryRepository StudentSemesterSummaryRepository
+    //   => field ??= new StudentSemesterSummaryRepository(_context);
     public async Task<int> CompleteAsync(CancellationToken cancellationToken)
         => await _context.SaveChangesAsync(cancellationToken);
 

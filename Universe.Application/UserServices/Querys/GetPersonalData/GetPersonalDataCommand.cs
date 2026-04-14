@@ -5,6 +5,6 @@ using Universe.Application.UserServices.UserDtos;
 
 namespace Universe.Application.UserServices.Querys.GetPersonalData;
 
-public record GetPersonalDataCommand(
+public record GetPersonalDataCommand (
     [Required] Guid StudentId
 ) : IRequest<Result<PersonalDataResponse>>;

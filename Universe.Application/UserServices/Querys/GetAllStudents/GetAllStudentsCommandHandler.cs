@@ -29,7 +29,14 @@ public class GetAllStudentsCommandHandler(
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.ProjectToType<StudentResponse>();
+        var source = query.Select(x => new StudentResponse
+        (
+            x.Id,
+            x.Name,
+            x.StudentCode,
+            x.NationalIdOrPassport,
+            x.Gender
+        ));
 
         var response = await PaginationList<StudentResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

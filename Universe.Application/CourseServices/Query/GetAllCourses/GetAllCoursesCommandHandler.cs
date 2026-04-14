@@ -26,7 +26,12 @@ public class GetAllCoursesCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
         }
 
 
-        var source = query.Select(c=>c.Adapt<CourseResponse>());
+        var source = query.Select(x => new CourseResponse(
+            x.Id.ToString(),
+            x.Name,
+            x.Description,
+            x.Code
+            ));
 
         var response = await PaginationList<CourseResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

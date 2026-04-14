@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Reflection.Emit;
 using Universe.Core.Entities;
 using Universe.Infrastructure.SeedData;
-using System;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -19,6 +20,9 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
         builder.HasOne(u => u.Student)
             .WithOne(s => s.ApplicationUser)
             .HasForeignKey<Student>(s => s.Id);
+
+
+        
 
         builder.HasIndex(u => u.Name);
 

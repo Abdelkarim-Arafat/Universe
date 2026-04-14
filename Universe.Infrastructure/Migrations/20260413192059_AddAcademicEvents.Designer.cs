@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260412185705_UpdateGradeTAbl")]
-    partial class UpdateGradeTAbl
+    [Migration("20260413192059_AddEnrollment")]
+    partial class AddEnrollment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,6 +143,47 @@ namespace Universe.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.AcademicEvent", b =>
+                {
+                    b.Property<Guid>("ProgramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SemesterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ProgramId", "SemesterId");
+
+                    b.HasIndex("SemesterId");
+
+                    b.ToTable("AcademicEvents");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.AcademicProgram", b =>
@@ -605,6 +646,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<bool>("IsIncludedInGpa")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOpenForControl")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsOptional")
                         .HasColumnType("bit");
 
@@ -937,6 +981,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
 
+                    b.Property<int>("RoomType")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("RoomTypeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -947,39 +994,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("BuildingId");
 
-                    b.HasIndex("RoomTypeId");
-
                     b.ToTable("Rooms");
-                });
-
-            modelBuilder.Entity("Universe.Core.Entities.RoomType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("RoomTypes");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -1026,6 +1041,9 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.Student", b =>
                 {
                     b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AdvisorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CollegeId")
@@ -1088,6 +1106,8 @@ namespace Universe.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdvisorId");
 
                     b.HasIndex("CollegeId");
 
@@ -1386,6 +1406,25 @@ namespace Universe.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Universe.Core.Entities.AcademicEvent", b =>
+                {
+                    b.HasOne("Universe.Core.Entities.AcademicProgram", "Program")
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Universe.Core.Entities.Semester", "Semester")
+                        .WithMany()
+                        .HasForeignKey("SemesterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Program");
+
+                    b.Navigation("Semester");
+                });
+
             modelBuilder.Entity("Universe.Core.Entities.AcademicProgram", b =>
                 {
                     b.HasOne("Universe.Core.Entities.College", "College")
@@ -1660,15 +1699,7 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Universe.Core.Entities.RoomType", "RoomType")
-                        .WithMany("Rooms")
-                        .HasForeignKey("RoomTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Building");
-
-                    b.Navigation("RoomType");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -1684,6 +1715,10 @@ namespace Universe.Infrastructure.Migrations
 
             modelBuilder.Entity("Universe.Core.Entities.Student", b =>
                 {
+                    b.HasOne("Universe.Core.Entities.ApplicationUser", "Advisor")
+                        .WithMany("AdvisedStudents")
+                        .HasForeignKey("AdvisorId");
+
                     b.HasOne("Universe.Core.Entities.College", "College")
                         .WithMany("Students")
                         .HasForeignKey("CollegeId")
@@ -1864,6 +1899,8 @@ namespace Universe.Infrastructure.Migrations
                                 .HasForeignKey("StudentId");
                         });
 
+                    b.Navigation("Advisor");
+
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("College");
@@ -2016,6 +2053,8 @@ namespace Universe.Infrastructure.Migrations
 
             modelBuilder.Entity("Universe.Core.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("AdvisedStudents");
+
                     b.Navigation("Student")
                         .IsRequired();
 
@@ -2071,11 +2110,6 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.Room", b =>
                 {
                     b.Navigation("TeachingSessions");
-                });
-
-            modelBuilder.Entity("Universe.Core.Entities.RoomType", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>

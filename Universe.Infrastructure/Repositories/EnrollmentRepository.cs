@@ -89,28 +89,6 @@ public class EnrollmentRepository(
         }).ToList();
     }
 
-    //public async Task<List<SessionOptionResponse>> GetSessionOptionsAsync(
-    //Guid courseOfferingId,
-    //Guid studentId,
-    //CancellationToken cancellationToken)
-    //{
-    //    return await _context.CourseOfferingSessions
-    //        .AsNoTracking()
-    //        .Where(x => x.CourseOfferingId == courseOfferingId && !x.IsDeleted)
-    //        .Select(x => new SessionOptionResponse(
-    //            x.TeachingSession.Id,
-    //            x.TeachingSession.Instructor.Name,
-    //            x.TeachingSession.Type,
-    //            x.TeachingSession.GroupNumber,
-    //            x.TeachingSession.Day,
-    //            x.TeachingSession.StartTime,
-    //            x.TeachingSession.EndTime,
-    //            x.TeachingSession.Capacity - x.TeachingSession.TeachingSessionEnrollments.Count(e => !e.IsDeleted),
-    //            x.TeachingSession.TeachingSessionEnrollments.Any(e => e.Enrollment.StudentId == studentId && !e.IsDeleted)
-    //        ))
-    //        .ToListAsync(cancellationToken);
-    //}
-
     public async Task<List<TeachingSessionEnrollment>> GetTeachingSessionEnrollmentAsync(Guid StudentId, CancellationToken cancellationToken)
     {
         return await _context.TeachingSessionEnrollments

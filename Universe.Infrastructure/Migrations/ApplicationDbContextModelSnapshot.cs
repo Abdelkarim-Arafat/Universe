@@ -142,6 +142,47 @@ namespace Universe.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Universe.Core.Entities.AcademicEvent", b =>
+                {
+                    b.Property<Guid>("ProgramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SemesterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ProgramId", "SemesterId");
+
+                    b.HasIndex("SemesterId");
+
+                    b.ToTable("AcademicEvents");
+                });
+
             modelBuilder.Entity("Universe.Core.Entities.AcademicProgram", b =>
                 {
                     b.Property<Guid>("Id")
@@ -999,6 +1040,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AdvisorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("CollegeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1059,6 +1103,8 @@ namespace Universe.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdvisorId");
 
                     b.HasIndex("CollegeId");
 
@@ -1357,6 +1403,25 @@ namespace Universe.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Universe.Core.Entities.AcademicEvent", b =>
+                {
+                    b.HasOne("Universe.Core.Entities.AcademicProgram", "Program")
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Universe.Core.Entities.Semester", "Semester")
+                        .WithMany()
+                        .HasForeignKey("SemesterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Program");
+
+                    b.Navigation("Semester");
+                });
+
             modelBuilder.Entity("Universe.Core.Entities.AcademicProgram", b =>
                 {
                     b.HasOne("Universe.Core.Entities.College", "College")
@@ -1647,6 +1712,10 @@ namespace Universe.Infrastructure.Migrations
 
             modelBuilder.Entity("Universe.Core.Entities.Student", b =>
                 {
+                    b.HasOne("Universe.Core.Entities.ApplicationUser", "Advisor")
+                        .WithMany("AdvisedStudents")
+                        .HasForeignKey("AdvisorId");
+
                     b.HasOne("Universe.Core.Entities.College", "College")
                         .WithMany("Students")
                         .HasForeignKey("CollegeId")
@@ -1827,6 +1896,8 @@ namespace Universe.Infrastructure.Migrations
                                 .HasForeignKey("StudentId");
                         });
 
+                    b.Navigation("Advisor");
+
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("College");
@@ -1979,6 +2050,8 @@ namespace Universe.Infrastructure.Migrations
 
             modelBuilder.Entity("Universe.Core.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("AdvisedStudents");
+
                     b.Navigation("Student")
                         .IsRequired();
 

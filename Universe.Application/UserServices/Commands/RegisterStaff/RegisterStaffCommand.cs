@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Application.UserServices.UserDtos;
 
 namespace Universe.Application.UserServices.Commands.RegisterStaff;
 
@@ -9,5 +10,7 @@ public record RegisterStaffCommand(
     string Name,
     string UserName,
     string Password,
-    string Role
-) : IRequest<Result<StaffResponse>>;
+    List<string> Roles,
+    string? Email,
+    string? PhoneNumber
+) : IRequest<Result<StuffWithDetailsResponse>>;

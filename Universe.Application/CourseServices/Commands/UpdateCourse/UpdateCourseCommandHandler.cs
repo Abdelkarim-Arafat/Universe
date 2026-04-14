@@ -6,37 +6,37 @@ using Universe.Application.CourseServices.Dtos;
 
 namespace Universe.Application.CourseServices.Commands.UpdateCourse;
 
-public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateCourseCommand, Result<CourseResponse>>
+public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateCourseCommand, Result<CourseWithPreRequisiteResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<CourseResponse>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CourseWithPreRequisiteResponse>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.CourseRepository
             .IsExistAsync(request.CollegeId, request.Name, request.Code, request.Id, cancellationToken))
         {
-            return Result.Failure<CourseResponse>(CourseErrors.CourseAlreadyExists);
+            return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.CourseAlreadyExists);
         }
 
         var existingCoursesIds = await _unitOfWork.CourseRepository
             .ExistingPreRequisitesIdsAsync(request.PreRequisiteIds, cancellationToken);
 
         if (existingCoursesIds.Count != request.PreRequisiteIds.Count)
-            return Result.Failure<CourseResponse>(CourseErrors.PrerequisiteNotFound);
+            return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.PrerequisiteNotFound);
 
 
         var course = await _unitOfWork.CourseRepository
             .GetByIdAsync(request.Id, cancellationToken);
 
-        if (course is null) return Result.Failure<CourseResponse>(CourseErrors.CourseNotFound);
+        if (course is null) return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.CourseNotFound);
 
         foreach (var preReqId in existingCoursesIds)
         {
             if (preReqId == course.Id)
-                return Result.Failure<CourseResponse>(CourseErrors.SameCourse);
+                return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.SameCourse);
 
             if (await _unitOfWork.CourseRepository.IsExistCoursePreRequisiteAsync(preReqId, course.Id, cancellationToken))
-                return Result.Failure<CourseResponse>(CourseErrors.PrerequisiteCycleDetected);
+                return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.PrerequisiteCycleDetected);
         }
         
         var directPreReqIds = await _unitOfWork.CourseRepository
@@ -65,7 +65,7 @@ public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandle
         _unitOfWork.Repository<Course>().Update(course);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        var response = new CourseResponse(
+        var response = new CourseWithPreRequisiteResponse(
             course.Id.ToString(),
             course.Name,
             course.Description,

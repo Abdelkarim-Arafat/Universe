@@ -11,4 +11,4 @@ public record AddCourseCommand(
     string Description,
     string Code,
     List<Guid> PreRequisiteIds
-) : IRequest<Result<CourseResponse>>;
+) : IRequest<Result<CourseWithPreRequisiteResponse>>;

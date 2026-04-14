@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Core.Enums;
 
 namespace Universe.Application.UserServices.Commands.RegisterStaff;
+
+
 
 internal class RegisterStaffCommandValidator : AbstractValidator<RegisterStaffCommand>
 {
@@ -19,8 +22,5 @@ internal class RegisterStaffCommandValidator : AbstractValidator<RegisterStaffCo
         RuleFor(x => x.Password)
             .NotEmpty()
             .Length(8, 15);
-
-        RuleFor(x => x.Role)
-            .NotEmpty();
     }
 }

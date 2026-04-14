@@ -13,12 +13,16 @@ public class GetLevelCoursesCommandHandler(
 
     public async Task<Result<List<CourseOfferingResponse>>> Handle(GetLevelCoursesCommand request, CancellationToken cancellationToken)
     {
+        if (await _unitOfWork.AcademicYearRepository
+            .GetSemesterByTypeAsync(request.AcademicYearId, request.SemesterType, cancellationToken) is not { } semester
+            ) return Result.Failure<List<CourseOfferingResponse>>(AcademicYearErrors.NotFound);
+
         var response = await _unitOfWork.Repository<CourseOffering>()
             .GetQueryable()
             .AsNoTracking()
             .Where(x =>
                 x.LevelId == request.LevelId &&
-                x.SemesterId == request.SemesterId &&
+                x.SemesterId == semester.Id &&
                 !x.IsDeleted)
             .Select(x => new CourseOfferingResponse(
                 x.Id.ToString(),

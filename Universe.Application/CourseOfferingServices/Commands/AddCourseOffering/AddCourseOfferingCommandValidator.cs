@@ -28,8 +28,9 @@ public class AddCourseOfferingCommandValidator : AbstractValidator<AddCourseOffe
         RuleFor(x => x.CourseId)
             .NotEmpty();
 
-        RuleFor(x => x.SemesterId)
-            .NotEmpty();
+        RuleFor(x => x.SemesterType)
+            .NotEmpty()
+            .IsInEnum();
 
         //RuleFor(x => x.AcademicProgramId)
         //    .NotEmpty();

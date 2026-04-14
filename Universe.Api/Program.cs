@@ -29,6 +29,13 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowCredentials()
             );
+
+    options.AddPolicy("netlify.app" , policy =>
+            policy.WithOrigins("https://playful-torrone-6e1691.netlify.app")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            );
 });
 
 
@@ -57,6 +64,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseCors("MO");
+app.UseCors("netlify.app");
+
 
 app.UseSerilogRequestLogging();
 
