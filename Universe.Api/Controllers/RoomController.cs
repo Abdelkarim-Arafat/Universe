@@ -8,7 +8,6 @@ using Universe.Application.RoomServices.Commands.DeleteRoom;
 using Universe.Application.RoomServices.Commands.UpdateRoom;
 using Universe.Application.RoomServices.Queries.GetAllRooms;
 using Universe.Application.RoomServices.Queries.GetRoom;
-using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
 
@@ -58,5 +57,4 @@ public class RoomController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-    
 }

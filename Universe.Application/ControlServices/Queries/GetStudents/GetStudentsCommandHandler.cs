@@ -14,13 +14,15 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
         if (!isProgramExist)
             return Result.Failure<StudentsDegreesResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
-        var courseOffering = await _unitOfWork.CourseOfferingRepository.GetByIdAndGroupNumberAsync(command.CourseOfferingId, command.GroupNumber, cancellationToken);
+        var courseOffering = await _unitOfWork.CourseOfferingRepository
+            .GetByIdAsync(command.CourseOfferingId, cancellationToken);
+
         if (courseOffering is null)
             return Result.Failure<StudentsDegreesResponse>(CourseOfferingErrors.NotFound);
 
        // get data
         var studentsInfos = await _unitOfWork.UserRepository
-            .GetStudentsByCourseOfferingAndGroupNumberAsync(command.CourseOfferingId, command.GroupNumber, command.StudentCodeOrName, cancellationToken);
+            .GetStudentsByCourseOfferingAndGroupNumberAsync(command.CourseOfferingId, command.GroupNumber, cancellationToken);
 
         var assessmentHeadersRaw = await _unitOfWork.CourseOfferingRepository
             .GetCourseOfferingAssessments(command.CourseOfferingId, cancellationToken);
@@ -84,10 +86,12 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
         var filter = command.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
-            filteredList = filteredList.Where(x => x.Name.Contains(filter.SearchValue));
+            filteredList = filteredList
+                .Where(x => x.Name.Contains(filter.SearchValue) || x.Code.Contains(filter.SearchValue));
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
-            filteredList = filteredList.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+            filteredList = filteredList
+                .OrderBy($"{filter.SortColumn} {filter.SortDirection}");
 
         // احسب الـ Total Count يدوي من اللستة
         var totalCount = filteredList.Count();

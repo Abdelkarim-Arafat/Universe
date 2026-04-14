@@ -5,7 +5,6 @@ namespace Universe.Application.ControlServices.Queries.GetStudents;
 public record GetStudentsCommand
 (   [Required] Guid AcademicProgramId,
     [Required] Guid CourseOfferingId,
-               int GroupNumber,
-               string? StudentCodeOrName,
+               int? GroupNumber,
                FilterRequest Filter
 ) : IRequest<Result<StudentsDegreesResponse>>;

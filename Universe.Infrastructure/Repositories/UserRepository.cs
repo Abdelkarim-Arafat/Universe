@@ -130,8 +130,7 @@ public class UserRepository
     public async Task<List<(Student Student, string StudentLevelName, List<StudentAssessment> Assessments)>>
         GetStudentsByCourseOfferingAndGroupNumberAsync(
      Guid courseOfferingId,
-     int groupNumber,
-     string? studentCodeOrName,
+     int? groupNumber,
      CancellationToken cancellationToken)
     {
         var query = _context.Students
@@ -139,16 +138,8 @@ public class UserRepository
             .Include(s => s.Enrollments)
             .Where(stu => stu.Enrollments.Any(e =>
                 e.CourseOfferingId == courseOfferingId &&
-                e.GroupNumber == groupNumber &&
+                (groupNumber == null || e.GroupNumber == groupNumber) &&
                 !e.IsDeleted));
-
-        if (!string.IsNullOrWhiteSpace(studentCodeOrName))
-        {
-            query = query.Where(stu =>
-                stu.StudentCode.Contains(studentCodeOrName) ||
-                stu.Name.Contains(studentCodeOrName));
-        }
-
 
         var result = await query
             .Select(s => new

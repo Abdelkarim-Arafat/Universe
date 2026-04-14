@@ -12,7 +12,6 @@ public interface ICourseOfferingRepository
     Task<bool> IsExistAsync(Guid CourseOfferingId, CancellationToken cancellationToken);
 
     Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
-    Task<CourseOffering?> GetByIdAndGroupNumberAsync(Guid Id, int GroupNumber, CancellationToken cancellationToken);
     Task<List<CourseOfferingAssessment>> GetCourseOfferingAssessments(Guid CourseOfferingId, CancellationToken cancellationToken);
     Task<List<CourseOffering>> GetAvailableCourseOfferingsAsync(Guid LevelId, Guid SemesterId, Guid StudentId, CancellationToken cancellationToken);
     Task<Dictionary<Guid, List<CourseOfferingAssessment>>> 

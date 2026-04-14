@@ -70,16 +70,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
 
         return dict;
     }
-
-    public async Task<CourseOffering?> GetByIdAndGroupNumberAsync(Guid Id, int GroupNumber, CancellationToken cancellationToken)
-    {
-        return await _context.CourseOfferings.FirstOrDefaultAsync(
-            c => c.Id == Id
-            && c.NumberOfGroups >= GroupNumber
-            && !c.IsDeleted, cancellationToken);
-    }
-
-
     public async Task<int> CountCourseAssessments(List<Guid> CourseAssessmentsIds, CancellationToken cancellationToken)
     {
         return await _context.CourseOfferingAssessments
