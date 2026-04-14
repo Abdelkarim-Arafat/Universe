@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
+using Universe.Application.UserServices.Commands.AssignAdvisorToStudents;
 using Universe.Application.UserServices.Commands.RegisterStaff;
 using Universe.Application.UserServices.Commands.RemoveStuff;
 using Universe.Application.UserServices.Commands.UpdateStuff;
@@ -17,6 +18,19 @@ namespace Universe.Api.Controllers;
 public class StuffController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+
+
+
+    [HttpPut("{advisorId:guid}/assign-advisor")]
+    public async Task<IActionResult> AssignAdvisorToStudents(
+        [FromRoute] Guid advisorId,
+        [FromBody]  AssignAdvisorToStudentsCommand request,
+        CancellationToken cancellationToken)
+    {
+        request = request with { AdvisorId = advisorId };
+        var result = await _mediator.Send(request, cancellationToken);
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
 
     [HttpGet("")]
     public async Task<IActionResult> GetAllStuff(

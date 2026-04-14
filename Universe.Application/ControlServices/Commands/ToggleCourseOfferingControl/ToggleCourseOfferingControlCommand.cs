@@ -5,6 +5,5 @@ using System.Text;
 namespace Universe.Application.ControlServices.Commands.ToggleCourseOfferingControl;
 
 public record ToggleCourseOfferingControlCommand(
-    [Required] Guid CourseOfferingId,
-    bool IsOpenForControl
+    [Required] Guid CourseOfferingId
 ) : IRequest<Result>;

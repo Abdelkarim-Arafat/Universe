@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Universe.Application.ControlServices.Dtos;
 
-public record LevelCoursesStatisticsResponse(
+public record GetCourseOfferingsControlStatisticsResponse(
     Guid LevelId,
     string LevelName,
     List<CourseOfferingStatisticsResponse> Offerings
@@ -15,5 +15,6 @@ public record CourseOfferingStatisticsResponse(
     string CourseName,
     string CourseCode,
     int NumberOfRegisteredStudents,
-    int NumberOfStudentsWithMissDegrees
+    int NumberOfStudentsWithMissDegrees,
+    bool IsOpenForControl
 );

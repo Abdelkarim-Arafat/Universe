@@ -16,7 +16,7 @@ public class ToggleCourseOfferingControlCommandHandler(
             .GetByIdAsync(request.CourseOfferingId, cancellationToken) is not { } course
             ) return Result.Failure(CourseOfferingErrors.NotFound);
 
-        course.IsOpenForControl = request.IsOpenForControl;
+        course.IsOpenForControl = !course.IsOpenForControl;
 
         _unitOfWork.Repository<CourseOffering>().Update(course);
         await _unitOfWork.CompleteAsync(cancellationToken);

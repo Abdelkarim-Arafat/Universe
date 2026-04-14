@@ -5,7 +5,7 @@ using Universe.Application.ControlServices.Dtos;
 
 namespace Universe.Application.ControlServices.Queries;
 
-public record GetLevelsCoursesStatisticsQuery(
+public record GetCourseOfferingsControlStatisticsQuery(
     [Required] Guid SemesterId,
     [Required] Guid ProgramId
-) : IRequest<Result<List<LevelCoursesStatisticsResponse>>>;
+) : IRequest<Result<List<GetCourseOfferingsControlStatisticsResponse>>>;

@@ -5,14 +5,15 @@ using Universe.Application.ControlServices.Dtos;
 using Universe.Core.Enums;
 
 namespace Universe.Application.ControlServices.Queries.GetLevelsCoursesStatistics;
-public class GetLevelsCoursesStatisticsQueryHandler(
+
+public class GetCourseOfferingsControlStatisticsQueryHandler(
     IUnitOfWork unitOfWork
-) : IRequestHandler<GetLevelsCoursesStatisticsQuery, Result<List<LevelCoursesStatisticsResponse>>>
+) : IRequestHandler<GetCourseOfferingsControlStatisticsQuery, Result<List<GetCourseOfferingsControlStatisticsResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<List<LevelCoursesStatisticsResponse>>> Handle(
-        GetLevelsCoursesStatisticsQuery request,
+    public async Task<Result<List<GetCourseOfferingsControlStatisticsResponse>>> Handle(
+        GetCourseOfferingsControlStatisticsQuery request,
         CancellationToken cancellationToken)
     {
         var data = await _unitOfWork.Repository<Level>()
@@ -21,14 +22,13 @@ public class GetLevelsCoursesStatisticsQueryHandler(
             .Where(l => l.AcademicProgramId == request.ProgramId
                 && l.CourseOfferings.Any(co => co.SemesterId == request.SemesterId)
                 && !l.IsDeleted)
-            .Select(l => new LevelCoursesStatisticsResponse
+            .Select(l => new GetCourseOfferingsControlStatisticsResponse
             (
                 l.Id,
                 l.Name,
                 l.CourseOfferings
                     .Where(co => co.SemesterId == request.SemesterId && !co.IsDeleted)
-                    .Select(co => new CourseOfferingStatisticsResponse
-                    (
+                    .Select(co => new CourseOfferingStatisticsResponse(
                         co.Id,
                         co.Course.Name,
                         co.Course.Code,
@@ -40,7 +40,9 @@ public class GetLevelsCoursesStatisticsQueryHandler(
                             .Count(e => e.Student.StudentAssessments
                                 .Any(sa => sa.CourseOfferingAssessment.CourseOfferingId == co.Id
                                            && !sa.IsDeleted
-                                           && !sa.degree.HasValue))
+                                           && !sa.degree.HasValue)),
+
+                        co.IsOpenForControl
                     )).ToList()
             ))
             .ToListAsync(cancellationToken);
