@@ -23,4 +23,13 @@ public class RoleRepository(
                 .Select(x => x.claim.ClaimValue!)
                 .Distinct()
                 .ToListAsync(cancellationToken);
+
+    public async Task<List<ApplicationRole>> GetAllRolesLessThanOrEqualAsync(int level , CancellationToken cancellationToken)
+        => await _context.Roles
+            .Where(x => x.Level >= level)
+            .ToListAsync(cancellationToken);
+
+    public async Task<ApplicationRole?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken)
+        => await _context.Roles
+            .FirstOrDefaultAsync(x => x.Name == roleName, cancellationToken);
 }
