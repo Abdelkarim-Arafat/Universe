@@ -16,6 +16,7 @@ public class Semester : BaseEntity
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
     public bool IsCurrent { get; set; }
+    public bool IsResultAnnounced {  get; set; }
     public ICollection<CourseOffering> CourseOfferings { get; set; } = [];
     public ICollection<ProgramSchedule> ProgramSchedules { get; set; } = [];
     public ICollection<StudyLoadByLevel> StudyLoadByLevels { get; set; } = [];

@@ -36,7 +36,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         var StudentLevel = await _unitOfWork.LevelRepository.GetStudentCurrentLevelAsync(command.StudentId, cancellationToken);
 
         if (StudentLevel is null)
-            return Result.Failure<List<EnrollmentInfo>>(LevelErrors.NotFound);
+            return Result.Failure<List<EnrollmentInfo>>(LevelErrors.StudentLevelNotFound);
 
         var IsSemesterExist = await _unitOfWork.AcademicYearRepository
             .IsExistSemesterAsync(command.SemesterId, cancellationToken);
@@ -339,7 +339,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         {
             await trx.RollbackAsync(cancellationToken);
             return Result.Failure<List<EnrollmentInfo>>(
-             new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
+                new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
     }
     private bool HasOverlapPerDay(IReadOnlyList<CourseOfferingSession> enrollmentInfos)

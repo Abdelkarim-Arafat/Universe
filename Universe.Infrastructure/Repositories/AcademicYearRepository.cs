@@ -50,4 +50,9 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
     public async Task<Semester?> GetCurrentSemesterAsync(Guid academicYearId, CancellationToken cancellationToken)
         => await _context.Semesters
         .FirstOrDefaultAsync(x => x.AcademicYearId == academicYearId && x.IsCurrent, cancellationToken);
+
+    public async Task<Semester?> GetSemesterByIdAsync(Guid Id, CancellationToken cancellationToken)
+    {
+        return await _context.Semesters.FirstOrDefaultAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);
+    }
 }

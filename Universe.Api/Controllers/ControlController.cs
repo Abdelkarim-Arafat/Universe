@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
+using Universe.Application.ControlServices.Commands.AnnounceResult;
 using Universe.Application.ControlServices.Commands.ToggleCourseOfferingControl;
 using Universe.Application.ControlServices.Commands.UpsertStudentsDegrees;
 using Universe.Application.ControlServices.Queries;
@@ -61,5 +62,13 @@ public class ControlController(IMediator mediator) : ControllerBase
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
+    }
+
+    [HttpPut("announce-result")]
+    public async Task<IActionResult> AnnounceResult([FromQuery] Guid SemesterId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new AnnounceResultCommand(SemesterId), cancellationToken);
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
     }
 }
