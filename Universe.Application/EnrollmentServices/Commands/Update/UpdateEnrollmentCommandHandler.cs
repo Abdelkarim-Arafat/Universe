@@ -339,7 +339,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         {
             await trx.RollbackAsync(cancellationToken);
             return Result.Failure<List<EnrollmentInfo>>(
-                new Error("500", ex.Message, StatusCodes.Status409Conflict));
+             new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
     }
     private bool HasOverlapPerDay(IReadOnlyList<CourseOfferingSession> enrollmentInfos)

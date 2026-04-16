@@ -1,4 +1,5 @@
-﻿using Universe.Core.Entities.Core;
+﻿using System.ComponentModel.DataAnnotations;
+using Universe.Core.Entities.Core;
 
 namespace Universe.Core.Entities;
 
@@ -6,7 +7,7 @@ public class StudentAssessment : BaseEntity
 {
     public Guid Id { get; set; }
     public StudentAssessment() { Id = Guid.CreateVersion7(); }
-    public decimal? degree { get; set; }
+    public decimal? degree { get; set; } = null;
     public Guid CourseOfferingId { get; set; }
     public Guid StudentId { get; set; }
     public Student Student { get; set; } = default!;

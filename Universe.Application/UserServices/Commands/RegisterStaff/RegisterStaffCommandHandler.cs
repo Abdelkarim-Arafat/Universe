@@ -48,7 +48,7 @@ public class RegisterStaffCommandHandler(
 
         await _userManager.AddToRolesAsync(user, request.Roles);
 
-        return Result.Success(new StuffWithDetailsResponse(
+        return Result.Success(new StuffWithDetailsResponse (
             user.Id.ToString(),
             user.Name,
             request.Roles,

@@ -129,4 +129,3 @@ public class AuthController(IMediator mediator) : ControllerBase
         Response.Cookies.Append(RefreshToken, response.RefreshToken, refreshTokenCookieOptions);
     }
 }
-

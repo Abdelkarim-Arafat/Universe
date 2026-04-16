@@ -21,21 +21,30 @@ builder.Services.AddControllers()
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowedOrigins", policy =>
+//        policy.WithOrigins (
+
+//            "https://playful-torrone-6e1691.netlify.app"
+//        )
+//        .AllowAnyHeader()
+//        .AllowAnyMethod()
+//        .AllowCredentials()
+//    );
+//});
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("MO", policy =>
-            policy.WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials()
-            );
-
-    options.AddPolicy("netlify.app" , policy =>
-            policy.WithOrigins("https://playful-torrone-6e1691.netlify.app")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials()
-            );
+    options.AddPolicy("AllowedOrigins", policy =>
+        policy.SetIsOriginAllowed(origin =>
+            origin == "http://localhost:3000" ||
+            origin == "https://playful-torrone-6e1691.netlify.app"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+    );
 });
 
 
@@ -63,9 +72,7 @@ if (app.Environment.IsDevelopment())
 //app.UseStaticFiles();
 
 
-app.UseCors("MO");
-app.UseCors("netlify.app");
-
+app.UseCors("AllowedOrigins");
 
 app.UseSerilogRequestLogging();
 

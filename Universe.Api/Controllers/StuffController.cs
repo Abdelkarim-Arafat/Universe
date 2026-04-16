@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
@@ -7,18 +8,17 @@ using Universe.Application.UserServices.Commands.AssignAdvisorToStudents;
 using Universe.Application.UserServices.Commands.RegisterStaff;
 using Universe.Application.UserServices.Commands.RemoveStuff;
 using Universe.Application.UserServices.Commands.UpdateStuff;
-using Universe.Application.UserServices.Querys.GetAllStudents;
+using Universe.Application.UserServices.Querys.GetAdvisorStudents;
 using Universe.Application.UserServices.Querys.GetAllStuff;
 using Universe.Application.UserServices.Querys.GetStuff;
 
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/stuff")]
-[ApiController]
+[ApiController , Authorize] 
 public class StuffController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-
 
 
     [HttpPut("{advisorId:guid}/assign-advisor")]
@@ -56,6 +56,20 @@ public class StuffController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
+
+    [HttpGet("advisor-students")]
+    public async Task<IActionResult> GetAdvisorStudents(
+        [FromQuery] FilterRequest filter,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetAdvisorStudentsCommand(Guid.Parse(User.GetUserId()!) , filter);
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ToProblem();
+    }
+
 
     [HttpPost("")]
     public async Task<IActionResult> RegisterStuff(
