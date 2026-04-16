@@ -108,11 +108,5 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
-    [HttpPut("announce-result")]
-    public async Task<IActionResult> AnnounceResult([FromQuery] Guid SemesterId, CancellationToken cancellationToken)
-    {
-        var result = await _mediator.Send(new AnnounceResultCommand(SemesterId), cancellationToken);
-
-        return result.IsSuccess ? Ok() : result.ToProblem();
-    }
+   
 }
