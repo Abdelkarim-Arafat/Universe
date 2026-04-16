@@ -1,10 +1,7 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
-using Universe.Application.AcadimicYearAndSemestersServices.Commands.AnnounceResult;
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateCurrentSemester;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYear;

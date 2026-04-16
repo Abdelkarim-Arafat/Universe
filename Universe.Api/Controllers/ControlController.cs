@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
-using Universe.Application.AcadimicYearAndSemestersServices.Commands.AnnounceResult;
+using Universe.Application.ControlServices.Commands.AnnounceResult;
 using Universe.Application.ControlServices.Commands.ToggleCourseOfferingControl;
 using Universe.Application.ControlServices.Commands.UpsertStudentsDegrees;
 using Universe.Application.ControlServices.Queries;

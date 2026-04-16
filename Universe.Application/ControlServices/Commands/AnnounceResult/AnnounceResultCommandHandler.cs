@@ -5,7 +5,7 @@ using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcadem
 using Universe.Application.AcademicYearAndSemestersServices.Dtos;
 using Universe.Application.AcadimicYearAndSemestersServices.Dtos;
 
-namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.AnnounceResult;
+namespace Universe.Application.ControlServices.Commands.AnnounceResult;
 
 public class AnnounceResultCommandHandler(
     IUnitOfWork unitOfWork
