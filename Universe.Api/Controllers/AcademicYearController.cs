@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
+using Universe.Application.AcadimicYearAndSemestersServices.Commands.AnnounceResult;
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateCurrentSemester;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYear;
@@ -106,5 +107,12 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
+    }
+    [HttpPut("announce-result")]
+    public async Task<IActionResult> AnnounceResult([FromQuery] Guid SemesterId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new AnnounceResultCommand(SemesterId), cancellationToken);
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
     }
 }

@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260413192059_AddEnrollment")]
-    partial class AddEnrollment
+    [Migration("20260416125056_New_Migration")]
+    partial class New_Migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

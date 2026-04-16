@@ -21,7 +21,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         var StudentLevel = await _unitOfWork.LevelRepository.GetStudentCurrentLevelAsync(Student.Id, cancellationToken);
 
         if (StudentLevel is null)
-            return Result.Failure<EnrollmentPageResponse>(LevelErrors.NotFound);
+            return Result.Failure<EnrollmentPageResponse>(LevelErrors.StudentLevelNotFound);
 
         var StudyLoad = await _unitOfWork.StudyLoadByLevelRepository
             .GetByLevelIdAndSemesterIdAsync(StudentLevel.Id, query.SemesterId, cancellationToken);

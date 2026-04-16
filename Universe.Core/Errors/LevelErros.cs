@@ -9,4 +9,6 @@ public record LevelErrors
         new("Level.InvalidHours", "Levels Can't be overlabed!", StatusCodes.Status409Conflict);
     public static readonly Error NotFound =
         new("Level.NotFound", "No level with specific id", StatusCodes.Status404NotFound);
+    public static readonly Error StudentLevelNotFound =
+        new("Level.StudentLevelNotFound", "No student level with specific id", StatusCodes.Status404NotFound);
 }
