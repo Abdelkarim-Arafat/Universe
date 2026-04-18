@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
-using Universe.Application.ControlServices.Commands.AnnounceResult;
+using Universe.Application.ControlServices.Commands.ToggleAnnounceResult;
 using Universe.Application.ControlServices.Commands.ToggleCourseOfferingControl;
-using Universe.Application.ControlServices.Commands.UpsertStudentsDegrees;
+using Universe.Application.ControlServices.Commands.UpsertStudentDegree;
 using Universe.Application.ControlServices.Queries;
 using Universe.Application.ControlServices.Queries.GetStudents;
  
@@ -55,15 +55,13 @@ public class ControlController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
-    [HttpPut("{AcademicProgramId:guid}")]
+    [HttpPatch("{AcademicProgramId:guid}")]
     public async Task<IActionResult> UpsertStudentsDegree(
        Guid AcademicProgramId,
-       [FromQuery] Guid CourseOfferingId,
-       [FromBody] UpsertStudentsDegreesCommand command,  
+       [FromBody] UpsertStudentDegreeCommand command,  
        CancellationToken cancellationToken)
     {
-         
-        var updatedRequest = command with { AcademicProgramId = AcademicProgramId, CourseOfferingId = CourseOfferingId };
+        var updatedRequest = command with { AcademicProgramId = AcademicProgramId};
 
         var result = await _mediator.Send(updatedRequest, cancellationToken);
 
@@ -85,10 +83,10 @@ public class ControlController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
-    [HttpPut("announce-result")]
-    public async Task<IActionResult> AnnounceResult([FromQuery] Guid SemesterId, CancellationToken cancellationToken)
+    [HttpPatch("toggle-announce-result")]
+    public async Task<IActionResult> ToggleAnnounceResult([FromQuery] Guid SemesterId, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new AnnounceResultCommand(SemesterId), cancellationToken);
+        var result = await _mediator.Send(new ToggleAnnounceResultCommand(SemesterId), cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
     }

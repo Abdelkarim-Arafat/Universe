@@ -203,8 +203,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
                     AssessmentsToAdd.Add(new StudentAssessment
                     {
                         StudentId = command.StudentId,
-                        CourseOfferingAssessmentId = ass.Id,
-                        CourseOfferingId = courseOfferingId,
+                        CourseOfferingAssessmentId = ass.Id
                     });
                 }
             }

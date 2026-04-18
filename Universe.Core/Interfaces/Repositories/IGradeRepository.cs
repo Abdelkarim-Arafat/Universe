@@ -1,5 +1,4 @@
-﻿using Universe.Core.Abstractions;
-using Universe.Core.Entities;
+﻿using Universe.Core.Entities;
 
 namespace Universe.Core.Interfaces.Repositories;
 

@@ -1,12 +1,8 @@
-﻿using MimeKit.Cryptography;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.CourseServices.Dtos;
+﻿using Universe.Application.CourseServices.Dtos;
 
 namespace Universe.Application.CourseServices.Commands.AddCourse;
 
-internal class AddCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddCourseCommand, Result<CourseWithPreRequisiteResponse>>
+public class AddCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddCourseCommand, Result<CourseWithPreRequisiteResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

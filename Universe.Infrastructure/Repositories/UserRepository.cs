@@ -98,7 +98,7 @@ public class UserRepository
           {
             e.CourseOffering.CreditHours,
             TotalStudentDegree = e.Student.StudentAssessments
-             .Where(sa => sa.CourseOfferingId == e.CourseOfferingId && !sa.IsDeleted)
+             .Where(sa => sa.CourseOfferingAssessment.CourseOfferingId == e.CourseOfferingId && !sa.IsDeleted)
              .Sum(sa => sa.degree ?? 0)
           })
         .ToListAsync(cancellationToken);
@@ -131,7 +131,7 @@ public class UserRepository
     {
         return await _context.StudentAssessments.
              Where(ass => ass.StudentId == StudentId
-             && ToRemoveCourses.Contains(ass.CourseOfferingId)
+             && ToRemoveCourses.Contains(ass.CourseOfferingAssessment.CourseOfferingId)
              && !ass.IsDeleted)
              .ToListAsync(cancellationToken);
     }
@@ -189,7 +189,7 @@ public class UserRepository
         return await _context.StudentAssessments
             .AsNoTracking()
             .Where(sa => sa.StudentId == studentId && !sa.IsDeleted)
-            .GroupBy(sa => sa.CourseOfferingId)
+            .GroupBy(sa => sa.CourseOfferingAssessment.CourseOfferingId)
             .Select(g => new
             {
                 CourseOfferingId = g.Key,
@@ -201,4 +201,5 @@ public class UserRepository
                 cancellationToken
             );
     }
+    
 }
