@@ -42,4 +42,14 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
            && ((Id == null) || (g.Id != Id))
            && g.AcademicProgramId == AcademicProgramId, cancellationToken);
     }
+    public async Task<string> GetLetterGradeByTotalDegree(Guid AcademicProgramId, decimal TotalDegree, CancellationToken cancellationToken = default)
+    {
+        return await _context.Grades
+            .AsNoTracking()
+            .Where(g => g.AcademicProgramId == AcademicProgramId
+            && !g.IsDeleted
+            && TotalDegree >= g.MinScore && TotalDegree <= g.MaxScore)
+            .Select(g => g.Code)
+            .FirstOrDefaultAsync(cancellationToken) ?? "-";
+    }
 }

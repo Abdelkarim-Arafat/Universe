@@ -10,4 +10,6 @@ public interface IGradeRepository
             (decimal MinGradePoint, decimal MaxGradePoint, Guid? Id, Guid AcademicProgramId, CancellationToken cancellationToken = default);
     Task<bool> CheckOverLabedScoresAsync
             (int MinScore, int MaxScore, Guid? Id, Guid AcademicProgramId, CancellationToken cancellationToken = default);
+    Task<string> GetLetterGradeByTotalDegree
+        (Guid AcademicProgramId, decimal TotalDegree, CancellationToken cancellationToken = default);
 }

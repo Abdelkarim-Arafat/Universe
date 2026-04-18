@@ -26,10 +26,13 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
            return Result.Failure<UpsertDegreeResponse>(CourseOfferingErrors.NotOpenForControl);
        
          var studentAssessment = await _unitOfWork.StudentAssessmentRepository
-            .GetStudentAssessmentAsync(command.StudentId, command.CourseAssessmentId, cancellationToken);
+            .GetStudentAssessmentIncludingCourseAssessmentAsync(command.StudentId, command.CourseAssessmentId, cancellationToken);
 
         if(studentAssessment == null)
             return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.NotFound);
+
+        if(command.Degree > studentAssessment.CourseOfferingAssessment.MaxScore)
+            return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.AssessmentDegreeExceedsMaxScore);
 
         studentAssessment.degree = command.Degree;
 
@@ -43,17 +46,12 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
         if (!isProgramExist)
             return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
-        var letterDegrees = await _unitOfWork.GradeRepository
-           .GetProgramGradesAsync(command.AcademicProgramId, cancellationToken);
-
         var TotalDegree = await _unitOfWork.StudentAssessmentRepository
           .GetStudentDegreeInCourseAsync(command.StudentId, CourseOfferingId.Value, cancellationToken);
 
-        var letterDegree = letterDegrees
-            .Where(g => TotalDegree >= g.MinScore && TotalDegree <= g.MaxScore)
-            .Select(g => g.Code)
-            .FirstOrDefault() ?? "-";
+        var letterGrade = await _unitOfWork.GradeRepository
+            .GetLetterGradeByTotalDegree(command.AcademicProgramId, TotalDegree, cancellationToken);
 
-        return Result.Success(new UpsertDegreeResponse(TotalDegree, letterDegree));
+        return Result.Success(new UpsertDegreeResponse(TotalDegree, letterGrade));
     }
 }
