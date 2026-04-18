@@ -12,14 +12,15 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<StudentAssessment?> GetStudentAssessmentAsync
+    public async Task<StudentAssessment?> GetStudentAssessmentIncludingCourseAssessmentAsync
         (Guid studentId, Guid courseAssessmentId, CancellationToken cancellationToken)
     {
-       return await _context.StudentAssessments
-            .Where(sa => sa.StudentId == studentId
-                         && sa.CourseOfferingAssessmentId == courseAssessmentId
-                         && !sa.IsDeleted)
-            .FirstOrDefaultAsync(cancellationToken);
+        return await _context.StudentAssessments
+             .Include(sa => sa.CourseOfferingAssessment)
+             .Where(sa => sa.StudentId == studentId
+                          && sa.CourseOfferingAssessmentId == courseAssessmentId
+                          && !sa.IsDeleted)
+             .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<decimal> GetStudentDegreeInCourseAsync

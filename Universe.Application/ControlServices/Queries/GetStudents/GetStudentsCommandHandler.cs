@@ -60,8 +60,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
                 s.Student.Enrollments.Count(e => e.Status == EnrollmentStatus.Failed),
                 totalDegree!.Value,
                 letter,
-                StudentsAssessments
-                .Where(ass => ass.StudentId == s.Student.Id)
+                currentStudentDegrees
                 .Select(ass => new StudentDegreeValue(
                    ass.CourseOfferingAssessmentId,
                    ass.degree
