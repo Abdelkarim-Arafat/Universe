@@ -5,13 +5,13 @@
 namespace Universe.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updateOnSemester_AnnounceResult : Migration
+    public partial class AddCurrentSemesterBoolean : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "IsResultAnnounced",
+                name: "IsCurrent",
                 table: "Semesters",
                 type: "bit",
                 nullable: false,
@@ -22,7 +22,7 @@ namespace Universe.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsResultAnnounced",
+                name: "IsCurrent",
                 table: "Semesters");
         }
     }

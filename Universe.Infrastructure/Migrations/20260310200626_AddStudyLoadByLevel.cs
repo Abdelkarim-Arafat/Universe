@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Universe.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class New_Migration : Migration
+    public partial class AddStudyLoadByLevel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,6 +67,22 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoomTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoomTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -83,33 +99,6 @@ namespace Universe.Infrastructure.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Rooms",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    RoomNumber = table.Column<int>(type: "int", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false),
-                    RoomTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RoomType = table.Column<int>(type: "int", nullable: false),
-                    BuildingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Rooms_Buildings_BuildingId",
-                        column: x => x.BuildingId,
-                        principalTable: "Buildings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -191,6 +180,38 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    RoomNumber = table.Column<int>(type: "int", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    RoomTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BuildingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rooms_Buildings_BuildingId",
+                        column: x => x.BuildingId,
+                        principalTable: "Buildings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Rooms_RoomTypes_RoomTypeId",
+                        column: x => x.RoomTypeId,
+                        principalTable: "RoomTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -242,8 +263,6 @@ namespace Universe.Infrastructure.Migrations
                     Code = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
                     MinScore = table.Column<int>(type: "int", nullable: false),
                     MaxScore = table.Column<int>(type: "int", nullable: false),
-                    MinGradePoint = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MaxGradePoint = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AcademicProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -321,7 +340,6 @@ namespace Universe.Infrastructure.Migrations
                     AcademicYearId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    IsCurrent = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -513,13 +531,13 @@ namespace Universe.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     StudentCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Religion = table.Column<int>(type: "int", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Religion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true),
                     PlaceOfBirth = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     NationalIdOrPassport = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MaritalStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    MaritalStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ContactInfo_City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ContactInfo_Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     ContactInfo_PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
@@ -539,14 +557,13 @@ namespace Universe.Infrastructure.Migrations
                     PreviousQualification_Qualification = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     PreviousQualification_GraduationYear = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PreviousQualification_TotalGrade = table.Column<decimal>(type: "decimal(6,2)", nullable: false),
-                    PreviousQualification_AdmissionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PreviousQualification_AdmissionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     MilitaryInfo_MilitaryStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MilitaryInfo_MilitaryNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MilitaryInfo_DecisionNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MilitaryInfo_DecisionDate = table.Column<DateOnly>(type: "date", nullable: true),
                     MilitaryInfo_EnrollmentDate = table.Column<DateOnly>(type: "date", nullable: true),
                     MilitaryInfo_EndDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    AdvisorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CollegeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -556,11 +573,6 @@ namespace Universe.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Students", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Students_AspNetUsers_AdvisorId",
-                        column: x => x.AdvisorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Students_AspNetUsers_Id",
                         column: x => x.Id,
@@ -585,7 +597,6 @@ namespace Universe.Infrastructure.Migrations
                     StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     GroupNumber = table.Column<int>(type: "int", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false),
                     InstructorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -611,38 +622,6 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AcademicEvents",
-                columns: table => new
-                {
-                    SemesterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AcademicEvents", x => new { x.ProgramId, x.SemesterId });
-                    table.ForeignKey(
-                        name: "FK_AcademicEvents_AcademicPrograms_ProgramId",
-                        column: x => x.ProgramId,
-                        principalTable: "AcademicPrograms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AcademicEvents_Semesters_SemesterId",
-                        column: x => x.SemesterId,
-                        principalTable: "Semesters",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CourseOfferings",
                 columns: table => new
                 {
@@ -652,9 +631,8 @@ namespace Universe.Infrastructure.Migrations
                     SuccessPercentage = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     IsOptional = table.Column<bool>(type: "bit", nullable: false),
                     IsIncludedInGpa = table.Column<bool>(type: "bit", nullable: false),
-                    OptionalGroupCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    OtionalGroupCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NumberOfGroups = table.Column<int>(type: "int", nullable: false),
-                    IsOpenForControl = table.Column<bool>(type: "bit", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SemesterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -846,97 +824,6 @@ namespace Universe.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Enrollments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GroupNumber = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CourseOfferingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Enrollments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Enrollments_CourseOfferings_CourseOfferingId",
-                        column: x => x.CourseOfferingId,
-                        principalTable: "CourseOfferings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Enrollments_Students_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Students",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StudentAssessments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    degree = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    CourseOfferingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CourseOfferingAssessmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StudentAssessments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StudentAssessments_CourseOfferingAssessments_CourseOfferingAssessmentId",
-                        column: x => x.CourseOfferingAssessmentId,
-                        principalTable: "CourseOfferingAssessments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StudentAssessments_Students_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Students",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TeachingSessionEnrollments",
-                columns: table => new
-                {
-                    TeachingSessionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EnrollmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TeachingSessionEnrollments", x => new { x.EnrollmentId, x.TeachingSessionId });
-                    table.ForeignKey(
-                        name: "FK_TeachingSessionEnrollments_Enrollments_EnrollmentId",
-                        column: x => x.EnrollmentId,
-                        principalTable: "Enrollments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TeachingSessionEnrollments_TeachingSessions_TeachingSessionId",
-                        column: x => x.TeachingSessionId,
-                        principalTable: "TeachingSessions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "IsDefault", "IsDeleted", "Level", "Name", "NormalizedName" },
@@ -970,11 +857,6 @@ namespace Universe.Infrastructure.Migrations
                     { new Guid("0191a4b6-c4fc-752e-9d95-40b5e4e68054"), new Guid("019c0582-3473-7802-8f11-50cc1e6513d5"), null },
                     { new Guid("019c1e6e-5518-7479-b749-b1c5d4a21430"), new Guid("019c1e76-6f5a-7522-8327-a2a72adbbbe8"), null }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AcademicEvents_SemesterId",
-                table: "AcademicEvents",
-                column: "SemesterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AcademicPrograms_CollegeId",
@@ -1110,16 +992,6 @@ namespace Universe.Infrastructure.Migrations
                 column: "CollegeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enrollments_CourseOfferingId",
-                table: "Enrollments",
-                column: "CourseOfferingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Enrollments_StudentId",
-                table: "Enrollments",
-                column: "StudentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Grades_AcademicProgramId",
                 table: "Grades",
                 column: "AcademicProgramId");
@@ -1152,6 +1024,16 @@ namespace Universe.Infrastructure.Migrations
                 column: "BuildingId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rooms_RoomTypeId",
+                table: "Rooms",
+                column: "RoomTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoomTypes_Name",
+                table: "RoomTypes",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Semesters_AcademicYearId",
                 table: "Semesters",
                 column: "AcademicYearId");
@@ -1160,21 +1042,6 @@ namespace Universe.Infrastructure.Migrations
                 name: "IX_StudentAcademicPrograms_AcademicProgramId",
                 table: "StudentAcademicPrograms",
                 column: "AcademicProgramId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentAssessments_CourseOfferingAssessmentId",
-                table: "StudentAssessments",
-                column: "CourseOfferingAssessmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentAssessments_StudentId",
-                table: "StudentAssessments",
-                column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Students_AdvisorId",
-                table: "Students",
-                column: "AdvisorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Students_CollegeId",
@@ -1202,11 +1069,6 @@ namespace Universe.Infrastructure.Migrations
                 column: "AcademicProgramId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TeachingSessionEnrollments_TeachingSessionId",
-                table: "TeachingSessionEnrollments",
-                column: "TeachingSessionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TeachingSessions_InstructorId",
                 table: "TeachingSessions",
                 column: "InstructorId");
@@ -1221,9 +1083,6 @@ namespace Universe.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AcademicEvents");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -1237,6 +1096,9 @@ namespace Universe.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CourseOfferingAssessments");
 
             migrationBuilder.DropTable(
                 name: "CourseOfferingSessions");
@@ -1260,37 +1122,22 @@ namespace Universe.Infrastructure.Migrations
                 name: "StudentAcademicPrograms");
 
             migrationBuilder.DropTable(
-                name: "StudentAssessments");
-
-            migrationBuilder.DropTable(
                 name: "StudyLoadByLevels");
 
             migrationBuilder.DropTable(
                 name: "StudyLoadRules");
 
             migrationBuilder.DropTable(
-                name: "TeachingSessionEnrollments");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "CourseOfferingAssessments");
-
-            migrationBuilder.DropTable(
-                name: "Enrollments");
-
-            migrationBuilder.DropTable(
-                name: "TeachingSessions");
 
             migrationBuilder.DropTable(
                 name: "CourseOfferings");
 
             migrationBuilder.DropTable(
-                name: "Students");
+                name: "TeachingSessions");
 
             migrationBuilder.DropTable(
-                name: "Rooms");
+                name: "Students");
 
             migrationBuilder.DropTable(
                 name: "Courses");
@@ -1302,13 +1149,19 @@ namespace Universe.Infrastructure.Migrations
                 name: "Semesters");
 
             migrationBuilder.DropTable(
+                name: "Rooms");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "AcademicYears");
 
             migrationBuilder.DropTable(
                 name: "Buildings");
 
             migrationBuilder.DropTable(
-                name: "AcademicYears");
+                name: "RoomTypes");
 
             migrationBuilder.DropTable(
                 name: "AcademicPrograms");

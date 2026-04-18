@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260416200125_updateOnSemester_AnnounceResult")]
-    partial class updateOnSemester_AnnounceResult
+    [Migration("20260413192059_AddEnrollment")]
+    partial class AddEnrollment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1019,9 +1019,6 @@ namespace Universe.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsResultAnnounced")
                         .HasColumnType("bit");
 
                     b.Property<int>("Name")
