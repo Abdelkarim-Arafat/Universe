@@ -51,6 +51,8 @@ public class GetStudentAcademicHistoryCommandHandler(
         foreach (var enrollmentsInSemester in groupedEnrollmentsBySemester)
         {
             var firstEnrollment = enrollmentsInSemester.First();
+            if (firstEnrollment is null) continue;
+
             var semesterId = firstEnrollment.CourseOffering.SemesterId;
 
             // courses data 
@@ -97,8 +99,8 @@ public class GetStudentAcademicHistoryCommandHandler(
                 cumulativeGpa,
                 semesterHours,
                 enrollmentsInSemester.Where(e => e.Status == EnrollmentStatus.Passed).Sum(e => e.CourseOffering.CreditHours),
-                letterDegrees.FirstOrDefault(ld => ld.MinGradePoint <= semesterGpa && ld.MaxGradePoint > semesterGpa)!.Code,
-                letterDegrees.FirstOrDefault(ld => ld.MinGradePoint <= cumulativeGpa && ld.MaxGradePoint > cumulativeGpa)!.Code,
+                letterDegrees.FirstOrDefault(ld => ld.MinGradePoint <= semesterGpa && ld.MaxGradePoint > semesterGpa)?.Code ?? "-",
+                letterDegrees.FirstOrDefault(ld => ld.MinGradePoint <= cumulativeGpa && ld.MaxGradePoint > cumulativeGpa)?.Code ?? "-",
                 courseGradeDtos
             ));
         }

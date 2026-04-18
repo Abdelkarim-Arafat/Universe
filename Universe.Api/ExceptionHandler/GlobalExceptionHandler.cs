@@ -15,7 +15,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         {
             Status = StatusCodes.Status500InternalServerError,
             Title = "Internal Server Error",
-            Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1"
+            Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
+            Detail = exception.InnerException?.Message ?? exception.Message
         };
 
         httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
