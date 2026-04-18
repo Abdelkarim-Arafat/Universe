@@ -1,4 +1,5 @@
-﻿using Universe.Core.Entities.Core;
+﻿using System.ComponentModel.DataAnnotations;
+using Universe.Core.Entities.Core;
 
 namespace Universe.Core.Entities;
 

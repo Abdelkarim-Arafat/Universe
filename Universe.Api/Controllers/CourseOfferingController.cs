@@ -19,7 +19,7 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetCourseOffering(
+    public async Task<IActionResult> GetCourseOffering (
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
