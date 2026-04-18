@@ -12,6 +12,7 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
     public async Task<List<Grade>> GetProgramGradesAsync(Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         var grades = await _context.Grades
+            .AsNoTracking()
             .Where(grade => grade.AcademicProgramId == AcademicProgramId && !grade.IsDeleted)
             .OrderBy(grade => grade.MinScore)
             .ToListAsync(cancellationToken);

@@ -50,8 +50,8 @@ public class GetStudentAcademicHistoryCommandHandler(
 
         foreach (var enrollmentsInSemester in groupedEnrollmentsBySemester)
         {
-            var firstEnrollment = enrollmentsInSemester.First();
-            if (firstEnrollment is null) continue;
+            var firstEnrollment = enrollmentsInSemester.FirstOrDefault();
+            if (firstEnrollment == null) continue;
 
             var semesterId = firstEnrollment.CourseOffering.SemesterId;
 

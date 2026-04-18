@@ -1,14 +1,15 @@
 ﻿using Universe.Application.RoomServices.Dtos;
 
-namespace Universe.Application.RoomServices.Queries.GetAllRooms;
+namespace Universe.Application.RoomServices.Queries.GetBuildingRooms;
 
-public class GetAllRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllRoomsQuery, Result<PaginationList<RoomResponse>>>
+public class GetBuildingRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetBuildingRoomsQuery, Result<PaginationList<RoomResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<PaginationList<RoomResponse>>> Handle(GetAllRoomsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationList<RoomResponse>>> Handle(GetBuildingRoomsQuery request, CancellationToken cancellationToken)
     {
-        var query = _unitOfWork.Repository<Room>().GetQueryable();
+        var query = _unitOfWork.Repository<Room>().GetQueryable()
+            .Where(x => x.BuildingId == request.BuildingId);
 
         var filter = request.filter;
 

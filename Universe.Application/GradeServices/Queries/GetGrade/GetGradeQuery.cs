@@ -1,5 +1,4 @@
-﻿using Universe.Application.GradeServices.GradeDtos;
-namespace Universe.Application.GradeServices.Queries.GetGrade;
+﻿namespace Universe.Application.GradeServices.Queries.GetGrade;
 
 public record GetGradeQuery
 (

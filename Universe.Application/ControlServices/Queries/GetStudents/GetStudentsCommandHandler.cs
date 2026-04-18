@@ -9,7 +9,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
 
     public async Task<Result<StudentsDegreesResponse>> Handle(GetStudentsCommand command, CancellationToken cancellationToken)
     {
-        
+
         var isProgramExist = await _unitOfWork.AcademicProgramRepository.IsExistAsync(command.AcademicProgramId, cancellationToken);
         if (!isProgramExist)
             return Result.Failure<StudentsDegreesResponse>(AcademicProgramErrors.AcademicProgramNotFound);
@@ -20,7 +20,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
         if (courseOffering is null)
             return Result.Failure<StudentsDegreesResponse>(CourseOfferingErrors.NotFound);
 
-       // get data
+        // get data
         var studentsInfos = await _unitOfWork.UserRepository
             .GetStudentsByCourseOfferingAndGroupNumberAsync(command.CourseOfferingId, command.GroupNumber, cancellationToken);
 
@@ -30,58 +30,45 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
         var letterGrades = await _unitOfWork.GradeRepository
             .GetProgramGradesAsync(command.AcademicProgramId, cancellationToken);
 
-        // get current degrees for studnets
+        // get current degrees for students
         var studentIds = studentsInfos.Select(s => s.Student.Id).ToList();
 
         var StudentsAssessments = await _unitOfWork.UserRepository
             .GetStudentsAssessmentsAsync(studentIds, cancellationToken);
 
-       
         var headers = assessmentHeadersRaw.Select(ah => new AssessmentHeader(
             ah.Id,
             ah.Type.ToString(),
             ah.MaxScore
         )).ToList();
 
-       
         var studentList = studentsInfos.Select(s =>
         {
-           
             var currentStudentDegrees = StudentsAssessments.Where(ass => ass.StudentId == s.Student.Id).ToList();
 
-
             var totalDegree = currentStudentDegrees.Sum(ass => ass.degree.HasValue ? ass.degree : 0);
-            var EnteredDegrees = currentStudentDegrees.Count(ass => ass.degree.HasValue);
 
-           
             var letter = letterGrades
                 .FirstOrDefault(grade => totalDegree >= grade.MinScore && totalDegree <= grade.MaxScore)
                 ?.Code ?? "-";
-            if(EnteredDegrees != currentStudentDegrees.Count)
-            {
-                totalDegree = 0;
-                letter = "";
-            }
+
             return new StudentInformation(
                 s.Student.Id,
                 s.Student.Name,
                 s.Student.StudentCode,
-                s.StudentLevelName,  
-                s.Student.Enrollments.Count(e => e.Status == EnrollmentStatus.Failed),  
+                s.StudentLevelName,
+                s.Student.Enrollments.Count(e => e.Status == EnrollmentStatus.Failed),
                 totalDegree!.Value,
                 letter,
-                
                 StudentsAssessments
-                .Where(ass=>ass.StudentId == s.Student.Id)
+                .Where(ass => ass.StudentId == s.Student.Id)
                 .Select(ass => new StudentDegreeValue(
                    ass.CourseOfferingAssessmentId,
-                   ass.Id,
                    ass.degree
                 )).ToList()
             );
         }).ToList();
 
-        // الترتيب والبحث في الميموري
         var filteredList = studentList.AsQueryable();
         var filter = command.Filter;
 
@@ -93,10 +80,8 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
             filteredList = filteredList
                 .OrderBy($"{filter.SortColumn} {filter.SortDirection}");
 
-        // احسب الـ Total Count يدوي من اللستة
         var totalCount = filteredList.Count();
 
-        // خد الصفحة اللي إنت عاوزها بس
         var pagedData = filteredList
             .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)

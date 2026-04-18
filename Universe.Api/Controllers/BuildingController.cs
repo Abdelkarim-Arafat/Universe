@@ -12,7 +12,7 @@ using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
 
-[Route("[controller]")]
+[Route("buildings")]
 [ApiController]
 [Authorize]
 public class BuildingController(IMediator mediator) : ControllerBase
@@ -26,7 +26,7 @@ public class BuildingController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter,CancellationToken cancellationToken)
     {
         var query = new GetAllQuery(filter);

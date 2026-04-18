@@ -21,9 +21,9 @@ public class GradeController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(Guid Id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken = default)
     {
-        var query = new GetGradeQuery(Id);
+        var query = new GetGradeQuery(id);
         var result = await _mediator.Send(query, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
@@ -45,7 +45,7 @@ public class GradeController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(command, cancellationToken);
 
         return result.IsSuccess
-            ? CreatedAtAction(nameof(Get), result.Value.Id)
+            ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
             : result.ToProblem();
     }
     [HttpPut("{id}")]

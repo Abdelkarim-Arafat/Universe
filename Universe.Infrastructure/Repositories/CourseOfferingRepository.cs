@@ -102,4 +102,12 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             .Include(co => co.Enrollments)
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<Guid?> GetIdByCourseAssessmentIdAsync(Guid CourseAssessmentId, CancellationToken cancellationToken)
+    {
+      return await _context.CourseOfferingAssessments
+            .Where(coa => coa.Id == CourseAssessmentId && !coa.IsDeleted)
+            .Select(coa => coa.CourseOfferingId)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 }

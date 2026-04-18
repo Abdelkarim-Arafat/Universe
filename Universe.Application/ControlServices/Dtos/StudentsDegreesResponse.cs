@@ -25,7 +25,6 @@ public record StudentInformation(
 
 public record StudentDegreeValue(
     Guid CourseAssessmentId,
-    Guid StudentAssessmentId,
     decimal? DegreeValue     
 );
 
