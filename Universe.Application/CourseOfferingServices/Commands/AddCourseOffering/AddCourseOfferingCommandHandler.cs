@@ -62,6 +62,7 @@ internal class AddCourseOfferingCommandHandler(
 
         await _unitOfWork.Repository<CourseOffering>().AddAsync(courseOffering, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
+        // حذف الريكويست
         var response = (courseOffering, request).Adapt<CourseOfferingWithDetailsResponse>();
         
         return Result.Success(response);

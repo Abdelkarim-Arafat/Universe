@@ -148,7 +148,7 @@ public class UserRepository
             .Include(s => s.Enrollments)
             .Where(stu => stu.Enrollments.Any(e =>
                 e.CourseOfferingId == courseOfferingId &&
-                (groupNumber == null || e.GroupNumber == groupNumber) &&
+                ((groupNumber == null) || (e.GroupNumber == groupNumber)) &&
                 !e.IsDeleted));
 
         var result = await query
