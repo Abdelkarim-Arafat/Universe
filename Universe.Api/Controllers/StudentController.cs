@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
@@ -22,10 +23,12 @@ using Universe.Application.UserServices.Querys.GetStudentSchedule;
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/students")]
-[ApiController]
+[ApiController , Authorize]
 public class StudentController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+
+    public Guid GetUserId() => Guid.Parse(User.GetUserId()!);
 
     [HttpDelete("{studentId:guid}")]
     public async Task<IActionResult> RemoveStudent(
@@ -39,7 +42,7 @@ public class StudentController(IMediator mediator) : ControllerBase
 
 
     [HttpPost("")]
-    public async Task<IActionResult> RegisterStudent(
+    public async Task<IActionResult> RegisterStudent (
         [FromRoute] Guid collegeId,
         [FromBody] RegisterStudentCommand request,
         CancellationToken cancellationToken)
@@ -65,63 +68,68 @@ public class StudentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
-    [HttpGet("{studentId:guid}/contact-data")]
-    public async Task<IActionResult> GetContactData(
-        [FromRoute] Guid studentId,
+    [HttpGet("contact-data")]
+    public async Task<IActionResult> GetContactData (
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetContactDataCommand(studentId), cancellationToken);
+        if(User.IsInRole("Student")) studentId = GetUserId();
+
+        var result = await _mediator.Send(new GetContactDataCommand(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
     }
 
-    [HttpGet("{studentId:guid}/parent-data")]
+    [HttpGet("parent-data")]
     public async Task<IActionResult> GetFamilyData(
-        [FromRoute] Guid studentId,
+       [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetParentDataCommand(studentId), cancellationToken);
+        if (User.IsInRole("Student")) studentId = GetUserId();
+
+        var result = await _mediator.Send(new GetParentDataCommand(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
     }
 
-    [HttpGet("{studentId:guid}/military-data")]
+    [HttpGet("military-data")]
     public async Task<IActionResult> GetMilitaryData(
-        [FromRoute] Guid studentId,
+       [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
+        if (User.IsInRole("Student")) studentId = GetUserId();
 
-        var result = await _mediator.Send(new GetMilitaryDataCommand(studentId), cancellationToken);
+        var result = await _mediator.Send(new GetMilitaryDataCommand(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
     }
 
-    [HttpGet("{studentId:guid}/personal-data")]
+    [HttpGet("personal-data")]
     public async Task<IActionResult> GetPersonalData(
-        [FromRoute] Guid studentId,
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-
-        var result = await _mediator.Send(new GetPersonalDataCommand(studentId), cancellationToken);
+        if (User.IsInRole("Student")) studentId = GetUserId();
+        var result = await _mediator.Send(new GetPersonalDataCommand(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
     }
 
-    [HttpGet("{studentId:guid}/previous-qualification-data")]
+    [HttpGet("previous-qualification-data")]
     public async Task<IActionResult> GetPreviousQualification(
-        [FromRoute] Guid studentId,
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-
-        var result = await _mediator.Send(new GetPreviousQualificationDataCommand(studentId), cancellationToken);
+        if (User.IsInRole("Student")) studentId = GetUserId();
+        var result = await _mediator.Send(new GetPreviousQualificationDataCommand(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -129,13 +137,15 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
 
-    [HttpPut("{studentId:guid}/contact-data")]
+    [HttpPut("contact-data")]
     public async Task<IActionResult> UpdateContactData(
-        [FromRoute] Guid studentId,
         [FromBody] UpdateContactDataCommand request,
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        request = request with { StudentId = studentId };
+        if (User.IsInRole("Student")) studentId = GetUserId();
+
+        request = request with { StudentId = studentId!.Value };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -144,13 +154,15 @@ public class StudentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
-    [HttpPut("{studentId:guid}/parent-data")]
+    [HttpPut("parent-data")]
     public async Task<IActionResult> UpdateFamilyData(
-        [FromRoute] Guid studentId,
         [FromBody] UpdateParentDataCommand request,
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        request = request with { StudentId = studentId };
+        if (User.IsInRole("Student")) studentId = GetUserId();
+
+        request = request with { StudentId = studentId!.Value };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -159,13 +171,15 @@ public class StudentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
-    [HttpPut("{studentId:guid}/military-data")]
+    [HttpPut("military-data")]
     public async Task<IActionResult> UpdateMilitaryData(
-        [FromRoute] Guid studentId,
         [FromBody] UpdateMilitaryDataCommand request,
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        request = request with { StudentId = studentId };
+        if (User.IsInRole("Student")) studentId = GetUserId();
+
+        request = request with { StudentId = studentId!.Value };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -174,14 +188,16 @@ public class StudentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
-    [HttpPut("{studentId:guid}/personal-data")]
+    [HttpPut("personal-data")]
     public async Task<IActionResult> UpdatePersonalData(
-        [FromRoute] Guid studentId,
         [FromRoute] Guid collegeId,
         [FromBody] UpdatePersonalDataCommand request,
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        request = request with { StudentId = studentId, CollegeId = collegeId };
+        if (User.IsInRole("Student")) studentId = GetUserId();
+
+        request = request with { StudentId = studentId!.Value, CollegeId = collegeId };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -190,13 +206,15 @@ public class StudentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
-    [HttpPut("{studentId:guid}/previous-qualification-data")]
+    [HttpPut("previous-qualification-data")]
     public async Task<IActionResult> UpdatePreviousQualification(
-        [FromRoute] Guid studentId,
         [FromBody] UpdatePreviousQualificationCommand request,
+        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        request = request with { StudentId = studentId };
+        if (User.IsInRole("Student")) studentId = GetUserId();
+
+        request = request with { StudentId = studentId!.Value };
 
         var result = await _mediator.Send(request, cancellationToken);
 
