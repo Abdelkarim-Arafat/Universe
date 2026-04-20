@@ -161,7 +161,7 @@ public class UserRepository
             .Include(s => s.Enrollments)
             .Where(stu => stu.Enrollments.Any(e =>
                 e.CourseOfferingId == courseOfferingId &&
-                (groupNumber == null || e.GroupNumber == groupNumber) &&
+                ((groupNumber == null) || (e.GroupNumber == groupNumber)) &&
                 !e.IsDeleted));
 
         var result = await query
@@ -188,11 +188,13 @@ public class UserRepository
         return result.Select(x => (x.Student, x.LevelName, x.Assessments)).ToList();
     }
 
-    public async Task<List<StudentAssessment>> GetStudentsAssessmentsAsync(List<Guid> StudentsIds, CancellationToken cancellationToken)
+    public async Task<List<StudentAssessment>> 
+        GetStudentsAssessmentsAsync(List<Guid> StudentsIds, Guid CourseOfferingId, CancellationToken cancellationToken)
     {
         return await _context.StudentAssessments
-            .Include(sa=>sa.CourseOfferingAssessment)
-            .Where(sa => StudentsIds.Contains(sa.StudentId) && !sa.IsDeleted)
+            .Include(sa => sa.CourseOfferingAssessment)
+            .Where(sa => StudentsIds.Contains(sa.StudentId)
+            && sa.CourseOfferingAssessment.CourseOfferingId == CourseOfferingId && !sa.IsDeleted)
             .ToListAsync(cancellationToken);
     }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering;
+﻿namespace Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering;
 
 public class RemoveCourseOfferingCommandHandler(
     IUnitOfWork unitOfWork
@@ -17,6 +13,7 @@ public class RemoveCourseOfferingCommandHandler(
             ) return Result.Failure(CourseOfferingErrors.NotFound);
 
         _unitOfWork.Repository<CourseOffering>().SoftDelete(course);
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success();
     }

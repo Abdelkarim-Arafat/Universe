@@ -55,6 +55,7 @@ internal class UpdateCourseOfferingCommandHandler (
                 CourseOfferingId = course.Id
             });
 
+        
         await _unitOfWork.Repository<CourseOfferingAssessment>()
             .AddRangeAsync(newAssessments, cancellationToken);
 
@@ -67,6 +68,8 @@ internal class UpdateCourseOfferingCommandHandler (
             .Where(x => x.Id == course.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
+        // update(course)
+        // حذف الريكويست
         var response = (courseEntity!, request).Adapt<CourseOfferingWithDetailsResponse>();
 
         return Result.Success(response!);

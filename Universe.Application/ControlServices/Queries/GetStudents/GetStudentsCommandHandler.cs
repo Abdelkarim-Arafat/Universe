@@ -34,7 +34,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
         var studentIds = studentsInfos.Select(s => s.Student.Id).ToList();
 
         var StudentsAssessments = await _unitOfWork.UserRepository
-            .GetStudentsAssessmentsAsync(studentIds, cancellationToken);
+            .GetStudentsAssessmentsAsync(studentIds, command.CourseOfferingId, cancellationToken);
 
         var headers = assessmentHeadersRaw.Select(ah => new AssessmentHeader(
             ah.Id,

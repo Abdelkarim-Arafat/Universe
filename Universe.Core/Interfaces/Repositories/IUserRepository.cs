@@ -28,7 +28,8 @@ public interface IUserRepository
      int? groupNumber,
      CancellationToken cancellationToken);
 
-    Task<List<StudentAssessment>> GetStudentsAssessmentsAsync(List<Guid> StudentsIds, CancellationToken cancellationToken);
+    Task<List<StudentAssessment>> GetStudentsAssessmentsAsync(List<Guid> StudentsIds, Guid CourseOfferingId, CancellationToken cancellationToken);
+
     Task<Dictionary<Guid, decimal>>
          GetAllStudentDegreesInCoursesAsync(Guid studentId, CancellationToken cancellationToken);
 }
