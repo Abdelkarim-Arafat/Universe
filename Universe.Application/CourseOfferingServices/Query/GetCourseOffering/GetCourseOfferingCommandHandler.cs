@@ -18,6 +18,7 @@ public class GetCourseOfferingCommandHandler (
             .Where(x => x.Id == request.Id && !x.IsDeleted)
             .Select(x => new CourseOfferingWithDetailsResponse(
                 x.Id,
+                x.NumberOfGroups,
                 x.CreditHours,
                 x.TotalGrade,
                 x.SuccessPercentage,

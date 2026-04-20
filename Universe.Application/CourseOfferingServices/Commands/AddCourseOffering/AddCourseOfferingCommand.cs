@@ -7,6 +7,7 @@ namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering
 public record AddCourseOfferingCommand(
     [Required] Guid AcademicProgramId,
     [Required] Guid AcademicYearId,
+    int NumberOfGroups,
     decimal CreditHours,
     decimal TotalGrade,
     decimal SuccessPercentage,

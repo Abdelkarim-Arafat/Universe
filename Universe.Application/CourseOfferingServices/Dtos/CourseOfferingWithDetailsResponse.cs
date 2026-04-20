@@ -7,6 +7,7 @@ namespace Universe.Application.CourseOfferingServices.Dtos;
 
 public record CourseOfferingWithDetailsResponse(
     Guid Id,
+    int NumberOfGroups,
     decimal CreditHours,
     decimal TotalGrade,
     decimal SuccessPercentage,

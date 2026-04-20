@@ -2,6 +2,7 @@
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Repositories;
 
@@ -13,6 +14,18 @@ public class UserRepository
     private readonly ApplicationDbContext _context = context;
     private readonly IAcademicProgramRepository _academicProgramRepository = academicProgramRepository;
     private readonly IGradeRepository _gradeRepository = gradeRepository;
+
+
+    public IQueryable<ApplicationUser> GetAllStaffAsync()
+        =>  _context.Users
+            .Join(_context.UserRoles,
+                user => user.Id,
+                userRoles => userRoles.UserId,
+                (user, userRole) => new { user, userRole.RoleId }
+            )
+        .Where(x => x.RoleId == DefaultRoles.Staff.Id && !x.user.IsDeleted)
+        .Select(x => x.user)
+        .Distinct();
 
     public async Task<bool> UserIsExistAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.Users.AnyAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);

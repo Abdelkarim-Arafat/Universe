@@ -1018,6 +1018,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsResultAnnounced")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Name")
                         .HasMaxLength(50)
                         .HasColumnType("int");

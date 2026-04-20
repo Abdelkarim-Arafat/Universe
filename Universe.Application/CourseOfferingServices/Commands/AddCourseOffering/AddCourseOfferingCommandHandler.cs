@@ -47,6 +47,7 @@ internal class AddCourseOfferingCommandHandler(
             LevelId = request.LevelId,
             CourseId = request.CourseId,
             TotalGrade = request.TotalGrade,
+            NumberOfGroups = request.NumberOfGroups,
             SuccessPercentage = request.SuccessPercentage,
             IsOptional = request.IsOptional,
             OptionalGroupCode = request.OptionalGroupCode!,

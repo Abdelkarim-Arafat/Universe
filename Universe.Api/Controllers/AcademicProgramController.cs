@@ -12,7 +12,7 @@ using Universe.Application.AcademicProgramServices.Query.GetAcademicPrograms;
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/academic-programs")]
-[ApiController, Authorize(Roles = "Admin , AcademicAdvising")]
+[ApiController]
 public class AcademicProgramController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
