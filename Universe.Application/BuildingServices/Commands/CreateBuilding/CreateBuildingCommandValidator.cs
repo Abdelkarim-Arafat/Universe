@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.GradeServices.Commands.CreateGrade;
-
-namespace Universe.Application.BuildingServices.Commands.CreateBuilding;
+﻿namespace Universe.Application.BuildingServices.Commands.CreateBuilding;
 
 
 public class CreateBuildingCommandValidator : AbstractValidator<CreateBuildingCommand>
@@ -15,7 +10,7 @@ public class CreateBuildingCommandValidator : AbstractValidator<CreateBuildingCo
             .MaximumLength(100).WithMessage("Building name cannot exceed 100 characters.");
         RuleFor(x => x.Code)
             .NotEmpty().WithMessage("Building code is required.")
-             .MaximumLength(5).WithMessage("Building code cannot exceed 5 characters.");
+            .MaximumLength(5).WithMessage("Building code cannot exceed 5 characters.");
     }
 }
 

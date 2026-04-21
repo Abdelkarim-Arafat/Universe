@@ -2,7 +2,7 @@
 
 namespace Universe.Application.TeachingSessionServices.SessionDtos;
 
-public record SessionOptionResponse
+public record SessionInfoResponse
 (
 Guid SessionId,
 string InstructorName,

@@ -11,5 +11,5 @@ string CourseCode,
 bool IsOptional,
 decimal CreaditHours,
 bool IsEnrolled,
-List<SessionOptionResponse> Sessions
+List<SessionInfoResponse> Sessions
 );

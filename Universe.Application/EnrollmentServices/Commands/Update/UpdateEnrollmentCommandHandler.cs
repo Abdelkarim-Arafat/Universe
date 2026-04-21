@@ -18,22 +18,20 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             return Result.Failure<List<EnrollmentInfo>>(StudentErrors.UserNotFound);
 
         var set = new HashSet<(Guid CourseOfferingId, SessionType Type)>();
-        var toFunction = command.newSessions.Select(x => (x.SessionId, x.CourseOfferingId)).ToList();
+        var sessionsToFunction = command.newSessions.Select(x => (x.SessionId, x.CourseOfferingId)).ToList();
 
-        var newSessions =await _unitOfWork.SessionRepository
-            .GetSessionsWithCourseOfferingIdAsync(toFunction, cancellationToken);
+        var newSessions = await _unitOfWork.SessionRepository
+            .GetSessionsWithCourseOfferingIdAsync(sessionsToFunction, cancellationToken);
 
         foreach (var item in newSessions)
-        {
             if (!set.Add((item.CourseOfferingId, item.TeachingSession.Type)))
                 return Result.Failure<List<EnrollmentInfo>>(EnrollmentErrors.DublicatedSessionWithSameType);
-        }
-
+        
         if (HasOverlapPerDay(newSessions))
             return Result.Failure<List<EnrollmentInfo>>(EnrollmentErrors.DublicatedSessions);
 
-
-        var StudentLevel = await _unitOfWork.LevelRepository.GetStudentCurrentLevelAsync(command.StudentId, cancellationToken);
+        var StudentLevel = await _unitOfWork.LevelRepository
+            .GetStudentCurrentLevelAsync(command.StudentId, cancellationToken);
 
         if (StudentLevel is null)
             return Result.Failure<List<EnrollmentInfo>>(LevelErrors.StudentLevelNotFound);
@@ -91,21 +89,16 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         var toKeepCourses = existingCourseOfferingIds.Intersect(incomingCourseOfferingIds).ToList();
 
         
-
         //(GroupNumber + Capacity)
         var sessionsData = await _unitOfWork.SessionRepository
                 .GetGroupNumberAndCapacityBulkAsync(sessionIds, cancellationToken);
 
-       
         var occupiedSeats = await _unitOfWork.EnrollmentRepository
             .GetOccupiedSeatsBulkAsync(sessionIds, cancellationToken);
 
-       
         var Assessments = await _unitOfWork.CourseOfferingRepository
             .GetCourseOfferingsAssessmentsBulkAsync(toAddCourses, cancellationToken);
 
-
-    
 
         using var trx = await _unitOfWork
             .Repository<Enrollment>()
@@ -123,12 +116,10 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             var AssessmentsToRemove = await _unitOfWork.UserRepository
             .GetStudentAssessmentByCourseOfferingBulkAsync(toRemoveCourses, command.StudentId, cancellationToken);
 
-
-
             //  Add Courses
+            //var CourseOfferingIdToCourseId = await _unitOfWork.CourseOfferingRepository
+            //    .CourseOfferingIdsToCourseIdAsync(toAddCourses, cancellationToken);
 
-            var CourseOfferingIdToCourseId = await _unitOfWork.CourseOfferingRepository
-                .CourseOfferingIdsToCourseIdAsync(toAddCourses, cancellationToken);
             foreach (var courseOfferingId in toAddCourses)
             {
                 if (!incomingSessionsGrouped.TryGetValue(courseOfferingId, out var sessions))
@@ -149,16 +140,14 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
                     
                 }
 
-                var first = sessions.First();
-                if(!CourseOfferingIdToCourseId.TryGetValue(courseOfferingId, out var courseId))
-                {
-                    return Result.Failure<List<EnrollmentInfo>>(
-                        CourseOfferingErrors.NotFound);
-                }
+                var first = sessions.FirstOrDefault();
+
+                if (first == null)
+                    return Result.Failure<List<EnrollmentInfo>>(SessionErrors.NotFound);
+                
                 var enrollment = new Enrollment
                 {
                     StudentId = command.StudentId,
-                    CourseId = courseId,
                     CourseOfferingId = courseOfferingId,
                     GroupNumber = sessionsData[first.SessionId].GroupNumber,
                     Status = EnrollmentStatus.InProgress
@@ -166,37 +155,27 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
 
                 enrollmentsToAdd.Add(enrollment);
 
-                foreach (var s in sessions)
+                foreach (var session in sessions)
                 {
-                    if (!sessionsData.TryGetValue(s.SessionId, out var data))
-                    {
-                        return Result.Failure<List<EnrollmentInfo>>(
-                            SessionErrors.NotFound);
-                    }
+                    if (!sessionsData.TryGetValue(session.SessionId, out var sessionData))
+                        return Result.Failure<List<EnrollmentInfo>>(SessionErrors.NotFound);
 
-                    if (!occupiedSeats.TryGetValue(s.SessionId, out var count))
-                    {
-                        return Result.Failure<List<EnrollmentInfo>>(
-                            SessionErrors.NotFound);
-                    }
+                    if (!occupiedSeats.TryGetValue(session.SessionId, out var sessionCount))
+                        return Result.Failure<List<EnrollmentInfo>>(SessionErrors.NotFound);
 
-                    if (count >= data.Capacity)
+                    if (sessionCount >= sessionData.Capacity)
                         return Result.Failure<List<EnrollmentInfo>>(SessionErrors.NoAvailableSeats);
 
                     sessionEnrollmentsToAdd.Add(new TeachingSessionEnrollment
                     {
                         EnrollmentId = enrollment.Id,
-                        TeachingSessionId = s.SessionId
+                        TeachingSessionId = session.SessionId
                     });
-                    occupiedSeats[s.SessionId]++;
-                }
-                if (!Assessments.TryGetValue(courseOfferingId, out var assessments))
-                {
-                    return Result.Failure<List<EnrollmentInfo>>(
-                        CourseOfferingErrors.NotFound);
-                    // add assessments errors
+                    occupiedSeats[session.SessionId]++;
                 }
 
+                if (!Assessments.TryGetValue(courseOfferingId, out var assessments))
+                    return Result.Failure<List<EnrollmentInfo>>(CourseOfferingErrors.NotFoundAssessment);
 
                 foreach (var ass in assessments)
                 {
@@ -208,31 +187,23 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
                 }
             }
 
-          
             //   Remove Courses
-          
 
-            foreach (var enrollment in existingEnrollments
-                .Where(x => toRemoveCourses.Contains(x.CourseOfferingId)))
+            foreach (var enrollment in existingEnrollments.Where(x => toRemoveCourses.Contains(x.CourseOfferingId)))
             {
                 foreach (var session in enrollment.TeachingSessionEnrollments.Where(x => !x.IsDeleted))
                 {
                     sessionEnrollmentsToDelete.Add(session);
 
-                    if (occupiedSeats.TryGetValue(session.TeachingSessionId, out var count))
-                    {
-                        occupiedSeats[session.TeachingSessionId] = Math.Max(0, count - 1);
-                    }
+                    if (occupiedSeats.TryGetValue(session.TeachingSessionId, out var sessionCount))
+                        occupiedSeats[session.TeachingSessionId] = Math.Max(0, sessionCount - 1);
                 }
                 enrollmentsToDelete.Add(enrollment);
             }
 
-          
             // Update Keep Courses
-            
 
-            foreach (var enrollment in existingEnrollments
-                     .Where(x => toKeepCourses.Contains(x.CourseOfferingId)))
+            foreach (var enrollment in existingEnrollments.Where(x => toKeepCourses.Contains(x.CourseOfferingId)))
             {
                 var existingSessions = enrollment.TeachingSessionEnrollments
                     .Where(x => !x.IsDeleted)
@@ -240,58 +211,51 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
                     .ToHashSet();
 
                 if (!incomingSessionsGrouped.TryGetValue(enrollment.CourseOfferingId, out var sessions))
-                {
                     return Result.Failure<List<EnrollmentInfo>>(CourseOfferingErrors.NotFound);
-                    // add invalid data error
-                }
+                // add invalid data error
 
                 var incomingSessions = sessions
                     .Select(x => x.SessionId)
                     .ToHashSet();
+
                 var groupNumbers = sessions
                      .Select(s => sessionsData[s.SessionId].GroupNumber)
                      .Distinct()
-                      .ToList();
+                     .ToList();
 
                 if (groupNumbers.Count > 1)
-                {
-                    return Result.Failure<List<EnrollmentInfo>>(
-                        EnrollmentErrors.DublicatedGroup);
-                     
-                }
+                    return Result.Failure<List<EnrollmentInfo>>(EnrollmentErrors.DublicatedGroup);
 
                 // Add new sessions
 
-                foreach (var sId in incomingSessions.Except(existingSessions))
+                foreach (var sessionId in incomingSessions.Except(existingSessions))
                 {
-                    if (!sessionsData.TryGetValue(sId, out var data) ||
-                        !occupiedSeats.TryGetValue(sId, out var count))
-                    {
+                    if (!sessionsData.TryGetValue(sessionId, out var sessionData) ||
+                        !occupiedSeats.TryGetValue(sessionId, out var sessionsCount))
                         return Result.Failure<List<EnrollmentInfo>>(SessionErrors.NotFound);
-                    }
 
-                    if (count >= data.Capacity)
-                    {
+                    if (sessionsCount >= sessionData.Capacity)
                         return Result.Failure<List<EnrollmentInfo>>(SessionErrors.NoAvailableSeats);
-                    }
 
                     sessionEnrollmentsToAdd.Add(new TeachingSessionEnrollment
                     {
                         EnrollmentId = enrollment.Id,
-                        TeachingSessionId = sId
+                        TeachingSessionId = sessionId
                     });
-                    occupiedSeats[sId]++;
+
+                    occupiedSeats[sessionId]++;
                 }
+
                 var sessionsToRemove = existingSessions.Except(incomingSessions).ToHashSet();
+
                 // Remove sessions
+
                 foreach (var tse in enrollment.TeachingSessionEnrollments
                     .Where(x => !x.IsDeleted && sessionsToRemove.Contains(x.TeachingSessionId)))
                 {
                     sessionEnrollmentsToDelete.Add(tse);
-                    if (occupiedSeats.TryGetValue(tse.TeachingSessionId, out var count))
-                    {
-                        occupiedSeats[tse.TeachingSessionId] = Math.Max(0, count - 1);
-                    }
+                    if (occupiedSeats.TryGetValue(tse.TeachingSessionId, out var sessionCount))
+                        occupiedSeats[tse.TeachingSessionId] = Math.Max(0, sessionCount - 1);
                 }
             }
 
@@ -305,7 +269,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
                 .AddRangeAsync(AssessmentsToAdd, cancellationToken);
 
             _unitOfWork.Repository<TeachingSessionEnrollment>()
-              .DeletePermanentlyRange(sessionEnrollmentsToDelete);
+               .DeletePermanentlyRange(sessionEnrollmentsToDelete);
 
             _unitOfWork.Repository<Enrollment>()
                .DeletePermanentlyRange(enrollmentsToDelete);
@@ -348,12 +312,9 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         {
             var sessions = group.OrderBy(e => e.TeachingSession.StartTime).ToList();
             for (int i = 0; i < sessions.Count - 1; i++)
-            {
                 if (sessions[i].TeachingSession.EndTime > sessions[i + 1].TeachingSession.StartTime)
-                {
                     return true;
-                }
-            }
+
         }
         return false;
     }

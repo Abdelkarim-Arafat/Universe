@@ -19,6 +19,11 @@ public class CourseOfferingErrors
         "This Course Not Found",
         StatusCodes.Status404NotFound
     );
+    public static readonly Error NotFoundAssessment = new Error(
+        "CourseOffering.NotFoundAssessment",
+        "This Assessment Not Found",
+        StatusCodes.Status404NotFound
+    );
 
     public static readonly Error NotValidGroupNumber = new Error(
         "CourseOffering.NotValidGroupNumber",

@@ -1,9 +1,4 @@
-﻿using FluentValidation;
-using Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
-using Universe.Application.CourseOfferingServices.Dtos;
-using Universe.Core.Enums;
-
-namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
+﻿namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 
 public class AddCourseOfferingCommandValidator : AbstractValidator<AddCourseOfferingCommand>
 {

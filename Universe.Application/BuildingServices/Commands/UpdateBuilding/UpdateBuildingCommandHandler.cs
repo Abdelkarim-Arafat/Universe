@@ -3,7 +3,6 @@
 public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateBuildingCommand, Result<BuildingResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-
     public async Task<Result<BuildingResponse>> Handle(UpdateBuildingCommand command, CancellationToken cancellationToken)
     {
         var building = await _unitOfWork.BuildingRepository.GetByIdAsync(command.Id, cancellationToken);
@@ -15,16 +14,8 @@ public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         _unitOfWork.Repository<Building>().Update(building);
 
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException ex)
-        {
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
-            return Result.Failure<BuildingResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
-        }
         return Result.Success(building.Adapt<BuildingResponse>());
     }
 }
