@@ -11,18 +11,14 @@ using Universe.Infrastructure.SeedData;
 namespace Universe.Application.UserServices.Querys.GetAllStuff;
 
 public class GetAllStuffCommandHandler(
-    UserManager<ApplicationUser> userManager
+    IUnitOfWork unitOfWork
     ) : IRequestHandler<GetAllStuffCommand, Result<PaginationList<StuffResponse>>>
 {
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<PaginationList<StuffResponse>>> Handle(GetAllStuffCommand request, CancellationToken cancellationToken)
     {
-        var query = _userManager.Users
-        .Where(x => x.CollegeId == request.CollegeId
-            && !x.IsDeleted
-            && x.UserRoles.Any(r => r.RoleId == DefaultRoles.Staff.Id
-                      || r.RoleId == DefaultRoles.AcademicAdvising.Id));
+        var query = _unitOfWork.UserRepository.GetAllStaffAsync();
 
         var filter = request.filter;
 
