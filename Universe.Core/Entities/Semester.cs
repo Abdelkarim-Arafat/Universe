@@ -20,4 +20,5 @@ public class Semester : BaseEntity
     public ICollection<CourseOffering> CourseOfferings { get; set; } = [];
     public ICollection<ProgramSchedule> ProgramSchedules { get; set; } = [];
     public ICollection<StudyLoadByLevel> StudyLoadByLevels { get; set; } = [];
+    public ICollection<AcademicEvent> AcademicEvents { get; set; } = [];
 }

@@ -11,7 +11,7 @@ public class RemoveAcademicEventCommandHandler(IUnitOfWork unitOfWork) : IReques
     public async Task<Result> Handle(RemoveAcademicEventCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.AcademicEventRepository
-            .GetByProgramAndSemesterIdsAsync(request.ProgramId, request.SemesterId, request.Type, cancellationToken)
+            .GetByIdAsync(request.Id, cancellationToken)
             is not { } academicEvent) return Result.Failure(AcademicEventErrors.NotFound);
         
         _unitOfWork.Repository<AcademicEvent>().DeletePermanently(academicEvent);

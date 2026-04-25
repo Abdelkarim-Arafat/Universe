@@ -11,6 +11,8 @@ public interface IUnitOfWork: IAsyncDisposable
 {
     IGenericRepository<T> Repository<T>() where T : BaseEntity;
     IRoleRepository RoleRepository { get; }
+    IPaymentRepository PaymentRepository { get; }
+    IServiceRepository ServiceRepository { get; }
     ICourseOfferingRepository CourseOfferingRepository { get; }
     IAcademicProgramRepository AcademicProgramRepository { get; }
     IAcademicYearRepository AcademicYearRepository { get; }

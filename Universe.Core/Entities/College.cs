@@ -18,4 +18,5 @@ public class College : BaseEntity
     public ICollection<Course> Courses { get; set; } = [];
     public ICollection<ApplicationUser> Users { get; set; } = [];
     public ICollection<AcademicYear> AcademicYears { get; set; } = [];
+    public ICollection<Service> Services { get; set; } = [];
 }

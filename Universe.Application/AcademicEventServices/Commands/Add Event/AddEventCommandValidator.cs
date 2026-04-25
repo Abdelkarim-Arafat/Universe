@@ -8,15 +8,6 @@ public class AddEventCommandValidator : AbstractValidator<AddEventCommand>
 {
     public AddEventCommandValidator()
     {
-        RuleFor(x => x.ProgramId)
-            .NotEmpty()
-            .WithMessage("Program ID is required.");
-
-        RuleFor(x => x.SemesterId)
-            .NotEmpty()
-            .WithMessage("Semester ID is required.");
-
-
         RuleFor(x => x.Type)
              .NotEmpty()
              .IsInEnum();

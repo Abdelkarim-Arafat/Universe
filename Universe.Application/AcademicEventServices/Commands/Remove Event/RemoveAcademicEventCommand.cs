@@ -5,7 +5,5 @@ using System.Text;
 namespace Universe.Application.AcademicEventServices.Commands.Remove_Event;
 
 public record RemoveAcademicEventCommand(
-    [Required] Guid ProgramId,
-    [Required] Guid SemesterId,
-    [Required] Core.Enums.EventType Type
+    [Required] Guid Id
 ) : IRequest<Result>;

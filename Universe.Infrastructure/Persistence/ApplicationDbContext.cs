@@ -15,6 +15,9 @@ public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options
     ): IdentityDbContext<ApplicationUser , ApplicationRole , Guid>(options)
 {
+    public DbSet<ServiceRequest> ServiceRequests { get; set; }
+    public DbSet<Service> Services { get; set; }
+    public DbSet<Payment> Payments { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<College> Colleges { get; set; }
     public DbSet<AcademicProgram> AcademicPrograms { get; set; }

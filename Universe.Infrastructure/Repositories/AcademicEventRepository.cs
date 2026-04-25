@@ -16,8 +16,8 @@ public class AcademicEventRepository(ApplicationDbContext context)  : IAcademicE
     public async Task<bool> IsOverlabedAsync(Guid programId,
         Guid semesterId,
         Core.Enums.EventType eventType,
-        DateTime startDate,
-        DateTime endDate,
+        DateOnly startDate,
+        DateOnly endDate,
         CancellationToken cancellationToken)
     {
         return await _context.AcademicEvents
@@ -31,6 +31,9 @@ public class AcademicEventRepository(ApplicationDbContext context)  : IAcademicE
                 cancellationToken);
     }
 
+    public async Task<AcademicEvent?> GetByIdAsync(Guid id , CancellationToken cancellationToken)
+        => await _context.AcademicEvents
+            .FirstOrDefaultAsync(e => e.Id == id , cancellationToken);
 
     public async Task<AcademicEvent?> GetByProgramAndSemesterIdsAsync(Guid programId ,
         Guid semesterId ,

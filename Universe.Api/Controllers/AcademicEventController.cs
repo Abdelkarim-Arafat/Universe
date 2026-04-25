@@ -27,15 +27,13 @@ public class AcademicEventController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpDelete("")]
-    public async Task<IActionResult> RemoveEvent (
-        [FromBody] RemoveAcademicEventCommand request,
-        [FromQuery] Guid programId,
-        [FromQuery] Guid semesterId,
-        CancellationToken cancellationToken)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> RemoveEvent(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken
+        )
     {
-        request = request with { ProgramId = programId, SemesterId = semesterId };
-        var result = await _mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(new RemoveAcademicEventCommand(id), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
 
