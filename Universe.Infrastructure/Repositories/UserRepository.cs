@@ -87,30 +87,30 @@ public class UserRepository
          .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<decimal> CalculateCreditHoursAsync
-        (Guid StudentId,Guid? SemesterId, CancellationToken cancellationToken)
+        (Guid StudentId, Guid? SemesterId, CancellationToken cancellationToken)
     {
         return await _context.Enrollments
             .Where(x => x.StudentId == StudentId
             && x.Status == Core.Enums.EnrollmentStatus.Passed
-            && ((SemesterId == null)|| (x.CourseOffering.SemesterId == SemesterId))
+            && ((SemesterId == null) || (x.CourseOffering.SemesterId == SemesterId))
             && !x.IsDeleted
             && !x.CourseOffering.IsDeleted)
            .SumAsync(x => x.CourseOffering.CreditHours, cancellationToken);
     }
     public async Task<decimal> CalculateGpaAsync
-        (Guid StudentId,Guid? SemesterId, CancellationToken cancellationToken)
+        (Guid StudentId, Guid? SemesterId, CancellationToken cancellationToken)
     {
         var studentCourseGrades = await _context.Enrollments
           .AsNoTracking()
           .Where(e => e.StudentId == StudentId
                  && e.Status == Core.Enums.EnrollmentStatus.Passed
                  && e.CourseOffering.IsIncludedInGpa
-                 && ((SemesterId == null)|| (e.CourseOffering.SemesterId == SemesterId))
+                 && ((SemesterId == null) || (e.CourseOffering.SemesterId == SemesterId))
                  && !e.IsDeleted)
           .Select(e => new
           {
-            e.CourseOffering.CreditHours,
-            TotalStudentDegree = e.Student.StudentAssessments
+              e.CourseOffering.CreditHours,
+              TotalStudentScore = e.Student.StudentAssessments
              .Where(sa => sa.CourseOfferingAssessment.CourseOfferingId == e.CourseOfferingId && !sa.IsDeleted)
              .Sum(sa => sa.degree ?? 0)
           })
@@ -125,10 +125,10 @@ public class UserRepository
 
         foreach (var course in studentCourseGrades)
         {
-            
+
             var points = gradeScales
-                .FirstOrDefault(g => course.TotalStudentDegree >= g.MinScore
-                                  && course.TotalStudentDegree <= g.MaxScore)
+                .FirstOrDefault(g => course.TotalStudentScore >= g.MinScore
+                                  && course.TotalStudentScore <= g.MaxScore)
                 ?.MinGradePoint ?? 0;
 
             totalQualityPoints += (points * course.CreditHours);
@@ -136,7 +136,7 @@ public class UserRepository
 
         var totalEarnedCreditHours = await CalculateCreditHoursAsync(StudentId, SemesterId, cancellationToken);
 
-        return totalEarnedCreditHours == 0 ? 0 : totalQualityPoints / totalEarnedCreditHours;
+        return (totalEarnedCreditHours == 0) ? 0 : totalQualityPoints / totalEarnedCreditHours;
     }
 
     public async Task<List<StudentAssessment>> GetStudentAssessmentByCourseOfferingBulkAsync
@@ -208,7 +208,7 @@ public class UserRepository
             .Select(g => new
             {
                 CourseOfferingId = g.Key,
-                TotalDegree = g.Sum(sa => sa.degree!.Value)
+                TotalDegree = g.Sum(sa => sa.degree ?? 0)
             })
             .ToDictionaryAsync(
                 x => x.CourseOfferingId,
@@ -216,5 +216,4 @@ public class UserRepository
                 cancellationToken
             );
     }
-    
 }

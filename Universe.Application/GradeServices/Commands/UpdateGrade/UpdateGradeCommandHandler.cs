@@ -9,16 +9,18 @@ public class UpdateGradeCommandHandler
 
     public async Task<Result<GradeResponse>> Handle(UpdateGradeCommand command, CancellationToken cancellationToken = default)
     {
-        var grade = await _unitOfWork.GradeRepository.GetByIdAsync(command.Id);
+        var grade = await _unitOfWork.GradeRepository.GetByIdAsync(command.Id, cancellationToken);
+
         if (grade is null)
             return Result.Failure<GradeResponse>(GradeErrors.NotFound);
 
-
         var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
-            .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, grade.Id, grade.AcademicProgramId, cancellationToken)
+            .CheckOverLabedScoresAsync
+            (command.MinScore, command.MaxScore, grade.Id, grade.AcademicProgramId, cancellationToken)
             || await _unitOfWork.GradeRepository
-            .CheckOverLabedPointsAsync(command.MinGradePoint, command.MaxGradePoint, grade.Id, grade.AcademicProgramId, cancellationToken)
-            ;
+            .CheckOverLabedPointsAsync
+            (command.MinGradePoint, command.MaxGradePoint, grade.Id, grade.AcademicProgramId, cancellationToken);
+
         if (isGradeWithOverLabExist)
             return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
 
@@ -26,18 +28,12 @@ public class UpdateGradeCommandHandler
         grade.Code = command.Code;
         grade.MinScore = command.MinScore;
         grade.MaxScore = command.MaxScore;
+        grade.MaxGradePoint = command.MaxGradePoint;
+        grade.MinGradePoint = command.MinGradePoint;
 
         _unitOfWork.Repository<Grade>().Update(grade);
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException ex)
-        {
 
-            return Result.Failure<GradeResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
-        }
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success(grade.Adapt<GradeResponse>());
     }

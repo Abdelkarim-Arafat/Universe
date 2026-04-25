@@ -1,6 +1,4 @@
-﻿using Universe.Application.LevelServices.LevelDtos;
-
-namespace Universe.Application.LevelServices.Commands.RemoveLevel;
+﻿namespace Universe.Application.LevelServices.Commands.RemoveLevel;
 
 public class RemoveLevelCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<RemoveLevelCommand, Result>
 {
@@ -12,18 +10,10 @@ public class RemoveLevelCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
         if (level is null)
             return Result.Failure(LevelErrors.NotFound);
 
-        _unitOfWork.Repository<Level>().SoftDelete(level);
-        _unitOfWork.Repository<Level>().Update(level);
+        _unitOfWork.Repository<Level>().DeletePermanently(level);
 
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException )
-        {
-            return Result.Failure(
-                new Error("DatabaseError", "Failed to remove level", StatusCodes.Status409Conflict));
-        }
+        await _unitOfWork.CompleteAsync(cancellationToken);
+
         return Result.Success();
     }
 }

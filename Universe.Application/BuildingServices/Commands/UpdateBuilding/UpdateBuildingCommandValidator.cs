@@ -10,6 +10,6 @@ public class UpdateBuildingCommandValidator : AbstractValidator<UpdateBuildingCo
             .MaximumLength(100).WithMessage("Building name cannot exceed 100 characters.");
         RuleFor(x => x.Code)
             .NotEmpty().WithMessage("Building code is required.")
-             .MaximumLength(5).WithMessage("Building code cannot exceed 5 characters.");
+            .MaximumLength(5).WithMessage("Building code cannot exceed 5 characters.");
     }
 }

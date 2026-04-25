@@ -19,7 +19,6 @@ public class GetAllStuffCommandHandler(
     public async Task<Result<PaginationList<StuffResponse>>> Handle(GetAllStuffCommand request, CancellationToken cancellationToken)
     {
         var query = _unitOfWork.UserRepository.GetAllStaffAsync();
-
         var filter = request.filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))

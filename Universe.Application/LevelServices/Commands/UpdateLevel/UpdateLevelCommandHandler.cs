@@ -24,16 +24,7 @@ public class UpdateLevelCommandHandler
 
         _unitOfWork.Repository<Level>().Update(level);
 
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException)
-        {
-            return Result.Failure<LevelResponse>(
-                new Error("DatabaseError", "Failed to update level", StatusCodes.Status409Conflict));
-        }
-
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success(level.Adapt<LevelResponse>());
     }

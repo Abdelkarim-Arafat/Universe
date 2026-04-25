@@ -16,7 +16,7 @@ public class AcademicEventController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpPost("")]
-    public async Task<IActionResult> AddEvent (
+    public async Task<IActionResult> AddEvent(
         [FromBody] AddEventCommand request,
         [FromQuery] Guid programId,
         [FromQuery] Guid semesterId,

@@ -37,16 +37,22 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         Guid studentId,
         CancellationToken cancellationToken)
     {
+
+        var passedCourses = _context.Enrollments
+              .Where(e => e.StudentId == studentId
+               && e.Status == EnrollmentStatus.Passed
+               && !e.IsDeleted)
+              .Select(e => e.CourseOffering.CourseId);
+
         return await _context.CourseOfferings
             .AsNoTracking()
-            .Include(c => c.Course)
             .Where(c => c.LevelId == levelId
                      && c.SemesterId == semesterId
                      && !c.IsDeleted
-
-                     && !c.Enrollments.Any(e => e.StudentId == studentId
-                                             && !e.IsDeleted
-                                             && e.Status == EnrollmentStatus.Passed))
+                     && !passedCourses.Contains(c.CourseId)
+                     && !_context.CoursePrerequisites
+                           .Where(p => p.CourseId == c.CourseId)
+                           .Any(p => !passedCourses.Contains(p.PrerequisiteCourseId)))
             .ToListAsync(cancellationToken);
     }
 

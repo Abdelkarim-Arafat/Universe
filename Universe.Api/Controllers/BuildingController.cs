@@ -63,4 +63,5 @@ public class BuildingController(IMediator mediator) : ControllerBase
             .ToList();
         return Ok(types);
     }
+   
 }

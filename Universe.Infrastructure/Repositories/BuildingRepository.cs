@@ -20,7 +20,7 @@ public class BuildingRepository(ApplicationDbContext context) : IBuildingReposit
       return await _context.Rooms.AnyAsync(r => r.BuildingId == id && !r.IsDeleted, cancellationToken);
     }
 
-    public async Task<bool> CheckIfBuildingExistAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<bool> IsExistAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Buildings.AnyAsync(b => b.Id == id && !b.IsDeleted, cancellationToken);
     }

@@ -11,26 +11,16 @@ public class DeleteBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
         if (building is null)
             return Result.Failure(BuildingErrors.NotFound);
 
-        var isRoomExistInBuilding = await _unitOfWork.BuildingRepository.CheckIfRoomExistAsync(command.Id, cancellationToken);
+        var isRoomExistInBuilding = await _unitOfWork.BuildingRepository
+            .CheckIfRoomExistAsync(command.Id, cancellationToken);
 
         if (isRoomExistInBuilding)
             return Result.Failure(BuildingErrors.RoomsFounded);
 
+        _unitOfWork.Repository<Building>().DeletePermanently(building);
 
-        _unitOfWork.Repository<Building>().SoftDelete(building);
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
-        _unitOfWork.Repository<Building>().Update(building);
-
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException ex)
-        {
-
-            return Result.Failure<BuildingResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
-        }
         return Result.Success();
     }
 }

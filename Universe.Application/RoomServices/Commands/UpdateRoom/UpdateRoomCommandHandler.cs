@@ -26,17 +26,7 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
         _unitOfWork.Repository<Room>().Update(room);
 
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException)
-        {
-
-            return Result.Failure<RoomResponse>(
-                new Error("DatabaseError", "failed to update room", StatusCodes.Status409Conflict));
-        }
-
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         var response = new RoomResponse
             (room.Id,

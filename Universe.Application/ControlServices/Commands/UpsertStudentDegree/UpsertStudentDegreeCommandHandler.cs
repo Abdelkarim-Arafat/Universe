@@ -1,5 +1,4 @@
 ﻿using Universe.Application.ControlServices.Dtos;
-
 namespace Universe.Application.ControlServices.Commands.UpsertStudentDegree;
 
 public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpsertStudentDegreeCommand, Result<UpsertDegreeResponse>>
@@ -25,7 +24,7 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
         if (!IsOpenForControl)
            return Result.Failure<UpsertDegreeResponse>(CourseOfferingErrors.NotOpenForControl);
        
-         var studentAssessment = await _unitOfWork.StudentAssessmentRepository
+        var studentAssessment = await _unitOfWork.StudentAssessmentRepository
             .GetStudentAssessmentIncludingCourseAssessmentAsync(command.StudentId, command.CourseAssessmentId, cancellationToken);
 
         if(studentAssessment == null)
@@ -36,18 +35,29 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
 
         studentAssessment.degree = command.Degree;
 
-        _unitOfWork.Repository<StudentAssessment>().Update(studentAssessment);
-        await _unitOfWork.CompleteAsync(cancellationToken);
+        var TotalDegree = await _unitOfWork.StudentAssessmentRepository
+         .GetStudentDegreeInCourseAsync(command.StudentId, CourseOfferingId.Value, cancellationToken);
 
+        var enrollment = await _unitOfWork.EnrollmentRepository
+            .GetEnrollmentByStudentIdAndCourseOfferingIdAsync(command.StudentId, CourseOfferingId.Value, cancellationToken);
+
+        if (enrollment == null)
+            return Result.Failure<UpsertDegreeResponse>(EnrollmentErrors.NotFound);
+
+        enrollment.Status = TotalDegree >= enrollment.CourseOffering.SuccessPercentage
+            ? Core.Enums.EnrollmentStatus.Passed
+            : Core.Enums.EnrollmentStatus.Failed;
+
+        _unitOfWork.Repository<StudentAssessment>().Update(studentAssessment);
+        _unitOfWork.Repository<Enrollment>().Update(enrollment);
+
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         var isProgramExist = await _unitOfWork.AcademicProgramRepository
            .IsExistAsync(command.AcademicProgramId, cancellationToken);
 
         if (!isProgramExist)
             return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.AcademicProgramNotFound);
-
-        var TotalDegree = await _unitOfWork.StudentAssessmentRepository
-          .GetStudentDegreeInCourseAsync(command.StudentId, CourseOfferingId.Value, cancellationToken);
 
         var letterGrade = await _unitOfWork.GradeRepository
             .GetLetterGradeByTotalDegree(command.AcademicProgramId, TotalDegree, cancellationToken);

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.CourseOfferingServices.Dtos;
+﻿using Universe.Application.CourseOfferingServices.Dtos;
 
 namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 
@@ -26,12 +23,12 @@ internal class AddCourseOfferingCommandHandler(
                 request.LevelId, request.CourseId, cancellationToken)
             ) return Result.Failure<CourseOfferingWithDetailsResponse>(CourseOfferingErrors.AlreadyExist);
 
-        // ??
+        
         if(await _unitOfWork.CourseRepository
             .GetByIdAsync(request.CourseId , cancellationToken) is null) 
             return Result.Failure<CourseOfferingWithDetailsResponse>(CourseErrors.CourseNotFound);
 
-        // ??
+        
         if (await _unitOfWork.LevelRepository
             .GetByIdAsync(request.LevelId, cancellationToken) is null)
             return Result.Failure<CourseOfferingWithDetailsResponse>(LevelErrors.NotFound);
@@ -63,8 +60,8 @@ internal class AddCourseOfferingCommandHandler(
 
         await _unitOfWork.Repository<CourseOffering>().AddAsync(courseOffering, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
-        // حذف الريكويست
-        var response = (courseOffering, request).Adapt<CourseOfferingWithDetailsResponse>();
+        
+        var response = (courseOffering).Adapt<CourseOfferingWithDetailsResponse>();
         
         return Result.Success(response);
     }

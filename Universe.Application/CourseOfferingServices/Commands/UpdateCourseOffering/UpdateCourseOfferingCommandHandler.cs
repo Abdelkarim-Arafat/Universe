@@ -70,7 +70,7 @@ internal class UpdateCourseOfferingCommandHandler (
 
         // update(course)
         // حذف الريكويست
-        var response = (courseEntity!, request).Adapt<CourseOfferingWithDetailsResponse>();
+        var response = (courseEntity).Adapt<CourseOfferingWithDetailsResponse>();
 
         return Result.Success(response!);
     }

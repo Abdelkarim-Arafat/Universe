@@ -73,6 +73,9 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
        => field ??= new EnrollmentRepository(_context);
     public IStudentAssessmentRepository StudentAssessmentRepository
        => field ??= new StudentAssessmentRepository(_context);
+    public IExamRepository ExamRepository
+        => field ??= new ExamRepository(_context);
+
     //public IStudentSemesterSummaryRepository StudentSemesterSummaryRepository
     //   => field ??= new StudentSemesterSummaryRepository(_context);
     public async Task<int> CompleteAsync(CancellationToken cancellationToken)

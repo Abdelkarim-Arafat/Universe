@@ -1,6 +1,4 @@
-﻿using Universe.Application.RoomServices.Dtos;
-
-namespace Universe.Application.RoomServices.Commands.DeleteRoom;
+﻿namespace Universe.Application.RoomServices.Commands.DeleteRoom;
 
 public class DeleteRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteRoomCommand, Result>
 {
@@ -11,20 +9,10 @@ public class DeleteRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(command.Id, cancellationToken);
         if (room is null)
             return Result.Failure(RoomErrors.RoomNotFound);
-         
-        _unitOfWork.Repository<Room>().SoftDelete(room);
-        _unitOfWork.Repository<Room>().Update(room);
 
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException)
-        {
+        _unitOfWork.Repository<Room>().DeletePermanently(room);
 
-            return Result.Failure<RoomResponse>(
-                new Error("DatabaseError", "Failed to delete room", StatusCodes.Status409Conflict));
-        }
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success();
     }

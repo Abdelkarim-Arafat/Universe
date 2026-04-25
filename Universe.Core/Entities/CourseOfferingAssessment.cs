@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Entities.Core;
+﻿using Universe.Core.Entities.Core;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Entities;

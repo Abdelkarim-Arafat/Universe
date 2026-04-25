@@ -1,5 +1,5 @@
 ﻿using MediatR;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.EnrollmentServices.Commands.Update;
@@ -8,7 +8,7 @@ using Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
 namespace Universe.Api.Controllers;
 
 [Route("enrollments")]
-[ApiController]
+[ApiController, Authorize]
 public class EnrollmentController(IMediator mediator) : ControllerBase
 {
 

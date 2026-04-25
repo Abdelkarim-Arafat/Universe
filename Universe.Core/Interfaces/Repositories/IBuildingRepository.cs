@@ -7,5 +7,5 @@ public interface IBuildingRepository
 {
     Task<Building?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> CheckIfRoomExistAsync (Guid id, CancellationToken cancellationToken = default);
-    Task<bool> CheckIfBuildingExistAsync (Guid id, CancellationToken cancellationToken = default);
+    Task<bool> IsExistAsync (Guid id, CancellationToken cancellationToken = default);
 }

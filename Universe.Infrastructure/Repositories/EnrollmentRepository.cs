@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -13,37 +10,7 @@ public class EnrollmentRepository(
     ) : IEnrollmentRepository
 {  
     private readonly ApplicationDbContext _context = context;
-
-    public Task<Enrollment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        return _context.Enrollments.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
-    }
-
-    public async Task<bool> IsStudentPassedInCourse(Guid StudentId, Guid CourseId, CancellationToken cancellationToken)
-    {
-        return await _context.Enrollments
-            .AnyAsync
-            (x => x.StudentId == StudentId
-             && x.CourseId == CourseId
-             && x.Status == Core.Enums.EnrollmentStatus.Passed
-             && !x.IsDeleted);
-    }
-     
-    public async Task<int> NumberOfEnrollmentsInSession(Guid TeachingSessionId, CancellationToken cancellationToken)
-    {
-        return await _context.TeachingSessionEnrollments
-             .CountAsync(t => t.TeachingSessionId == TeachingSessionId, cancellationToken);
-    }
-    public async Task<int> AvailableSeatsInSession(Guid TeachingSessionId, CancellationToken cancellationToken)
-    {
-        int capacity = await _context.TeachingSessions
-            .Where(ts => ts.Id == TeachingSessionId)
-            .Select(ts => ts.Capacity)
-            .FirstOrDefaultAsync(cancellationToken);
-        int enrolledCount = await NumberOfEnrollmentsInSession(TeachingSessionId, cancellationToken);
-        return capacity - enrolledCount;
-    }
-
+    
     public async Task<List<Enrollment>> GetStudentEnrollmentsWithSessions(Guid StudentId, CancellationToken cancellationToken)
     {
         return await _context.Enrollments
@@ -120,5 +87,13 @@ public class EnrollmentRepository(
             .Where(e => e.StudentId == studentId && !e.IsDeleted
              && e.Status == Core.Enums.EnrollmentStatus.InProgress)
             .SumAsync(e => e.CourseOffering.CreditHours, cancellationToken);
+    }
+
+    public async Task<Enrollment?> GetEnrollmentByStudentIdAndCourseOfferingIdAsync(Guid StudentId, Guid CourseOfferingId, CancellationToken cancellationToken)
+    {
+        return await _context.Enrollments
+            .Include(e => e.CourseOffering)
+            .FirstOrDefaultAsync(e => e.StudentId == StudentId
+            && e.CourseOfferingId == CourseOfferingId, cancellationToken);
     }
 }

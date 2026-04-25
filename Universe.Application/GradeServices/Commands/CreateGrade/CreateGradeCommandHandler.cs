@@ -9,14 +9,18 @@ public class CreateGradeCommandHandler
 
     public async Task<Result<GradeResponse>> Handle(CreateGradeCommand command, CancellationToken cancellationToken = default)
     {
-        var isProgramExist = await _unitOfWork.AcademicProgramRepository.IsExistAsync(command.AcademicProgramId, cancellationToken);
+        var isProgramExist = await _unitOfWork.AcademicProgramRepository
+            .IsExistAsync(command.AcademicProgramId, cancellationToken);
+
         if(!isProgramExist)
             return Result.Failure<GradeResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
         var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
-             .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, null, command.AcademicProgramId, cancellationToken)
+             .CheckOverLabedScoresAsync
+             (command.MinScore, command.MaxScore, null, command.AcademicProgramId, cancellationToken)
              || await _unitOfWork.GradeRepository
-             .CheckOverLabedPointsAsync(command.MinGradePoint, command.MaxGradePoint, null, command.AcademicProgramId, cancellationToken);
+             .CheckOverLabedPointsAsync
+             (command.MinGradePoint, command.MaxGradePoint, null, command.AcademicProgramId, cancellationToken);
 
         if (isGradeWithOverLabExist)
             return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
@@ -24,19 +28,9 @@ public class CreateGradeCommandHandler
         var grade = command.Adapt<Grade>();
 
         await _unitOfWork.Repository<Grade>().AddAsync(grade, cancellationToken);
-        try
-        {
-            await _unitOfWork.CompleteAsync(cancellationToken);
-        }
-        catch (DbUpdateException ex)
-        {
-            
-            return Result.Failure<GradeResponse>(
-                new Error("DatabaseError", ex.Message, StatusCodes.Status409Conflict));
-        }
       
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success(grade.Adapt<GradeResponse>());
-
     }
 }
