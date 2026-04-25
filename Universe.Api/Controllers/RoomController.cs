@@ -6,14 +6,14 @@ using Universe.Application.Common;
 using Universe.Application.RoomServices.Commands.CreateRoom;
 using Universe.Application.RoomServices.Commands.DeleteRoom;
 using Universe.Application.RoomServices.Commands.UpdateRoom;
+using Universe.Application.RoomServices.Queries.GetAvailableRoomsForExam;
 using Universe.Application.RoomServices.Queries.GetBuildingRooms;
 using Universe.Application.RoomServices.Queries.GetRoom;
 
 namespace Universe.Api.Controllers;
 
 [Route("buildings/{buildingId:guid}/rooms")]
-[ApiController]
-[Authorize]
+[ApiController,Authorize]
 public class RoomController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -50,11 +50,25 @@ public class RoomController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
     [HttpGet]
     public async Task<IActionResult> GetBuildingRooms(Guid buildingId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken)
     {
         var query = new GetBuildingRoomsQuery(buildingId, filter);
         var result = await _mediator.Send(query, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+    [HttpGet("available-for-exam")]
+    public async Task<IActionResult> GetAvailableRoomsForExam
+       ([FromQuery] Guid CourseOfferingExamId,
+        [FromRoute] Guid buildingId,
+        [FromQuery] FilterRequest filter,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetAvailableRoomsForExamQuery(buildingId, CourseOfferingExamId, filter);
+        var result = await _mediator.Send(query, cancellationToken);
+
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.ControlServices.Commands.ToggleAnnounceResult;
@@ -11,7 +12,7 @@ using Universe.Application.ControlServices.Queries.GetStudents;
 namespace Universe.Api.Controllers;
 
 [Route("control")]
-[ApiController]
+[ApiController, Authorize]
 
 public class ControlController(IMediator mediator) : ControllerBase
 {

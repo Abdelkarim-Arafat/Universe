@@ -53,7 +53,6 @@
 	<ItemGroup>
 		<None Include="RoleServices\Queries\GetAllRolesCommand.cs" />
 		<None Include="StudyLoadByLevelServices\Commands\AddStudyLoad\AddStudyLoadByLevelCommandValidator.cs" />
-		<Folder Include="CourseOfferingServices\Query\" />
 		<Folder Include="TeachingSessionServices\Queries\Get\" />
 		<None Include="UserServices\UserDtos\MilitaryDataResponse.cs" />
 	</ItemGroup>

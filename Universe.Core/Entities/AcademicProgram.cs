@@ -21,4 +21,5 @@ public class AcademicProgram : BaseEntity
     public ICollection<Level> Levels { get; set; } = [];
     public ICollection<StudyLoadRule> StudyLoadRules { get; set; } = [];
     public ICollection<ProgramSchedule> ProgramSchedules { get; set; } = [];
+    public ICollection<ExamTerm> ExamTerms { get; set; } = [];
 }

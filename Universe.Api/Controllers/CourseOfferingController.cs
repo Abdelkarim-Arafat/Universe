@@ -1,13 +1,13 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
+using Universe.Application.Common;
 using Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 using Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering;
 using Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
-using Universe.Application.CourseOfferingServices.Dtos;
 using Universe.Application.CourseOfferingServices.Query.GetCourseOffering;
 using Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
+using Universe.Application.CourseOfferingServices.Query.GetProgramCoursesForExams;
 using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
@@ -27,7 +27,7 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpGet("")]
+    [HttpGet]
     public async Task<IActionResult> GetLevelCourses (
         [FromQuery] Guid levelId,
         [FromQuery] Guid academicYearId,
@@ -38,7 +38,7 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpPost("")]
+    [HttpPost]
     public async Task<IActionResult> AddCourseOffering (
         [FromRoute] Guid programId,
         [FromBody] AddCourseOfferingCommand request,
@@ -69,5 +69,14 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     {
         var result = await _mediator.Send(new RemoveCourseOfferingCommand(id), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+    [HttpGet("for-exams")]
+    public async Task<IActionResult> GetProgramCoursesForExams(
+        [FromRoute] Guid programId,
+        [FromQuery] FilterRequest filter,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetProgramCoursesForExamsQuery(programId, filter), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

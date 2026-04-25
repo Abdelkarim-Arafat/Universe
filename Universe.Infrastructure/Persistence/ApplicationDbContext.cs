@@ -40,6 +40,10 @@ public class ApplicationDbContext(
     public DbSet<Enrollment> Enrollments { get; set; }
     public DbSet<TeachingSessionEnrollment> TeachingSessionEnrollments { get; set; }
     public DbSet<StudentAssessment> StudentAssessments { get; set; }
+    public DbSet<ExamTerm> ExamTerms { get; set; }
+    public DbSet<ExamSeat> ExamSeats { get; set; }
+    public DbSet<ExamCommittee> ExamCommittees { get; set; }
+    public DbSet<CourseOfferingExam> CourseOfferingExams { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -36,7 +36,6 @@ public class GetStudentAcademicHistoryCommandHandler(
         if (!AcademicProgramId.HasValue)
             return Result.Failure<List<TranscriptSemesterResponse>>(StudentErrors.NoProgram);
 
-
         var allStudentDegreesInCourses = await _unitOfWork.UserRepository
             .GetAllStudentDegreesInCoursesAsync(StudentId, cancellationToken);
 
@@ -45,8 +44,7 @@ public class GetStudentAcademicHistoryCommandHandler(
 
         var response = new List<TranscriptSemesterResponse>();
 
-        decimal totalQualityPoints = 0;
-        decimal totalHours = 0;
+        decimal totalQualityPoints = 0, totalHours = 0;
 
         foreach (var enrollmentsInSemester in groupedEnrollmentsBySemester)
         {
@@ -60,14 +58,11 @@ public class GetStudentAcademicHistoryCommandHandler(
             {
                 allStudentDegreesInCourses.TryGetValue(e.CourseOfferingId, out decimal finalGrade);
 
-                var letter = letterDegrees
-                    .FirstOrDefault(g => finalGrade >= g.MinScore && finalGrade <= g.MaxScore)?.Code ?? "-";
-
                 return new CourseGradeDto(
                     e.CourseOffering.Course.Code,
                     e.CourseOffering.Course.Name,
                     e.CourseOffering.CreditHours,
-                    letter,
+                    letterDegrees.FirstOrDefault(g => finalGrade >= g.MinScore && finalGrade <= g.MaxScore)?.Code ?? "-",
                     finalGrade
                 );
             }).ToList();

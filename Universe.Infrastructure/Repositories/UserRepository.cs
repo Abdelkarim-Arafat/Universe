@@ -208,7 +208,7 @@ public class UserRepository
             .Select(g => new
             {
                 CourseOfferingId = g.Key,
-                TotalDegree = g.Sum(sa => sa.degree!.Value)
+                TotalDegree = g.Sum(sa => sa.degree ?? 0)
             })
             .ToDictionaryAsync(
                 x => x.CourseOfferingId,
@@ -216,5 +216,4 @@ public class UserRepository
                 cancellationToken
             );
     }
-    
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Entities.Core;
+﻿using Universe.Core.Entities.Core;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Entities;
@@ -20,4 +17,5 @@ public class Semester : BaseEntity
     public ICollection<CourseOffering> CourseOfferings { get; set; } = [];
     public ICollection<ProgramSchedule> ProgramSchedules { get; set; } = [];
     public ICollection<StudyLoadByLevel> StudyLoadByLevels { get; set; } = [];
+    public ICollection<ExamTerm> ExamTerms { get; set; } = [];
 }

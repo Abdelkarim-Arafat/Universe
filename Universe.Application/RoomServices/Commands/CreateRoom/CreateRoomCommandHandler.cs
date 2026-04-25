@@ -8,7 +8,7 @@ public class CreateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
     public async Task<Result<RoomResponse>> Handle(CreateRoomCommand command, CancellationToken cancellationToken)
     {
         var isBuildingExist = await _unitOfWork.BuildingRepository
-            .CheckIfBuildingExistAsync(command.BuildingId, cancellationToken);
+            .IsExistAsync(command.BuildingId, cancellationToken);
 
         if (!isBuildingExist)
             return Result.Failure<RoomResponse>(BuildingErrors.NotFound);

@@ -14,8 +14,7 @@ using Universe.Application.GradeServices.Queries.GetGrade;
 namespace Universe.Api.Controllers;
 
 [Route("programs/{academicProgramId:guid}/grades")]
-[ApiController]
-[Authorize()]
+[ApiController,Authorize]
 public class GradeController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -30,7 +29,7 @@ public class GradeController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetAll(Guid academicProgramId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetProgramGrades(Guid academicProgramId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
     {
         var query = new GetAcademicProgramGradesQuery(academicProgramId, filter);
         var result = await _mediator.Send(query, cancellationToken);
@@ -45,7 +44,8 @@ public class GradeController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(command, cancellationToken);
 
         return result.IsSuccess
-            ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
+            ? CreatedAtAction(nameof(Get),
+            new { academicProgramId = academicProgramId, id = result.Value.Id }, result.Value)
             : result.ToProblem();
     }
     [HttpPut("{id}")]

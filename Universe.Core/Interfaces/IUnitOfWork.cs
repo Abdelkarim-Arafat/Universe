@@ -27,5 +27,6 @@ public interface IUnitOfWork: IAsyncDisposable
     ICollegeRepository CollegeRepository { get; }
     IEnrollmentRepository EnrollmentRepository { get; }
     IStudentAssessmentRepository StudentAssessmentRepository { get; }
+    IExamRepository ExamRepository { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);
 }

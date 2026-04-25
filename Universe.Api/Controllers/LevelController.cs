@@ -12,8 +12,7 @@ using Universe.Application.LevelServices.Queries.GetLevel;
 namespace Universe.Api.Controllers;
 
 [Route("programs/{academicProgramId:guid}/levels")]
-[ApiController]
-[Authorize]
+[ApiController,Authorize]
 public class LevelController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
