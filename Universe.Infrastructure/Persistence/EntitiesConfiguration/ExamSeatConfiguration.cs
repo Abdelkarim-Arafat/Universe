@@ -8,6 +8,6 @@ public class ExamSeatConfiguration : IEntityTypeConfiguration<ExamSeat>
 {
     public void Configure(EntityTypeBuilder<ExamSeat> builder)
     {
-        builder.HasKey(es => new { es.StudentId, es.ExamSessionId });
+        builder.HasKey(es => new { es.StudentId, es.CourseOfferingCommitteeId });
     }
 }

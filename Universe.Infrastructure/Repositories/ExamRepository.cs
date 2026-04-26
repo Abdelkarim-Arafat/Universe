@@ -32,11 +32,18 @@ public class ExamRepository
     #endregion
 
     #region ExamCommittees
+    public async Task<ExamCommittee?> GetExamCommitteeByIdAsync(Guid Id, CancellationToken cancellationToken)
+    {
+        return await _context.ExamCommittees
+            .FirstOrDefaultAsync(com => com.Id == Id && !com.IsDeleted, cancellationToken);
+    }
     public async Task<bool> IsExistCommitteeWithSameNumberAsync
-        (Guid CourseOfferingExamId, int CommitteeNumber, CancellationToken cancellationToken)
+        (Guid? Id, Guid ExamTermId, int CommitteeNumber, CancellationToken cancellationToken)
     {
         return await _context.ExamCommittees.AnyAsync(e =>
-           e.CourseOfferingExamId == CourseOfferingExamId
+           !e.IsDeleted
+           && ((Id == null) || (Id != e.Id))
+           && e.ExamTermId == ExamTermId
            && e.CommitteeNumber == CommitteeNumber, cancellationToken);
     }
 

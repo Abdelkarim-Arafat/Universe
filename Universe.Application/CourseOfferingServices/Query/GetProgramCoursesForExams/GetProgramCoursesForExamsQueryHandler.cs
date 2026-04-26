@@ -20,7 +20,10 @@ public class GetProgramCoursesForExamsQueryHandler(
 
         var query = _unitOfWork.Repository<CourseOffering>()
             .GetQueryable()
-            .Where(course => course.AcademicProgramId == request.AcademicProgramId)
+            .Where(course =>
+               course.AcademicProgramId == request.AcademicProgramId
+            && course.SemesterId ==  request.SemesterId
+            &&!course.IsDeleted)
             .Select(courseOffering => new CourseOfferingForExamsResponse
             (courseOffering.Id,
              courseOffering.Course.Name,

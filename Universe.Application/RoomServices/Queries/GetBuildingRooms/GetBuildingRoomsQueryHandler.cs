@@ -14,14 +14,10 @@ public class GetBuildingRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHand
         var filter = request.filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
-        {
             query = query.Where(x => x.Name.Contains(filter.SearchValue));
-        }
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
-        {
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-        }
         
         var source = query.Select(room => new RoomResponse(
             room.Id,

@@ -1,14 +1,14 @@
 ﻿using Universe.Application.RoomServices.Dtos;
 
-namespace Universe.Application.RoomServices.Queries.GetAvailableRoomsForExam;
+namespace Universe.Application.RoomServices.Queries.GetAvailableRoomsForCommittees;
 
-public class GetAvailableRoomsForExamQueryHandler(IUnitOfWork unitOfWork)
-    : IRequestHandler<GetAvailableRoomsForExamQuery, Result<PaginationList<AvailableRoomsResponse>>>
+public class GetAvailableRoomsForCommitteesQueryHandler(IUnitOfWork unitOfWork)
+    : IRequestHandler<GetAvailableRoomsForCommitteesQuery, Result<PaginationList<AvailableRoomsResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<PaginationList<AvailableRoomsResponse>>>
-        Handle(GetAvailableRoomsForExamQuery request, CancellationToken cancellationToken)
+        Handle(GetAvailableRoomsForCommitteesQuery request, CancellationToken cancellationToken)
     {
         var isBuildingExist = await _unitOfWork.BuildingRepository
             .IsExistAsync(request.BuildingId, cancellationToken);
@@ -16,23 +16,16 @@ public class GetAvailableRoomsForExamQueryHandler(IUnitOfWork unitOfWork)
         if (!isBuildingExist)
             return Result.Failure<PaginationList<AvailableRoomsResponse>>(BuildingErrors.NotFound);
 
-        var courseOfferingExam = await _unitOfWork.ExamRepository
-            .GetCourseOfferingExamByIdAsync(request.CourseOfferingExamId, cancellationToken);
+        var isExamTermExist = await _unitOfWork.ExamRepository.IsExistExamTermAsync(request.examTermId, cancellationToken);
 
-        if (courseOfferingExam == null)
-            return Result.Failure<PaginationList<AvailableRoomsResponse>>(ExamErrors.CourseOfferingExamNotFound);
-
-        var date = courseOfferingExam.Date;
-        var endTime = courseOfferingExam.EndTime;
-        var startTime = courseOfferingExam.StartTime;
+        if (!isExamTermExist)
+            return Result.Failure<PaginationList<AvailableRoomsResponse>>(ExamErrors.ExamTermNotFound);
 
         var query = _unitOfWork.Repository<Room>()
           .GetQueryable()
           .Where(room => room.BuildingId == request.BuildingId
            && !room.IsDeleted
-           && !room.ExamCommittees
-           .Any(committee => committee.CourseOfferingExam.Date == date
-           && ((committee.CourseOfferingExam.StartTime < endTime && startTime < committee.CourseOfferingExam.EndTime))));
+           && !room.ExamCommittees.Any(committee => !committee.IsDeleted && committee.ExamTermId == request.examTermId));
 
         var filter = request.Filter;
 

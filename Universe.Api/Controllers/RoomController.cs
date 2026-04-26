@@ -6,7 +6,7 @@ using Universe.Application.Common;
 using Universe.Application.RoomServices.Commands.CreateRoom;
 using Universe.Application.RoomServices.Commands.DeleteRoom;
 using Universe.Application.RoomServices.Commands.UpdateRoom;
-using Universe.Application.RoomServices.Queries.GetAvailableRoomsForExam;
+using Universe.Application.RoomServices.Queries.GetAvailableRoomsForCommittees;
 using Universe.Application.RoomServices.Queries.GetBuildingRooms;
 using Universe.Application.RoomServices.Queries.GetRoom;
 
@@ -58,15 +58,14 @@ public class RoomController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-
-    [HttpGet("available-for-exam")]
-    public async Task<IActionResult> GetAvailableRoomsForExam
-       ([FromQuery] Guid CourseOfferingExamId,
+    [HttpGet("available-for-committees")]
+    public async Task<IActionResult> GetAvailableRoomsForCommittees(
         [FromRoute] Guid buildingId,
+        [FromQuery] Guid examTermId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var query = new GetAvailableRoomsForExamQuery(buildingId, CourseOfferingExamId, filter);
+        var query = new GetAvailableRoomsForCommitteesQuery(buildingId, examTermId, filter);
         var result = await _mediator.Send(query, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();

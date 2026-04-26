@@ -73,10 +73,12 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     [HttpGet("for-exams")]
     public async Task<IActionResult> GetProgramCoursesForExams(
         [FromRoute] Guid programId,
+        [FromQuery] Guid semesterId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetProgramCoursesForExamsQuery(programId, filter), cancellationToken);
+        var query = new GetProgramCoursesForExamsQuery(programId, semesterId, filter);
+        var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }
