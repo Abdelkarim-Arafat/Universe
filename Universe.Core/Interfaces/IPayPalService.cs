@@ -7,6 +7,5 @@ namespace Universe.Core.Interfaces;
 public interface IPayPalService
 {
     Task<CreateOrderResponse> CreateOrderAsync(decimal amount);
-    Task<CaptureResult> CaptureOrderAsync(string orderId);
     Task<bool> RefundPaymentAsync(string captureId);
 }
