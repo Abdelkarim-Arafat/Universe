@@ -6,9 +6,9 @@ public class ExamSeat : BaseEntity
 {
     public int SeatNumber { get; set; }
     public Guid StudentId { get; set; }
-    public Guid ExamSessionId { get; set; }
+    public Guid CourseOfferingCommitteeId { get; set; }
 
     // Navigation Properties
     public Student Student { get; set; } = default!;
-    public ExamCommittee ExamCommittee { get; set; } = default!;
+    public CourseOfferingCommittee CourseOfferingCommittee { get; set; } = default!;
 }

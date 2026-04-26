@@ -1,6 +1,6 @@
 ﻿using Universe.Core.Entities.Core;
 namespace Universe.Core.Entities;
- 
+
 public class CourseOfferingExam : BaseEntity
 {
     public Guid Id { get; set; }
@@ -10,10 +10,10 @@ public class CourseOfferingExam : BaseEntity
     public TimeOnly EndTime { get; set; }
     public Guid CourseOfferingId { get; set; }
     public Guid ExamTermId { get; set; }
-     
+
     // Navigation Properties
     public ExamTerm ExamTerm { get; set; } = default!;
     public CourseOffering CourseOffering { get; set; } = default!;
-    public ICollection<ExamCommittee> ExamCommittees { get; set; } = [];
+    public ICollection<CourseOfferingCommittee> CourseOfferingCommittees { get; set; } = [];
 }
  

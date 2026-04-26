@@ -12,8 +12,9 @@ public interface IExamRepository
     #endregion
 
     #region ExamCommittees
+    Task<ExamCommittee?> GetExamCommitteeByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<bool> IsExistCommitteeWithSameNumberAsync
-        (Guid CourseOfferingExamId, int CommitteeNumber, CancellationToken cancellationToken);
+        (Guid? Id,Guid ExamTermId, int CommitteeNumber, CancellationToken cancellationToken);
     #endregion
 
     #region CourseOfferingExam

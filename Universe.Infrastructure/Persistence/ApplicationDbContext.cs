@@ -47,6 +47,7 @@ public class ApplicationDbContext(
     public DbSet<ExamSeat> ExamSeats { get; set; }
     public DbSet<ExamCommittee> ExamCommittees { get; set; }
     public DbSet<CourseOfferingExam> CourseOfferingExams { get; set; }
+    public DbSet<CourseOfferingCommittee> CourseOfferingCommittees { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

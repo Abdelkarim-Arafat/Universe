@@ -12,7 +12,14 @@ public class ExamErrors
     public static readonly Error OverlabbingTime =
      new("ExamTerm.OverlabbingTime", "The is another exam with overlabed time", StatusCodes.Status409Conflict);
     #endregion
+    #region ExamCommittee
 
+    public static readonly Error ExamCommitteeNotFound =
+    new("ExamCommittee.ExamCommitteeNotFound", "exam committee is not found", StatusCodes.Status404NotFound);
+
+    public static readonly Error SameCommitteeNumber =
+   new("ExamCommittee.SameCommitteeNumber", "there is another committee with the same number!", StatusCodes.Status404NotFound);
+    #endregion
 
     #region CourseOfferingExam
     public static readonly Error CourseOfferingExamNotFound =
