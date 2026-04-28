@@ -73,13 +73,4 @@ public class ExamTermController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new TogglePublisherCommand(id), cancellationToken);
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
-    [HttpGet("types")]
-    public async Task<IActionResult> GetExamTypes(CancellationToken cancellationToken)
-    {
-        var types = Enum.GetValues(typeof(ExamType))
-            .Cast<ExamType>()
-            .Select(v => new { Id = (int)v, Name = v.ToString() })
-            .ToList();
-        return Ok(types);
-    }
 }
