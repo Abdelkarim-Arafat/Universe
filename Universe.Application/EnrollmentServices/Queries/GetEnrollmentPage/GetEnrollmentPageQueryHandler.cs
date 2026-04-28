@@ -45,7 +45,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
 
 
         var CourseOfferings = await _unitOfWork.CourseOfferingRepository
-               .GetAvailableCourseOfferingsAsync(Level.Id, query.SemesterId, query.StudentId, cancellationToken);
+               .GetAvailableCourseOfferingsIncludingCourseAsync(Level.Id, query.SemesterId, query.StudentId, cancellationToken);
 
 
         var teachingSessionEnrollments = await _unitOfWork.EnrollmentRepository
@@ -80,6 +80,9 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
                  s.Session.Capacity - s.EnrolledCount))
                 .ToList();
 
+            bool isEnrolled = EnrollmentInfos.Any() ?
+                              EnrollmentInfos.Any(x => x.CourseOfferingId == courseOffering.Id) : false;
+
             var CourseRegistration = new CourseRegistrationResponse
                 (courseOffering.Id,
                 courseOffering.CourseId,
@@ -87,7 +90,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
                 courseOffering.Course.Code,
                 courseOffering.IsOptional,
                 courseOffering.CreditHours,
-                EnrollmentInfos.Any(x => x.CourseOfferingId == courseOffering.Id),
+                isEnrolled,
                 SessionsOption);
 
             CourseOfferingsResponse.Add(CourseRegistration);

@@ -100,12 +100,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             .GetCourseOfferingsAssessmentsBulkAsync(toAddCourses, cancellationToken);
 
 
-        using var trx = await _unitOfWork
-            .Repository<Enrollment>()
-            .BeginTransactionIsolatedAsync(cancellationToken);
-
-        try
-        {
+       
             var enrollmentsToAdd = new List<Enrollment>();
             var enrollmentsToDelete = new List<Enrollment>();
 
@@ -117,8 +112,6 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             .GetStudentAssessmentByCourseOfferingBulkAsync(toRemoveCourses, command.StudentId, cancellationToken);
 
             //  Add Courses
-            //var CourseOfferingIdToCourseId = await _unitOfWork.CourseOfferingRepository
-            //    .CourseOfferingIdsToCourseIdAsync(toAddCourses, cancellationToken);
 
             foreach (var courseOfferingId in toAddCourses)
             {
@@ -137,7 +130,6 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
                 {
                     return Result.Failure<List<EnrollmentInfo>>(
                         EnrollmentErrors.DublicatedGroup);
-                    
                 }
 
                 var first = sessions.FirstOrDefault();
@@ -259,6 +251,24 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
                 }
             }
 
+        using var trx = await _unitOfWork
+       .Repository<Enrollment>()
+       .BeginTransactionIsolatedAsync(cancellationToken);
+
+        try
+        {
+            if (sessionEnrollmentsToDelete.Any())
+                _unitOfWork.Repository<TeachingSessionEnrollment>()
+                   .DeletePermanentlyRange(sessionEnrollmentsToDelete);
+
+            if (enrollmentsToDelete.Any())
+                _unitOfWork.Repository<Enrollment>()
+               .DeletePermanentlyRange(enrollmentsToDelete);
+
+            if (AssessmentsToRemove.Any())
+                _unitOfWork.Repository<StudentAssessment>()
+               .DeletePermanentlyRange(AssessmentsToRemove);
+
             await _unitOfWork.Repository<Enrollment>()
                 .AddRangeAsync(enrollmentsToAdd, cancellationToken);
 
@@ -268,35 +278,8 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             await _unitOfWork.Repository<StudentAssessment>()
                 .AddRangeAsync(AssessmentsToAdd, cancellationToken);
 
-            _unitOfWork.Repository<TeachingSessionEnrollment>()
-               .DeletePermanentlyRange(sessionEnrollmentsToDelete);
-
-            _unitOfWork.Repository<Enrollment>()
-               .DeletePermanentlyRange(enrollmentsToDelete);
-
-            _unitOfWork.Repository<StudentAssessment>()
-               .DeletePermanentlyRange(AssessmentsToRemove);
-
-
             await _unitOfWork.CompleteAsync(cancellationToken);
             await trx.CommitAsync(cancellationToken);
-
-
-            var teachingSessionEnrollments = await _unitOfWork.EnrollmentRepository
-           .GetTeachingSessionEnrollmentAsync(command.StudentId, cancellationToken);
-
-            var response = teachingSessionEnrollments.Select(x => new EnrollmentInfo
-            (
-                x.EnrollmentId,
-                x.TeachingSessionId,
-                x.Enrollment.CourseOfferingId,
-                x.TeachingSession.Type,
-                x.TeachingSession.StartTime,
-                x.TeachingSession.EndTime,
-                x.TeachingSession.Day
-            )).ToList();
-
-            return Result.Success(response);
         }
         catch (Exception ex)
         {
@@ -304,6 +287,22 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             return Result.Failure<List<EnrollmentInfo>>(
                 new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
+
+        var teachingSessionEnrollments = await _unitOfWork.EnrollmentRepository
+          .GetTeachingSessionEnrollmentAsync(command.StudentId, cancellationToken);
+
+        var response = teachingSessionEnrollments.Select(x => new EnrollmentInfo
+        (
+            x.EnrollmentId,
+            x.TeachingSessionId,
+            x.Enrollment.CourseOfferingId,
+            x.TeachingSession.Type,
+            x.TeachingSession.StartTime,
+            x.TeachingSession.EndTime,
+            x.TeachingSession.Day
+        )).ToList();
+
+        return Result.Success(response);
     }
     private bool HasOverlapPerDay(IReadOnlyList<CourseOfferingSession> enrollmentInfos)
     {

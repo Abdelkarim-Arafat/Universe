@@ -31,7 +31,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
         .ToListAsync(cancellationToken);
 
-    public async Task<List<CourseOffering>> GetAvailableCourseOfferingsAsync(
+    public async Task<List<CourseOffering>> GetAvailableCourseOfferingsIncludingCourseAsync(
         Guid levelId,
         Guid semesterId,
         Guid studentId,
@@ -46,6 +46,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
 
         return await _context.CourseOfferings
             .AsNoTracking()
+            .Include(offer => offer.Course)
             .Where(c => c.LevelId == levelId
                      && c.SemesterId == semesterId
                      && !c.IsDeleted
@@ -115,5 +116,11 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             .Where(coa => coa.Id == CourseAssessmentId && !coa.IsDeleted)
             .Select(coa => coa.CourseOfferingId)
             .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<int> NumberOfRegisteredStudentsAsync(Guid CourseOfferingId, CancellationToken cancellationToken)
+    {
+        return await _context.Enrollments
+             .CountAsync(enroll => !enroll.IsDeleted && enroll.CourseOfferingId == CourseOfferingId);
     }
 }

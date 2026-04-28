@@ -7,21 +7,33 @@ public class GetAllExamCommitteesQueryHandler(IUnitOfWork unitOfWork) : IRequest
 
     public async Task<Result<PaginationList<ExamCommitteeResponse>>> Handle(GetAllExamCommitteesQuery request, CancellationToken cancellationToken)
     {
+        var isExamTermExist = await _unitOfWork.ExamRepository
+            .IsExistExamTermAsync(request.ExamTermId, cancellationToken);
+
+        if (!isExamTermExist)
+            return Result.Failure<PaginationList<ExamCommitteeResponse>>(ExamErrors.ExamTermNotFound);
+
         var query = _unitOfWork.Repository<ExamCommittee>().GetQueryable()
             .Where(com => com.ExamTermId == request.ExamTermId && !com.IsDeleted);
 
+        var source = query.Select(com => new ExamCommitteeResponse(
+                  com.Id,
+                  com.MaxCapacity,
+                  com.CommitteeNumber,
+                  com.Room != null
+                  ? $"{com.Room.RoomNumber} - {com.Room.Building.Name}"
+                  : "No Place"
+                  ));
+
         var filter = request.Filter;
 
-        //if (!string.IsNullOrEmpty(filter.SearchValue))
-        //{
-        //    query = query.Where(x => x.CommitteeNumber == filter.SearchValue);
-        //}
-
-        if (!string.IsNullOrEmpty(filter.SortColumn))
-            query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+        if (!string.IsNullOrEmpty(filter.SearchValue))
+            source = source.Where(x =>
+                x.Place.Contains(filter.SearchValue) ||
+                x.CommitteeNumber.ToString().Contains(filter.SearchValue));
         
-
-        var source = query.Select(com => com.Adapt<ExamCommitteeResponse>());
+        if (!string.IsNullOrEmpty(filter.SortColumn))
+            source = source.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
 
         var response = await PaginationList<ExamCommitteeResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

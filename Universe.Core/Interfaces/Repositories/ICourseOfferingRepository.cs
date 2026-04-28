@@ -13,7 +13,7 @@ public interface ICourseOfferingRepository
 
     Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<List<CourseOfferingAssessment>> GetCourseOfferingAssessments(Guid CourseOfferingId, CancellationToken cancellationToken);
-    Task<List<CourseOffering>> GetAvailableCourseOfferingsAsync(Guid LevelId, Guid SemesterId, Guid StudentId, CancellationToken cancellationToken);
+    Task<List<CourseOffering>> GetAvailableCourseOfferingsIncludingCourseAsync(Guid LevelId, Guid SemesterId, Guid StudentId, CancellationToken cancellationToken);
     Task<Dictionary<Guid, List<CourseOfferingAssessment>>>
         GetCourseOfferingsAssessmentsBulkAsync(List<Guid> CourseOfferingIds, CancellationToken cancellationToken);
 
@@ -24,4 +24,5 @@ public interface ICourseOfferingRepository
     Task<bool> IsOpenForControlAsync(Guid courseOfferingId, CancellationToken cancellationToken);
     Task<CourseOffering?> GetByIdIncludingEnrollmentsAsync(Guid courseOfferingId, CancellationToken cancellationToken);
     Task<Guid?> GetIdByCourseAssessmentIdAsync(Guid CourseAssessmentId, CancellationToken cancellationToken);
+    Task<int> NumberOfRegisteredStudentsAsync(Guid CourseOfferingId,CancellationToken cancellationToken);
 }

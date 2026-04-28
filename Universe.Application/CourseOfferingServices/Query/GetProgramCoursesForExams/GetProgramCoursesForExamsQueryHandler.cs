@@ -18,12 +18,19 @@ public class GetProgramCoursesForExamsQueryHandler(
             return Result.Failure<PaginationList<CourseOfferingForExamsResponse>>
                 (AcademicProgramErrors.AcademicProgramNotFound);
 
-        var query = _unitOfWork.Repository<CourseOffering>()
+        var isSemesterExist = await _unitOfWork.AcademicYearRepository
+            .IsSemesterExistAsync(request.SemesterId, cancellationToken);
+
+        if (!isSemesterExist)
+            return Result.Failure<PaginationList<CourseOfferingForExamsResponse>>
+                (SemesterErrors.NotFound);
+
+       var query = _unitOfWork.Repository<CourseOffering>()
             .GetQueryable()
             .Where(course =>
-               course.AcademicProgramId == request.AcademicProgramId
-            && course.SemesterId ==  request.SemesterId
-            &&!course.IsDeleted)
+              !course.IsDeleted
+            && course.AcademicProgramId == request.AcademicProgramId
+            && course.SemesterId ==  request.SemesterId)
             .Select(courseOffering => new CourseOfferingForExamsResponse
             (courseOffering.Id,
              courseOffering.Course.Name,

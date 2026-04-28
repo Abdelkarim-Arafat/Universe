@@ -21,6 +21,12 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
         if (!isExamTermExist)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamTermNotFound);
 
+        var isCourseOfferingExamExist = await _unitOfWork.ExamRepository
+            .IsCourseOfferingExamExistAsync(request.CourseOfferingId, request.ExamTermId, cancellationToken);
+
+        if (isCourseOfferingExamExist)
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamIsExist);
+
         var courseOfferingExam = request.Adapt<CourseOfferingExam>();
 
         await _unitOfWork.Repository<CourseOfferingExam>().AddAsync(courseOfferingExam, cancellationToken);

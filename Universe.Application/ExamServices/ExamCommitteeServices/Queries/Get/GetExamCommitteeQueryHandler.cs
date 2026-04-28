@@ -12,7 +12,20 @@ public class GetExamCommitteeQueryHandler(IUnitOfWork unitOfWork) : IRequestHand
         if (examCommittee == null)
             return Result.Failure<ExamCommitteeResponse>(ExamErrors.ExamCommitteeNotFound);
 
-        var response = examCommittee.Adapt<ExamCommitteeResponse>();
+        string place = await _unitOfWork.Repository<ExamCommittee>()
+            .GetQueryable()
+            .Where(comm => !comm.IsDeleted && comm.Id == examCommittee.Id)
+            .Select(comm => $"{comm.Room.RoomNumber} - {comm.Room.Building.Name}")
+            .FirstOrDefaultAsync(cancellationToken) ?? "No Place";
+
+
+
+        var response = new ExamCommitteeResponse
+            (examCommittee.Id,
+            examCommittee.MaxCapacity,
+            examCommittee.CommitteeNumber,
+            place
+            );
 
         return Result.Success(response);
     }

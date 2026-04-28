@@ -17,4 +17,5 @@ public interface IEnrollmentRepository
         GetTeachingSessionEnrollmentAsync(Guid StudentId, CancellationToken cancellationToken);
 
     Task<decimal> CalculateRegistredHoursAsync(Guid studentId, CancellationToken cancellationToken);
+    Task<List<Guid>> GetStudentsIdsByCourseOfferingAsync(Guid CourseOfferingId, CancellationToken CancellationToken);
 }

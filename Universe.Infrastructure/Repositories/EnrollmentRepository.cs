@@ -96,4 +96,13 @@ public class EnrollmentRepository(
             .FirstOrDefaultAsync(e => e.StudentId == StudentId
             && e.CourseOfferingId == CourseOfferingId, cancellationToken);
     }
+
+    public async Task<List<Guid>> GetStudentsIdsByCourseOfferingAsync(Guid CourseOfferingId, CancellationToken CancellationToken)
+    {
+        return await _context.Enrollments
+             .Where(enroll => !enroll.IsDeleted && enroll.CourseOfferingId == CourseOfferingId)
+             .OrderBy(enroll => enroll.Student.Name)
+             .Select(enroll => enroll.StudentId)
+             .ToListAsync(CancellationToken);
+    }
 }

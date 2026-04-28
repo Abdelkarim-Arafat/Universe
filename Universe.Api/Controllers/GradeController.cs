@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
@@ -10,7 +9,6 @@ using Universe.Application.GradeServices.Commands.UpdateGrade;
 using Universe.Application.GradeServices.Queries.GetAcademicProgramGrades;
 using Universe.Application.GradeServices.Queries.GetGrade;
  
-
 namespace Universe.Api.Controllers;
 
 [Route("programs/{academicProgramId:guid}/grades")]
