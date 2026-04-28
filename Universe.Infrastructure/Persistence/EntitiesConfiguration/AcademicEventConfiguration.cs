@@ -12,7 +12,15 @@ internal class AcademicEventConfiguration : IEntityTypeConfiguration<AcademicEve
 {
     public void Configure(EntityTypeBuilder<AcademicEvent> builder)
     {
-        builder.HasKey(e => new { e.ProgramId, e.SemesterId });
+        builder.HasKey(e => e.Id);
+
+        builder.HasOne(x => x.Program)
+            .WithMany(x => x.AcademicEvents)
+            .HasForeignKey(e => e.ProgramId);
+
+        builder.HasOne(x => x.Semester)
+            .WithMany(x => x.AcademicEvents)
+            .HasForeignKey(e => e.SemesterId);
 
         builder.Property(s => s.Type)
             .HasConversion(

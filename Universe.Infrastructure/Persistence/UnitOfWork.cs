@@ -49,6 +49,12 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public IStudyLoadRuleRepository StudyLoadRuleRepository
         => field ??= new StudyLoadRuleRepository(_context);
 
+    public IServiceRepository ServiceRepository
+        => field ??= new ServiceRepository(_context);
+
+    public IPaymentRepository PaymentRepository
+        => field ??= new PaymentRepository(_context);
+
     public IAcademicYearRepository AcademicYearRepository
         => field ??= new AcademicYearRepository(_context);
 

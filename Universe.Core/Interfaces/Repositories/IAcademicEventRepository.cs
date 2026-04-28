@@ -11,12 +11,14 @@ public interface IAcademicEventRepository
     Task<bool> IsOverlabedAsync(Guid programId,
         Guid semesterId,
         Core.Enums.EventType eventType,
-        DateTime startDate,
-        DateTime endDate,
+        DateOnly startDate,
+        DateOnly endDate,
         CancellationToken cancellationToken);
 
     Task<AcademicEvent?> GetByProgramAndSemesterIdsAsync(Guid programId,
         Guid semesterId,
         Core.Enums.EventType eventType,
         CancellationToken cancellationToken);
+
+    Task<AcademicEvent?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 }

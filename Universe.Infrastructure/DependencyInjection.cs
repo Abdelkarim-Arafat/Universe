@@ -16,6 +16,7 @@ using Universe.Infrastructure.Persistence;
 using System.Reflection;
 using System.Text;
 using Hangfire;
+using Universe.Infrastructure.Repositories;
 
 
 namespace Universe.Infrastructure;
@@ -37,11 +38,16 @@ public static class InfrastructureDependences
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IEmailSender, EmailSender>();
 
+        services.AddHttpClient<IPayPalService, PayPalService>();
+
         services.AddFluentValidationConfig();
         services.AddBackgroundJobsConfig(configuration);
         services.AddAuthConfig(configuration);
 
         services.Configure<MailSettings>(configuration.GetSection(MailSettings.SectionName));
+        services.Configure<PayPalSettings>(configuration.GetSection(PayPalSettings.SectionName));
+
+
 
         return services;
     }

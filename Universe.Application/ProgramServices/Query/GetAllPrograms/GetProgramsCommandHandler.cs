@@ -15,7 +15,7 @@ public class GetAllAcademicProgramsCommandHandler(
     {
         var query = _unitOfWork.Repository<AcademicProgram>()
             .GetQueryable()
-            .Where(d => d.CollegeId == request.CollegeId);
+            .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted);
 
         var filter = request.Filter;
 

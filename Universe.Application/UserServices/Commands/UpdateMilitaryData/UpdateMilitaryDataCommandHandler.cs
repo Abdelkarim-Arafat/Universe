@@ -21,6 +21,6 @@ public class UpdateMilitaryDataCommandHandler(
         _unitOfWork.Repository<Student>().Update(student);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        return Result.Success(student.MilitaryInfo.Adapt<MilitaryDataResponse>());
+        return Result.Success(student.MilitaryInfo.Adapt<MilitaryDataResponse>())!;
     }
 }

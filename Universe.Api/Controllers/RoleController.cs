@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
@@ -7,7 +8,7 @@ using Universe.Application.RoleServices.Queries;
 namespace Universe.Api.Controllers;
 
 [Route("roles")]
-[ApiController]
+[ApiController , Authorize]
 public class RoleController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

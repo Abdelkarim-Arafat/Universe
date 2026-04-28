@@ -11,11 +11,11 @@ internal class AddEventCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
     public async Task<Result<EventResponse>> Handle(AddEventCommand request, CancellationToken cancellationToken)
     {
-        if (await _unitOfWork.AcademicProgramRepository
+        if (!await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.ProgramId, cancellationToken)
             ) return Result.Failure<EventResponse>(AcademicProgramErrors.AcademicProgramNotFound);
 
-        if(await _unitOfWork.AcademicYearRepository
+        if(!await _unitOfWork.AcademicYearRepository
             .IsExistSemesterAsync(request.SemesterId , cancellationToken)
             ) return Result.Failure<EventResponse>(SemesterErrors.NotFound);
 

@@ -12,7 +12,7 @@ using Universe.Application.TeachingSessionServices.SessionDtos;
 namespace Universe.Api.Controllers;
 
 [Route("teaching-sessions")]
-[ApiController]
+[ApiController, Authorize]
 public class TeachingSessionsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

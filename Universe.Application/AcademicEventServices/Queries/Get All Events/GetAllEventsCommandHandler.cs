@@ -29,6 +29,7 @@ public class GetAllEventsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandle
         }
 
         var source = query.Select(x => new EventResponse(
+                x.Id.ToString(),
                 x.Type,
                 x.StartDate,
                 x.EndDate

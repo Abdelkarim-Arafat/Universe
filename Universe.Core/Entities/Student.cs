@@ -40,4 +40,6 @@ public class Student : BaseEntity
     public ICollection<StudentAcademicProgram> StudentAcademicPrograms { get; set; } = [];
     public ICollection<StudentAssessment> StudentAssessments { get; set; } = [];
     public ICollection<ExamSeat> ExamSeats { get; set; } = [];
+
+    public ICollection<Payment> Payments { get; set; } = [];
 }

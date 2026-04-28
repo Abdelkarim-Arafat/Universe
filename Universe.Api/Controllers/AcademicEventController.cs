@@ -1,15 +1,17 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicEventServices.Commands.Add_Event;
 using Universe.Application.AcademicEventServices.Commands.Remove_Event;
 using Universe.Application.AcademicEventServices.Queries.Get_All_Events;
 using Universe.Application.Common;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Api.Controllers;
 
 [Route("events")]
-[ApiController]
+[ApiController , Authorize(Roles = DefaultRoles.AcademicAdvising.Name)]
 
 public class AcademicEventController(IMediator mediator) : ControllerBase
 {
@@ -27,15 +29,13 @@ public class AcademicEventController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpDelete("")]
-    public async Task<IActionResult> RemoveEvent (
-        [FromBody] RemoveAcademicEventCommand request,
-        [FromQuery] Guid programId,
-        [FromQuery] Guid semesterId,
-        CancellationToken cancellationToken)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> RemoveEvent(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken
+        )
     {
-        request = request with { ProgramId = programId, SemesterId = semesterId };
-        var result = await _mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(new RemoveAcademicEventCommand(id), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
 
