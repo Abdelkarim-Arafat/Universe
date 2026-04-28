@@ -13,7 +13,7 @@ using Universe.Core.Enums;
 namespace Universe.Api.Controllers;
 
 [Route("buildings")]
-[ApiController]
+[ApiController , Authorize]
 [Authorize]
 public class BuildingController(IMediator mediator) : ControllerBase
 {

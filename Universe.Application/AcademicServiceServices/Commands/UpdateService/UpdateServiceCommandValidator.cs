@@ -14,6 +14,6 @@ public class UpdateServiceCommandValidator : AbstractValidator<UpdateServiceComm
 
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Description is required.")
-            .MinimumLength(500).WithMessage("Description must be at least 500 characters long.");
+            .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
     }
 }

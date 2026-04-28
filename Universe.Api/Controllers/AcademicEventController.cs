@@ -1,15 +1,17 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicEventServices.Commands.Add_Event;
 using Universe.Application.AcademicEventServices.Commands.Remove_Event;
 using Universe.Application.AcademicEventServices.Queries.Get_All_Events;
 using Universe.Application.Common;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Api.Controllers;
 
 [Route("events")]
-[ApiController]
+[ApiController , Authorize(Roles = DefaultRoles.AcademicAdvising.Name)]
 
 public class AcademicEventController(IMediator mediator) : ControllerBase
 {

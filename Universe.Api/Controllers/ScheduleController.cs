@@ -7,8 +7,9 @@ using Universe.Application.TeachingSessionServices.Queries.GetSchedule;
 
 namespace Universe.Api.Controllers;
 
-[ApiController]
+
 [Route("programs/{programId:guid}/semesters/{semesterId:guid}/schedule")]
+[ApiController, Authorize]
 public class ScheduleController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

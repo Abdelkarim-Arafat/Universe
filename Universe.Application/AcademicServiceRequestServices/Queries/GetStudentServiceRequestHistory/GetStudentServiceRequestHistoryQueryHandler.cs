@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
-using Universe.Application.AcademicServiceServices.Queries.GetServiceRequestHistory;
+using Universe.Application.AcademicServiceRequestServices.ServiceRequestDtos;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcademicServiceServices.Queries.GetStudentServiceRequestHistory;
+namespace Universe.Application.AcademicServiceRequestServices.Queries.GetStudentServiceRequestHistory;
 public class GetStudentServiceRequestHistoryQueryHandler(
     IUnitOfWork unitOfWork,
     IHttpContextAccessor httpContext

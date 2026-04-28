@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Universe.Application.AcademicEventServices.EvenetDtos;
+using Universe.Application.AcademicServiceServices.ServiceDtos;
 
 namespace Universe.Application.AcademicServiceServices.Queries.GetAllServices;
 

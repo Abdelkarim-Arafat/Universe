@@ -1,15 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
-using Universe.Application.AcademicServiceServices.Commands.ChangeServiceRequestStatus;
-using Universe.Application.AcademicServiceServices.Commands.RejectServiceRequest;
-using Universe.Application.AcademicServiceServices.Queries.GetAllServiceRequests;
-using Universe.Application.AcademicServiceServices.Queries.GetServiceRequestHistory;
-using Universe.Application.AcademicServiceServices.Queries.GetStudentServiceRequestHistory;
+using Universe.Application.AcademicServiceRequestServices.Commands.AcceptServiceRequest;
+using Universe.Application.AcademicServiceRequestServices.Commands.RejectServiceRequest;
+using Universe.Application.AcademicServiceRequestServices.Queries.GetAllServiceRequests;
+using Universe.Application.AcademicServiceRequestServices.Queries.GetServiceRequestHistory;
+using Universe.Application.AcademicServiceRequestServices.Queries.GetStudentServiceRequestHistory;
 using Universe.Application.Common;
-using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 namespace Universe.Api.Controllers;
 

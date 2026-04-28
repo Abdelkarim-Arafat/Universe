@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Application.AcademicServiceRequestServices.ServiceRequestDtos;
 
-namespace Universe.Application.AcademicServiceServices.Queries.GetAllServiceRequests;
+namespace Universe.Application.AcademicServiceRequestServices.Queries.GetAllServiceRequests;
 
 public record GetAllServiceRequestsQuery(
     [Required] Guid CollegeId,

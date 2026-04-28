@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcademicServiceServices.Commands.RejectServiceRequest;
+namespace Universe.Application.AcademicServiceRequestServices.Commands.RejectServiceRequest;
 
 internal class RejectServiceRequestCommandHandler(
     IUnitOfWork unitOfWork,

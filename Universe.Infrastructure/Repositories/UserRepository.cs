@@ -185,7 +185,7 @@ public class UserRepository
             .ToListAsync(cancellationToken);
 
 
-        return result.Select(x => (x.Student, x.LevelName, x.Assessments)).ToList();
+        return result.Select(x => (x.Student, x.LevelName, x.Assessments)).ToList()!;
     }
 
     public async Task<List<StudentAssessment>> 

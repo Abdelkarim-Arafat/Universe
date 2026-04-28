@@ -26,7 +26,6 @@ public class CreateOrderCommandHandler(
             .GetByIdAsync(request.ServiceId, cancellationToken) is not { } service
             ) return Result.Failure<CreateOrderResponse>(ServiceErrors.NotFound);
 
-
         var result = await _payPalService.CreateOrderAsync(service.Price);
 
         var payment = new Payment
@@ -37,6 +36,9 @@ public class CreateOrderCommandHandler(
             ServiceId = service.Id,
             Status = PaymentStatus.Pending
         };
+
+        await _unitOfWork.Repository<Payment>().AddAsync(payment, cancellationToken);
+        await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success(result);
     }

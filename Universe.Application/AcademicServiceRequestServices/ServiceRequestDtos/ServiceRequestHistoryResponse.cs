@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcademicServiceServices;
+namespace Universe.Application.AcademicServiceRequestServices.ServiceRequestDtos;
 
 public record ServiceRequestHistoryResponse(
     decimal Price,

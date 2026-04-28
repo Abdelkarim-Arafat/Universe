@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcademicServiceServices.Commands.ChangeServiceRequestStatus;
+namespace Universe.Application.AcademicServiceRequestServices.Commands.AcceptServiceRequest;
 
 public class AcceptServiceRequestCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AcceptServiceRequestCommand, Result>
 {

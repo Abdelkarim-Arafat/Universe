@@ -9,7 +9,7 @@ using Universe.Application.StudyLoadByLevelServices.Queries.GetAll;
 namespace Universe.Api.Controllers;
 
 [Route("programs/{programId:guid}/study-load-by-levels")]
-[ApiController]
+[ApiController, Authorize]
 public class StudyLoadByLevelController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Application.PaymentService.Commands.CreateOrder;
@@ -6,7 +7,7 @@ using Universe.Application.PaymentService.Commands.CreateOrder;
 namespace Universe.Api.Controllers;
 
 [Route("payments")]
-[ApiController]
+[ApiController, Authorize]
 public class PaymentController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

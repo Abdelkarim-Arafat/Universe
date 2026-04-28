@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcademicServiceServices.Queries.GetServiceRequestHistory;
+using Universe.Application.AcademicServiceRequestServices.ServiceRequestDtos;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcademicServiceServices.Queries.GetServiceRequestHistory;
+namespace Universe.Application.AcademicServiceRequestServices.Queries.GetAllServiceRequests;
 
-public class GetServiceRequestHistoryQueryHandler (
+internal class GetAllServiceRequestsQueryHandler(
     IUnitOfWork unitOfWork
-    ) : IRequestHandler<GetServiceRequestHistoryQuery, Result<PaginationList<ServiceRequestHistoryResponse>>>
+    ) : IRequestHandler<GetAllServiceRequestsQuery, Result<PaginationList<ServiceRequestResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<PaginationList<ServiceRequestHistoryResponse>>> Handle(GetServiceRequestHistoryQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationList<ServiceRequestResponse>>> Handle(GetAllServiceRequestsQuery request, CancellationToken cancellationToken)
     {
         var query = _unitOfWork.Repository<ServiceRequest>()
             .GetQueryable()
             .AsNoTracking()
             .Where(x => x.Service.CollegeId == request.CollegeId &&
-                    x.Status != RequestStatus.Pending &&
-                    !x.IsDeleted)
-            .OrderByDescending(x => x.CreatedAt);
+                    x.Status == RequestStatus.Pending)
+            .OrderBy(x => x.CreatedAt);
 
         var filter = request.FilterRequest;
 
@@ -29,17 +28,16 @@ public class GetServiceRequestHistoryQueryHandler (
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         }
 
-        var source = query.Select(x => new ServiceRequestHistoryResponse(
+        var source = query.Select(x => new ServiceRequestResponse(
+                x.Id.ToString(),
                 x.Payment.Price,
                 x.Service.Name,
                 x.Student.Name,
                 x.Student.StudentCode,
-                x.CreatedAt,
-                x.UpdatedAt,
-                x.Status
+                x.CreatedAt
         ));
 
-        var response = await PaginationList<ServiceRequestHistoryResponse>
+        var response = await PaginationList<ServiceRequestResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
 
         return Result.Success(response);

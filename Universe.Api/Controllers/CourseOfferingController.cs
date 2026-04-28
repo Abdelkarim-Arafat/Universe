@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
@@ -13,7 +14,7 @@ using Universe.Core.Enums;
 namespace Universe.Api.Controllers;
 
 [Route("programs/{programId:guid}/course-offerings")]
-[ApiController]
+[ApiController , Authorize]
 public class CourseOfferingController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

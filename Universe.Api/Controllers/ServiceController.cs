@@ -3,14 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicServiceServices.Commands.Add_Service;
-using Universe.Application.AcademicServiceServices.Commands.ChangeServiceRequestStatus;
-using Universe.Application.AcademicServiceServices.Commands.RejectServiceRequest;
 using Universe.Application.AcademicServiceServices.Commands.RemoveService;
 using Universe.Application.AcademicServiceServices.Commands.UpdateService;
-using Universe.Application.AcademicServiceServices.Queries.GetAllServiceRequests;
 using Universe.Application.AcademicServiceServices.Queries.GetAllServices;
-using Universe.Application.AcademicServiceServices.Queries.GetServiceRequestHistory;
 using Universe.Application.Common;
+using Universe.Application.PaymentService.Commands.CaptureOrder;
 using Universe.Application.PaymentService.Commands.CreateOrder;
 
 namespace Universe.Api.Controllers;
@@ -45,8 +42,19 @@ public class ServiceController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
+    [HttpPost("{orderId}/capture")]
+    public async Task<IActionResult> CaptureOrder (
+        [FromRoute] string orderId,
+        CancellationToken cancellationToken)
+    {
+
+        var result = await _mediator.Send(new CaptureOrderCommand(orderId), cancellationToken);
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+
     [HttpGet("")]
-    public async Task<IActionResult> GetAllServices(
+    public async Task<IActionResult> GetAllServices (
         [FromQuery] Guid collegeId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)

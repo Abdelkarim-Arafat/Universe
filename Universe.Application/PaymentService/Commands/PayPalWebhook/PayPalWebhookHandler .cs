@@ -9,7 +9,7 @@ using Universe.Core.Enums;
 
 namespace Universe.Application.PaymentService.Commands.PayPalWebhook;
 
-internal class PayPalWebhookHandler(
+internal class PayPalWebhookHandler (
     IUnitOfWork unitOfWork,
     IPayPalService payPalService
     ) : IRequestHandler<PayPalWebhookCommand>
@@ -24,13 +24,8 @@ internal class PayPalWebhookHandler(
         var resource = json.RootElement.GetProperty("resource");
 
         string? orderId = null;
-
-        if (resource.TryGetProperty("supplementary_data", out var sup) &&
-            sup.TryGetProperty("related_ids", out var ids) &&
-            ids.TryGetProperty("order_id", out var oid))
-        {
-            orderId = oid.GetString();
-        }
+        if (eventType == "CHECKOUT.ORDER.APPROVED") orderId = resource.GetProperty("id").GetString();
+        else orderId = resource.GetProperty("supplementary_data").GetProperty("related_ids").GetProperty("order_id").GetString();
 
         if (string.IsNullOrEmpty(orderId)) return;
 
@@ -38,12 +33,17 @@ internal class PayPalWebhookHandler(
             .GetByOrderIdAsync(orderId, cancellationToken) is not { } payment
             ) return;
 
-        if(eventType == "PAYMENT.CAPTURE.COMPLETED")
+
+        if (payment.Status == PaymentStatus.Completed) return;
+
+        if (eventType == "CHECKOUT.ORDER.APPROVED")
         {
-            if (payment.Status == PaymentStatus.Completed) return;
+            await _payPalService.CaptureOrderAsync(orderId);
+            return;
+        }
 
-            payment.Status = PaymentStatus.Completed;
-
+        if (eventType == "PAYMENT.CAPTURE.COMPLETED")
+        {
             var serviceRequest = new ServiceRequest
             {
                 StudentId = payment.StudentId,
@@ -53,19 +53,17 @@ internal class PayPalWebhookHandler(
             };
 
             await _unitOfWork.Repository<ServiceRequest>().AddAsync(serviceRequest, cancellationToken);
+            payment.Status = PaymentStatus.Completed;
         }
-        else if(eventType == "PAYMENT.CAPTURE.DENIED")
-        {
-            payment.Status = PaymentStatus.Failed;
-        }
-        else if(eventType == "PAYMENT.CAPTURE.REFUNDED")
-        {
-            payment.Status = PaymentStatus.Refunded;
-        }
-        else if(eventType == "PAYMENT.CAPTURE.CANCELLED")
+        else if (eventType == "PAYMENT.CAPTURE.CANCELLED")
         {
             payment.Status = PaymentStatus.Cancelled;
         }
+        else if (eventType == "PAYMENT.CAPTURE.REFUNDED")
+        {
+            payment.Status = PaymentStatus.Refunded;
+        }
+        else payment.Status = PaymentStatus.Failed;
 
         await _unitOfWork.CompleteAsync(cancellationToken);
     }

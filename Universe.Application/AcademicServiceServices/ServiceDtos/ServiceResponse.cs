@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Universe.Application.AcademicServiceServices;
+namespace Universe.Application.AcademicServiceServices.ServiceDtos;
 
 public record ServiceResponse(
     string Id,

@@ -16,6 +16,6 @@ public class GetMilitaryDataCommandHandler(
         if (await _unitOfWork.UserRepository.GetStudentByIdAsync(request.StudentId, cancellationToken)
             is not { } student) return Result.Failure<MilitaryDataResponse>(StudentErrors.UserNotFound);
 
-        return Result.Success(student.MilitaryInfo.Adapt<MilitaryDataResponse>());
+        return Result.Success(student.MilitaryInfo.Adapt<MilitaryDataResponse>())!;
     }
 }

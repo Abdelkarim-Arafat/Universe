@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
@@ -13,7 +14,7 @@ using Universe.Application.Common;
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/academic-years")]
-[ApiController]
+[ApiController , Authorize]
 public class AcademicYearsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
