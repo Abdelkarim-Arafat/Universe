@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Universe.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260425130648_AddExamTermsAndPaymentServices")]
+    partial class AddExamTermsAndPaymentServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -729,39 +732,6 @@ namespace Universe.Infrastructure.Migrations
                     b.ToTable("CourseOfferingAssessments");
                 });
 
-            modelBuilder.Entity("Universe.Core.Entities.CourseOfferingCommittee", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CourseOfferingExamId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ExamCommitteeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseOfferingExamId");
-
-                    b.HasIndex("ExamCommitteeId");
-
-                    b.ToTable("CourseOfferingCommittees");
-                });
-
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingExam", b =>
                 {
                     b.Property<Guid>("Id")
@@ -906,14 +876,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("CommitteeNumber")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("CourseOfferingExamId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ExamTermId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -929,7 +899,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExamTermId");
+                    b.HasIndex("CourseOfferingExamId");
 
                     b.HasIndex("RoomId");
 
@@ -941,7 +911,7 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CourseOfferingCommitteeId")
+                    b.Property<Guid>("ExamSessionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -949,6 +919,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ExamCommitteeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -959,9 +932,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("StudentId", "CourseOfferingCommitteeId");
+                    b.HasKey("StudentId", "ExamSessionId");
 
-                    b.HasIndex("CourseOfferingCommitteeId");
+                    b.HasIndex("ExamCommitteeId");
 
                     b.ToTable("ExamSeats");
                 });
@@ -1899,25 +1872,6 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("CourseOffering");
                 });
 
-            modelBuilder.Entity("Universe.Core.Entities.CourseOfferingCommittee", b =>
-                {
-                    b.HasOne("Universe.Core.Entities.CourseOfferingExam", "CourseOfferingExam")
-                        .WithMany("CourseOfferingCommittees")
-                        .HasForeignKey("CourseOfferingExamId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Universe.Core.Entities.ExamCommittee", "ExamCommittee")
-                        .WithMany("CourseOfferingCommittees")
-                        .HasForeignKey("ExamCommitteeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CourseOfferingExam");
-
-                    b.Navigation("ExamCommittee");
-                });
-
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingExam", b =>
                 {
                     b.HasOne("Universe.Core.Entities.CourseOffering", "CourseOffering")
@@ -1996,9 +1950,9 @@ namespace Universe.Infrastructure.Migrations
 
             modelBuilder.Entity("Universe.Core.Entities.ExamCommittee", b =>
                 {
-                    b.HasOne("Universe.Core.Entities.ExamTerm", "ExamTerm")
-                        .WithMany()
-                        .HasForeignKey("ExamTermId")
+                    b.HasOne("Universe.Core.Entities.CourseOfferingExam", "CourseOfferingExam")
+                        .WithMany("ExamCommittees")
+                        .HasForeignKey("CourseOfferingExamId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -2008,16 +1962,16 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("ExamTerm");
+                    b.Navigation("CourseOfferingExam");
 
                     b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamSeat", b =>
                 {
-                    b.HasOne("Universe.Core.Entities.CourseOfferingCommittee", "CourseOfferingCommittee")
+                    b.HasOne("Universe.Core.Entities.ExamCommittee", "ExamCommittee")
                         .WithMany("ExamSeats")
-                        .HasForeignKey("CourseOfferingCommitteeId")
+                        .HasForeignKey("ExamCommitteeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -2027,7 +1981,7 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("CourseOfferingCommittee");
+                    b.Navigation("ExamCommittee");
 
                     b.Navigation("Student");
                 });
@@ -2561,14 +2515,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("StudentAssessments");
                 });
 
-            modelBuilder.Entity("Universe.Core.Entities.CourseOfferingCommittee", b =>
-                {
-                    b.Navigation("ExamSeats");
-                });
-
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingExam", b =>
                 {
-                    b.Navigation("CourseOfferingCommittees");
+                    b.Navigation("ExamCommittees");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Enrollment", b =>
@@ -2578,7 +2527,7 @@ namespace Universe.Infrastructure.Migrations
 
             modelBuilder.Entity("Universe.Core.Entities.ExamCommittee", b =>
                 {
-                    b.Navigation("CourseOfferingCommittees");
+                    b.Navigation("ExamSeats");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamTerm", b =>
