@@ -19,7 +19,7 @@ internal class UpdateCourseOfferingCommandHandler (
 
         if (!(await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.AcademicProgramId, cancellationToken)))
-            return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<CourseOfferingWithDetailsResponse>(AcademicProgramErrors.NotFound);
 
         if (await _unitOfWork.AcademicYearRepository
             .GetSemesterByTypeAsync(request.AcademicYearId, request.SemesterType, cancellationToken) is not { } semester

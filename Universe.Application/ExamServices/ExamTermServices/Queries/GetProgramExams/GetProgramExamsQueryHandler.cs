@@ -19,7 +19,7 @@ public class GetProgramExamsQueryHandler(IUnitOfWork unitOfWork)
             .IsExistAsync(request.AcademicProgramId, cancellationToken);
 
         if (!IsProgramExists)
-            return Result.Failure<PaginationList<ExamTermResponse>>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<PaginationList<ExamTermResponse>>(AcademicProgramErrors.NotFound);
 
         var query = _unitOfWork.Repository<ExamTerm>().GetQueryable()
             .Where(exam => exam.AcademicProgramId == request.AcademicProgramId

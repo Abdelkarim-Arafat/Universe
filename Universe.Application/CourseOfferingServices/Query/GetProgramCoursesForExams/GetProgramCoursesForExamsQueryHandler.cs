@@ -16,7 +16,7 @@ public class GetProgramCoursesForExamsQueryHandler(
 
         if (!isProgramExist)
             return Result.Failure<PaginationList<CourseOfferingForExamsResponse>>
-                (AcademicProgramErrors.AcademicProgramNotFound);
+                (AcademicProgramErrors.NotFound);
 
         var isSemesterExist = await _unitOfWork.AcademicYearRepository
             .IsSemesterExistAsync(request.SemesterId, cancellationToken);

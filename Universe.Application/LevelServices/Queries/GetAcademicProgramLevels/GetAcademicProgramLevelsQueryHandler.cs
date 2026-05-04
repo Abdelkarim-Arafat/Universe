@@ -10,7 +10,7 @@ public class GetAcademicProgramLevelsQueryHandler(IUnitOfWork unitOfWork) : IReq
     {
         var isProgramExist = await _unitOfWork.AcademicProgramRepository.IsExistAsync(request.AcademicProgramId, cancellationToken);
         if (!isProgramExist)
-            return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.NotFound);
 
         var query = _unitOfWork.Repository<Level>().GetQueryable();
 

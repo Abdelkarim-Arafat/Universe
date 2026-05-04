@@ -15,7 +15,7 @@ public class GetAllStudyLoadRuleCommandHandler(
     public async Task<Result<List<StudyLoadRuleResponse>>> Handle(GetAllStudyLoadRuleCommand request, CancellationToken cancellationToken)
     {
         var isCollegeExist = await _unitOfWork.CollegeRepository
-            .CheckCollegeIsExistAsync(request.CollegeId, cancellationToken);
+            .IsExistAsync(request.CollegeId, cancellationToken);
 
         if (!isCollegeExist) return Result.Failure<List<StudyLoadRuleResponse>>(CollegeErrors.NotFound);
 

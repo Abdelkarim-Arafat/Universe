@@ -151,6 +151,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -180,6 +183,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProgramId");
@@ -195,6 +201,16 @@ namespace Universe.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("AcademicDegree")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AcademicLoad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CertificateTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -205,6 +221,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -228,11 +247,86 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CollegeId");
 
                     b.ToTable("AcademicPrograms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Computer Science",
+                            Code = "CS",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Study of computation, algorithms, and software systems.",
+                            IsDeleted = false,
+                            Name = "Computer Science",
+                            RequiredCreditHours = 144
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Artificial Intelligence",
+                            Code = "AI",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Study of intelligent systems, machine learning, and data science.",
+                            IsDeleted = false,
+                            Name = "Artificial Intelligence",
+                            RequiredCreditHours = 144
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Information Systems",
+                            Code = "IS",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Focus on information management and business systems.",
+                            IsDeleted = false,
+                            Name = "Information Systems",
+                            RequiredCreditHours = 138
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Software Engineering",
+                            Code = "SE",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Engineering principles applied to software development.",
+                            IsDeleted = false,
+                            Name = "Software Engineering",
+                            RequiredCreditHours = 150
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Cyber Security",
+                            Code = "CY",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Protection of systems, networks, and data from cyber threats.",
+                            IsDeleted = false,
+                            Name = "Cyber Security",
+                            RequiredCreditHours = 144
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.AcademicYear", b =>
@@ -246,6 +340,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -265,6 +362,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -505,6 +605,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -518,6 +621,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -535,6 +641,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -558,6 +667,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -594,6 +706,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -612,6 +727,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -636,6 +754,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("CreditHours")
                         .HasColumnType("decimal(5,2)");
@@ -682,6 +803,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
@@ -707,6 +831,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -721,6 +848,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -741,6 +871,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -752,6 +885,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -774,6 +910,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
@@ -795,6 +934,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseOfferingId");
@@ -815,6 +957,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -823,6 +968,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("CourseOfferingId", "TeachingSessionId");
 
@@ -842,6 +990,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -850,6 +1001,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("CourseId", "PrerequisiteCourseId");
 
@@ -870,6 +1024,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -887,6 +1044,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -909,6 +1069,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -926,6 +1089,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -947,6 +1113,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -958,6 +1127,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("StudentId", "CourseOfferingCommitteeId");
 
@@ -977,6 +1149,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1001,6 +1176,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1028,6 +1206,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1054,6 +1235,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
@@ -1076,6 +1260,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1095,6 +1282,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
@@ -1110,6 +1300,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1136,6 +1329,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ServiceId");
@@ -1156,6 +1352,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<TimeOnly>("DayEndTime")
                         .HasColumnType("time");
 
@@ -1173,6 +1372,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ProgramId", "SemesterId");
 
@@ -1199,6 +1401,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1219,6 +1424,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BuildingId");
@@ -1237,6 +1445,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1263,6 +1474,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicYearId");
@@ -1281,6 +1495,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1305,6 +1522,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CollegeId");
@@ -1320,6 +1540,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1341,6 +1564,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1366,6 +1592,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly?>("DateOfBirth")
                         .HasColumnType("date");
@@ -1420,6 +1649,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdvisorId");
@@ -1440,6 +1672,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("Currently")
                         .HasColumnType("bit");
 
@@ -1457,6 +1692,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("StudentId", "AcademicProgramId");
 
@@ -1476,6 +1714,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1484,6 +1725,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal?>("degree")
                         .HasColumnType("decimal(18,2)");
@@ -1507,6 +1751,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1527,6 +1774,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1551,6 +1801,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1572,6 +1825,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
@@ -1590,6 +1846,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Day")
                         .HasColumnType("int");
@@ -1621,6 +1880,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("InstructorId");
@@ -1641,6 +1903,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1649,6 +1914,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("EnrollmentId", "TeachingSessionId");
 
@@ -2416,7 +2684,7 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
                 {
                     b.HasOne("Universe.Core.Entities.AcademicProgram", "AcademicProgram")
-                        .WithMany()
+                        .WithMany("StudyLoadByLevels")
                         .HasForeignKey("AcademicProgramId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2502,6 +2770,8 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("Levels");
 
                     b.Navigation("ProgramSchedules");
+
+                    b.Navigation("StudyLoadByLevels");
 
                     b.Navigation("StudyLoadRules");
 

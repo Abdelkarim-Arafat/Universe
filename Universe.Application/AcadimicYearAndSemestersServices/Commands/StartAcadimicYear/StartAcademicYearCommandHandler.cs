@@ -14,7 +14,7 @@ internal class StartAcademicYearCommandHandler(
     {
         string Name = $"{request.StartDate.Year}-{request.EndDate.Year}";
 
-        if (await _unitOfWork.CollegeRepository.CheckCollegeIsExistAsync(request.CollegeId) is false)
+        if (await _unitOfWork.CollegeRepository.IsExistAsync(request.CollegeId) is false)
             return Result.Failure<AcademicYearResponse>(CollegeErrors.NotFound);
 
         if (await _unitOfWork.AcademicYearRepository

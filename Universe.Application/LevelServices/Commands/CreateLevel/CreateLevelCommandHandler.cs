@@ -12,7 +12,7 @@ public class CreateLevelCommandHandler
             .IsExistAsync(command.AcademicProgramId, cancellationToken);
 
         if (!isProgramExist)
-            return Result.Failure<LevelResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<LevelResponse>(AcademicProgramErrors.NotFound);
 
 
         var isLevelWithOverLabExist = await _unitOfWork.LevelRepository

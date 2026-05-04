@@ -6,7 +6,6 @@ using Universe.Application.CourseServices.Dtos;
 using Universe.Application.UserServices.UserDtos;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces;
-using Universe.Infrastructure.SeedData;
 
 namespace Universe.Application.UserServices.Querys.GetAllStuff;
 

@@ -23,7 +23,7 @@ public class UserRepository
                 userRoles => userRoles.UserId,
                 (user, userRole) => new { user, userRole.RoleId }
             )
-        .Where(x => x.RoleId == DefaultRoles.Staff.Id && !x.user.IsDeleted)
+        .Where(x => x.RoleId == RoleSeed.Staff.Id && !x.user.IsDeleted)
         .Select(x => x.user)
         .Distinct();
 

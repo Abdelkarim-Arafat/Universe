@@ -1,0 +1,42 @@
+﻿using Mapster;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Universe.Api.Extensions;
+using Universe.Application.UserServices.Commands.RemoveImage;
+using Universe.Application.UserServices.Commands.UpdateImage;
+using Universe.Application.UserServices.Commands.UploadImage;
+
+namespace Universe.Api.Controllers;
+
+[Route("users")]
+[ApiController, Authorize]
+public class UserController(IMediator mediator) : ControllerBase
+{
+    private readonly IMediator _mediator = mediator;
+
+    [HttpPost("upload-image")]
+    public async Task<IActionResult> UploadImage([FromForm] IFormFile file , CancellationToken cancellationToken)
+    {
+        var command = new UploadImageCommand(file);
+        var result = await _mediator.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+    [HttpPatch("update-image")]
+    public async Task<IActionResult> UpdateImage([FromForm] IFormFile newImageFile, [FromForm] string oldImageUrl, CancellationToken cancellationToken)
+    {
+        var command = new UpdateImageCommand(oldImageUrl, newImageFile);
+        var result = await _mediator.Send(command , cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+    [HttpDelete("remove-image")]
+    public async Task<IActionResult> RemoveImage(string imageUrl, CancellationToken cancellationToken)
+    {
+        var command = new RemoveImageCommand(imageUrl);
+        var result = await _mediator.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+}

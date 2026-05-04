@@ -16,35 +16,35 @@ public class RoleConfiguration : IEntityTypeConfiguration<ApplicationRole>
         builder.HasData([
             new ApplicationRole
             {
-                Id = DefaultRoles.Admin.Id,
-                Name = DefaultRoles.Admin.Name,
-                NormalizedName = DefaultRoles.Admin.Name.ToUpper(),
-                ConcurrencyStamp = DefaultRoles.Admin.ConcurrencyStamp,
-                Level = DefaultRoles.Admin.Level,
+                Id = RoleSeed.Admin.Id,
+                Name = RoleSeed.Admin.Name,
+                NormalizedName = RoleSeed.Admin.Name.ToUpper(),
+                ConcurrencyStamp = RoleSeed.Admin.ConcurrencyStamp,
+                Level = RoleSeed.Admin.Level,
             },
             new ApplicationRole
             {
-                Id = DefaultRoles.AcademicAdvising.Id,
-                Name = DefaultRoles.AcademicAdvising.Name,
-                NormalizedName = DefaultRoles.AcademicAdvising.Name.ToUpper(),
-                ConcurrencyStamp = DefaultRoles.AcademicAdvising.ConcurrencyStamp,
-                Level = DefaultRoles.AcademicAdvising.Level
+                Id = RoleSeed.AcademicAdvising.Id,
+                Name = RoleSeed.AcademicAdvising.Name,
+                NormalizedName = RoleSeed.AcademicAdvising.Name.ToUpper(),
+                ConcurrencyStamp = RoleSeed.AcademicAdvising.ConcurrencyStamp,
+                Level = RoleSeed.AcademicAdvising.Level
             },
             new ApplicationRole
             {
-                Id = DefaultRoles.Staff.Id,
-                Name = DefaultRoles.Staff.Name,
-                NormalizedName = DefaultRoles.Staff.Name.ToUpper(),
-                ConcurrencyStamp = DefaultRoles.Staff.ConcurrencyStamp,
-                Level = DefaultRoles.Staff.Level
+                Id = RoleSeed.Staff.Id,
+                Name = RoleSeed.Staff.Name,
+                NormalizedName = RoleSeed.Staff.Name.ToUpper(),
+                ConcurrencyStamp = RoleSeed.Staff.ConcurrencyStamp,
+                Level = RoleSeed.Staff.Level
             },
             new ApplicationRole
             {
-                Id = DefaultRoles.Student.Id,
-                Name = DefaultRoles.Student.Name,
-                NormalizedName = DefaultRoles.Student.Name.ToUpper(),
-                ConcurrencyStamp = DefaultRoles.Student.ConcurrencyStamp,
-                Level = DefaultRoles.Student.Level,
+                Id = RoleSeed.Student.Id,
+                Name = RoleSeed.Student.Name,
+                NormalizedName = RoleSeed.Student.Name.ToUpper(),
+                ConcurrencyStamp = RoleSeed.Student.ConcurrencyStamp,
+                Level = RoleSeed.Student.Level,
                 IsDefault = true
             }
         ]);

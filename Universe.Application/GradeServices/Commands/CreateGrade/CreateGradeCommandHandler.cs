@@ -13,7 +13,7 @@ public class CreateGradeCommandHandler
             .IsExistAsync(command.AcademicProgramId, cancellationToken);
 
         if(!isProgramExist)
-            return Result.Failure<GradeResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<GradeResponse>(AcademicProgramErrors.NotFound);
 
         var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
              .CheckOverLabedScoresAsync

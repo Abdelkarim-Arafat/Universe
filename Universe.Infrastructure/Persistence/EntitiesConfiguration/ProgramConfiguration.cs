@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Entities;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -26,5 +27,7 @@ public class AcademicProgramConfiguration : IEntityTypeConfiguration<AcademicPro
         builder.HasMany(p => p.Grades)
             .WithOne(p => p.AcademicProgram)
             .HasForeignKey(p => p.AcademicProgramId);
+
+        builder.HasData(AcademicProgramSeed.Data);
     }
 }

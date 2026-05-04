@@ -19,12 +19,13 @@ public class UpdateAcademicProgramCommandValidator : AbstractValidator<AddAcadem
             .WithMessage("AcademicProgram code is required.")
             .MaximumLength(50)
             .WithMessage("AcademicProgram code cannot exceed 50 characters.");
+
         RuleFor(d => d.Description)
             .MaximumLength(10000)
             .WithMessage("AcademicProgram description cannot exceed 10,000 characters.");
 
         RuleFor(d => d.RequiredCreditHours)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Required credit hours.");
+            .GreaterThan(0)
+            .WithMessage("credit hours must be greater than 0.");
     }
 }

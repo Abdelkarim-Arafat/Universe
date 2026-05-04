@@ -284,7 +284,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         catch (Exception ex)
         {
             await trx.RollbackAsync(cancellationToken);
-            return Result.Failure<List<EnrollmentInfo>>(
+            return Result.Failure<List<EnrollmentInfo>> (
                 new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
 

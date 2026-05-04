@@ -37,15 +37,7 @@ public class AuthController(IMediator mediator) : ControllerBase
 
         SetTokensInCookie(result.Value);
 
-        return Ok(new
-        {
-            result.Value.Id,
-            result.Value.CollegeId,
-            result.Value.Name,
-            result.Value.Email,
-            result.Value.Roles,
-            result.Value.Permissions
-        });
+        return Ok(result.Value);
     }
 
     [HttpPost("update-refresh-token")]

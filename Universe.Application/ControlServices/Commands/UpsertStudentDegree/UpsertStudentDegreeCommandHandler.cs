@@ -57,7 +57,7 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
            .IsExistAsync(command.AcademicProgramId, cancellationToken);
 
         if (!isProgramExist)
-            return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.NotFound);
 
         var letterGrade = await _unitOfWork.GradeRepository
             .GetLetterGradeByTotalDegree(command.AcademicProgramId, TotalDegree, cancellationToken);

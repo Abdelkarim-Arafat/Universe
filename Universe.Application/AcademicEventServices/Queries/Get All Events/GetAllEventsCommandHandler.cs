@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Application.AcademicEventServices.EvenetDtos;
 using Universe.Application.UserServices.UserDtos;
-using Universe.Infrastructure.Repositories;
-using Universe.Infrastructure.SeedData;
 
 namespace Universe.Application.AcademicEventServices.Queries.Get_All_Events;
 

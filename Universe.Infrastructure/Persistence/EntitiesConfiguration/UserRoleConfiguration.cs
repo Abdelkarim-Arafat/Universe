@@ -17,12 +17,12 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<G
             new IdentityUserRole<Guid>
             {
                 UserId = DefaultUsers.SVNUId,
-                RoleId = DefaultRoles.Admin.Id
+                RoleId = RoleSeed.Admin.Id
             },
             new IdentityUserRole<Guid>
             {
                 UserId = DefaultUsers.AcademicAdvisingId,
-                RoleId = DefaultRoles.AcademicAdvising.Id
+                RoleId = RoleSeed.AcademicAdvising.Id
             });
     }
 }

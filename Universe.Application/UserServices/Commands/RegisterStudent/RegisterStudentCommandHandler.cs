@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using Universe.Application.UserServices.UserDtos;
 using Universe.Core.Entities.StudentInfo;
-using Universe.Infrastructure.SeedData;
 
 namespace Universe.Application.UserServices.Commands.RegisterStudent;
 
@@ -50,7 +49,7 @@ public class RegisterStudentCommandHandler(
             return Result.Failure<RegisterStudentResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
 
-        await _userManager.AddToRoleAsync(user, DefaultRoles.Student.Name);
+        await _userManager.AddToRoleAsync(user, "Student");
         return Result.Success(new RegisterStudentResponse(user.Id.ToString(), user.Name, user.UserName));
     }
 }

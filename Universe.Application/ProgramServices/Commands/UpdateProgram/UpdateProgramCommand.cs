@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcademicProgramServices.AcademicProgramDtos;
+using Universe.Core.Contracts.AcademicProgram;
 
 namespace Universe.Application.AcademicProgramServices.Commands.UpdateAcademicProgram;
 
@@ -12,4 +12,5 @@ public record UpdateAcademicProgramCommand(
     string Description,
     string Code,
     int RequiredCreditHours
+
 ) : IRequest<Result<AcademicProgramResponse>>;

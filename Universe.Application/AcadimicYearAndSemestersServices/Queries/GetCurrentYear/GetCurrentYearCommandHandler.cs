@@ -14,7 +14,7 @@ public class GetCurrentYearCommandHandler(
 
     public async Task<Result<CurrentAcademicYearResponse>> Handle(GetCurrentYearCommand request, CancellationToken cancellationToken)
     {
-        if (await _unitOfWork.CollegeRepository.CheckCollegeIsExistAsync(request.CollegeId) is false)
+        if (await _unitOfWork.CollegeRepository.IsExistAsync(request.CollegeId) is false)
             return Result.Failure<CurrentAcademicYearResponse>(CollegeErrors.NotFound);
 
         if(await _unitOfWork.AcademicYearRepository

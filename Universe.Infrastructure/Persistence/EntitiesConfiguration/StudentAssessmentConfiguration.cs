@@ -9,5 +9,8 @@ public class StudentAssessmentConfiguration : IEntityTypeConfiguration<StudentAs
     public void Configure(EntityTypeBuilder<StudentAssessment> builder)
     {
         builder.HasKey(x => new { x.StudentId, x.CourseOfferingAssessmentId });
+
+        builder.Property(x => x.degree)
+               .IsRequired(false);
     }
 }

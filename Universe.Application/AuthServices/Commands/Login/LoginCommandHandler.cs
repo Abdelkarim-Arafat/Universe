@@ -53,6 +53,7 @@ public class LoginCommandHandler(
                 user.Id.ToString(),
                 user.CollegeId.ToString(),
                 user.Name,
+                user.ImageUrl,
                 user.Email!,
                 userRoles,
                 userPermissions,

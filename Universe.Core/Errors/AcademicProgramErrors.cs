@@ -5,12 +5,12 @@ namespace Universe.Core.Errors;
 
 public record AcademicProgramErrors
 {
-    public static readonly Error AcademicProgramAlreadyExists =
-    new("AcademicProgram.AlreadyExists", "AcademicProgram name or code already exists", StatusCodes.Status409Conflict);
+    public static readonly Error AlreadyExists =
+    new("AcademicProgram.AlreadyExists", "Program name or code already exists", StatusCodes.Status409Conflict);
 
-    public static readonly Error AcademicProgramNotFound = new(
+    public static readonly Error NotFound = new(
         "AcademicProgram.NotFound",
-        "AcademicProgram is not found",
+        "Program is not found",
         StatusCodes.Status404NotFound);
 
     public static readonly Error ScheduleAlreadyExist = new Error(

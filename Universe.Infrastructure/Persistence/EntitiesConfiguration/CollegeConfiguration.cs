@@ -42,8 +42,8 @@ public class CollegeConfiguration : IEntityTypeConfiguration<College>
         builder.HasData(
             new College
             {
-                Id = DefaultCollege.Id,
-                Name = DefaultCollege.Name,
+                Id = CollegeSeed.Id,
+                Name = CollegeSeed.Name,
                 CreatedAt = default
             }
         );

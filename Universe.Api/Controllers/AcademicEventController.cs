@@ -11,7 +11,7 @@ using Universe.Infrastructure.SeedData;
 namespace Universe.Api.Controllers;
 
 [Route("events")]
-[ApiController , Authorize(Roles = DefaultRoles.AcademicAdvising.Name)]
+[ApiController , Authorize(Roles = RoleSeed.AcademicAdvising.Name)]
 
 public class AcademicEventController(IMediator mediator) : ControllerBase
 {
