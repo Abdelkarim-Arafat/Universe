@@ -1,5 +1,5 @@
 ﻿
-using Universe.Application.TeachingSessionServices.SessionDtos;
+using Universe.Core.Contracts.TeachingSession;
 
 namespace Universe.Application.TeachingSessionServices.Queries.GetSchedule;
 

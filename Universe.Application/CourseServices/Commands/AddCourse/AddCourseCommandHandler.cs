@@ -1,10 +1,14 @@
-﻿using Universe.Application.CourseServices.Dtos;
+﻿using Universe.Core.Contracts.Course;
 
 namespace Universe.Application.CourseServices.Commands.AddCourse;
 
-public class AddCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddCourseCommand, Result<CourseWithPreRequisiteResponse>>
+public class AddCourseCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
+    ) : IRequestHandler<AddCourseCommand, Result<CourseWithPreRequisiteResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<CourseWithPreRequisiteResponse>> Handle(AddCourseCommand request, CancellationToken cancellationToken)
     {
@@ -32,16 +36,15 @@ public class AddCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<A
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        var response = new CourseWithPreRequisiteResponse(
-            course.Id.ToString(),
-            course.Name,
-            course.Description,
-            course.Code,
-            (await _unitOfWork.CourseRepository
-                .GetAllPreRequisiteAsync(course.Id, cancellationToken))
-                .Adapt<List<CourseResponse>>()
-        );
+        await _cacheService.RemoveByTagAsync(CourseCacheKeys.Tags(course.CollegeId), cancellationToken);
 
-        return Result.Success(response);
+        var response = await _cacheService.GetOrCreateAsync(
+            key: CourseCacheKeys.ById(course.Id),
+            factory: async () => await _unitOfWork.CourseRepository
+                    .GetCourseWithPrerequisitesAsync(course.Id, cancellationToken),
+            cancellationToken: cancellationToken
+            );
+
+        return Result.Success(response!);
     }
 }

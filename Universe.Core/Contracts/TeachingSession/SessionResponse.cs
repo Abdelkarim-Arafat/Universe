@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using Universe.Core.Enums;
 
-namespace Universe.Application.TeachingSessionServices.SessionDtos;
-
+namespace Universe.Core.Contracts.TeachingSession;
 
 public record SessionResponse(
     string Id,

@@ -2,13 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.CourseServices.Dtos;
+using Universe.Core.Contracts.Course;
 
 namespace Universe.Application.CourseServices.Commands.UpdateCourse;
 
-public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateCourseCommand, Result<CourseWithPreRequisiteResponse>>
+public class UpdateCourseCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
+    ) : IRequestHandler<UpdateCourseCommand, Result<CourseWithPreRequisiteResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<CourseWithPreRequisiteResponse>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
@@ -45,7 +49,6 @@ public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandle
         var toAdd = request.PreRequisiteIds.Except(directPreReqIds).ToList();
         var toRemove = directPreReqIds.Except(request.PreRequisiteIds).ToList();
 
-
         foreach (var removeId in toRemove)
             await _unitOfWork.CourseRepository
                 .RemovePrerequisiteAsync(course.Id, removeId, cancellationToken);
@@ -65,16 +68,19 @@ public class UpdateCourseCommandHandler(IUnitOfWork unitOfWork) : IRequestHandle
         _unitOfWork.Repository<Course>().Update(course);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        var response = new CourseWithPreRequisiteResponse(
-            course.Id.ToString(),
-            course.Name,
-            course.Description,
-            course.Code,
-            (await _unitOfWork.CourseRepository
-                .GetAllPreRequisiteAsync(course.Id, cancellationToken))
-                .Adapt<List<CourseResponse>>()
-        );
+        var cacheKey = CourseCacheKeys.ById(course.Id);
+        var tags = CourseCacheKeys.Tags(request.CollegeId);
 
-        return Result.Success(response);
+        await _cacheService.RemoveAsync(cacheKey, cancellationToken);
+        await _cacheService.RemoveByTagAsync(tags, cancellationToken);
+
+        var response = await _cacheService.GetOrCreateAsync(
+            key: cacheKey,
+            factory: async () => await _unitOfWork.CourseRepository
+                    .GetCourseWithPrerequisitesAsync(course.Id, cancellationToken),
+            cancellationToken: cancellationToken
+            );
+
+        return Result.Success(response!);
     }
 }

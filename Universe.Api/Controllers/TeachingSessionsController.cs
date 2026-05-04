@@ -7,7 +7,6 @@ using Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering
 using Universe.Application.TeachingSessionServices.Commands.AddSession;
 using Universe.Application.TeachingSessionServices.Commands.RemoveSession;
 using Universe.Application.TeachingSessionServices.Queries.GetCourseSessions;
-using Universe.Application.TeachingSessionServices.SessionDtos;
 
 namespace Universe.Api.Controllers;
 

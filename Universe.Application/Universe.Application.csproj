@@ -8,8 +8,11 @@
 
 	<ItemGroup>
 	  <Compile Remove="RoomTypeServices\**" />
+	  <Compile Remove="TeachingSessionServices\Queries\Get\**" />
 	  <EmbeddedResource Remove="RoomTypeServices\**" />
+	  <EmbeddedResource Remove="TeachingSessionServices\Queries\Get\**" />
 	  <None Remove="RoomTypeServices\**" />
+	  <None Remove="TeachingSessionServices\Queries\Get\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,7 +58,6 @@
 	<ItemGroup>
 		<None Include="RoleServices\Queries\GetAllRolesCommand.cs" />
 		<None Include="StudyLoadByLevelServices\Commands\AddStudyLoad\AddStudyLoadByLevelCommandValidator.cs" />
-		<Folder Include="TeachingSessionServices\Queries\Get\" />
 		<None Include="UserServices\UserDtos\MilitaryDataResponse.cs" />
 	</ItemGroup>
 

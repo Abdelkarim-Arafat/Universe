@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Universe.Application.AuthServices.AuthDtos;
-using Universe.Application.CourseServices.Dtos;
+using Universe.Core.Contracts.Course;
 using Universe.Application.UserServices.UserDtos;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces;

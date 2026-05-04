@@ -1,5 +1,4 @@
-﻿using Universe.Application.CourseOfferingServices.Dtos;
-using Universe.Application.TeachingSessionServices.SessionDtos;
+﻿using Universe.Core.Contracts.TeachingSession;
 
 namespace Universe.Application.TeachingSessionServices.Commands.AddSession;
 

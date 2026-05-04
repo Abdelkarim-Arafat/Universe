@@ -70,7 +70,6 @@ public class AcademicProgramController(IMediator mediator) : ControllerBase
 
     [HttpDelete("{id:guid}")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Delete([FromRoute] Guid id , [FromRoute] Guid collegeId, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new RemoveAcademicProgramCommand(collegeId, id), cancellationToken);

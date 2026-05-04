@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.TeachingSessionServices.SessionDtos;
+using Universe.Core.Contracts.TeachingSession;
 
 namespace Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
 

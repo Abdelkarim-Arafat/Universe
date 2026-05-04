@@ -29,8 +29,7 @@ public class GetAcademicProgramsQueryHandler(
                 var query = _unitOfWork.Repository<AcademicProgram>()
                     .GetQueryable()
                     .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted)
-                    .ApplySearch(filter.SearchValue, x => x.Name)
-                    .ApplySort(filter.SortDirection == "desc", x => x.Name)
+                    .ApplySearch(filter.SearchValue, x => x.Name , x => x.Code)
                     .Select(x => new GetAcademicProgramsResponse(
                         x.Id,
                         x.Name,

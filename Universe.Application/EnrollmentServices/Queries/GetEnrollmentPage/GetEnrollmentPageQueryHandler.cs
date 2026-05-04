@@ -1,8 +1,8 @@
-﻿using Universe.Application.CourseServices.Dtos;
+﻿using Universe.Core.Contracts.Course;
 using Universe.Application.EnrollmentServices.Dtos;
 using Universe.Application.LevelServices.LevelDtos;
-using Universe.Application.TeachingSessionServices.SessionDtos;
 using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.TeachingSession;
 
 namespace Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
 

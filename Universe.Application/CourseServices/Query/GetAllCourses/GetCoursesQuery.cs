@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.CourseServices.Dtos;
+using Universe.Core.Contracts.Course;
 
 namespace Universe.Application.CourseServices.Query.GetAllCourses;
 
-public record GetAllCoursesCommand (
+public record GetCoursesQuery (
     [Required] Guid CollegeId ,
     FilterRequest filter
 ) : IRequest<Result<PaginationList<CourseResponse>>>;

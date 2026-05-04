@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
+using Universe.Core.Contracts.Course;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -16,6 +17,28 @@ public class CourseRepository(ApplicationDbContext context) : ICourseRepository
     public async Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => await _context.Courses
                 .SingleOrDefaultAsync(d => d.Id == id && !d.IsDeleted, cancellationToken);
+
+    public async Task<CourseWithPreRequisiteResponse?> GetCourseWithPrerequisitesAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        return await _context.Courses
+            .Where(x => x.Id == id)
+            .Select(x => new CourseWithPreRequisiteResponse(
+                x.Id.ToString(),
+                x.Name,
+                x.Description,
+                x.Code,
+                x.RequirementType,
+                x.Prerequisites
+                    .Select(p => new CourseResponse(
+                        p.PrerequisiteCourse.Id.ToString(),
+                        p.PrerequisiteCourse.Name,
+                        p.PrerequisiteCourse.Code
+                    )).ToList()
+            ))
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 
     public async Task<IEnumerable<Course>> GetAllAsync(Guid collegeId, CancellationToken cancellationToken)
         => await _context.Courses

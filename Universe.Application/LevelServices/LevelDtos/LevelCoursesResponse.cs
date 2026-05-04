@@ -1,4 +1,5 @@
-﻿using Universe.Application.CourseServices.Dtos;
+﻿
+using Universe.Core.Contracts.Course;
 
 namespace Universe.Application.LevelServices.LevelDtos;
 

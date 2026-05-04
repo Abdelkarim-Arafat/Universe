@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Universe.Application.TeachingSessionServices.SessionDtos;
+namespace Universe.Core.Contracts.TeachingSession;
 
 public record ScheduleResponse(
     TimeOnly DayStartTime,
