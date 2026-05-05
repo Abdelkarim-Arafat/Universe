@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcademicYearAndSemestersServices.Dtos;
+using Universe.Core.Contracts.AcadimicYearAndSemesters;
 using Universe.Core.Enums;
 
 namespace Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
@@ -11,7 +11,7 @@ public  record StartAcademicYearCommand(
     DateOnly StartDate,
     DateOnly EndDate,
     List<CreateSemesterDto> Semesters
-) : IRequest<Result<AcademicYearResponse>>;
+) : IRequest<Result<AcademicYearWithSemesterResponse>>;
 
 public record CreateSemesterDto(
     TermType TermType,

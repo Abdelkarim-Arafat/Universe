@@ -1,4 +1,4 @@
-﻿using Universe.Application.AcademicYearAndSemestersServices.Dtos;
+﻿using Universe.Core.Contracts.AcadimicYearAndSemesters;
 using Universe.Core.Enums;
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
@@ -9,7 +9,7 @@ public record UpdateAcademicYearCommand(
     DateOnly StartDate,
     DateOnly EndDate,
     List<UpdateSemesterDto> Semesters
-) : IRequest<Result<AcademicYearResponse>>;
+) : IRequest<Result<AcademicYearWithSemesterResponse>>;
 public record UpdateSemesterDto(
     [Required] Guid Id,
     TermType TermType,

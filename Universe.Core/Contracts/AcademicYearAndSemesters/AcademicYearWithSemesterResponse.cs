@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcadimicYearAndSemestersServices.Dtos;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcademicYearAndSemestersServices.Dtos;
+namespace Universe.Core.Contracts.AcadimicYearAndSemesters;
 
-public record AcademicYearResponse(
-    string Id,
+public record AcademicYearWithSemesterResponse(
+    Guid Id,
     string Name,
     DateOnly StartDate,
     DateOnly EndDate,

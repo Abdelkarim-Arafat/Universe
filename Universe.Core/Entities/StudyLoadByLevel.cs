@@ -10,7 +10,6 @@ public class StudyLoadByLevel : BaseEntity
     public int MaxHours { get; set; }
     public Guid LevelId { get; set; }
     public Level Level { get; set; } = default!;
-
     public Guid SemesterId { get; set; }
     public Semester Sememester { get; set; } = default!;
     public Guid AcademicProgramId { get; set; }

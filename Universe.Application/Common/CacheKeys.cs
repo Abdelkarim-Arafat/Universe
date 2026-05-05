@@ -25,6 +25,27 @@ public static class AcademicProgramCacheKeys
     }
 }
 
+public static class AcademicYearCacheKeys
+{
+    private static readonly string Prefix = "academic-years";
+    public static string ById(Guid id) => $"{Prefix}:{id}";
+    public static string[] Tags(Guid collegeId) => new[] { $"{Prefix}:{collegeId}" };
+    public static string List(
+       Guid collegeId,
+       string? searchValue,
+       string? sortColumn,
+       string? sortDirection,
+       int pageNumber,
+       int pageSize)
+    {
+        return $"{Prefix}:{collegeId}:list:" +
+               $"{searchValue ?? "null"}:" +
+               $"{sortColumn ?? "null"}:" +
+               $"{sortDirection ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+}
+
 
 public static class CourseCacheKeys
 {

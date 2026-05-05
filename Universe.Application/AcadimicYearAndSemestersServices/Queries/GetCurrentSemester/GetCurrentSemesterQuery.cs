@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcadimicYearAndSemestersServices.Dtos;
+using Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentSemester;
 
-public record GetCurrentSemesterCommand(
+public record GetCurrentSemesterQuery(
     [Required] Guid AcademicYearId
 ) : IRequest<Result<SemesterResponse>>;

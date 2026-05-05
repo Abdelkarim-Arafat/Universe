@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcadimicYearAndSemestersServices.Dtos;
+using Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentSemester;
 
-public class GetCurrentSemesterCommandHandler(
+public class GetCurrentSemesterQueryHandler(
     IUnitOfWork unitOfWork
-    ) : IRequestHandler<GetCurrentSemesterCommand , Result<SemesterResponse>>
+    ) : IRequestHandler<GetCurrentSemesterQuery , Result<SemesterResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-
-    public async Task<Result<SemesterResponse>> Handle(GetCurrentSemesterCommand request, CancellationToken cancellationToken)
+    public async Task<Result<SemesterResponse>> Handle(GetCurrentSemesterQuery request, CancellationToken cancellationToken)
     {
         if (!await _unitOfWork.AcademicYearRepository
             .IsExistAsync(request.AcademicYearId, cancellationToken)
@@ -21,6 +20,6 @@ public class GetCurrentSemesterCommandHandler(
             .GetCurrentSemesterAsync(request.AcademicYearId , cancellationToken) is not { } currentSemester
             ) return Result.Failure<SemesterResponse>(SemesterErrors.NotFound);
 
-        return Result.Success(currentSemester.Adapt<SemesterResponse>());
+        return Result.Success(currentSemester);
     }
 }

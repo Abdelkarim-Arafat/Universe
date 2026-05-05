@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcadimicYearAndSemestersServices.Dtos;
+namespace Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 public record SemesterResponse(
-    string Id,
+    Guid Id,
     TermType Name,
     DateOnly StartDate,
     DateOnly EndDate
