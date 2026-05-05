@@ -13,7 +13,7 @@ internal class AddEventCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
     {
         if (!await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.ProgramId, cancellationToken)
-            ) return Result.Failure<EventResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            ) return Result.Failure<EventResponse>(AcademicProgramErrors.NotFound);
 
         if(!await _unitOfWork.AcademicYearRepository
             .IsExistSemesterAsync(request.SemesterId , cancellationToken)

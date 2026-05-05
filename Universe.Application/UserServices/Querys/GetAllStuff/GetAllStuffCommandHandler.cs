@@ -1,6 +1,11 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Universe.Application.AuthServices.AuthDtos;
+using Universe.Core.Contracts.Course;
 using Universe.Application.UserServices.UserDtos;
-
+using Universe.Core.Entities;
+using Universe.Core.Interfaces;
 
 namespace Universe.Application.UserServices.Querys.GetAllStuff;
 

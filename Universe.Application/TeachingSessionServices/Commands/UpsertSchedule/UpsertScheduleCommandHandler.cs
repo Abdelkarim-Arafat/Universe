@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
-using Universe.Application.TeachingSessionServices.SessionDtos;
+using Universe.Core.Contracts.TeachingSession;
 
 namespace Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
 
@@ -16,7 +16,7 @@ public class UpsertScheduleCommandHandler(
     {
         if (!(await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.ProgramId, cancellationToken))
-            ) return Result.Failure<ScheduleResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            ) return Result.Failure<ScheduleResponse>(AcademicProgramErrors.NotFound);
 
         if (!(await _unitOfWork.AcademicYearRepository
             .IsExistSemesterAsync(request.SemesterId, cancellationToken))

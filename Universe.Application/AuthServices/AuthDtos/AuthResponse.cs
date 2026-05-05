@@ -8,6 +8,7 @@ public record AuthResponse(
     string Id,
     string CollegeId,
     string Name,
+    string? ImageUrl,
     string? Email,
     IEnumerable<string> Roles,
     IEnumerable<string> Permissions,

@@ -1,28 +1,34 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
 using Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateCurrentSemester;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYear;
-using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAllYears;
+using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYears;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentSemester;
 using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentYear;
 using Universe.Application.Common;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/academic-years")]
-[ApiController , Authorize]
+[ApiController]
+
 public class AcademicYearsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-
     [HttpGet("current")]
-    public async Task<IActionResult> GetCurrentYear([FromRoute] Guid collegeId, CancellationToken cancellationToken)
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetCurrentYear(
+        [FromRoute] Guid collegeId,
+        CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetCurrentYearCommand(collegeId), cancellationToken);
+        var result = await _mediator.Send(new GetCurrentYearQuery(collegeId), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -30,9 +36,13 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetAcademicYear([FromRoute] Guid id, CancellationToken cancellationToken)
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetAcademicYear(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAcademicYearCommand(id), cancellationToken);
+        var result = await _mediator.Send(new GetAcademicYearQuery(id), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -40,21 +50,27 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{academicYearId:guid}/current-semester")]
-    public async Task<IActionResult> GetCurrentSemester([FromRoute] Guid academicYearId, CancellationToken cancellationToken)
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetCurrentSemester(
+        [FromRoute] Guid academicYearId,
+        CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetCurrentSemesterCommand(academicYearId), cancellationToken);
+        var result = await _mediator.Send(new GetCurrentSemesterQuery(academicYearId), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
     }
     [HttpGet("")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetAllYears(
         [FromRoute] Guid collegeId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAllYearsCommand(collegeId , filter), cancellationToken);
+        var result = await _mediator.Send(new GetAcademicYearsQuery(collegeId , filter), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -62,6 +78,8 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> StartAcademicYear(
         [FromRoute] Guid collegeId,
         [FromBody] StartAcademicYearCommand request,
@@ -77,6 +95,8 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateAcademicYear(
         [FromRoute] Guid collegeId,
         [FromRoute] Guid id,
@@ -93,6 +113,8 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{academicYearId:guid}/current-semester")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateCurrentSemester(
         [FromRoute] Guid academicYearId,
         [FromBody] UpdateCurrentSemesterCommand request,
@@ -102,9 +124,6 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
 
         var result = await _mediator.Send(request, cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-   
 }

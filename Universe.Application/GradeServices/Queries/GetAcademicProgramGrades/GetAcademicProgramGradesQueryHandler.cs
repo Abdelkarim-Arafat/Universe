@@ -10,7 +10,7 @@ public class GetAcademicProgramGradesQueryHandler(IUnitOfWork unitOfWork) : IReq
             .IsExistAsync(request.AcademicProgramId, cancellationToken);
 
         if (!isAcademicProgramExist)
-            return Result.Failure<PaginationList<GradeResponse>>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<PaginationList<GradeResponse>>(AcademicProgramErrors.NotFound);
 
 
         var query = _unitOfWork.Repository<Grade>()

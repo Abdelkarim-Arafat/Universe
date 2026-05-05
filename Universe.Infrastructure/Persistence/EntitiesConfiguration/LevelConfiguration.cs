@@ -24,6 +24,6 @@ public class LevelConfiguration : IEntityTypeConfiguration<Level>
             .WithOne(s => s.Level)
             .HasForeignKey(s => s.LevelId);
 
-
+        builder.HasData(LevelSeed.Data);
     }
 }

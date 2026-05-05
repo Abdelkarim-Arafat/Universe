@@ -1,5 +1,6 @@
 ﻿
 using Universe.Application.AcademicEventServices.EvenetDtos;
+using Universe.Application.UserServices.UserDtos;
 
 namespace Universe.Application.AcademicEventServices.Queries.Get_All_Events;
 

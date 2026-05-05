@@ -1,36 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcademicProgramServices.AcademicProgramDtos;
+using Universe.Core.Contracts.AcademicProgram;
 
 namespace Universe.Application.AcademicProgramServices.Commands.UpdateAcademicProgram;
 
 public class UpdateAcademicProgramCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
     ) : IRequestHandler<UpdateAcademicProgramCommand, Result<AcademicProgramResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<AcademicProgramResponse>> Handle(UpdateAcademicProgramCommand request, CancellationToken cancellationToken)
     {
+        if(await _unitOfWork.CollegeRepository
+            .IsExistAsync(request.CollegeId, cancellationToken) is false)
+            return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
 
         if (await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.CollegeId, request.Name, request.Code, request.Id, cancellationToken))
-        {
-            return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.AcademicProgramAlreadyExists);
-        }
-             
+            return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.AlreadyExists);
 
-        var AcademicProgram = await _unitOfWork.AcademicProgramRepository
-            .GetByIdAsync(request.Id, cancellationToken);
+        var cacheKey = AcademicProgramCacheKeys.ById(request.Id);
 
-        if(AcademicProgram is null) return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+        var academicProgram = await _cacheService.GetOrCreateAsync (
+            key: cacheKey,
+            factory: async () => await _unitOfWork.AcademicProgramRepository
+                .GetByIdAsync(request.Id, cancellationToken),
+            cancellationToken: cancellationToken
+        );
 
-        request.Adapt(AcademicProgram);
+        if (academicProgram is null)
+            return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
 
-        _unitOfWork.Repository<AcademicProgram>().Update(AcademicProgram);
+        request.Adapt(academicProgram);
+
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        return Result.Success(AcademicProgram.Adapt<AcademicProgramResponse>());
+        await _cacheService.RemoveAsync(cacheKey, cancellationToken);
+        await _cacheService.RemoveByTagAsync(AcademicProgramCacheKeys.Tags(request.CollegeId), cancellationToken);
+
+        var response = academicProgram.Adapt<AcademicProgramResponse>();
+
+        return Result.Success(response);
     }
 }

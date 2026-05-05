@@ -1,7 +1,6 @@
 ﻿
 using Universe.Application.UserServices.UserDtos;
 
-
 namespace Universe.Application.UserServices.Querys.GetAllStudents;
 
 public class GetAllStudentsCommandHandler(

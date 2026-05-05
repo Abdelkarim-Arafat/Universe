@@ -12,7 +12,7 @@ internal class AddServiceCommandHandler(IUnitOfWork unitOfWork) : IRequestHandle
     public async Task<Result<ServiceResponse>> Handle(AddServiceCommand request, CancellationToken cancellationToken)
     {
         if(await _unitOfWork.CollegeRepository
-            .CheckCollegeIsExistAsync(request.CollegeId, cancellationToken) is false
+            .IsExistAsync(request.CollegeId, cancellationToken) is false
             ) return Result.Failure<ServiceResponse>(CollegeErrors.NotFound);
 
         var service = request.Adapt<Service>();

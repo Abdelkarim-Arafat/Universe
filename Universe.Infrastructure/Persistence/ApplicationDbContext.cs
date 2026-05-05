@@ -1,20 +1,25 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Universe.Core.Entities;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using System.Data.Common;
+using System.Reflection;
+using System.Security.Claims;
+using System.Text;
+using Universe.Core.Entities;
+using Universe.Core.Entities.Core;
 
 namespace Universe.Infrastructure.Persistence;
 // dotnet ef migrations add InitialCreate --project Universe.Infrastructure --startup-project Universe.Api
 // dotnet ef migrations remove --project Universe.Infrastructure --startup-project Universe.Api
 public class ApplicationDbContext(
-    DbContextOptions<ApplicationDbContext> options
-    ): IdentityDbContext<ApplicationUser , ApplicationRole , Guid>(options)
+    DbContextOptions<ApplicationDbContext> options,
+    IHttpContextAccessor httpContext
+    ) : IdentityDbContext<ApplicationUser , ApplicationRole , Guid>(options)
 {
+    private readonly IHttpContextAccessor _httpContext = httpContext;
     public DbSet<ServiceRequest> ServiceRequests { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<Payment> Payments { get; set; }
@@ -61,5 +66,25 @@ public class ApplicationDbContext(
 
         foreach (var fk in cascadeFKs)
             fk.DeleteBehavior = DeleteBehavior.Restrict;
+    }
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker.Entries<BaseEntity>();
+
+        foreach (var entry in entries)
+        {
+            var claims = _httpContext.HttpContext!.User;
+            var CurrentUserId = Guid.Parse(claims.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            if (entry.State == EntityState.Added)
+            {
+                entry.Property(x => x.CreatedById).CurrentValue = CurrentUserId;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Property(x => x.UpdatedById).CurrentValue = CurrentUserId;
+                entry.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
+            }
+        }
+        return base.SaveChangesAsync(cancellationToken);
     }
 }

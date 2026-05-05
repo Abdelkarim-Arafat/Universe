@@ -1,11 +1,15 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using System.Text;
 using Universe.Core.Abstractions;
 using Universe.Core.Abstractions.Options;
 using Universe.Core.Entities;
@@ -13,9 +17,6 @@ using Universe.Core.Interfaces;
 using Universe.Infrastructure.Auth;
 using Universe.Infrastructure.Messaging.Email;
 using Universe.Infrastructure.Persistence;
-using System.Reflection;
-using System.Text;
-using Hangfire;
 using Universe.Infrastructure.Repositories;
 
 
@@ -38,20 +39,44 @@ public static class InfrastructureDependences
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IEmailSender, EmailSender>();
 
+
         services.AddHttpClient<IPayPalService, PayPalService>();
+
+        services.AddScoped<IImageService, CloudinaryService>();
+
+        services.AddScoped<ICacheService, HybridCacheService>();
 
         services.AddFluentValidationConfig();
         services.AddBackgroundJobsConfig(configuration);
         services.AddAuthConfig(configuration);
+        services.AddCachingConfig(configuration);
 
         services.Configure<MailSettings>(configuration.GetSection(MailSettings.SectionName));
         services.Configure<PayPalSettings>(configuration.GetSection(PayPalSettings.SectionName));
+        services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SectionName));
 
 
 
         return services;
     }
 
+    private static IServiceCollection AddCachingConfig(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddStackExchangeRedisCache(options
+            => options.Configuration = configuration.GetConnectionString("RedisConnection"));
+
+        services.AddHybridCache(options =>
+        {
+            options.DefaultEntryOptions = new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromMinutes(5),
+                LocalCacheExpiration = TimeSpan.FromSeconds(30)
+            };
+        });
+
+        return services;
+    }
     private static IServiceCollection AddBackgroundJobsConfig(this IServiceCollection services,
         IConfiguration configuration)
     {

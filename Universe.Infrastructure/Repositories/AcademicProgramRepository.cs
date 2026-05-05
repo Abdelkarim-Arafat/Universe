@@ -24,6 +24,7 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
                        !d.IsDeleted &&
                        (excludeId == null || d.Id != excludeId)
         && (d.Name == Name || d.Code == Code), cancellationToken);
+
     public async Task<bool> IsExistAsync(Guid AcademicProgramId, CancellationToken cancellationToken)
     => await _context.AcademicPrograms
         .AnyAsync(d => d.Id == AcademicProgramId &&

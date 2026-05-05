@@ -6,5 +6,5 @@ namespace Universe.Core.Interfaces.Repositories;
 
 public interface ICollegeRepository
 {
-    Task<bool> CheckCollegeIsExistAsync(Guid Id, CancellationToken cancellationToken = default);
+    Task<bool> IsExistAsync(Guid Id, CancellationToken cancellationToken = default);
 }

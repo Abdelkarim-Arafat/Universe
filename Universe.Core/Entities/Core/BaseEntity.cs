@@ -8,8 +8,9 @@ public class BaseEntity : ISoftDeleteable
 {
     public bool IsDeleted { get; set; } = false;
     public DateTime? DeletedAt { get; set; } = null;
-
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public Guid? CreatedById { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
+    public Guid? UpdatedById { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public void UndoDelete()
     {

@@ -11,7 +11,7 @@ public class CollegeRepository(ApplicationDbContext context) : ICollegeRepositor
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<bool> CheckCollegeIsExistAsync(Guid Id, CancellationToken cancellationToken = default)
+    public async Task<bool> IsExistAsync(Guid Id, CancellationToken cancellationToken = default)
     {
        return await _context.Colleges.AnyAsync(c => c.Id == Id && !c.IsDeleted, cancellationToken);
     }

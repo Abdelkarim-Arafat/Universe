@@ -1,7 +1,6 @@
 ﻿using Universe.Application.UserServices.UserDtos;
 using Universe.Core.Entities.StudentInfo;
 
-
 namespace Universe.Application.UserServices.Commands.RegisterStudent;
 
 public class RegisterStudentCommandHandler(

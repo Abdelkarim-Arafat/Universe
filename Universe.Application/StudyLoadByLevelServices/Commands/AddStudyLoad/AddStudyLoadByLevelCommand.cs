@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.StudyLoadByLevelServices.StudyLoadByLevelDtos;
+using Universe.Core.Contracts.StudyLoadByLevel;
 using Universe.Core.Enums;
 
 namespace Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;

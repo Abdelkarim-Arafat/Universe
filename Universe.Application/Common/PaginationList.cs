@@ -6,6 +6,7 @@ public class PaginationList<T>
     public List<T> Items { get; set; } = new();
     public int PageNumber { get; set; }
     public int TotalPages { get; set; }
+    public int TotalCount { get; set; }
     public bool HasPreviousPage => PageNumber > 1;
     public bool HasNextPage => PageNumber < TotalPages;
 
@@ -15,6 +16,7 @@ public class PaginationList<T>
         Items = items;
         PageNumber = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+        TotalCount = count;
     }
 
     public static async Task<PaginationList<T>> CreateAsync(

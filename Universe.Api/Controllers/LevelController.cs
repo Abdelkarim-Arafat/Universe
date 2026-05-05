@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
 using Universe.Application.LevelServices.Commands.Create;
@@ -8,16 +9,24 @@ using Universe.Application.LevelServices.Commands.Remove;
 using Universe.Application.LevelServices.Commands.Update;
 using Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 using Universe.Application.LevelServices.Queries.GetLevel;
+using Universe.Core.Constants;
+using Universe.Core.Entities;
 
 namespace Universe.Api.Controllers;
 
 [Route("programs/{academicProgramId:guid}/levels")]
-[ApiController,Authorize]
+[ApiController]
 public class LevelController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-    [HttpGet()]
-    public async Task<IActionResult> GetAll(Guid academicProgramId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
+
+    [HttpGet("")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetAll(
+        [FromRoute] Guid academicProgramId,
+        [FromQuery] FilterRequest filter,
+        CancellationToken cancellationToken = default)
     {
         var request = new GetAcademicProgramLevelsQuery(academicProgramId, filter);
         var result = await _mediator.Send(request, cancellationToken);
@@ -25,15 +34,24 @@ public class LevelController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken = default)
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid id,
+        [FromRoute] Guid academicProgramId,
+        CancellationToken cancellationToken = default)
     {
-        var request = new GetLevelQuery(id);
+        var request = new GetLevelQuery(academicProgramId, id);
         var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateLevelCommand command, Guid academicProgramId, CancellationToken cancellationToken = default)
+    [HttpPost("")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> Create(
+        [FromBody] CreateLevelCommand command,
+        Guid academicProgramId, CancellationToken cancellationToken = default)
     {
         command = command with { AcademicProgramId = academicProgramId };
 
@@ -42,16 +60,27 @@ public class LevelController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Remove(Guid id, CancellationToken cancellationToken = default)
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> Remove(
+        [FromRoute] Guid academicProgramId,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken = default)
     {
-        var command = new RemoveLevelCommand(id);
+        var command = new RemoveLevelCommand(academicProgramId, id);
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromBody] UpdateLevelCommand command, Guid id, CancellationToken cancellationToken = default)
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> Update(
+        [FromBody] UpdateLevelCommand command,
+        [FromRoute] Guid academicProgramId,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken = default)
     {
-        command = command with { Id = id };
+        command = command with { ProgramId = academicProgramId, Id = id };
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }

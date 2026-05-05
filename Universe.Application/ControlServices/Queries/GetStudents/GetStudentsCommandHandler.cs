@@ -12,7 +12,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
 
         var isProgramExist = await _unitOfWork.AcademicProgramRepository.IsExistAsync(command.AcademicProgramId, cancellationToken);
         if (!isProgramExist)
-            return Result.Failure<StudentsDegreesResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<StudentsDegreesResponse>(AcademicProgramErrors.NotFound);
 
         var courseOffering = await _unitOfWork.CourseOfferingRepository
             .GetByIdAsync(command.CourseOfferingId, cancellationToken);

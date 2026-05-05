@@ -52,7 +52,7 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
                 ConcurrencyStamp = DefaultUsers.SVNUConcurrencyStamp,
                 EmailConfirmed = true,
                 PasswordHash = DefaultUsers.SVNUPassword,
-                CollegeId = DefaultCollege.Id
+                CollegeId = CollegeSeed.Id
             },
             new ApplicationUser{
                 Id = DefaultUsers.AcademicAdvisingId,
@@ -65,7 +65,7 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
                 ConcurrencyStamp = DefaultUsers.AcademicAdvisingConcurrencyStamp,
                 EmailConfirmed = true,
                 PasswordHash = DefaultUsers.AcademicAdvisingPassword,
-                CollegeId = DefaultCollege.Id
+                CollegeId = CollegeSeed.Id
             }]);
     }
 }

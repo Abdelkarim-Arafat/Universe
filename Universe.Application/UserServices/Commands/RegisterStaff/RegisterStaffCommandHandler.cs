@@ -1,6 +1,6 @@
 ﻿
 using Universe.Application.UserServices.UserDtos;
-
+using Universe.Core.Entities;
 
 namespace Universe.Application.UserServices.Commands.RegisterStaff;
 

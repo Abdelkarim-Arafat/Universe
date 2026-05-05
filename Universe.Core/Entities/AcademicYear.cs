@@ -15,7 +15,6 @@ public class AcademicYear : BaseEntity
     public bool IsActive 
         => DateOnly.FromDateTime(DateTime.UtcNow) >= StartDate &&
             DateOnly.FromDateTime(DateTime.UtcNow) <= EndDate;
-
     public Guid CollegeId { get; set; }
     public College College { get; set; } = default!;
     public ICollection<Semester> Semesters { get; set; } = [];

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.LevelServices.Dtos;
 using Universe.Application.StudyLoadRuleServices.Dtos;
 
 namespace Universe.Application.StudyLoadRuleServices.Query.GetAllStudyLoadRule;
@@ -15,7 +14,7 @@ public class GetAllStudyLoadRuleCommandHandler(
     public async Task<Result<List<StudyLoadRuleResponse>>> Handle(GetAllStudyLoadRuleCommand request, CancellationToken cancellationToken)
     {
         var isCollegeExist = await _unitOfWork.CollegeRepository
-            .CheckCollegeIsExistAsync(request.CollegeId, cancellationToken);
+            .IsExistAsync(request.CollegeId, cancellationToken);
 
         if (!isCollegeExist) return Result.Failure<List<StudyLoadRuleResponse>>(CollegeErrors.NotFound);
 

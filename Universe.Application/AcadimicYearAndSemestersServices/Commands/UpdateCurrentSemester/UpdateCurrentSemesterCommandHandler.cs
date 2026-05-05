@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.AcademicYearAndSemestersServices.Dtos;
-using Universe.Application.AcadimicYearAndSemestersServices.Dtos;
+﻿
+using Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateCurrentSemester;
 
@@ -14,7 +11,7 @@ public class UpdateCurrentSemesterCommandHandler(
     public async Task<Result<SemesterResponse>> Handle(UpdateCurrentSemesterCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.AcademicYearRepository
-            .GetByIdWithSemestersAsync(request.AcademicYearId, cancellationToken) is not { } year
+            .GetByIdAsync(request.AcademicYearId, cancellationToken) is not { } year
             ) return Result.Failure<SemesterResponse>(AcademicYearErrors.NotFound);
 
         foreach (var semester in year.Semesters)

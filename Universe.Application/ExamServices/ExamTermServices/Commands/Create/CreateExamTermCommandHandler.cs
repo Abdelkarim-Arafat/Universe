@@ -18,7 +18,7 @@ public class CreateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
             .IsExistAsync(request.AcademicProgramId, cancellationToken);
 
         if (!IsProgramExists)
-            return Result.Failure<ExamTermResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<ExamTermResponse>(AcademicProgramErrors.NotFound);
 
         var IsExistExamTermWithOverLabedTime = await _unitOfWork.ExamRepository
             .IsExistExamTermWithOverLabedTimeAsync

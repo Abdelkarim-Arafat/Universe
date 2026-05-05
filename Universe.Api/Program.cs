@@ -1,11 +1,14 @@
 ﻿using Hangfire;
 using HangfireBasicAuthenticationFilter;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scalar.AspNetCore;
 using Serilog;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Universe.Api.ExceptionHandler;
+using Universe.Core.Entities;
 using Universe.Infrastructure;
 
 
@@ -18,33 +21,89 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowedOrigins", policy =>
-//        policy.WithOrigins (
-
-//            "https://playful-torrone-6e1691.netlify.app"
-//        )
-//        .AllowAnyHeader()
-//        .AllowAnyMethod()
-//        .AllowCredentials()
-//    );
-//});
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowedOrigins", policy =>
         policy.SetIsOriginAllowed(origin =>
             origin == "http://localhost:3000" ||
-            origin == "https://playful-torrone-6e1691.netlify.app"
+            origin == "https://playful-torrone-6e1691.netlify.app" 
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()
     );
+});
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("ReadLimiter", httpContext =>
+    RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 120,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        })
+    );
+
+    options.AddPolicy("WriteLimiter", httpContext =>
+    RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 20,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        })
+    );
+
+    options.AddPolicy("AuthStrict", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter (
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+            })
+    );
+
+    options.AddPolicy("SignupLimiter", httpContext =>
+
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString(),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 3,
+                Window = TimeSpan.FromMinutes(5),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+            })
+    );
+
+    options.AddPolicy("EmailLimiter", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString(),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 2,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+            })
+    );
+
+    options.AddConcurrencyLimiter("FixedLimiter", options =>
+    {
+        options.PermitLimit = 1000;
+        options.QueueLimit = 100;
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
 });
 
 
