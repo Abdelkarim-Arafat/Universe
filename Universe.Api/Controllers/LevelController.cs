@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
-using Universe.Application.LevelServices.Commands.CreateLevel;
-using Universe.Application.LevelServices.Commands.RemoveLevel;
-using Universe.Application.LevelServices.Commands.UpdateLevel;
+using Universe.Application.LevelServices.Commands.Create;
+using Universe.Application.LevelServices.Commands.Remove;
+using Universe.Application.LevelServices.Commands.Update;
 using Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 using Universe.Application.LevelServices.Queries.GetLevel;
 

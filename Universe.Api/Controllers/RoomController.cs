@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
-using Universe.Application.RoomServices.Commands.CreateRoom;
-using Universe.Application.RoomServices.Commands.DeleteRoom;
-using Universe.Application.RoomServices.Commands.UpdateRoom;
+using Universe.Application.RoomServices.Commands.Create;
+using Universe.Application.RoomServices.Commands.Delete;
+using Universe.Application.RoomServices.Commands.Update;
 using Universe.Application.RoomServices.Queries.GetAvailableRoomsForCommittees;
 using Universe.Application.RoomServices.Queries.GetBuildingRooms;
-using Universe.Application.RoomServices.Queries.GetRoom;
+using Universe.Application.RoomServices.Queries.Get;
 
 namespace Universe.Api.Controllers;
 

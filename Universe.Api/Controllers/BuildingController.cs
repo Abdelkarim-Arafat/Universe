@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
-using Universe.Application.BuildingServices.Commands.CreateBuilding;
-using Universe.Application.BuildingServices.Commands.DeleteBuilding;
-using Universe.Application.BuildingServices.Commands.UpdateBuilding;
+using Universe.Application.BuildingServices.Commands.Create;
+using Universe.Application.BuildingServices.Commands.Delete;
+using Universe.Application.BuildingServices.Commands.Update;
 using Universe.Application.BuildingServices.Queries.GetAll;
-using Universe.Application.BuildingServices.Queries.GetBuilding;
+using Universe.Application.BuildingServices.Queries.Get;
 using Universe.Application.Common;
 using Universe.Core.Enums;
 

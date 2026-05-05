@@ -8,9 +8,9 @@ public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
 
     public async Task<Result<ExamCommitteeResponse>> Handle(CreateExamCommitteeCommand request, CancellationToken cancellationToken)
     {
-        var IsRoomExist = await _unitOfWork.RoomRepository.IsExistAsync(request.RoomId, cancellationToken);
+        var room = await _unitOfWork.RoomRepository.GetByIdAsync(request.RoomId, cancellationToken);
 
-        if (!IsRoomExist)
+        if (room == null)
             return Result.Failure<ExamCommitteeResponse>(RoomErrors.RoomNotFound);
 
         var IsExistCommitteeWithSameNumber = await _unitOfWork.ExamRepository
@@ -19,7 +19,7 @@ public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
         if (IsExistCommitteeWithSameNumber)
             return Result.Failure<ExamCommitteeResponse>(ExamErrors.SameCommitteeNumber);
 
-        var roomCapacity = await _unitOfWork.RoomRepository.GetRoomCapacity(request.RoomId, cancellationToken);
+        var roomCapacity = room.Capacity;
 
         if (roomCapacity < request.MaxCapacity)
             return Result.Failure<ExamCommitteeResponse>(RoomErrors.UnValidCapacity);

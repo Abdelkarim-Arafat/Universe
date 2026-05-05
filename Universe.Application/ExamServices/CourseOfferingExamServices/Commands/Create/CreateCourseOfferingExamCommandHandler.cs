@@ -9,17 +9,17 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
     public async Task<Result<CourseOfferingExamResponse>> Handle(CreateCourseOfferingExamCommand request, CancellationToken cancellationToken)
     {
-         var isCourseOfferingExist = await _unitOfWork.CourseOfferingRepository
-            .IsExistAsync(request.CourseOfferingId, cancellationToken);
+        // var isCourseOfferingExist = await _unitOfWork.CourseOfferingRepository
+        //    .IsExistAsync(request.CourseOfferingId, cancellationToken);
 
-        if (!isCourseOfferingExist)
-            return Result.Failure<CourseOfferingExamResponse>(CourseOfferingErrors.NotFound);
+        //if (!isCourseOfferingExist)
+        //    return Result.Failure<CourseOfferingExamResponse>(CourseOfferingErrors.NotFound);
 
-        var isExamTermExist = await _unitOfWork.ExamRepository
-            .IsExistExamTermAsync(request.ExamTermId, cancellationToken);
+        //var isExamTermExist = await _unitOfWork.ExamRepository
+        //    .IsExistExamTermAsync(request.ExamTermId, cancellationToken);
 
-        if (!isExamTermExist)
-            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamTermNotFound);
+        //if (!isExamTermExist)
+        //    return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamTermNotFound);
 
         var isCourseOfferingExamExist = await _unitOfWork.ExamRepository
             .IsCourseOfferingExamExistAsync(request.CourseOfferingId, request.ExamTermId, cancellationToken);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using Universe.Core.Entities;
+using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 
@@ -18,12 +19,24 @@ public class ExamRepository
     }
 
     public async Task<bool> IsExistExamTermWithOverLabedTimeAsync
-       (Guid? Id, Guid SemesterId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+       (Guid? Id, Guid SemesterId, Guid AcademicProgramId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
         return await _context.ExamTerms.AnyAsync(e =>
-           e.SemesterId == SemesterId
+           !e.IsDeleted
+           && e.AcademicProgramId == AcademicProgramId
+           && e.SemesterId == SemesterId
            && (((Id == null)) || (e.Id != Id))
            && (e.StartDate < endDate && startDate < e.EndDate), cancellationToken);
+    }
+    public async Task<bool> IsExistExamTermWithSameTypeAsync
+      (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
+    {
+        return await _context.ExamTerms.AnyAsync(e =>
+           !e.IsDeleted
+           && e.AcademicProgramId == AcademicProgramId
+           && e.SemesterId == SemesterId
+           && (((Id == null)) || (e.Id != Id))
+           && examType == e.ExamType, cancellationToken);
     }
 
     public async Task<bool> IsExistExamTermAsync(Guid Id, CancellationToken cancellationToken)

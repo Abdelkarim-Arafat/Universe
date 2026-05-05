@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Universe.Core.Entities.Core;
+﻿using Universe.Core.Entities.Core;
 using Universe.Core.Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace Universe.Core.Interfaces;
 

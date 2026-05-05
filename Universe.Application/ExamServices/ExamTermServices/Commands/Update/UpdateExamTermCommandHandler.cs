@@ -15,10 +15,17 @@ public class UpdateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         var IsExistExamTermWithOverLabedTime = await _unitOfWork.ExamRepository
            .IsExistExamTermWithOverLabedTimeAsync
-           (request.Id, examTerm.SemesterId, request.StartDate, request.EndDate, cancellationToken);
+           (examTerm.Id, examTerm.SemesterId, examTerm.AcademicProgramId,
+            examTerm.StartDate, examTerm.EndDate, cancellationToken);
 
         if (IsExistExamTermWithOverLabedTime)
             return Result.Failure<ExamTermResponse>(ExamErrors.OverlabbingTime);
+
+        var IsExistExamTermWithSameType = await _unitOfWork.ExamRepository.IsExistExamTermWithSameTypeAsync
+            (null, examTerm.SemesterId, examTerm.AcademicProgramId, examTerm.ExamType, cancellationToken);
+
+        if (IsExistExamTermWithSameType)
+            return Result.Failure<ExamTermResponse>(ExamErrors.ExamTermWithSameType);
 
         examTerm.ExamType = request.ExamType;
         examTerm.StartDate = request.StartDate;

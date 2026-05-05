@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Application.EnrollmentServices.Dtos;
+using Universe.Core.Dtos.Enrollments;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
@@ -31,31 +33,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
         .ToListAsync(cancellationToken);
 
-    public async Task<List<CourseOffering>> GetAvailableCourseOfferingsIncludingCourseAsync(
-        Guid levelId,
-        Guid semesterId,
-        Guid studentId,
-        CancellationToken cancellationToken)
-    {
-
-        var passedCourses = _context.Enrollments
-              .Where(e => e.StudentId == studentId
-               && e.Status == EnrollmentStatus.Passed
-               && !e.IsDeleted)
-              .Select(e => e.CourseOffering.CourseId);
-
-        return await _context.CourseOfferings
-            .AsNoTracking()
-            .Include(offer => offer.Course)
-            .Where(c => c.LevelId == levelId
-                     && c.SemesterId == semesterId
-                     && !c.IsDeleted
-                     && !passedCourses.Contains(c.CourseId)
-                     && !_context.CoursePrerequisites
-                           .Where(p => p.CourseId == c.CourseId)
-                           .Any(p => !passedCourses.Contains(p.PrerequisiteCourseId)))
-            .ToListAsync(cancellationToken);
-    }
 
     public async Task<Dictionary<Guid, List<CourseOfferingAssessment>>>
         GetCourseOfferingsAssessmentsBulkAsync(
@@ -77,11 +54,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
 
         return dict;
     }
-    public async Task<int> CountCourseAssessments(List<Guid> CourseAssessmentsIds, CancellationToken cancellationToken)
-    {
-        return await _context.CourseOfferingAssessments
-            .CountAsync(a => CourseAssessmentsIds.Contains(a.Id) && !a.IsDeleted, cancellationToken);
-    }
 
     public async Task<decimal> RegistredHours(List<Guid> CourseOfferingIds, CancellationToken cancellationToken)
     {
@@ -89,38 +61,55 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             .Where(co => CourseOfferingIds.Contains(co.Id) && !co.IsDeleted)
             .SumAsync(co => co.CreditHours, cancellationToken);
     }
-    public async Task<Dictionary<Guid, Guid>> CourseOfferingIdsToCourseIdAsync(List<Guid> CourseOfferingsIds, CancellationToken cancellationToken)
-    {
-        return await _context.CourseOfferings
-              .Where(co => CourseOfferingsIds.Contains(co.Id) && !co.IsDeleted)
-              .ToDictionaryAsync(co => co.Id, co => co.CourseId, cancellationToken);
-    }
-    public async Task<bool> IsOpenForControlAsync(Guid courseOfferingId, CancellationToken cancellationToken)
-    {
-        return await _context.CourseOfferings
-            .Where(co => co.Id == courseOfferingId && !co.IsDeleted)
-            .Select(co => co.IsOpenForControl)
-            .FirstOrDefaultAsync(cancellationToken);
-    }
-    public async Task<CourseOffering?> GetByIdIncludingEnrollmentsAsync(Guid courseOfferingId, CancellationToken cancellationToken)
-    {
-        return await _context.CourseOfferings
-            .Where(co => co.Id == courseOfferingId && !co.IsDeleted)
-            .Include(co => co.Enrollments)
-            .FirstOrDefaultAsync(cancellationToken);
-    }
 
-    public async Task<Guid?> GetIdByCourseAssessmentIdAsync(Guid CourseAssessmentId, CancellationToken cancellationToken)
+    public async Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
+     Guid studentId,
+     Guid semesterId,
+     Guid levelId,
+     CancellationToken cancellationToken)
     {
-      return await _context.CourseOfferingAssessments
-            .Where(coa => coa.Id == CourseAssessmentId && !coa.IsDeleted)
-            .Select(coa => coa.CourseOfferingId)
-            .FirstOrDefaultAsync(cancellationToken);
-    }
+        var passedCoursesIds = _context.Enrollments
+            .Where(e => e.StudentId == studentId && e.Status == EnrollmentStatus.Passed && !e.IsDeleted)
+            .Select(e => e.CourseOffering.CourseId);
 
-    public async Task<int> NumberOfRegisteredStudentsAsync(Guid CourseOfferingId, CancellationToken cancellationToken)
-    {
-        return await _context.Enrollments
-             .CountAsync(enroll => !enroll.IsDeleted && enroll.CourseOfferingId == CourseOfferingId);
+        return await _context.Levels
+            .AsNoTracking()
+            .Where(l => l.Id == levelId && !l.IsDeleted)
+            .Select(l => new LevelRegistrationCatalogDto(
+                l.Name, 
+
+                _context.CourseOfferings
+                    .Where(co => co.LevelId == levelId
+                              && co.SemesterId == semesterId
+                              && !co.IsDeleted
+                              && !passedCoursesIds.Contains(co.CourseId)
+                              && !_context.CoursePrerequisites
+                                    .Where(p => p.CourseId == co.CourseId)
+                                    .Any(p => !passedCoursesIds.Contains(p.PrerequisiteCourseId)))
+                    .Select(co => new CourseRegistration(
+                        co.Id,
+                        co.CourseId,
+                        co.Course.Name,
+                        co.Course.Code,
+                        co.IsOptional,
+                        co.CreditHours,
+                        false, // IsEnrolled
+                        co.CourseOfferingSessions
+                            .Where(cos => !cos.IsDeleted)
+                            .Select(cos => new SessionInfo(
+                                cos.TeachingSessionId,
+                                cos.TeachingSession.Instructor.Name,
+                                cos.TeachingSession.Type,
+                                cos.TeachingSession.GroupNumber,
+                                cos.TeachingSession.Day,
+                                cos.TeachingSession.StartTime,
+                                cos.TeachingSession.EndTime,
+                                cos.TeachingSession.Capacity 
+                                - cos.TeachingSession.TeachingSessionEnrollments.Count(e => !e.IsDeleted),
+                                false // IsRegistered
+                            )).ToList()
+                    )).ToList()
+            ))
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

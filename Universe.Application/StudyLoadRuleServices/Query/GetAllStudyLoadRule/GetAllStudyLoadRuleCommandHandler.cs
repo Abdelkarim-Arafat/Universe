@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.LevelServices.LevelDtos;
+using Universe.Application.LevelServices.Dtos;
 using Universe.Application.StudyLoadRuleServices.Dtos;
 
 namespace Universe.Application.StudyLoadRuleServices.Query.GetAllStudyLoadRule;

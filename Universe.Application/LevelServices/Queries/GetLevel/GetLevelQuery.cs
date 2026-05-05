@@ -1,4 +1,4 @@
-﻿using Universe.Application.LevelServices.LevelDtos;
+﻿using Universe.Application.LevelServices.Dtos;
 
 namespace Universe.Application.LevelServices.Queries.GetLevel;
 

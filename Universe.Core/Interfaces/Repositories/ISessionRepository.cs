@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Entities;
+﻿using Universe.Core.Entities;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Interfaces.Repositories;
@@ -27,9 +24,6 @@ public interface ISessionRepository
 
     Task<bool> HasSessionsAsync(Guid programId, Guid semesterId, CancellationToken cancellationToken);
 
-    Task<IEnumerable<TeachingSession>> GetCourseOfferingSessionsAsync(
-        Guid courseId,
-        CancellationToken cancellationToken);
     Task<TeachingSession?> GetByIdAsync(Guid sessionId, CancellationToken cancellationToken);
 
     Task<bool> HasOtherCoursesAsync(Guid sessionId, Guid courseId, CancellationToken cancellationToken);
@@ -58,12 +52,7 @@ public interface ISessionRepository
     TimeOnly end,
     Enums.DayOfWeek day,
     CancellationToken cancellationToken);
-    Task<List<TeachingSession>> GetSessionsByIdIncludingCourseOfferingAsync
-        (IEnumerable<Guid> SessionsIds, CancellationToken cancellationToken);
 
-    Task<List<TeachingSession>> GetSessionsByCourseOfferingIncludingInstructor
-        (Guid CourseOfferingId, CancellationToken cancellationToken);
-    Task<int> GetGroupNumberAsync(Guid SessionId, CancellationToken cancellationToken);
     Task<Dictionary<Guid, (int GroupNumber, int Capacity)>>
          GetGroupNumberAndCapacityBulkAsync(List<Guid> sessionIds, CancellationToken cancellationToken);
 

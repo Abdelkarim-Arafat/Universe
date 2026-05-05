@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
-using Universe.Application.GradeServices.Commands.CreateGrade;
-using Universe.Application.GradeServices.Commands.DeleteGrade;
-using Universe.Application.GradeServices.Commands.UpdateGrade;
+using Universe.Application.GradeServices.Commands.Create;
+using Universe.Application.GradeServices.Commands.Delete;
+using Universe.Application.GradeServices.Commands.Update;
 using Universe.Application.GradeServices.Queries.GetAcademicProgramGrades;
 using Universe.Application.GradeServices.Queries.GetGrade;
  

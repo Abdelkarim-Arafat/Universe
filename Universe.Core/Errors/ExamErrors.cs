@@ -11,6 +11,8 @@ public class ExamErrors
 
     public static readonly Error OverlabbingTime =
      new("ExamTerm.OverlabbingTime", "The is another exam with overlabed time", StatusCodes.Status409Conflict);
+    public static readonly Error ExamTermWithSameType =
+     new("ExamTerm.ExamTermWithSameType", "The is another exam with the same type ", StatusCodes.Status409Conflict);
     #endregion
     #region ExamCommittee
     public static readonly Error OverlappingTimeInCommittees =

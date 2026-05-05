@@ -46,17 +46,6 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TeachingSession>> GetCourseOfferingGroupSessionsAsync(
-        Guid courseId,
-        CancellationToken cancellationToken)
-    {
-        return await _context.CourseOfferingSessions
-            .AsNoTracking()
-            .Where(x => x.CourseOfferingId == courseId)
-            .Select(x => x.TeachingSession)
-            .ToListAsync(cancellationToken);
-    }
-
     public async Task<bool> HasSessionsAsync(Guid programId, Guid semesterId, CancellationToken cancellationToken)
         => await _context.CourseOfferingSessions
             .AnyAsync(x => x.CourseOffering.AcademicProgramId == programId
@@ -135,38 +124,6 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                cancellationToken);
     }
 
-    public async Task<List<TeachingSession>> GetSessionsByIdIncludingCourseOfferingAsync(IEnumerable<Guid> SessionsIds, CancellationToken cancellationToken)
-    {
-        return await _context.TeachingSessions
-           .AsNoTracking()
-           .Include(session => session.CourseOfferingSessions)
-           .Where(x => SessionsIds.Contains(x.Id))
-           .ToListAsync();
-    }
-
-    public async Task<List<TeachingSession>> GetSessionsByCourseOfferingIncludingInstructor(Guid CourseOfferingId, CancellationToken cancellationToken)
-    {
-        var SessionsIds = await _context.CourseOfferingSessions
-            .AsNoTracking()
-            .Where(x => x.CourseOfferingId == CourseOfferingId)
-            .Select(x => x.TeachingSessionId)
-            .ToListAsync(cancellationToken);
-
-        return await _context.TeachingSessions
-            .AsNoTracking()
-            .Include(t => t.Instructor)
-            .Where(x => SessionsIds.Contains(x.Id))
-            .ToListAsync(cancellationToken);
-    }
-     
-    public async Task<int> GetGroupNumberAsync(Guid SessionId, CancellationToken cancellationToken)
-    {
-        return await _context.TeachingSessions
-                    .Where(ts => ts.Id == SessionId)
-                    .Select(ts => ts.GroupNumber)
-                    .FirstOrDefaultAsync(cancellationToken);
-    }
-
     public async Task<Dictionary<Guid, (int GroupNumber, int Capacity)>>
         GetGroupNumberAndCapacityBulkAsync(List<Guid> sessionIds, CancellationToken cancellationToken)
     {
@@ -196,10 +153,5 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
             .Any(pair => pair.SessionId == cos.TeachingSessionId
              && pair.CourseOfferingId == cos.CourseOfferingId))
             .ToList();
-    }
-
-    public Task<IEnumerable<TeachingSession>> GetCourseOfferingSessionsAsync(Guid courseId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
     }
 }

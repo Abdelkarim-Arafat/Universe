@@ -47,7 +47,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Universe.Core\Universe.Core.csproj" />
-		<ProjectReference Include="..\Universe.Infrastructure\Universe.Infrastructure.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

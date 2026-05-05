@@ -6,7 +6,7 @@ string StudentName,
 string LevelName,
 string StudentCode,
 decimal RegisteredHours,
-int MaxAllowedHours,
-int MinAllowedHours,
+decimal MaxAllowedHours,
+decimal MinAllowedHours,
 decimal GPA
 );

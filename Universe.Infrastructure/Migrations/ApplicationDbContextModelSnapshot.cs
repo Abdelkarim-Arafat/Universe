@@ -186,7 +186,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("AcademicEvents");
+                    b.ToTable("AcademicEvents", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.AcademicProgram", b =>
@@ -232,7 +232,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("AcademicPrograms");
+                    b.ToTable("AcademicPrograms", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.AcademicYear", b =>
@@ -270,7 +270,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("AcademicYears");
+                    b.ToTable("AcademicYears", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ApplicationRole", b =>
@@ -524,7 +524,7 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Buildings");
+                    b.ToTable("Buildings", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.College", b =>
@@ -564,7 +564,7 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Colleges");
+                    b.ToTable("Colleges", (string)null);
 
                     b.HasData(
                         new
@@ -619,7 +619,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOffering", b =>
@@ -692,7 +692,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("CourseOfferings");
+                    b.ToTable("CourseOfferings", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingAssessment", b =>
@@ -726,7 +726,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CourseOfferingId");
 
-                    b.ToTable("CourseOfferingAssessments");
+                    b.ToTable("CourseOfferingAssessments", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingCommittee", b =>
@@ -759,7 +759,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("ExamCommitteeId");
 
-                    b.ToTable("CourseOfferingCommittees");
+                    b.ToTable("CourseOfferingCommittees", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingExam", b =>
@@ -801,7 +801,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("ExamTermId");
 
-                    b.ToTable("CourseOfferingExams");
+                    b.ToTable("CourseOfferingExams", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingSession", b =>
@@ -828,7 +828,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("TeachingSessionId");
 
-                    b.ToTable("CourseOfferingSessions");
+                    b.ToTable("CourseOfferingSessions", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CoursePrerequisite", b =>
@@ -855,7 +855,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("PrerequisiteCourseId");
 
-                    b.ToTable("CoursePrerequisites");
+                    b.ToTable("CoursePrerequisites", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Enrollment", b =>
@@ -894,7 +894,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamCommittee", b =>
@@ -933,7 +933,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("ExamCommittees");
+                    b.ToTable("ExamCommittees", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamSeat", b =>
@@ -963,7 +963,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CourseOfferingCommitteeId");
 
-                    b.ToTable("ExamSeats");
+                    b.ToTable("ExamSeats", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamTerm", b =>
@@ -1008,7 +1008,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("ExamTerms");
+                    b.ToTable("ExamTerms", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Grade", b =>
@@ -1061,7 +1061,7 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Grades");
+                    b.ToTable("Grades", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Level", b =>
@@ -1099,7 +1099,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.ToTable("Levels");
+                    b.ToTable("Levels", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Payment", b =>
@@ -1142,7 +1142,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ProgramSchedule", b =>
@@ -1181,7 +1181,7 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("ProgramId", "SemesterId")
                         .IsUnique();
 
-                    b.ToTable("ProgramSchedules");
+                    b.ToTable("ProgramSchedules", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Room", b =>
@@ -1223,7 +1223,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("BuildingId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -1267,7 +1267,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.ToTable("Semesters");
+                    b.ToTable("Semesters", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Service", b =>
@@ -1309,7 +1309,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ServiceRequest", b =>
@@ -1350,7 +1350,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("ServiceRequests");
+                    b.ToTable("ServiceRequests", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Student", b =>
@@ -1426,7 +1426,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudentAcademicProgram", b =>
@@ -1462,7 +1462,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.ToTable("StudentAcademicPrograms");
+                    b.ToTable("StudentAcademicPrograms", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudentAssessment", b =>
@@ -1492,7 +1492,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CourseOfferingAssessmentId");
 
-                    b.ToTable("StudentAssessments");
+                    b.ToTable("StudentAssessments", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
@@ -1536,7 +1536,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("StudyLoadByLevels");
+                    b.ToTable("StudyLoadByLevels", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadRule", b =>
@@ -1576,7 +1576,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.ToTable("StudyLoadRules");
+                    b.ToTable("StudyLoadRules", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.TeachingSession", b =>
@@ -1627,7 +1627,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("TeachingSessions");
+                    b.ToTable("TeachingSessions", (string)null);
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.TeachingSessionEnrollment", b =>
@@ -1654,7 +1654,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("TeachingSessionId");
 
-                    b.ToTable("TeachingSessionEnrollments");
+                    b.ToTable("TeachingSessionEnrollments", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -1765,6 +1765,38 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.OwnsMany("Universe.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTime>("CreatedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ExpiresOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime?>("RevokedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Token")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("UserId", "Id");
+
+                            b1.ToTable("RefreshTokens", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsMany("Universe.Core.Entities.PasswordResetOtp", "passwordResetOtps", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -1798,38 +1830,6 @@ namespace Universe.Infrastructure.Migrations
                             b1.HasKey("UserId", "Id");
 
                             b1.ToTable("PasswordResetOtps", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsMany("Universe.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("ExpiresOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime?>("RevokedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("Token")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("UserId", "Id");
-
-                            b1.ToTable("RefreshTokens", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
@@ -2221,7 +2221,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students");
+                            b1.ToTable("Students", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
@@ -2257,7 +2257,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students");
+                            b1.ToTable("Students", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
@@ -2310,7 +2310,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students");
+                            b1.ToTable("Students", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
@@ -2351,7 +2351,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students");
+                            b1.ToTable("Students", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");

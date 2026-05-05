@@ -34,13 +34,6 @@ public class LevelRepository
         return await _context.Levels.FirstOrDefaultAsync(lv => lv.Id == id && !lv.IsDeleted, cancellationToken);
     }
 
-    public async Task<List<Level>> GetLevelsByProgramId(Guid AcademicProgramId, CancellationToken cancellationToken = default)
-    {
-        return await _context.Levels
-            .AsNoTracking()
-            .Where(lv => lv.AcademicProgramId == AcademicProgramId && !lv.IsDeleted)
-            .ToListAsync(cancellationToken);
-    }
     public async Task<Level?> GetStudentCurrentLevelAsync
     (Guid StudentId, CancellationToken cancellationToken)
     {

@@ -1,7 +1,6 @@
 ﻿
-using Microsoft.AspNetCore.Identity;
 using Universe.Application.UserServices.UserDtos;
-using Universe.Infrastructure.SeedData;
+
 
 namespace Universe.Application.UserServices.Querys.GetAllStudents;
 

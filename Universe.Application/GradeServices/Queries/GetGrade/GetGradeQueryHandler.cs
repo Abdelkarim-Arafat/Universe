@@ -1,6 +1,4 @@
-﻿using Universe.Application.GradeServices.GradeDtos;
-
-namespace Universe.Application.GradeServices.Queries.GetGrade;
+﻿namespace Universe.Application.GradeServices.Queries.GetGrade;
 
 public class GetGradeQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetGradeQuery, Result<GradeResponse>>
 {

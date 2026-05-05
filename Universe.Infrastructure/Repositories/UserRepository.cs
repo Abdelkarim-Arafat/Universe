@@ -1,5 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore; 
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
+using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Dtos.Student;
 using Universe.Core.Entities;
+using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 using Universe.Infrastructure.SeedData;
@@ -82,7 +86,7 @@ public class UserRepository
     public async Task<Guid?> GetCurrentProgram(Guid StudentId, CancellationToken cancellationToken)
      => await _context.StudentAcademicPrograms
          .AsNoTracking()
-         .Where(x => x.StudentId == StudentId && x.Currently)
+         .Where(x =>!x.IsDeleted && x.StudentId == StudentId && x.Currently)
          .Select(x => x.AcademicProgramId)
          .FirstOrDefaultAsync(cancellationToken);
 
@@ -97,46 +101,50 @@ public class UserRepository
             && !x.CourseOffering.IsDeleted)
            .SumAsync(x => x.CourseOffering.CreditHours, cancellationToken);
     }
-    public async Task<decimal> CalculateGpaAsync
-        (Guid StudentId, Guid? SemesterId, CancellationToken cancellationToken)
+    public async Task<decimal> CalculateGpaAsync(Guid studentId, Guid? semesterId, CancellationToken cancellationToken)
     {
-        var studentCourseGrades = await _context.Enrollments
-          .AsNoTracking()
-          .Where(e => e.StudentId == StudentId
-                 && e.Status == Core.Enums.EnrollmentStatus.Passed
-                 && e.CourseOffering.IsIncludedInGpa
-                 && ((SemesterId == null) || (e.CourseOffering.SemesterId == SemesterId))
-                 && !e.IsDeleted)
-          .Select(e => new
-          {
-              e.CourseOffering.CreditHours,
-              TotalStudentScore = e.Student.StudentAssessments
-             .Where(sa => sa.CourseOfferingAssessment.CourseOfferingId == e.CourseOfferingId && !sa.IsDeleted)
-             .Sum(sa => sa.degree ?? 0)
-          })
-        .ToListAsync(cancellationToken);
+        var academicProgramId = await _academicProgramRepository
+            .GetCurrentAcademicProgramIdAsync(studentId, cancellationToken);
 
-        var AcademicProgramId = await _academicProgramRepository
-            .GetCurrentAcademicProgramIdAsync(StudentId, cancellationToken);
+        if (academicProgramId == null) return 0;
 
-        var gradeScales = await _gradeRepository.GetProgramGradesAsync(AcademicProgramId.Value, cancellationToken);
+        var gradeScales = await _gradeRepository
+            .GetProgramGradesAsync(academicProgramId.Value, cancellationToken);
+
+        var coursePerformance = await _context.Enrollments
+            .AsNoTracking()
+            .Where(e => e.StudentId == studentId
+                   && e.Status == EnrollmentStatus.Passed
+                   && e.CourseOffering.IsIncludedInGpa
+                   && (semesterId == null || e.CourseOffering.SemesterId == semesterId)
+                   && !e.IsDeleted)
+            .Select(e => new
+            {
+                e.CourseOffering.CreditHours,
+         
+                TotalScore = _context.StudentAssessments
+                    .Where(sa => sa.StudentId == studentId
+                              && sa.CourseOfferingAssessment.CourseOfferingId == e.CourseOfferingId
+                              && !sa.IsDeleted)
+                    .Sum(sa => sa.degree ?? 0)
+            })
+            .ToListAsync(cancellationToken);
+
+        if (!coursePerformance.Any()) return 0;
 
         decimal totalQualityPoints = 0;
+        decimal totalHours = 0;
 
-        foreach (var course in studentCourseGrades)
+        foreach (var item in coursePerformance)
         {
+            var grade = gradeScales.FirstOrDefault(g => item.TotalScore >= g.MinScore && item.TotalScore <= g.MaxScore);
+            var points = grade?.MinGradePoint ?? 0;
 
-            var points = gradeScales
-                .FirstOrDefault(g => course.TotalStudentScore >= g.MinScore
-                                  && course.TotalStudentScore <= g.MaxScore)
-                ?.MinGradePoint ?? 0;
-
-            totalQualityPoints += (points * course.CreditHours);
+            totalQualityPoints += (points * item.CreditHours);
+            totalHours += item.CreditHours;
         }
 
-        var totalEarnedCreditHours = await CalculateCreditHoursAsync(StudentId, SemesterId, cancellationToken);
-
-        return (totalEarnedCreditHours == 0) ? 0 : totalQualityPoints / totalEarnedCreditHours;
+        return totalHours == 0 ? 0 : totalQualityPoints / totalHours;
     }
 
     public async Task<List<StudentAssessment>> GetStudentAssessmentByCourseOfferingBulkAsync
@@ -198,22 +206,80 @@ public class UserRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Dictionary<Guid, decimal>>
-        GetAllStudentDegreesInCoursesAsync(Guid studentId, CancellationToken cancellationToken)
+    public async Task<StudentExamsResponse> GetStudentExamsTablesAsync(Guid studentId, CancellationToken cancellationToken)
     {
-        return await _context.StudentAssessments
+       // الحركة دي بتخلي الكويري يتكتب لكن ميتنفذش ف اللحظه دي و يتنفذ اول م اناديه و كده اوفر one hit للداتا بيز
+
+        var currentProgramIdQuery = _context.StudentAcademicPrograms
+            .Where(sp => sp.StudentId == studentId && sp.Currently && !sp.IsDeleted)
+            .Select(sp => sp.AcademicProgramId);
+
+
+        // شيك علي موضوع ال current في السيميستر
+        var currentSemesterIdQuery = _context.Semesters
+            .Where(s => s.IsCurrent && !s.IsDeleted)
+            .Select(s => s.Id);
+
+        var examTermsQuery = _context.ExamTerms
+            .Where(exam => !exam.IsDeleted
+                && currentProgramIdQuery.Contains(exam.AcademicProgramId)
+                && exam.SemesterId == currentSemesterIdQuery.FirstOrDefault()
+                && exam.IsPublished)
+            .Select(exam => exam.Id);
+
+        var studentEnrollmentsQuery = _context.Enrollments
+            .Where(e => e.StudentId == studentId && !e.IsDeleted)
+            .Select(e => e.CourseOfferingId);
+   
+        var studentExams = await _context.CourseOfferingExams
             .AsNoTracking()
-            .Where(sa => sa.StudentId == studentId && !sa.IsDeleted)
-            .GroupBy(sa => sa.CourseOfferingAssessment.CourseOfferingId)
-            .Select(g => new
-            {
-                CourseOfferingId = g.Key,
-                TotalDegree = g.Sum(sa => sa.degree ?? 0)
-            })
-            .ToDictionaryAsync(
-                x => x.CourseOfferingId,
-                x => x.TotalDegree,
-                cancellationToken
-            );
+            .Where(ce => !ce.IsDeleted
+                         && examTermsQuery.Contains(ce.ExamTermId)
+                         && studentEnrollmentsQuery.Contains(ce.CourseOfferingId))
+            .GroupBy(ce => ce.ExamTerm.ExamType)
+            .Select(group => new StudentExam
+            (
+                group.Key.ToString(),
+                group.Select(ce => new StudentExamPerCourse
+                (
+                    ce.Date,
+                    ce.CourseOffering.Course.Name,
+                    ce.CourseOffering.Course.Code,
+                    ce.StartTime,
+                    ce.EndTime,
+                    ce.CourseOfferingCommittees
+                        .Where(c => !c.IsDeleted)
+                        .Select(c => $"{c.ExamCommittee.Room.RoomNumber} - {c.ExamCommittee.Room.Building.Name}")
+                        .FirstOrDefault() ?? "No Place Now",
+
+                    _context.ExamSeats
+                        .Where(s => !s.IsDeleted && s.StudentId == studentId
+                         && s.CourseOfferingCommittee.CourseOfferingExamId == ce.Id)
+                        .Select(s => s.SeatNumber)
+                        .FirstOrDefault(),
+
+                    ce.CourseOfferingCommittees
+                        .Where(c => !c.IsDeleted)
+                        .Select(c => c.ExamCommittee.CommitteeNumber)
+                        .FirstOrDefault()
+                )
+                {
+
+                }).ToList()
+            ))
+            .ToListAsync(cancellationToken);
+
+        var studentInfo = await _context.Students
+            .Where(s => s.Id == studentId && !s.IsDeleted)
+            .Select(s => new { s.Name, s.StudentCode })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return new StudentExamsResponse
+        (
+           studentInfo!.Name,
+           studentInfo.StudentCode,
+           studentExams
+        );
     }
+
 }

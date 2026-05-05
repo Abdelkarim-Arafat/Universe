@@ -1,4 +1,5 @@
 ﻿using Universe.Core.Entities;
+using Universe.Core.Enums;
 
 namespace Universe.Core.Interfaces.Repositories;
 
@@ -7,8 +8,11 @@ public interface IExamRepository
     #region ExamTerms
     Task<ExamTerm?> GetExamTermByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<bool> IsExistExamTermWithOverLabedTimeAsync
-       (Guid? Id, Guid SemesterId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken);
+       (Guid? Id, Guid SemesterId,Guid AcademicProgramId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken);
     Task<bool> IsExistExamTermAsync(Guid Id, CancellationToken cancellationToken);
+    Task<bool> IsExistExamTermWithSameTypeAsync
+        (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken);
+
     #endregion
 
     #region ExamCommittees

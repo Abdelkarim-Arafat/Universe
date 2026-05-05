@@ -13,21 +13,18 @@ public class GetAcademicProgramGradesQueryHandler(IUnitOfWork unitOfWork) : IReq
             return Result.Failure<PaginationList<GradeResponse>>(AcademicProgramErrors.AcademicProgramNotFound);
 
 
-        var query = _unitOfWork.Repository<Grade>().GetQueryable();
+        var query = _unitOfWork.Repository<Grade>()
+            .GetQueryable()
+            .Where(x => x.AcademicProgramId == request.AcademicProgramId);
 
-        query = query.Where(x => x.AcademicProgramId == request.AcademicProgramId);
         var filter = request.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
-        {
             query = query.Where(x => x.Name.Contains(filter.SearchValue));
-        }
-
+        
         if (!string.IsNullOrEmpty(filter.SortColumn))
-        {
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-        }
-
+ 
         var source = query.Select(x => new GradeResponse(
             x.Id,
             x.Name,
