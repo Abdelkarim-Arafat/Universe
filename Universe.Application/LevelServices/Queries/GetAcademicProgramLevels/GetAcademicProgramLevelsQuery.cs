@@ -1,9 +1,8 @@
-﻿using Universe.Application.LevelServices.LevelDtos;
- 
+﻿using Universe.Core.Contracts.Level;
+
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 
-public record GetAcademicProgramLevelsQuery
-(
-    [Required]Guid AcademicProgramId,
+public record GetAcademicProgramLevelsQuery (
+    [Required] Guid ProgramId,
     FilterRequest Filter
 ) : IRequest<Result<PaginationList<LevelResponse>>>;

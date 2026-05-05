@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.StudyLoadByLevelServices.StudyLoadByLevelDtos;
+using Universe.Core.Contracts.StudyLoadByLevel;
 using Universe.Application.StudyLoadRuleServices.Dtos;
 
 namespace Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;
 
 public class AddStudyLoadByLevelCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
     ) : IRequestHandler<AddStudyLoadByLevelCommand , Result<StudyLoadByLevelResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<StudyLoadByLevelResponse>> Handle(AddStudyLoadByLevelCommand request, CancellationToken cancellationToken)
     {
@@ -36,20 +38,20 @@ public class AddStudyLoadByLevelCommandHandler(
             MaxHours = request.MaxHours,
         };
 
-
         await _unitOfWork.Repository<StudyLoadByLevel>().AddAsync(studyLoad, cancellationToken);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
+        await _cacheService.RemoveByTagAsync(StudyLoadByLevelCacheKeys.Tags(request.ProgramId), cancellationToken);
+
         var response = new StudyLoadByLevelResponse(
-            studyLoad.Id.ToString(),
-            level.Id.ToString(),
+            studyLoad.Id,
+            level.Id,
             level.Name,
             request.SemesterType,
             studyLoad.MinHours,
             studyLoad.MaxHours
         );
-
         return Result.Success(response);
     }
 }

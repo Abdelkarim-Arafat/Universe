@@ -1,10 +1,9 @@
 ﻿
 using Universe.Core.Contracts.Course;
 
-namespace Universe.Application.LevelServices.LevelDtos;
+namespace Universe.Core.Contracts.Level;
 
-public record LevelCoursesResponse
-(
+public record LevelCoursesResponse(
     string LevelName,
     List<CourseRegistrationResponse> Courses
 );

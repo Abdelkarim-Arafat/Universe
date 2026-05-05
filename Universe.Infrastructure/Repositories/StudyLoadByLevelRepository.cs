@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Universe.Core.Contracts.StudyLoadByLevel;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -13,8 +14,6 @@ public class StudyLoadByLevelRepository(
     ) : IStudyLoadByLevelRepository
 {
     private readonly ApplicationDbContext _context = context;
-
-
     public async Task<bool> IsExistAsync(
         Guid programId,
         Guid levelId,
@@ -30,7 +29,6 @@ public class StudyLoadByLevelRepository(
         .Include(x => x.Sememester)
         .Include(x => x.Level)
         .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-
 
     public async Task<IQueryable<StudyLoadByLevel>> GetAllStudyLoadByLevelAsync(Guid programId, CancellationToken cancellationToken)
         => _context.StudyLoadByLevels

@@ -1,5 +1,6 @@
 ﻿
-using Universe.Application.LevelServices.LevelDtos;
+
+using Universe.Core.Contracts.Level;
 
 namespace Universe.Application.LevelServices.Commands.CreateLevel;
 

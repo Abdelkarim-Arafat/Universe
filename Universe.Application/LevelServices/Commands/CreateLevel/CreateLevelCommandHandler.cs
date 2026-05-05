@@ -1,32 +1,39 @@
-﻿using Universe.Application.LevelServices.LevelDtos;
+﻿using Org.BouncyCastle.Asn1.Ocsp;
+using Universe.Core.Contracts.Level;
 namespace Universe.Application.LevelServices.Commands.CreateLevel;
 
-public class CreateLevelCommandHandler
-    (IUnitOfWork unitOfWork) : IRequestHandler<CreateLevelCommand, Result<LevelResponse>>
+public class CreateLevelCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
+    ) : IRequestHandler<CreateLevelCommand, Result<LevelResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
-    public async Task<Result<LevelResponse>> Handle(CreateLevelCommand command, CancellationToken cancellationToken)
+    public async Task<Result<LevelResponse>> Handle(CreateLevelCommand request, CancellationToken cancellationToken)
     {
-        var isProgramExist = await _unitOfWork.AcademicProgramRepository
-            .IsExistAsync(command.AcademicProgramId, cancellationToken);
+        if (await _unitOfWork.AcademicProgramRepository
+            .IsExistAsync(request.AcademicProgramId, cancellationToken)
+           ) return Result.Failure<LevelResponse>(AcademicProgramErrors.NotFound);
 
-        if (!isProgramExist)
-            return Result.Failure<LevelResponse>(AcademicProgramErrors.NotFound);
+        if(await _unitOfWork.LevelRepository
+            .CheckOverLabedHoursAsync(request.MinHours,
+                    request.MaxHours, request.AcademicProgramId, cancellationToken)
+            ) return Result.Failure<LevelResponse>(LevelErrors.InvalidHours);
 
-
-        var isLevelWithOverLabExist = await _unitOfWork.LevelRepository
-            .CheckOverLabedHoursAsync(command.MinHours, command.MaxHours, command.AcademicProgramId, cancellationToken);
-
-        if (isLevelWithOverLabExist)
-            return Result.Failure<LevelResponse>(LevelErrors.InvalidHours);
-
-
-        var level = command.Adapt<Level>();
+        var level = request.Adapt<Level>();
 
         await _unitOfWork.Repository<Level>().AddAsync(level, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        return Result.Success(level.Adapt<LevelResponse>());
+        await _cacheService.RemoveByTagAsync(LevelCacheKeys.Tags(request.AcademicProgramId), cancellationToken);
+
+        var response = await _cacheService.GetOrCreateAsync(
+            key: LevelCacheKeys.ById(level.Id),
+            factory: async() => level.Adapt<LevelResponse>(),
+            cancellationToken: cancellationToken
+        );
+
+        return Result.Success(response);
     }
 }

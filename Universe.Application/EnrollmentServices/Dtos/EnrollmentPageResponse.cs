@@ -1,5 +1,5 @@
-﻿using Universe.Application.LevelServices.LevelDtos;
-using Universe.Application.UserServices.UserDtos;
+﻿using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.Level;
 
 namespace Universe.Application.EnrollmentServices.Dtos;
 

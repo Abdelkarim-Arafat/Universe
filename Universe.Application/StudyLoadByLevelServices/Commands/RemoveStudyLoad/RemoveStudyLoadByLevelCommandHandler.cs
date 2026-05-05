@@ -5,10 +5,12 @@ using System.Text;
 namespace Universe.Application.StudyLoadByLevelServices.Commands.RemoveStudyLoad;
 
 internal class RemoveStudyLoadByLevelCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
     ) : IRequestHandler<RemoveStudyLoadByLevelCommand , Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(RemoveStudyLoadByLevelCommand request, CancellationToken cancellationToken)
     {
@@ -19,6 +21,8 @@ internal class RemoveStudyLoadByLevelCommandHandler(
         _unitOfWork.Repository<StudyLoadByLevel>().DeletePermanently(studyLoad);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveByTagAsync(StudyLoadByLevelCacheKeys.Tags(request.ProgramId) , cancellationToken);
 
         return Result.Success();
     }
