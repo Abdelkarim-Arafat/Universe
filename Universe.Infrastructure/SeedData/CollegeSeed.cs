@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Infrastructure.SeedData;
+﻿namespace Universe.Infrastructure.SeedData;
 
 public class CollegeSeed
 {

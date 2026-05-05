@@ -1,5 +1,4 @@
 using Universe.Application.CourseOfferingExamServices.Dtos;
-using Universe.Application.ExamServices.CourseOfferingExamServices.Dtos;
 namespace Universe.Application.CourseOfferingExamServices.Queries.Get;
 
 public class GetCourseOfferingExamQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetCourseOfferingExamQuery, Result<CourseOfferingExamResponse>>
@@ -9,7 +8,7 @@ public class GetCourseOfferingExamQueryHandler(IUnitOfWork unitOfWork) : IReques
     public async Task<Result<CourseOfferingExamResponse>> Handle(GetCourseOfferingExamQuery request, CancellationToken cancellationToken)
     {
         var courseOfferingExam = await _unitOfWork.ExamRepository
-            .GetCourseOfferingExamAsync(request.courseOfferingId, request.examTermId, cancellationToken);
+            .GetCourseOfferingExamByIdAsync(request.id, cancellationToken);
 
         if (courseOfferingExam == null)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamNotFound);
@@ -21,7 +20,7 @@ public class GetCourseOfferingExamQueryHandler(IUnitOfWork unitOfWork) : IReques
 
         var filter = request.Filter;
 
-        var source = query.Select(com => new CourseExamCommitteesResponse
+        var source = query.Select(com => new CourseExamCommittees
                (
                 com.ExamCommitteeId,
                 com.ExamCommittee.CommitteeNumber,
@@ -42,7 +41,7 @@ public class GetCourseOfferingExamQueryHandler(IUnitOfWork unitOfWork) : IReques
         if (!string.IsNullOrEmpty(filter.SortColumn))
             source = source.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
 
-        var courseCommittees = await PaginationList<CourseExamCommitteesResponse>
+        var courseCommittees = await PaginationList<CourseExamCommittees>
              .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
 
         var response = new CourseOfferingExamResponse

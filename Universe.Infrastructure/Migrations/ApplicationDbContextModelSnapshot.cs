@@ -151,6 +151,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -180,13 +183,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProgramId");
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("AcademicEvents", (string)null);
+                    b.ToTable("AcademicEvents");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.AcademicProgram", b =>
@@ -194,6 +200,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("AcademicDegree")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AcademicLoad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CertificateTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -205,6 +221,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -228,11 +247,86 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("AcademicPrograms", (string)null);
+                    b.ToTable("AcademicPrograms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Computer Science",
+                            Code = "CS",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Study of computation, algorithms, and software systems.",
+                            IsDeleted = false,
+                            Name = "Computer Science",
+                            RequiredCreditHours = 144
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Artificial Intelligence",
+                            Code = "AI",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Study of intelligent systems, machine learning, and data science.",
+                            IsDeleted = false,
+                            Name = "Artificial Intelligence",
+                            RequiredCreditHours = 144
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Information Systems",
+                            Code = "IS",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Focus on information management and business systems.",
+                            IsDeleted = false,
+                            Name = "Information Systems",
+                            RequiredCreditHours = 138
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Software Engineering",
+                            Code = "SE",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Engineering principles applied to software development.",
+                            IsDeleted = false,
+                            Name = "Software Engineering",
+                            RequiredCreditHours = 150
+                        },
+                        new
+                        {
+                            Id = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            AcademicDegree = 2,
+                            AcademicLoad = 1,
+                            CertificateTitle = "Bachelor of Cyber Security",
+                            Code = "CY",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Protection of systems, networks, and data from cyber threats.",
+                            IsDeleted = false,
+                            Name = "Cyber Security",
+                            RequiredCreditHours = 144
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.AcademicYear", b =>
@@ -246,6 +340,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -266,11 +363,76 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("AcademicYears", (string)null);
+                    b.ToTable("AcademicYears");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2021, 8, 31),
+                            IsDeleted = false,
+                            Name = "2020-2021",
+                            StartDate = new DateOnly(2020, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2022, 8, 31),
+                            IsDeleted = false,
+                            Name = "2021-2022",
+                            StartDate = new DateOnly(2021, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2023, 8, 31),
+                            IsDeleted = false,
+                            Name = "2022-2023",
+                            StartDate = new DateOnly(2022, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2024, 8, 31),
+                            IsDeleted = false,
+                            Name = "2023-2024",
+                            StartDate = new DateOnly(2023, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-1f8f-76e6-abf8-02c790dab613"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2025, 8, 31),
+                            IsDeleted = false,
+                            Name = "2024-2025",
+                            StartDate = new DateOnly(2024, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2026, 8, 31),
+                            IsDeleted = false,
+                            Name = "2025-2026",
+                            StartDate = new DateOnly(2025, 9, 1)
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ApplicationRole", b =>
@@ -505,6 +667,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -519,12 +684,15 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Buildings", (string)null);
+                    b.ToTable("Buildings");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.College", b =>
@@ -535,6 +703,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -559,12 +730,15 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Colleges", (string)null);
+                    b.ToTable("Colleges");
 
                     b.HasData(
                         new
@@ -594,6 +768,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -610,8 +787,14 @@ namespace Universe.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("RequirementType")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -619,7 +802,209 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-95890ee5ba62"),
+                            Code = "CS101",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Introduction to programming concepts.",
+                            IsDeleted = false,
+                            Name = "Programming 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-958a05c9c32a"),
+                            Code = "CS102",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Advanced programming and problem solving.",
+                            IsDeleted = false,
+                            Name = "Programming 2"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-958b81dee3d6"),
+                            Code = "CS103",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Concepts of OOP and design principles.",
+                            IsDeleted = false,
+                            Name = "Object Oriented Programming"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-958c542ea45f"),
+                            Code = "CS201",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Data organization and structures.",
+                            IsDeleted = false,
+                            Name = "Data Structures"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-958d58bae05b"),
+                            Code = "CS202",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Algorithm design and analysis.",
+                            IsDeleted = false,
+                            Name = "Algorithms"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-958e1b56b349"),
+                            Code = "CS203",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Database design and SQL.",
+                            IsDeleted = false,
+                            Name = "Database Systems"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-958f9e72f562"),
+                            Code = "CS204",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Concepts of OS and processes.",
+                            IsDeleted = false,
+                            Name = "Operating Systems"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-9590bdb364c0"),
+                            Code = "CS205",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Network architecture and protocols.",
+                            IsDeleted = false,
+                            Name = "Computer Networks"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-9591262e88f8"),
+                            Code = "CS301",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Software development lifecycle.",
+                            IsDeleted = false,
+                            Name = "Software Engineering"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-95920fdf4a77"),
+                            Code = "AI301",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Introduction to AI concepts.",
+                            IsDeleted = false,
+                            Name = "Artificial Intelligence"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-9593115238f8"),
+                            Code = "AI302",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Supervised and unsupervised learning.",
+                            IsDeleted = false,
+                            Name = "Machine Learning"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-9594f9d4ca6a"),
+                            Code = "AI303",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Neural networks and deep models.",
+                            IsDeleted = false,
+                            Name = "Deep Learning"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-9595b8b7914a"),
+                            Code = "AI304",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Image processing and vision systems.",
+                            IsDeleted = false,
+                            Name = "Computer Vision"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-959678c41dea"),
+                            Code = "AI305",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Text processing and NLP techniques.",
+                            IsDeleted = false,
+                            Name = "Natural Language Processing"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-95977f4e315c"),
+                            Code = "CS302",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Security principles and practices.",
+                            IsDeleted = false,
+                            Name = "Cyber Security"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-9598a067e97e"),
+                            Code = "CS303",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Encryption and security algorithms.",
+                            IsDeleted = false,
+                            Name = "Cryptography"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-9599074ce97b"),
+                            Code = "CS304",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Concepts of distributed computing.",
+                            IsDeleted = false,
+                            Name = "Distributed Systems"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-959aa16694f7"),
+                            Code = "CS305",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Cloud platforms and services.",
+                            IsDeleted = false,
+                            Name = "Cloud Computing"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-959b0bc724f7"),
+                            Code = "CS306",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "User interface and UX design.",
+                            IsDeleted = false,
+                            Name = "Human Computer Interaction"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df349-a51c-7aba-9caf-959c5b7e0ee1"),
+                            Code = "CS307",
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Design of compilers and interpreters.",
+                            IsDeleted = false,
+                            Name = "Compiler Design"
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOffering", b =>
@@ -636,6 +1021,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("CreditHours")
                         .HasColumnType("decimal(5,2)");
@@ -682,6 +1070,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
@@ -692,7 +1083,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("CourseOfferings", (string)null);
+                    b.ToTable("CourseOfferings");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingAssessment", b =>
@@ -706,6 +1097,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -722,11 +1116,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseOfferingId");
 
-                    b.ToTable("CourseOfferingAssessments", (string)null);
+                    b.ToTable("CourseOfferingAssessments");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingCommittee", b =>
@@ -741,6 +1138,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -753,13 +1153,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseOfferingExamId");
 
                     b.HasIndex("ExamCommitteeId");
 
-                    b.ToTable("CourseOfferingCommittees", (string)null);
+                    b.ToTable("CourseOfferingCommittees");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingExam", b =>
@@ -773,6 +1176,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
@@ -795,13 +1201,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseOfferingId");
 
                     b.HasIndex("ExamTermId");
 
-                    b.ToTable("CourseOfferingExams", (string)null);
+                    b.ToTable("CourseOfferingExams");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingSession", b =>
@@ -815,6 +1224,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -824,11 +1236,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("CourseOfferingId", "TeachingSessionId");
 
                     b.HasIndex("TeachingSessionId");
 
-                    b.ToTable("CourseOfferingSessions", (string)null);
+                    b.ToTable("CourseOfferingSessions");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CoursePrerequisite", b =>
@@ -842,6 +1257,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -851,11 +1269,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("CourseId", "PrerequisiteCourseId");
 
                     b.HasIndex("PrerequisiteCourseId");
 
-                    b.ToTable("CoursePrerequisites", (string)null);
+                    b.ToTable("CoursePrerequisites");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Enrollment", b =>
@@ -869,6 +1290,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -888,13 +1312,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseOfferingId");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamCommittee", b =>
@@ -908,6 +1335,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -927,13 +1357,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ExamTermId");
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("ExamCommittees", (string)null);
+                    b.ToTable("ExamCommittees");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamSeat", b =>
@@ -947,6 +1380,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -959,11 +1395,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("StudentId", "CourseOfferingCommitteeId");
 
                     b.HasIndex("CourseOfferingCommitteeId");
 
-                    b.ToTable("ExamSeats", (string)null);
+                    b.ToTable("ExamSeats");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ExamTerm", b =>
@@ -977,6 +1416,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1002,13 +1444,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("ExamTerms", (string)null);
+                    b.ToTable("ExamTerms");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Grade", b =>
@@ -1027,6 +1472,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1054,6 +1502,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
@@ -1061,7 +1512,7 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Grades", (string)null);
+                    b.ToTable("Grades");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Level", b =>
@@ -1075,6 +1526,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1095,11 +1549,216 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.ToTable("Levels", (string)null);
+                    b.ToTable("Levels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cf36f1d180a"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 36,
+                            MinHours = 0,
+                            Name = "Level 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cf4d268fbec"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 72,
+                            MinHours = 37,
+                            Name = "Level 2"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cf568231cba"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 108,
+                            MinHours = 73,
+                            Name = "Level 3"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cf6124b1ecb"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 144,
+                            MinHours = 109,
+                            Name = "Level 4"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cf7ad92b89e"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 36,
+                            MinHours = 0,
+                            Name = "Level 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cf8937d84f4"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 72,
+                            MinHours = 37,
+                            Name = "Level 2"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cf9e82c4b82"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 108,
+                            MinHours = 73,
+                            Name = "Level 3"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cfa9abd172d"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 144,
+                            MinHours = 109,
+                            Name = "Level 4"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cfb22e7bb31"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 34,
+                            MinHours = 0,
+                            Name = "Level 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cfcf91e0ee9"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 68,
+                            MinHours = 35,
+                            Name = "Level 2"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cfdd431525b"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 102,
+                            MinHours = 69,
+                            Name = "Level 3"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cfeb8e8d41d"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 138,
+                            MinHours = 103,
+                            Name = "Level 4"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7cffb491c63b"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 38,
+                            MinHours = 0,
+                            Name = "Level 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7d00e6c3ddce"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 76,
+                            MinHours = 39,
+                            Name = "Level 2"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7d01aebd87c1"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 114,
+                            MinHours = 77,
+                            Name = "Level 3"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7d024664404f"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 150,
+                            MinHours = 115,
+                            Name = "Level 4"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7d033b7e618f"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 36,
+                            MinHours = 0,
+                            Name = "Level 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7d049703d7cb"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 72,
+                            MinHours = 37,
+                            Name = "Level 2"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7d05feaad5d1"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 108,
+                            MinHours = 73,
+                            Name = "Level 3"
+                        },
+                        new
+                        {
+                            Id = new Guid("019df4f8-4012-7469-9aa8-7d065b1fbceb"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxHours = 144,
+                            MinHours = 109,
+                            Name = "Level 4"
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Payment", b =>
@@ -1110,6 +1769,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1136,13 +1798,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ServiceId");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ProgramSchedule", b =>
@@ -1155,6 +1820,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<TimeOnly>("DayEndTime")
                         .HasColumnType("time");
@@ -1174,6 +1842,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ProgramId", "SemesterId");
 
                     b.HasIndex("SemesterId");
@@ -1181,7 +1852,7 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("ProgramId", "SemesterId")
                         .IsUnique();
 
-                    b.ToTable("ProgramSchedules", (string)null);
+                    b.ToTable("ProgramSchedules");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Room", b =>
@@ -1198,6 +1869,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1219,11 +1893,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BuildingId");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -1237,6 +1914,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1263,11 +1943,232 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicYearId");
 
-                    b.ToTable("Semesters", (string)null);
+                    b.ToTable("Semesters");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019df776-9108-75b2-9389-ac1049b0159f"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2021, 1, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 1,
+                            StartDate = new DateOnly(2020, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-9108-75b2-9389-ac110706f6d0"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2021, 6, 30),
+                            IsCurrent = true,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 2,
+                            StartDate = new DateOnly(2021, 2, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-9108-75b2-9389-ac1257cd67fe"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2021, 8, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 3,
+                            StartDate = new DateOnly(2021, 7, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-bc77-7ca8-a0f6-3c3845c23a04"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2022, 1, 31),
+                            IsCurrent = true,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 1,
+                            StartDate = new DateOnly(2021, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-bc77-7ca8-a0f6-3c39222b791a"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2022, 6, 30),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 2,
+                            StartDate = new DateOnly(2022, 2, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-bc77-7ca8-a0f6-3c3a1ab74d05"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2022, 8, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 3,
+                            StartDate = new DateOnly(2022, 7, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-f240-7e2a-bef0-a153c6a90cdc"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2023, 1, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 1,
+                            StartDate = new DateOnly(2022, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-f240-7e2a-bef0-a1549332c599"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2023, 6, 30),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 2,
+                            StartDate = new DateOnly(2023, 2, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df776-f240-7e2a-bef0-a1557960866d"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2023, 8, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 3,
+                            StartDate = new DateOnly(2023, 7, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-2097-7f6a-84f3-97e02fa63d59"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2024, 1, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 1,
+                            StartDate = new DateOnly(2023, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-2097-7f6a-84f3-97e1d0a5750b"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2024, 6, 30),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 2,
+                            StartDate = new DateOnly(2024, 2, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-2097-7f6a-84f3-97e210d2106a"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2024, 8, 31),
+                            IsCurrent = true,
+                            IsDeleted = false,
+                            IsResultAnnounced = true,
+                            Name = 3,
+                            StartDate = new DateOnly(2024, 7, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-504a-712e-b906-df4fabc6b69e"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c790dab613"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2025, 1, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = false,
+                            Name = 1,
+                            StartDate = new DateOnly(2024, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-504a-712e-b906-df50def24feb"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c790dab613"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2025, 6, 30),
+                            IsCurrent = true,
+                            IsDeleted = false,
+                            IsResultAnnounced = false,
+                            Name = 2,
+                            StartDate = new DateOnly(2025, 2, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c790dab613"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2025, 8, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = false,
+                            Name = 3,
+                            StartDate = new DateOnly(2025, 7, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2026, 1, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = false,
+                            Name = 1,
+                            StartDate = new DateOnly(2025, 9, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2026, 6, 30),
+                            IsCurrent = true,
+                            IsDeleted = false,
+                            IsResultAnnounced = false,
+                            Name = 2,
+                            StartDate = new DateOnly(2026, 2, 1)
+                        },
+                        new
+                        {
+                            Id = new Guid("019df777-7a6a-7c4b-af7e-6a7b7b27fa44"),
+                            AcademicYearId = new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateOnly(2026, 8, 31),
+                            IsCurrent = false,
+                            IsDeleted = false,
+                            IsResultAnnounced = false,
+                            Name = 3,
+                            StartDate = new DateOnly(2026, 7, 1)
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Service", b =>
@@ -1281,6 +2182,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1305,11 +2209,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ServiceRequest", b =>
@@ -1320,6 +2227,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1342,6 +2252,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PaymentId");
@@ -1350,7 +2263,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("ServiceRequests", (string)null);
+                    b.ToTable("ServiceRequests");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Student", b =>
@@ -1366,6 +2279,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly?>("DateOfBirth")
                         .HasColumnType("date");
@@ -1420,13 +2336,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdvisorId");
 
                     b.HasIndex("CollegeId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudentAcademicProgram", b =>
@@ -1439,6 +2358,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Currently")
                         .HasColumnType("bit");
@@ -1458,11 +2380,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("StudentId", "AcademicProgramId");
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.ToTable("StudentAcademicPrograms", (string)null);
+                    b.ToTable("StudentAcademicPrograms");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudentAssessment", b =>
@@ -1476,6 +2401,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1485,6 +2413,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal?>("degree")
                         .HasColumnType("decimal(18,2)");
 
@@ -1492,7 +2423,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("CourseOfferingAssessmentId");
 
-                    b.ToTable("StudentAssessments", (string)null);
+                    b.ToTable("StudentAssessments");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
@@ -1506,6 +2437,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1528,6 +2462,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
@@ -1536,7 +2473,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("SemesterId");
 
-                    b.ToTable("StudyLoadByLevels", (string)null);
+                    b.ToTable("StudyLoadByLevels");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadRule", b =>
@@ -1550,6 +2487,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
@@ -1572,11 +2512,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.ToTable("StudyLoadRules", (string)null);
+                    b.ToTable("StudyLoadRules");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.TeachingSession", b =>
@@ -1590,6 +2533,9 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Day")
                         .HasColumnType("int");
@@ -1621,13 +2567,16 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("InstructorId");
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("TeachingSessions", (string)null);
+                    b.ToTable("TeachingSessions");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.TeachingSessionEnrollment", b =>
@@ -1641,6 +2590,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -1650,11 +2602,14 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("EnrollmentId", "TeachingSessionId");
 
                     b.HasIndex("TeachingSessionId");
 
-                    b.ToTable("TeachingSessionEnrollments", (string)null);
+                    b.ToTable("TeachingSessionEnrollments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -1765,38 +2720,6 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.OwnsMany("Universe.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("ExpiresOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime?>("RevokedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("Token")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("UserId", "Id");
-
-                            b1.ToTable("RefreshTokens", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
                     b.OwnsMany("Universe.Core.Entities.PasswordResetOtp", "passwordResetOtps", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -1830,6 +2753,38 @@ namespace Universe.Infrastructure.Migrations
                             b1.HasKey("UserId", "Id");
 
                             b1.ToTable("PasswordResetOtps", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsMany("Universe.Core.Entities.RefreshToken", "RefreshTokens", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTime>("CreatedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ExpiresOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime?>("RevokedOn")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Token")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("UserId", "Id");
+
+                            b1.ToTable("RefreshTokens", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
@@ -1959,7 +2914,7 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.CoursePrerequisite", b =>
                 {
                     b.HasOne("Universe.Core.Entities.Course", "Course")
-                        .WithMany()
+                        .WithMany("Prerequisites")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2221,7 +3176,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students", (string)null);
+                            b1.ToTable("Students");
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
@@ -2257,7 +3212,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students", (string)null);
+                            b1.ToTable("Students");
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
@@ -2310,7 +3265,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students", (string)null);
+                            b1.ToTable("Students");
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
@@ -2351,7 +3306,7 @@ namespace Universe.Infrastructure.Migrations
 
                             b1.HasKey("StudentId");
 
-                            b1.ToTable("Students", (string)null);
+                            b1.ToTable("Students");
 
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
@@ -2416,7 +3371,7 @@ namespace Universe.Infrastructure.Migrations
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadByLevel", b =>
                 {
                     b.HasOne("Universe.Core.Entities.AcademicProgram", "AcademicProgram")
-                        .WithMany()
+                        .WithMany("StudyLoadByLevels")
                         .HasForeignKey("AcademicProgramId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2503,6 +3458,8 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Navigation("ProgramSchedules");
 
+                    b.Navigation("StudyLoadByLevels");
+
                     b.Navigation("StudyLoadRules");
 
                     b.Navigation("Users");
@@ -2543,6 +3500,11 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("Students");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Universe.Core.Entities.Course", b =>
+                {
+                    b.Navigation("Prerequisites");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOffering", b =>

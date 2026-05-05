@@ -109,3 +109,24 @@ public static class LevelCacheKeys
                $"{pageNumber}:{pageSize}";
     }
 }
+
+public static class GradeCacheKeys
+{
+    private static readonly string Prefix = "grades";
+    public static string ById(Guid id) => $"{Prefix}:{id}";
+    public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}" };
+    public static string List(
+       Guid programId,
+       string? searchValue,
+       string? sortColumn,
+       string? sortDirection,
+       int pageNumber,
+       int pageSize)
+    {
+        return $"{Prefix}:{programId}:list:" +
+               $"{searchValue ?? "null"}:" +
+               $"{sortColumn ?? "null"}:" +
+               $"{sortDirection ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+}

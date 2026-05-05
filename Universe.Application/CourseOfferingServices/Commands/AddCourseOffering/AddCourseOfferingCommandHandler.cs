@@ -1,4 +1,4 @@
-﻿using Universe.Application.CourseOfferingServices.Dtos;
+﻿using Universe.Core.Contracts.CourseOfferings;
 
 namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 

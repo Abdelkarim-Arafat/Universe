@@ -1,7 +1,6 @@
 ﻿using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.UserServices.Commands.RemoveImage;

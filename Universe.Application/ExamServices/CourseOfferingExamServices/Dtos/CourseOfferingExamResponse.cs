@@ -1,5 +1,3 @@
-using Universe.Application.ExamServices.CourseOfferingExamServices.Dtos;
-
 namespace Universe.Application.CourseOfferingExamServices.Dtos;
 
 public record CourseOfferingExamResponse
@@ -8,5 +6,15 @@ public record CourseOfferingExamResponse
      DateOnly Date,
      TimeOnly StartTime,
      TimeOnly EndTime,
-     PaginationList<CourseExamCommitteesResponse> CourseCommittees
+     PaginationList<CourseExamCommittees> CourseCommittees
+);
+
+public record CourseExamCommittees
+(
+    Guid Id,
+    int CommitteeNumber,
+    int Capacity,
+    int NumberOfRegisteredStudents,
+    int StartDistribution,
+    string Place
 );

@@ -1,6 +1,5 @@
 ﻿using Universe.Core.Contracts.Level;
 
-using Universe.Application.LevelServices.Dtos;
  
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 

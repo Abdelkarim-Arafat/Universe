@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Universe.Application.UserServices.UserDtos;
-using Universe.Core.Dtos.Student;
+using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
@@ -214,10 +214,18 @@ public class UserRepository
             .Where(sp => sp.StudentId == studentId && sp.Currently && !sp.IsDeleted)
             .Select(sp => sp.AcademicProgramId);
 
+        var today = DateOnly.FromDateTime(DateTime.Now);
+
+        var currentYearId = await _context.AcademicYears
+            .Where(ay => !ay.IsDeleted &&
+                         today >= ay.StartDate &&
+                         today <= ay.EndDate)
+            .Select(ay => ay.Id)
+            .FirstOrDefaultAsync(cancellationToken);
 
         // شيك علي موضوع ال current في السيميستر
         var currentSemesterIdQuery = _context.Semesters
-            .Where(s => s.IsCurrent && !s.IsDeleted)
+            .Where(s => s.AcademicYearId == currentYearId && s.IsCurrent && !s.IsDeleted)
             .Select(s => s.Id);
 
         var examTermsQuery = _context.ExamTerms

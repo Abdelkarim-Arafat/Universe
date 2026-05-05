@@ -35,4 +35,11 @@ public class RoomRepository(ApplicationDbContext context) : IRoomRepository
          .Select(room => room.Capacity)
          .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<bool> IsRoomHasAnotherCommitteeAsync
+        (Guid RoomId, Guid ExamTermId, CancellationToken cancellationToken = default)
+    {
+        return await _context.ExamCommittees
+            .AnyAsync(com => com.RoomId == RoomId && com.ExamTermId == ExamTermId && !com.IsDeleted, cancellationToken);
+    }
 }

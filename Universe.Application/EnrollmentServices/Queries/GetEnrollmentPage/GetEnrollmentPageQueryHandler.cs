@@ -1,6 +1,6 @@
 ﻿using Universe.Application.EnrollmentServices.Dtos;
 using Universe.Application.UserServices.UserDtos;
-using Universe.Core.Dtos.Enrollments;
+using Universe.Core.Contracts.Enrollments;
 
 namespace Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
 
@@ -20,7 +20,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         if (enrollmentContextDto.StudentLevelName is null)
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.StudentLevelNotFound);
 
-        if (enrollmentContextDto.MinHours is null || enrollmentContextDto.MaxHours is null)
+        if ((enrollmentContextDto.MinHours is null) || (enrollmentContextDto.MaxHours is null))
             return Result.Failure<EnrollmentPageResponse>(StudyLoadRuleErrors.NotFound);
 
         if (!enrollmentContextDto.IsSemesterValid)

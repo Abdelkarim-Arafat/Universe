@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 using Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
-using Universe.Application.CourseOfferingServices.Dtos;
+using Universe.Core.Contracts.CourseOfferings;
 
 namespace Universe.Application.Common;
 

@@ -1,4 +1,4 @@
-﻿using Universe.Application.CourseOfferingServices.Dtos;
+﻿using Universe.Core.Contracts.CourseOfferings;
 
 namespace Universe.Application.CourseOfferingServices.Query.GetProgramCoursesForExams;
 
@@ -25,30 +25,40 @@ public class GetProgramCoursesForExamsQueryHandler(
             return Result.Failure<PaginationList<CourseOfferingForExamsResponse>>
                 (SemesterErrors.NotFound);
 
-       var query = _unitOfWork.Repository<CourseOffering>()
-            .GetQueryable()
-            .Where(course =>
-              !course.IsDeleted
-            && course.AcademicProgramId == request.AcademicProgramId
-            && course.SemesterId ==  request.SemesterId)
-            .Select(courseOffering => new CourseOfferingForExamsResponse
-            (courseOffering.Id,
-             courseOffering.Course.Name,
-             courseOffering.Course.Code,
-             courseOffering.Enrollments.Count(enrol => !enrol.IsDeleted)
-            ));
+        var isExamTermExist = await _unitOfWork.ExamRepository
+             .IsExistExamTermAsync(request.examTermId, cancellationToken);
+
+        if (!isExamTermExist)
+            return Result.Failure<PaginationList<CourseOfferingForExamsResponse>>
+                (ExamErrors.ExamTermNotFound);
+
+        var query = _unitOfWork.Repository<CourseOffering>()
+        .GetQueryable()
+        .Where(course =>
+                 !course.IsDeleted
+               && course.AcademicProgramId == request.AcademicProgramId
+               && course.SemesterId == request.SemesterId)
+        .Select(courseOffering => new CourseOfferingForExamsResponse
+               (
+                 courseOffering.Id,
+                 courseOffering.CourseOfferingExams
+                .Where(exam => !exam.IsDeleted && exam.ExamTermId == request.examTermId)
+                .Select(exam => exam.Id).FirstOrDefault(),
+                 courseOffering.Course.Name,
+                 courseOffering.Course.Code,
+                 courseOffering.Enrollments.Count(enrol => !enrol.IsDeleted)
+               ));
 
         var filter = request.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
-            query = query.Where(x => x.CouresName
-            .Contains(filter.SearchValue) || x.CouresCode.Contains(filter.SearchValue));
+            query = query.ApplySearch(filter.SearchValue, x => x.CouresName, x => x.CouresCode);
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
 
         var response = await PaginationList<CourseOfferingForExamsResponse>
-            .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                      .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
 
         return Result.Success(response);
     }

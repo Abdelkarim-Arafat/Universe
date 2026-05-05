@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.CourseOfferingServices.Dtos;
+using Universe.Core.Contracts.CourseOfferings;
 
 namespace Universe.Application.CourseOfferingServices.Query.GetCourseOffering;
 

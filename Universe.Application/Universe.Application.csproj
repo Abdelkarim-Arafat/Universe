@@ -61,4 +61,8 @@
 		<None Include="UserServices\UserDtos\MilitaryDataResponse.cs" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="CourseOfferingServices\Dtos\" />
+	</ItemGroup>
+
 </Project>

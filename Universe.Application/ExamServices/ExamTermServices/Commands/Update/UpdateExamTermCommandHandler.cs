@@ -19,7 +19,7 @@ public class UpdateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
             examTerm.StartDate, examTerm.EndDate, cancellationToken);
 
         if (IsExistExamTermWithOverLabedTime)
-            return Result.Failure<ExamTermResponse>(ExamErrors.OverlabbingTime);
+            return Result.Failure<ExamTermResponse>(ExamErrors.OverlappingTime);
 
         var IsExistExamTermWithSameType = await _unitOfWork.ExamRepository.IsExistExamTermWithSameTypeAsync
             (null, examTerm.SemesterId, examTerm.AcademicProgramId, examTerm.ExamType, cancellationToken);

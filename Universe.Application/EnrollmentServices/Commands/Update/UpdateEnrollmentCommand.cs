@@ -1,5 +1,4 @@
-﻿using Universe.Application.EnrollmentServices.Dtos;
-using Universe.Core.Dtos.Enrollments;
+﻿using Universe.Core.Contracts.Enrollments;
 
 namespace Universe.Application.EnrollmentServices.Commands.Update;
 

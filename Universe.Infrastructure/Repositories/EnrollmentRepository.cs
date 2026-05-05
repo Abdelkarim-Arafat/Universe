@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Universe.Application.EnrollmentServices.Dtos;
-using Universe.Core.Dtos.Enrollments;
-using Universe.Core.Dtos.Student;
+using Universe.Core.Contracts.Enrollments;
+using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
@@ -14,16 +14,6 @@ public class EnrollmentRepository(
     ) : IEnrollmentRepository
 {
     private readonly ApplicationDbContext _context = context;
-
-
-    public async Task<List<Guid>> GetStudentsIdsByCourseOfferingAsync(Guid CourseOfferingId, CancellationToken CancellationToken)
-    {
-        return await _context.Enrollments
-             .Where(enroll => !enroll.IsDeleted && enroll.CourseOfferingId == CourseOfferingId)
-             .OrderBy(enroll => enroll.Student.Name)
-             .Select(enroll => enroll.StudentId)
-             .ToListAsync(CancellationToken);
-    }
 
     public async Task<StudentAcademicHistoryContextDto?> GetStudentAcademicHistoryContextAsync(
       Guid studentId,
@@ -88,8 +78,17 @@ public class EnrollmentRepository(
     public async Task<List<StudentExistingEnrollment>> GetStudentScheduleAsync
         (Guid studentId, CancellationToken cancellationToken)
     {
+        var today = DateOnly.FromDateTime(DateTime.Now);
+
+        var currentYearId = await _context.AcademicYears
+            .Where(ay => !ay.IsDeleted &&
+                         today >= ay.StartDate &&
+                         today <= ay.EndDate)
+            .Select(ay => ay.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
         var currentSemesterId = await _context.Semesters
-            .Where(s => s.IsCurrent && !s.IsDeleted)
+            .Where(s => s.AcademicYearId == currentYearId && s.IsCurrent && !s.IsDeleted)
             .Select(s => s.Id)
             .FirstOrDefaultAsync(cancellationToken);
 

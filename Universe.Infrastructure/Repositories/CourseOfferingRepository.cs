@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Universe.Application.EnrollmentServices.Dtos;
-using Universe.Core.Dtos.Enrollments;
+using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
+using System.Linq.Dynamic.Core;
 
 namespace Universe.Infrastructure.Repositories;
 
@@ -32,35 +32,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         => await _context.CourseOfferingAssessments
         .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
         .ToListAsync(cancellationToken);
-
-
-    public async Task<Dictionary<Guid, List<CourseOfferingAssessment>>>
-        GetCourseOfferingsAssessmentsBulkAsync(
-            List<Guid> courseOfferingIds,
-            CancellationToken cancellationToken)
-    {
-
-        var data = await _context.CourseOfferingAssessments
-            .Where(a => courseOfferingIds.Contains(a.CourseOfferingId) && !a.IsDeleted)
-            .ToListAsync(cancellationToken);
-
-
-        var dict = data
-            .GroupBy(a => a.CourseOfferingId)
-            .ToDictionary(
-                g => g.Key,
-                g => g.ToList()
-            );
-
-        return dict;
-    }
-
-    public async Task<decimal> RegistredHours(List<Guid> CourseOfferingIds, CancellationToken cancellationToken)
-    {
-        return await _context.CourseOfferings
-            .Where(co => CourseOfferingIds.Contains(co.Id) && !co.IsDeleted)
-            .SumAsync(co => co.CreditHours, cancellationToken);
-    }
 
     public async Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
      Guid studentId,
@@ -112,4 +83,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             ))
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    
 }

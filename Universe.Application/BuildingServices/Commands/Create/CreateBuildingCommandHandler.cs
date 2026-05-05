@@ -1,4 +1,6 @@
-﻿namespace Universe.Application.BuildingServices.Commands.Create;
+﻿using Universe.Core.Constants.Buildings;
+
+namespace Universe.Application.BuildingServices.Commands.Create;
 
 public class CreateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateBuildingCommand, Result<BuildingResponse>>
 {

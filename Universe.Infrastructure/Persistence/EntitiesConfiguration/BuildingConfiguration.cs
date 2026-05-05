@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Universe.Core.Entities;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -13,5 +14,6 @@ public class BuildingConfiguration : IEntityTypeConfiguration<Building>
         builder.Property(b => b.Name)
             .IsRequired()
             .HasMaxLength(100);
+        builder.HasData(BuildingSeed.Data);
     }
 }

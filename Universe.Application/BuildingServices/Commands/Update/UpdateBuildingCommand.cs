@@ -1,4 +1,6 @@
-﻿namespace Universe.Application.BuildingServices.Commands.Update;
+﻿using Universe.Core.Constants.Buildings;
+
+namespace Universe.Application.BuildingServices.Commands.Update;
 
 public record UpdateBuildingCommand
 (

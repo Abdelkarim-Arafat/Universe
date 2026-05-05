@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.CourseOfferingServices.Dtos;
+﻿
+using Universe.Core.Contracts.CourseOfferings;
 using Universe.Core.Enums;
 
 namespace Universe.Application.CourseOfferingServices.Query.GetLevelCourses;

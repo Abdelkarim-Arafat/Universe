@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using Universe.Core.Entities;
- 
+using Universe.Infrastructure.SeedData;
+
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
 public class GradeConfiguration : IEntityTypeConfiguration<Grade>
@@ -24,5 +25,7 @@ public class GradeConfiguration : IEntityTypeConfiguration<Grade>
             .IsRequired();
         builder.Property(c => c.MaxScore)
             .IsRequired();
+
+        builder.HasData(GradeSeed.Data);
     }
 }

@@ -1,13 +1,11 @@
-﻿using Universe.Core.Dtos.Enrollments;
-using Universe.Core.Dtos.Student;
+﻿using Universe.Core.Contracts.Enrollments;
+using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 
 namespace Universe.Core.Interfaces.Repositories;
 
 public interface IEnrollmentRepository
 {
-
-    Task<List<Guid>> GetStudentsIdsByCourseOfferingAsync(Guid CourseOfferingId, CancellationToken CancellationToken);
     Task<StudentAcademicHistoryContextDto?> GetStudentAcademicHistoryContextAsync(Guid studentId, CancellationToken cancellationToken);
 
     Task<EnrollmentValidationContextDto?> 

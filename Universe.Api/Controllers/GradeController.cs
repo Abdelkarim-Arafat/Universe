@@ -1,14 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
 using Universe.Application.GradeServices.Commands.Create;
 using Universe.Application.GradeServices.Commands.Delete;
 using Universe.Application.GradeServices.Commands.Update;
-using Universe.Application.GradeServices.Queries.GetAcademicProgramGrades;
-using Universe.Application.GradeServices.Queries.GetGrade;
- 
+using Universe.Application.GradeServices.Queries.GetGradesByProgram;
+using Universe.Application.GradeServices.Queries.Get;
+using Universe.Core.Constants;
+
 namespace Universe.Api.Controllers;
 
 [Route("programs/{academicProgramId:guid}/grades")]
@@ -18,6 +20,8 @@ public class GradeController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken = default)
     {
         var query = new GetGradeQuery(id);
@@ -26,16 +30,21 @@ public class GradeController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpGet("all")]
-    public async Task<IActionResult> GetProgramGrades(Guid academicProgramId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
+    [HttpGet("")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetProgramGrades
+        (Guid academicProgramId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
     {
-        var query = new GetAcademicProgramGradesQuery(academicProgramId, filter);
+        var query = new GetGradesByProgramQuery(academicProgramId, filter);
         var result = await _mediator.Send(query, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPost]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Create([FromBody] CreateGradeCommand command, Guid academicProgramId, CancellationToken cancellationToken = default)
     {
         command = command with { AcademicProgramId = academicProgramId };
@@ -47,6 +56,8 @@ public class GradeController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
     [HttpPut("{id}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Update([FromBody] UpdateGradeCommand command, Guid id, CancellationToken cancellationToken = default)
     {
         command = command with { Id = id };
@@ -55,6 +66,8 @@ public class GradeController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
     [HttpDelete("{id}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Remove(Guid id, CancellationToken cancellationToken = default)
     {
         var command = new DeleteGradeCommand(id);

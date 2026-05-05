@@ -1,4 +1,4 @@
-﻿using Universe.Core.Dtos.Student;
+﻿using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 
 namespace Universe.Core.Interfaces.Repositories;

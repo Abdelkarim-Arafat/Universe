@@ -12,4 +12,7 @@ public class RoomErrors
 
     public static readonly Error UnValidCapacity =
         new("Room.UnValidCapacity", "This Capacity is larger than Room Capacity", StatusCodes.Status409Conflict);
+
+    public static readonly Error AlreadyHasCommittee =
+        new("Room.AleardyHasCommittee", "this room already has committee !", StatusCodes.Status409Conflict);
 }

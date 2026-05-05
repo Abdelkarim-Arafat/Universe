@@ -1,5 +1,4 @@
-﻿using Universe.Application.LevelServices.Dtos;
- 
+﻿
 using Universe.Core.Contracts.Level;
 
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
@@ -14,7 +13,7 @@ public class GetAcademicProgramLevelsQueryHandler(
 
     public async Task<Result<PaginationList<LevelResponse>>> Handle(GetAcademicProgramLevelsQuery request, CancellationToken cancellationToken)
     {
-        if(await _unitOfWork.AcademicProgramRepository
+        if(!await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.ProgramId, cancellationToken)
            ) return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.NotFound);
              

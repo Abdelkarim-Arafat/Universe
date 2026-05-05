@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Universe.Core.Dtos.Enrollments;
+using Universe.Core.Contracts.Enrollments;
 
 namespace Universe.Application.UserServices.Querys.GetStudentSchedule;
 

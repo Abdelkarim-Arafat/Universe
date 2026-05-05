@@ -1,4 +1,6 @@
-﻿namespace Universe.Application.BuildingServices.Commands.Update;
+﻿using Universe.Core.Constants.Buildings;
+
+namespace Universe.Application.BuildingServices.Commands.Update;
 
 public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateBuildingCommand, Result<BuildingResponse>>
 {

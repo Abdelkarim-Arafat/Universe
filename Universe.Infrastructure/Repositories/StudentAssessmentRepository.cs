@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Universe.Core.Dtos.Student;
+using Universe.Core.Contracts.Student;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
  

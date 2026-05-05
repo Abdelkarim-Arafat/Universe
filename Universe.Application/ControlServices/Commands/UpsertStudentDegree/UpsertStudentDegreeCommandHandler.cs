@@ -13,7 +13,7 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
             return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.NotFound);
 
         if (!studentData.IsAcademicProgramValid)
-            return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.AcademicProgramNotFound);
+            return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.NotFound);
 
         if (!studentData.IsCourseOpenForControl)
             return Result.Failure<UpsertDegreeResponse>(CourseOfferingErrors.NotOpenForControl);

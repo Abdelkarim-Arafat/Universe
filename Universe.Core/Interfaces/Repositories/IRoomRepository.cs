@@ -8,5 +8,5 @@ public interface IRoomRepository
     Task<Room?> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default);
     Task<bool> IsExistAsync(Guid Id, CancellationToken cancellationToken = default);
     Task<int> GetRoomCapacity(Guid Id, CancellationToken cancellationToken = default);
-
+    Task<bool> IsRoomHasAnotherCommitteeAsync(Guid RoomId, Guid ExamTermId, CancellationToken cancellationToken = default);
 }

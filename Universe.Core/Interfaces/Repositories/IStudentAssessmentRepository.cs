@@ -1,5 +1,5 @@
 ﻿using Universe.Core.Entities;
-using Universe.Core.Dtos.Student;
+using Universe.Core.Contracts.Student;
 namespace Universe.Core.Interfaces.Repositories;
 
 public interface IStudentAssessmentRepository

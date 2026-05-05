@@ -1,4 +1,4 @@
-﻿using Universe.Application.BuildingServices.Dtos;
+﻿using Universe.Core.Constants.Buildings;
 
 namespace Universe.Application.BuildingServices.Queries.Get;
 
