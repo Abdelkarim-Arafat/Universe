@@ -5,7 +5,7 @@ using System.Text;
 using Universe.Core.Contracts.PayPal;
 using Universe.Core.Enums;
 
-namespace Universe.Application.PaymentService.Commands.CreateOrder;
+namespace Universe.Application.AcademicServiceServices.Commands.CreateOrder;
 
 public class CreateOrderCommandHandler(
     IUnitOfWork unitOfWork,

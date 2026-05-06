@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.CourseOfferingServices.Dtos;
+using Universe.Core.Contracts.CourseOffering;
 using Universe.Core.Enums;
 
 namespace Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
 
-public record GetLevelCoursesCommand(
+public record GetLevelCoursesQuery(
+    [Required] Guid AcademicProgramId,
     [Required] Guid LevelId,
     [Required] Guid AcademicYearId,
     [Required] TermType SemesterType
-) : IRequest<Result<List<CourseOfferingResponse>>>;
+) : IRequest<Result<IReadOnlyList<CourseOfferingResponse>>>;

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Universe.Application.CourseOfferingServices.Dtos;
+namespace Universe.Core.Contracts.CourseOffering;
 
 public record CourseOfferingResponse(
-    string Id,
+    Guid Id,
     string Name,
     string Code,
     int NumberOfGroups

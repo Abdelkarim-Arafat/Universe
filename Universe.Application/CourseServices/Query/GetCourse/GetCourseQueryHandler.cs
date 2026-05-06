@@ -19,16 +19,16 @@ public class GetCourseQueryHandler(
             .IsExistAsync(request.CollegeId , cancellationToken) is false
             ) return Result.Failure<CourseWithPreRequisiteResponse>(CollegeErrors.NotFound);
 
-        var course = await _cacheService.GetOrCreateAsync(
+        var courseResponse = await _cacheService.GetOrCreateAsync(
             key: CourseCacheKeys.ById(request.Id),
             factory: async () => await _unitOfWork.CourseRepository
                 .GetCourseWithPrerequisitesAsync(request.Id, cancellationToken),
             cancellationToken: cancellationToken
         );
 
-        if (course is null)
+        if (courseResponse is null)
             return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.CourseNotFound);
 
-        return Result.Success(course);
+        return Result.Success(courseResponse);
     }
 }

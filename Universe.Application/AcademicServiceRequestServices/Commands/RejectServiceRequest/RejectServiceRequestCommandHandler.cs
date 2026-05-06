@@ -7,11 +7,13 @@ namespace Universe.Application.AcademicServiceRequestServices.Commands.RejectSer
 
 internal class RejectServiceRequestCommandHandler(
     IUnitOfWork unitOfWork,
-    IPayPalService paypal
+    IPayPalService paypal,
+    ICacheService cacheService
     ) : IRequestHandler<RejectServiceRequestCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPayPalService _paypal = paypal;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(RejectServiceRequestCommand request, CancellationToken cancellationToken)
     {
@@ -30,6 +32,9 @@ internal class RejectServiceRequestCommandHandler(
         serviceRequest.UpdatedAt = DateTime.UtcNow;
 
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveByTagAsync(ServiceRequestCacheKeys.Tags(request.CollegeId), cancellationToken);
+        
         return Result.Success();
     }
 }

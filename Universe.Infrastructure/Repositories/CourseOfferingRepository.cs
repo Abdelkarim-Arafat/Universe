@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.CourseOffering;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
@@ -18,6 +19,18 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                 && c.LevelId == LevelId
                 && c.CourseId == CourseId, cancellationToken);
 
+    public async Task<IReadOnlyList<CourseOfferingResponse>> GetLevelCoursesAsync(Guid LevelId, Guid SemesterId, CancellationToken cancellationToken)
+        => await _context.CourseOfferings
+            .AsNoTracking()
+            .Where(c => c.LevelId == LevelId && c.SemesterId == SemesterId && !c.IsDeleted)
+            .Select(c => new CourseOfferingResponse(
+                c.Id,
+                c.Course.Name,
+                c.Course.Code,
+                c.NumberOfGroups
+            ))
+            .ToListAsync(cancellationToken);
+
     public async Task<bool> IsExistAsync(Guid CourseOfferingId, CancellationToken cancellationToken)
     {
         return await _context.CourseOfferings.AnyAsync(co => co.Id == CourseOfferingId, cancellationToken);
@@ -26,6 +39,10 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         => _context.CourseOfferings
         .FirstOrDefaultAsync(c => c.Id == Id && !c.IsDeleted, cancellationToken);
 
+    public async Task<CourseOffering?> GetByIdIncludingAssessmentsAsync(Guid Id, CancellationToken cancellationToken)
+        => await _context.CourseOfferings
+            .Include(co => co.Assessments)
+            .FirstOrDefaultAsync(c => c.Id == Id && !c.IsDeleted, cancellationToken);
     public async Task<List<CourseOfferingAssessment>> GetCourseOfferingAssessments(Guid CourseOfferingId, CancellationToken cancellationToken)
         => await _context.CourseOfferingAssessments
         .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
@@ -89,6 +106,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             .Where(co => CourseOfferingIds.Contains(co.Id) && !co.IsDeleted)
             .SumAsync(co => co.CreditHours, cancellationToken);
     }
+
     public async Task<Dictionary<Guid, Guid>> CourseOfferingIdsToCourseIdAsync(List<Guid> CourseOfferingsIds, CancellationToken cancellationToken)
     {
         return await _context.CourseOfferings

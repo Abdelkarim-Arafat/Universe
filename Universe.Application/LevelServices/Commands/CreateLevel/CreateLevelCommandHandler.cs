@@ -28,11 +28,7 @@ public class CreateLevelCommandHandler(
 
         await _cacheService.RemoveByTagAsync(LevelCacheKeys.Tags(request.AcademicProgramId), cancellationToken);
 
-        var response = await _cacheService.GetOrCreateAsync(
-            key: LevelCacheKeys.ById(level.Id),
-            factory: async() => level.Adapt<LevelResponse>(),
-            cancellationToken: cancellationToken
-        );
+        var response = level.Adapt<LevelResponse>();
 
         return Result.Success(response);
     }

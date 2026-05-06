@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.CourseOfferingServices.Dtos;
+using Universe.Core.Contracts.CourseOffering;
 
 namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 
 internal class UpdateCourseOfferingCommandHandler (
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
 ) : IRequestHandler<UpdateCourseOfferingCommand, Result<CourseOfferingWithDetailsResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<CourseOfferingWithDetailsResponse>> Handle(UpdateCourseOfferingCommand request, CancellationToken cancellationToken)
     {
         if ((await _unitOfWork.CourseOfferingRepository
-            .GetByIdAsync(request.Id, cancellationToken)) is not { } course)
+            .GetByIdIncludingAssessmentsAsync(request.Id, cancellationToken)) is not { } course)
             return Result.Failure<CourseOfferingWithDetailsResponse>(CourseOfferingErrors.NotFound);
 
         if (!(await _unitOfWork.AcademicProgramRepository
@@ -28,23 +30,20 @@ internal class UpdateCourseOfferingCommandHandler (
         request.Adapt(course);
         course.SemesterId = semester.Id;
 
-        var requestTypes = request.Assessments.Select(x => x.Type);
+        var requestTypes = request.Assessments.ToDictionary(x => x.Type);
 
-        var currentAssessments = await _unitOfWork.CourseOfferingRepository
-            .GetCourseOfferingAssessments(course.Id , cancellationToken);
+        var currentAssessments = course.Assessments;
 
         foreach (var assessment in currentAssessments)
         {
-            if (requestTypes.Contains(assessment.Type))
+            if (requestTypes.TryGetValue(assessment.Type, out var req))
             {
-                var req = request.Assessments.First(r => r.Type == assessment.Type);
                 assessment.MaxScore = req.MaxScore;
-                _unitOfWork.Repository<CourseOfferingAssessment>().Update(assessment);
             }
             else _unitOfWork.Repository<CourseOfferingAssessment>().SoftDelete(assessment);
         }
 
-        var existingTypes = currentAssessments.Select(a => a.Type);
+        var existingTypes = currentAssessments.Select(a => a.Type).ToHashSet();
 
         var newAssessments = request.Assessments
             .Where(r => !existingTypes.Contains(r.Type))
@@ -61,16 +60,12 @@ internal class UpdateCourseOfferingCommandHandler (
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        var courseEntity = await _unitOfWork.Repository<CourseOffering>()
-            .GetQueryable()
-            .AsNoTracking()
-            .Include(c => c.Assessments)
-            .Where(x => x.Id == course.Id)
-            .FirstOrDefaultAsync(cancellationToken);
+        
+        await _cacheService.RemoveAsync(CourseOfferingCacheKeys.ById(course.Id), cancellationToken);
+        await _cacheService.RemoveAsync(CourseOfferingCacheKeys.LevelCourses(course.LevelId, course.Id), cancellationToken);
+        await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId), cancellationToken);
 
-        // update(course)
-        // حذف الريكويست
-        var response = (courseEntity).Adapt<CourseOfferingWithDetailsResponse>();
+        var response = (course, semester).Adapt<CourseOfferingWithDetailsResponse>();
 
         return Result.Success(response!);
     }

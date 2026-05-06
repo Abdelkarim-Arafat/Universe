@@ -1,5 +1,5 @@
 ﻿
-using Universe.Application.CourseOfferingServices.Dtos;
+using Universe.Core.Contracts.CourseOffering;
 using Universe.Core.Enums;
 
 namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
@@ -14,14 +14,13 @@ public record AddCourseOfferingCommand(
     bool IsOptional,
     string? OptionalGroupCode,
     bool IsIncludedInGpa,
-    RequirementType Type,
     Guid CourseId,
     TermType SemesterType,
     Guid LevelId,
-    List<CourseOfferingAssessmentCommand> Assessments
+    List<AddAssessments> Assessments
 ) : IRequest<Result<CourseOfferingWithDetailsResponse>>;
 
-public record CourseOfferingAssessmentCommand(
+public record AddAssessments(
     AssessmentType Type,
     decimal MaxScore
 );

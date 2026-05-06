@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcademicServiceServices.ServiceDtos;
+using Universe.Core.Contracts.Service;
 
 namespace Universe.Application.AcademicServiceServices.Commands.Add_Service;
 
-internal class AddServiceCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddServiceCommand , Result<ServiceResponse>>
+internal class AddServiceCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
+    ) : IRequestHandler<AddServiceCommand , Result<ServiceResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<ServiceResponse>> Handle(AddServiceCommand request, CancellationToken cancellationToken)
     {

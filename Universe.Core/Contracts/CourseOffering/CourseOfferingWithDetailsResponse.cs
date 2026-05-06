@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Enums;
 
-namespace Universe.Application.CourseOfferingServices.Dtos;
+namespace Universe.Core.Contracts.CourseOffering;
 
 public record CourseOfferingWithDetailsResponse(
     Guid Id,
@@ -14,7 +14,6 @@ public record CourseOfferingWithDetailsResponse(
     bool IsOptional,
     string? OptionalGroupCode,
     bool IsIncludedInGpa,
-    RequirementType Type,
     TermType SemesterType,
     Guid CourseId,
     Guid SemesterId,

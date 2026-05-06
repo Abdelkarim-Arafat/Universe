@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicServiceRequestServices.Commands.AcceptServiceRequest;
 using Universe.Application.AcademicServiceRequestServices.Commands.RejectServiceRequest;
@@ -8,36 +9,45 @@ using Universe.Application.AcademicServiceRequestServices.Queries.GetAllServiceR
 using Universe.Application.AcademicServiceRequestServices.Queries.GetServiceRequestHistory;
 using Universe.Application.AcademicServiceRequestServices.Queries.GetStudentServiceRequestHistory;
 using Universe.Application.Common;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
-[Route("service-requests")]
-[ApiController , Authorize]
+[Route("colleges/{collegeId:guid}/service-requests")]
+[ApiController]
 public class ServiceRequestController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpPatch("{requestId:guid}/accept")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> AcceptRequest (
+        [FromRoute] Guid collegeId,
         [FromRoute] Guid requestId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new AcceptServiceRequestCommand(requestId), cancellationToken);
+        var result = await _mediator.Send(new AcceptServiceRequestCommand(collegeId, requestId), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
 
     [HttpPatch("{requestId:guid}/reject")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> RejectRequest(
+        [FromRoute] Guid collegeId,
         [FromRoute] Guid requestId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new RejectServiceRequestCommand(requestId), cancellationToken);
+        var result = await _mediator.Send(new RejectServiceRequestCommand(collegeId, requestId), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
 
     [HttpGet("history")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetServiceRequestHistory(
-     [FromQuery] Guid collegeId,
+     [FromRoute] Guid collegeId,
      [FromQuery] FilterRequest filter,
      CancellationToken cancellationToken)
     {
@@ -46,6 +56,8 @@ public class ServiceRequestController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("student-history")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.Student)]
     public async Task<IActionResult> GetStudentServiceRequestHistory(
     [FromQuery] FilterRequest filter,
     CancellationToken cancellationToken)
@@ -55,8 +67,10 @@ public class ServiceRequestController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetAllServiceRequests(
-    [FromQuery] Guid collegeId,
+    [FromRoute] Guid collegeId,
     [FromQuery] FilterRequest filter,
     CancellationToken cancellationToken)
     {

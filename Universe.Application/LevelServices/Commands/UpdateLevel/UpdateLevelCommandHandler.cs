@@ -33,11 +33,7 @@ public class UpdateLevelCommandHandler(
         await _cacheService.RemoveByTagAsync(LevelCacheKeys.Tags(request.ProgramId), cancellationToken);
         await _cacheService.RemoveAsync(LevelCacheKeys.ById(level.Id), cancellationToken);
 
-        var response = await _cacheService.GetOrCreateAsync(
-            key: LevelCacheKeys.ById(level.Id),
-            factory: async () => level.Adapt<LevelResponse>(),
-            cancellationToken: cancellationToken
-        );
+        var response = level.Adapt<LevelResponse>();
 
         return Result.Success(response);
     }

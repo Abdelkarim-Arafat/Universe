@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -49,5 +50,7 @@ public class CourseOfferingConfiguration : IEntityTypeConfiguration<CourseOfferi
         builder.HasMany(co => co.Assessments)
             .WithOne(a => a.CourseOffering)
             .HasForeignKey(a => a.CourseOfferingId);
+
+        builder.HasData(CourseOfferingSeed.Data);
     }
 }

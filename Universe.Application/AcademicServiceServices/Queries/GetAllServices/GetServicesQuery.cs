@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcademicServiceServices.ServiceDtos;
+using Universe.Core.Contracts.Service;
 
 namespace Universe.Application.AcademicServiceServices.Queries.GetAllServices;
 
-public record GetAllServicesQuery(
+public record GetServicesQuery(
     [Required] Guid CollegeId,
-    FilterRequest FilterRequest
+    FilterRequest Filter
 ) : IRequest<Result<PaginationList<ServiceResponse>>>;

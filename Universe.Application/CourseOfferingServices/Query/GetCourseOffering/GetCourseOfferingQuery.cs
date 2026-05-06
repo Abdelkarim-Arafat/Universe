@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.CourseOfferingServices.Dtos;
+using Universe.Core.Contracts.CourseOffering;
 
 namespace Universe.Application.CourseOfferingServices.Query.GetCourseOffering;
 
-public record GetCourseOfferingCommand (
+public record GetCourseOfferingQuery (
     [Required] Guid Id
 ) : IRequest<Result<CourseOfferingWithDetailsResponse>>;

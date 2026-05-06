@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Universe.Application.AcademicServiceRequestServices.ServiceRequestDtos;
+namespace Universe.Core.Contracts.ServiceRequest;
 
 public record ServiceRequestResponse(
-    string Id,
+    Guid Id,
     decimal Price,
     string ServiceName,
     string StudentName,

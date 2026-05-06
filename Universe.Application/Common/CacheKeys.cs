@@ -24,6 +24,71 @@ public static class AcademicProgramCacheKeys
                $"{pageNumber}:{pageSize}";
     }
 }
+public static class ServiceCacheKeys
+{
+    private static readonly string Prefix = "services";
+    public static string ById(Guid id) => $"{Prefix}:{id}";
+    public static string[] Tags(Guid collegeId) => new[] { $"{Prefix}:{collegeId}" };
+    public static string List(
+       Guid collegeId,
+       string? searchValue,
+       string? sortColumn,
+       string? sortDirection,
+       int pageNumber,
+       int pageSize)
+    {
+        return $"{Prefix}:{collegeId}:list:" +
+               $"{searchValue ?? "null"}:" +
+               $"{sortColumn ?? "null"}:" +
+               $"{sortDirection ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+}
+
+public static class ServiceRequestCacheKeys
+{
+    private static readonly string Prefix = "service-requests";
+    public static string ById(Guid id)
+        => $"{Prefix}:{id}";
+    public static string[] Tags(Guid collegeId)
+        => new[] { $"{Prefix}:{collegeId}" };
+    public static string PendingList(
+        Guid collegeId,
+        string? sortColumn,
+        string? sortDirection,
+        int pageNumber,
+        int pageSize)
+    {
+        return $"{Prefix}:{collegeId}:pending:" +
+               $"{sortColumn ?? "null"}:" +
+               $"{sortDirection ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+    public static string HistoryList(
+        Guid collegeId,
+        string? sortColumn,
+        string? sortDirection,
+        int pageNumber,
+        int pageSize)
+    {
+        return $"{Prefix}:{collegeId}:history:" +
+               $"{sortColumn ?? "null"}:" +
+               $"{sortDirection ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+    public static string StudentHistory(
+        Guid studentId,
+        string? sortColumn,
+        string? sortDirection,
+        int pageNumber,
+        int pageSize)
+    {
+        return $"{Prefix}:student:{studentId}:history:" +
+               $"{sortColumn ?? "null"}:" +
+               $"{sortDirection ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+}
 
 public static class AcademicYearCacheKeys
 {
@@ -103,6 +168,36 @@ public static class LevelCacheKeys
        int pageSize)
     {
         return $"{Prefix}:{programId}:list:" +
+               $"{searchValue ?? "null"}:" +
+               $"{sortColumn ?? "null"}:" +
+               $"{sortDirection ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+}
+
+public static class CourseOfferingCacheKeys
+{
+    private static readonly string Prefix = "course-offerings";
+    public static string ById(Guid id)
+        => $"{Prefix}:{id}";
+    public static string[] Tags(Guid programId)
+        => new[] { $"{Prefix}:{programId}" };
+    public static string LevelCourses(
+        Guid levelId,
+        Guid semesterId)
+    {
+        return $"{Prefix}:level:{levelId}:semester:{semesterId}";
+    }
+    public static string ProgramCoursesForExams (
+        Guid programId,
+        Guid semesterId,
+        string? searchValue,
+        string? sortColumn,
+        string? sortDirection,
+        int pageNumber,
+        int pageSize)
+    {
+        return $"{Prefix}:{programId}:semester:{semesterId}:list:" +
                $"{searchValue ?? "null"}:" +
                $"{sortColumn ?? "null"}:" +
                $"{sortDirection ?? "null"}:" +

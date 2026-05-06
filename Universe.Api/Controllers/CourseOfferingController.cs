@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
 using Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
@@ -9,37 +10,46 @@ using Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 using Universe.Application.CourseOfferingServices.Query.GetCourseOffering;
 using Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
 using Universe.Application.CourseOfferingServices.Query.GetProgramCoursesForExams;
+using Universe.Core.Constants;
 using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
 
 [Route("programs/{programId:guid}/course-offerings")]
-[ApiController , Authorize]
+[ApiController]
+
 public class CourseOfferingController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetCourseOffering (
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetCourseOffering(
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetCourseOfferingCommand(id), cancellationToken);
+        var result = await _mediator.Send(new GetCourseOfferingQuery(id), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpGet]
+    [HttpGet("")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetLevelCourses (
+        [FromRoute] Guid programId,
         [FromQuery] Guid levelId,
         [FromQuery] Guid academicYearId,
         [FromQuery] TermType semesterType,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetLevelCoursesCommand(levelId , academicYearId , semesterType), cancellationToken);
+        var result = await _mediator.Send(new GetLevelCoursesQuery(programId, levelId, academicYearId, semesterType), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    [HttpPost]
+    [HttpPost("")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> AddCourseOffering (
         [FromRoute] Guid programId,
         [FromBody] AddCourseOfferingCommand request,
@@ -52,6 +62,8 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateCourseOffering (
         [FromRoute] Guid id,
         [FromRoute] Guid programId,
@@ -64,14 +76,19 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> RemoveCourseOffering(
+        [FromRoute] Guid programId,
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new RemoveCourseOfferingCommand(id), cancellationToken);
+        var result = await _mediator.Send(new RemoveCourseOfferingCommand(programId, id), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
     [HttpGet("for-exams")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetProgramCoursesForExams(
         [FromRoute] Guid programId,
         [FromQuery] Guid semesterId,
