@@ -1,4 +1,6 @@
-﻿using Universe.Application.RoomServices.Dtos;
+﻿
+
+using Universe.Core.Contracts.Rooms;
 
 namespace Universe.Application.RoomServices.Queries.GetBuildingRooms;
 
@@ -9,12 +11,12 @@ public class GetBuildingRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHand
     public async Task<Result<PaginationList<RoomResponse>>> Handle(GetBuildingRoomsQuery request, CancellationToken cancellationToken)
     {
         var query = _unitOfWork.Repository<Room>().GetQueryable()
-            .Where(x => x.BuildingId == request.BuildingId);
+            .Where(room => room.BuildingId == request.BuildingId && !room.IsDeleted);
 
         var filter = request.filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
-            query = query.Where(x => x.Name.Contains(filter.SearchValue));
+            query = query.ApplySearch(filter.SearchValue, room => room.Name, room => room.RoomNumber.ToString());
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");

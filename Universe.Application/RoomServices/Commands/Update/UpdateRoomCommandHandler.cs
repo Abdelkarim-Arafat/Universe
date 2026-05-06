@@ -1,4 +1,4 @@
-﻿using Universe.Application.RoomServices.Dtos;
+﻿using Universe.Core.Contracts.Rooms;
 
 namespace Universe.Application.RoomServices.Commands.Update;
 
@@ -19,10 +19,7 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
         if (isSameRoomNumberExist)
             return Result.Failure<RoomResponse>(RoomErrors.UnvalidRoomNumber);
 
-        room.Name = command.Name;
-        room.Capacity = command.Capacity;
-        room.RoomNumber = command.RoomNumber;
-        room.RoomType = command.RoomType;
+        command.Adapt(room);
 
         _unitOfWork.Repository<Room>().Update(room);
 

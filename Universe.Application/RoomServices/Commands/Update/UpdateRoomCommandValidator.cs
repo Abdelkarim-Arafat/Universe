@@ -6,15 +6,18 @@ public class UpdateRoomCommandValidator : AbstractValidator<UpdateRoomCommand>
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Room name is required.")
-            .MaximumLength(100).WithMessage("Building name cannot exceed 100 characters.");
+            .MaximumLength(30).WithMessage("Room name must be between 1 and 30 characters.");
+
         RuleFor(x => x.Capacity)
-            .NotEmpty().WithMessage("Capacity is required.")
-            .GreaterThanOrEqualTo(1);
+            .InclusiveBetween(1, 1000).WithMessage("Capacity must be between 1 and 1000 students.");
 
         RuleFor(x => x.RoomNumber)
-           .NotEmpty().WithMessage("RoomNumber is required.")
-           .GreaterThanOrEqualTo(1);
- 
+            .GreaterThan(0).WithMessage("Room number must be a positive value.");
 
+        RuleFor(x => x.RoomType)
+            .IsInEnum().WithMessage("Invalid Room Type selection.");
+
+        RuleFor(x => x.Id)
+            .NotEmpty().WithMessage("Room Id is required.");
     }
 }

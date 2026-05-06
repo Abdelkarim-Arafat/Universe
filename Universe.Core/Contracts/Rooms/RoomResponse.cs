@@ -1,5 +1,5 @@
 ﻿
-namespace Universe.Application.RoomServices.Dtos;
+namespace Universe.Core.Contracts.Rooms;
 
 public record RoomResponse
 (

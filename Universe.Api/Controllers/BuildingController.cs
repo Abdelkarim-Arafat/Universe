@@ -29,7 +29,7 @@ public class BuildingController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet]
-    [EnableRateLimiting("WriteLimiter")]
+    [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter,CancellationToken cancellationToken)
     {

@@ -1,4 +1,5 @@
-﻿using Universe.Application.RoomServices.Dtos;
+﻿
+using Universe.Core.Contracts.Rooms;
 
 namespace Universe.Application.RoomServices.Queries.GetAvailableRoomsForCommittees;
 
