@@ -11,7 +11,7 @@ public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(request.RoomId, cancellationToken);
 
         if (room == null)
-            return Result.Failure<ExamCommitteeResponse>(RoomErrors.RoomNotFound);
+            return Result.Failure<ExamCommitteeResponse>(RoomErrors.NotFound);
 
         if (room.Capacity < request.MaxCapacity)
             return Result.Failure<ExamCommitteeResponse>(RoomErrors.UnValidCapacity);

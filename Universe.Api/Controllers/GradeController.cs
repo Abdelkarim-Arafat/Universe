@@ -7,7 +7,7 @@ using Universe.Application.Common;
 using Universe.Application.GradeServices.Commands.Create;
 using Universe.Application.GradeServices.Commands.Delete;
 using Universe.Application.GradeServices.Commands.Update;
-using Universe.Application.GradeServices.Queries.GetGradesByProgram;
+using Universe.Application.GradeServices.Queries.GetProgramGrades;
 using Universe.Application.GradeServices.Queries.Get;
 using Universe.Core.Constants;
 
@@ -36,7 +36,7 @@ public class GradeController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetProgramGrades
         (Guid academicProgramId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken = default)
     {
-        var query = new GetGradesByProgramQuery(academicProgramId, filter);
+        var query = new GetProgramGradesQuery(academicProgramId, filter);
         var result = await _mediator.Send(query, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();

@@ -1,6 +1,6 @@
-﻿namespace Universe.Application.GradeServices.Queries.GetGradesByProgram;
+﻿namespace Universe.Application.GradeServices.Queries.GetProgramGrades;
 
-public record GetGradesByProgramQuery
+public record GetProgramGradesQuery
 (
    [Required] Guid AcademicProgramId,
     FilterRequest Filter

@@ -13,11 +13,11 @@ public class UpdateLevelCommandHandler(
 
     public async Task<Result<LevelResponse>> Handle(UpdateLevelCommand request, CancellationToken cancellationToken)
     {
-        if(await _unitOfWork.LevelRepository
+        if (await _unitOfWork.LevelRepository
             .GetByIdAsync(request.Id, cancellationToken) is not { } level
             ) return Result.Failure<LevelResponse>(LevelErrors.NotFound);
 
-        if(await _unitOfWork.LevelRepository
+        if (await _unitOfWork.LevelRepository
             .CheckOverLabedHoursAsync(request.MinHours, request.MaxHours,
                 level.Id, level.AcademicProgramId, cancellationToken)
             ) return Result.Failure<LevelResponse>(LevelErrors.InvalidHours);
@@ -33,11 +33,7 @@ public class UpdateLevelCommandHandler(
         await _cacheService.RemoveByTagAsync(LevelCacheKeys.Tags(request.ProgramId), cancellationToken);
         await _cacheService.RemoveAsync(LevelCacheKeys.ById(level.Id), cancellationToken);
 
-        var response = await _cacheService.GetOrCreateAsync(
-            key: LevelCacheKeys.ById(level.Id),
-            factory: async () => level.Adapt<LevelResponse>(),
-            cancellationToken: cancellationToken
-        );
+        var response = level.Adapt<LevelResponse>();
 
         return Result.Success(response);
     }

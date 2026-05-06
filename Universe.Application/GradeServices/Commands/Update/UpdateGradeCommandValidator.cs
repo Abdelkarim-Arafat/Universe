@@ -10,44 +10,23 @@ public class UpdateGradeCommandValidator : AbstractValidator<UpdateGradeCommand>
 
         RuleFor(x => x.Code)
             .NotEmpty().WithMessage("Grade code is required.")
-            .MaximumLength(2).WithMessage("Grade code cannot exceed 2 characters.");
+            .Matches(@"^[A-F][+-]?$").WithMessage("Code should be 1 or 2 chars (e.g., A, A+, B-).");
 
+       
         RuleFor(x => x.MinScore)
-             .LessThan(x => x.MaxScore)
-             .WithMessage("MinScore must be less than MaxScore.");
+            .InclusiveBetween(0, 100).WithMessage("MinScore must be between 0 and 100.")
+            .LessThan(x => x.MaxScore).WithMessage("MinScore must be less than MaxScore.");
+
         RuleFor(x => x.MaxScore)
-          .GreaterThanOrEqualTo(0)
-          .WithMessage("MaxScore must be greater than or equal to 0.");
+            .InclusiveBetween(0, 100).WithMessage("MaxScore must be between 0 and 100.");
 
+   
         RuleFor(x => x.MinGradePoint)
-            .LessThan(x => x.MaxGradePoint)
-            .WithMessage("MinGradePoint must be less than MaxGradePoint.");
-        RuleFor(x => x.MaxGradePoint)
-          .GreaterThanOrEqualTo(0)
-          .WithMessage("MaxGradePoint must be greater than or equal to 0.");
+            .InclusiveBetween(0, 4).WithMessage("MinGradePoint must be between 0 and 4.")
+            .LessThanOrEqualTo(x => x.MaxGradePoint).WithMessage("MinGradePoint must be less than or equal to MaxGradePoint.");
 
-        RuleFor(x => x)
-            .Must(ValidCode)
-            .WithMessage("Code should be 1 or 2 chars with uppercase letters and (+ or -) symbol");
-    }
-    private static bool ValidCode(UpdateGradeCommand command)
-    {
-        string code = command.Code;
-        if (string.IsNullOrEmpty(code))
-            return false;
-        if (code.Length > 2)
-            return false;
-        if (code.Length <= 1)
-        {
-            if (!char.IsUpper(code[0]))
-                return false;
-        }
-        if (code.Length == 2)
-        {
-            if (!(code[1] == '+' || code[1] == '-'))
-                return false;
-        }
-        return true;
+        RuleFor(x => x.MaxGradePoint)
+            .InclusiveBetween(0, 4).WithMessage("MaxGradePoint must be between 0 and 4.");
     }
 }
 

@@ -2,7 +2,7 @@
 using Universe.Core.Contracts.Level;
 
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
-
+ 
 public class GetAcademicProgramLevelsQueryHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService

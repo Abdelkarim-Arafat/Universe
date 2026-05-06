@@ -1,4 +1,4 @@
-﻿namespace Universe.Application.GradeServices.Dtos;
+﻿namespace Universe.Core.Contracts.Grades;
 
 public record GradeResponse
 (

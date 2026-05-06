@@ -1,27 +1,38 @@
-﻿ 
-using Universe.Core.Contracts.Rooms;
-
-
+﻿using Universe.Core.Contracts.Rooms;
 namespace Universe.Application.RoomServices.Queries.Get;
 
-public class GetRoomQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetRoomQuery, Result<RoomResponse>>
+public class GetRoomQueryHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
+    : IRequestHandler<GetRoomQuery, Result<RoomResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<RoomResponse>> Handle(GetRoomQuery query, CancellationToken cancellationToken)
     {
-        var room = await _unitOfWork.RoomRepository.GetByIdAsync(query.Id, cancellationToken);
-        if (room is null)
-            return Result.Failure<RoomResponse>(RoomErrors.RoomNotFound);
+        var cacheKey = RoomCacheKeys.ById(query.Id);
 
-        var response = new RoomResponse
-        (
-            room.Id,
-            room.Name,
-            room.RoomNumber,
-            room.Capacity,
-            room.RoomType.ToString()
+        var response = await _cacheService.GetOrCreateAsync(
+            key: cacheKey,
+            factory: async () =>
+            {
+                var room = await _unitOfWork.RoomRepository.GetByIdAsync(query.Id, cancellationToken);
+
+                if (room is null) return null;
+
+                return new RoomResponse
+                (
+                    room.Id,
+                    room.Name,
+                    room.RoomNumber,
+                    room.Capacity,
+                    room.RoomType.ToString()
+                );
+            },
+            cancellationToken: cancellationToken
         );
-        return Result.Success(response);
+
+        return response is not null
+            ? Result.Success(response)
+            : Result.Failure<RoomResponse>(RoomErrors.NotFound);
     }
 }
