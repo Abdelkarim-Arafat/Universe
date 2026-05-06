@@ -14,7 +14,7 @@ using Universe.Core.Constants;
 namespace Universe.Api.Controllers;
 
 [Route("buildings")]
-[ApiController , Authorize]
+[ApiController, Authorize]
 public class BuildingController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -28,23 +28,30 @@ public class BuildingController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
     [HttpGet]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter,CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter, CancellationToken cancellationToken)
     {
         var query = new GetBuildingsQuery(filter);
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
     [HttpPost]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Create([FromBody] CreateBuildingCommand request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(request, cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+
+        
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
+            : result.ToProblem();
     }
+
     [HttpDelete("{id}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
@@ -54,14 +61,15 @@ public class BuildingController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
+
     [HttpPut("{id}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> Update
-        ([FromBody] UpdateBuildingCommand command, Guid id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Update([FromBody] UpdateBuildingCommand command,[FromRoute] Guid id, CancellationToken cancellationToken = default)
     {
         command = command with { Id = id };
         var result = await _mediator.Send(command, cancellationToken);
-        return result.IsSuccess ? NoContent() : result.ToProblem();
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }
