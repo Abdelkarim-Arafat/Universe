@@ -2,11 +2,15 @@
 
 namespace Universe.Application.BuildingServices.Commands.Update;
 
-public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateBuildingCommand, Result<BuildingResponse>>
+public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
+    : IRequestHandler<UpdateBuildingCommand, Result<BuildingResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
+
     public async Task<Result<BuildingResponse>> Handle(UpdateBuildingCommand command, CancellationToken cancellationToken)
     {
+         
         var building = await _unitOfWork.BuildingRepository.GetByIdAsync(command.Id, cancellationToken);
         if (building is null)
             return Result.Failure<BuildingResponse>(BuildingErrors.NotFound);
@@ -18,8 +22,9 @@ public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
+        await _cacheService.RemoveByTagAsync(BuildingCacheKeys.ListTags(), cancellationToken);
+
         return Result.Success(building.Adapt<BuildingResponse>());
     }
 }
 
- 

@@ -2,7 +2,7 @@
 
 public record BuildingResponse
 (
-    string Id,
+    Guid Id,
     string Name,
     string Code
 );

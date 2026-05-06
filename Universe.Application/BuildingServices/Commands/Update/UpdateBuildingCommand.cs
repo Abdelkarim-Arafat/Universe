@@ -4,7 +4,7 @@ namespace Universe.Application.BuildingServices.Commands.Update;
 
 public record UpdateBuildingCommand
 (
-    [Required]Guid Id,
+    Guid Id,
     string Name,
     string Code
 ) : IRequest<Result<BuildingResponse>>;
