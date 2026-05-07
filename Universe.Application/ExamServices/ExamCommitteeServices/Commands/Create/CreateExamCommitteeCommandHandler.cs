@@ -36,9 +36,19 @@ public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
 
         var examCommittee = request.Adapt<ExamCommittee>();
 
+        var building = await _unitOfWork.BuildingRepository.GetByIdAsync(room.BuildingId, cancellationToken);
+
         await _unitOfWork.Repository<ExamCommittee>().AddAsync(examCommittee, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        return Result.Success(examCommittee.Adapt<ExamCommitteeResponse>());
+        var response = new ExamCommitteeResponse
+        (
+            examCommittee.Id,
+            examCommittee.MaxCapacity,
+            examCommittee.CommitteeNumber,
+            $"{room.RoomNumber} - {building!.Name}"
+        );
+
+        return Result.Success(response);
     }
 }

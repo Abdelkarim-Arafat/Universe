@@ -19,8 +19,10 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         var courseOfferingExam = courseExamContext.CourseOfferingExam;
 
-        courseOfferingExam.Adapt(request);
-
+        courseOfferingExam.Date = request.Date;
+        courseOfferingExam.StartTime = request.StartTime;
+        courseOfferingExam.EndTime = request.EndTime;
+       
 
         var checkOverLappedInCommittees = courseExamContext.isOverlappedTime;
 

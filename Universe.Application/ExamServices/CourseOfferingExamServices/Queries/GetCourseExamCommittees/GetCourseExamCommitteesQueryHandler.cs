@@ -37,6 +37,7 @@ public class GetCourseExamCommitteesQueryHandler(IUnitOfWork unitOfWork)
         var pagedData = await query
             .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
+            .Where(com => !com.ExamCommittee.IsDeleted)
             .Select(com => new CourseExamCommitteesResponse
             (
                 com.ExamCommitteeId,
