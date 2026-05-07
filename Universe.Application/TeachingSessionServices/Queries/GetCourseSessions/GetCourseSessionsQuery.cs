@@ -3,7 +3,7 @@ using Universe.Core.Contracts.TeachingSession;
 
 namespace Universe.Application.TeachingSessionServices.Queries.GetCourseSessions;
 
-public record GetCourseSessionsCommand(
+public record GetCourseSessionsQuery(
     [Required] Guid CourseOfferingId,
     [Required] int GroupNumber
-) : IRequest<Result<List<SessionResponse>>>;
+) : IRequest<Result<IReadOnlyList<SessionResponse>>>;

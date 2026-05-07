@@ -5,9 +5,13 @@ using Universe.Application.AcademicEventServices.EvenetDtos;
 
 namespace Universe.Application.AcademicEventServices.Commands.Add_Event;
 
-internal class AddEventCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<AddEventCommand, Result<EventResponse>>
+internal class AddEventCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
+    ) : IRequestHandler<AddEventCommand, Result<EventResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<EventResponse>> Handle(AddEventCommand request, CancellationToken cancellationToken)
     {
@@ -35,6 +39,8 @@ internal class AddEventCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<
 
         await _unitOfWork.Repository<AcademicEvent>().AddAsync(academicEvent, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveByTagAsync(AcademicEventCacheKeys.Tags(academicEvent.ProgramId, academicEvent.SemesterId), cancellationToken);
 
         return Result.Success(academicEvent.Adapt<EventResponse>());
     }

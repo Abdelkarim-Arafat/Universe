@@ -1,23 +1,25 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.AcademicEventServices.Commands.Add_Event;
 using Universe.Application.AcademicEventServices.Commands.Remove_Event;
 using Universe.Application.AcademicEventServices.Queries.Get_All_Events;
 using Universe.Application.Common;
-using Universe.Infrastructure.SeedData;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
 [Route("events")]
-[ApiController , Authorize(Roles = RoleSeed.AcademicAdvising.Name)]
-
+[ApiController , Authorize]
 public class AcademicEventController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpPost("")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> AddEvent(
         [FromBody] AddEventCommand request,
         [FromQuery] Guid programId,
@@ -30,7 +32,9 @@ public class AcademicEventController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> RemoveEvent(
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> RemoveEvent (
         [FromRoute] Guid id,
         CancellationToken cancellationToken
         )
@@ -41,13 +45,15 @@ public class AcademicEventController(IMediator mediator) : ControllerBase
 
 
     [HttpGet("")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetEvents (
         [FromQuery] Guid programId,
         [FromQuery] Guid semesterId,
         [FromQuery] FilterRequest filterRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAllEventsCommand(programId, semesterId, filterRequest), cancellationToken);
+        var result = await _mediator.Send(new GetEventsQuery(programId, semesterId, filterRequest), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

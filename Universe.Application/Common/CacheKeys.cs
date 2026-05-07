@@ -90,6 +90,19 @@ public static class ServiceRequestCacheKeys
     }
 }
 
+
+public static class SessionCacheKeys
+{
+    private const string Prefix = "session";
+    public static string CourseSessions(Guid courseOfferingId, int groupNumber)
+        => $"{Prefix}:course-offering:{courseOfferingId}:group:{groupNumber}";
+
+    public static string Schedule(Guid programId, Guid semesterId)
+        => $"{Prefix}:schedule:program:{programId}:semester:{semesterId}";
+
+    public static string[] Tags(Guid courseOfferingId) => new[] { $"{Prefix}:{courseOfferingId}" };
+}
+
 public static class AcademicYearCacheKeys
 {
     private static readonly string Prefix = "academic-years";
@@ -203,4 +216,35 @@ public static class CourseOfferingCacheKeys
                $"{sortDirection ?? "null"}:" +
                $"{pageNumber}:{pageSize}";
     }
+}
+
+public static class ControlCacheKeys
+{
+    private const string Prefix = "control";
+
+    public static string CourseOfferingsStatistics(Guid programId, Guid semesterId)
+        => $"{Prefix}:course-offerings-statistics:program:{programId}:semester:{semesterId}";
+}
+
+public static class AcademicEventCacheKeys
+{
+    private const string Prefix = "academic-events";
+    public static string List(
+        Guid programId,
+        Guid semesterId,
+        string? sortColumn,
+        string? sortDirection,
+        int pageNumber,
+        int pageSize
+    ) =>
+        $"{Prefix}:{programId}:{semesterId}:{sortColumn}:{sortDirection}:{pageNumber}:{pageSize}";
+
+    public static string[] Tags(
+        Guid programId,
+        Guid semesterId
+    ) =>
+    [
+        $"{Prefix}:{programId}",
+        $"{Prefix}:{programId}:{semesterId}"
+    ];
 }

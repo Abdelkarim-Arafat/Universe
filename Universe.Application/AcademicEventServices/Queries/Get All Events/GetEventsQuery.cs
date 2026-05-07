@@ -5,7 +5,7 @@ using Universe.Application.AcademicEventServices.EvenetDtos;
 
 namespace Universe.Application.AcademicEventServices.Queries.Get_All_Events;
 
-public record GetAllEventsCommand(
+public record GetEventsQuery(
     [Required] Guid ProgramId,
     [Required] Guid SemesterId,
     FilterRequest FilterRequest

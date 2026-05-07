@@ -13,4 +13,5 @@ public static class Roles
 
     public const string AdminOrAdvisor = $"{Admin},{AcademicAdvising}";
     public const string AdminOrAdvisorOrStaff = $"{Admin},{AcademicAdvising},{Staff}";
+    public const string AllRoles = $"{Admin},{AcademicAdvising},{Staff},{Student}";
 }

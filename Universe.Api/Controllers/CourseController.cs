@@ -63,6 +63,7 @@ public class CourseController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
+
     [HttpPut("{id:guid}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
