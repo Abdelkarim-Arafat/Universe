@@ -18,6 +18,7 @@ using Universe.Application.UserServices.Querys.GetParentData;
 using Universe.Application.UserServices.Querys.GetPersonalData;
 using Universe.Application.UserServices.Querys.GetPreviousQualificationData;
 using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
+using Universe.Application.UserServices.Querys.GetStudentExams;
 using Universe.Application.UserServices.Querys.GetStudentSchedule;
 
 namespace Universe.Api.Controllers;
@@ -232,6 +233,12 @@ public class StudentController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetStudentSchedule(CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetStudentScheduleQuery(), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+    [HttpGet("student-exams")]
+    public async Task<IActionResult> GetStudentExams(CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetStudentExamsQuery(), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

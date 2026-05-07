@@ -10,9 +10,9 @@ public record TranscriptSemesterResponse
    decimal EarnedHours,
    string SemesterGrade,
    string CumulativeGrade,
-   List<CourseGradeDto> Courses 
+   List<CourseDetailsDto> Courses 
 );
-public record CourseGradeDto
+public record CourseDetailsDto
 (
      string CourseCode,
      string CourseName,

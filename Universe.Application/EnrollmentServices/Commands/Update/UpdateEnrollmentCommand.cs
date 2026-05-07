@@ -1,4 +1,4 @@
-﻿using Universe.Application.EnrollmentServices.Dtos;
+﻿using Universe.Core.Contracts.Enrollments;
 
 namespace Universe.Application.EnrollmentServices.Commands.Update;
 
@@ -6,7 +6,7 @@ public record UpdateEnrollmentCommand(
     [Required] Guid StudentId,
     [Required] Guid SemesterId,
     List<SessionAndCourseOfferingIds> newSessions  
-) : IRequest<Result<List<EnrollmentInfo>>>;
+) : IRequest<Result<List<StudentExistingEnrollment>>>;
 
  
 public record SessionAndCourseOfferingIds(

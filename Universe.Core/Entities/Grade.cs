@@ -4,7 +4,7 @@ namespace Universe.Core.Entities;
 
 public class Grade : BaseEntity
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; set; }
     public Grade() { Id = Guid.CreateVersion7(); }
     public string Name { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;

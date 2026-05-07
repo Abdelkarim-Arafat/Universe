@@ -3,7 +3,6 @@ namespace Universe.Application.CourseOfferingExamServices.Queries.Get;
 
 public record GetCourseOfferingExamQuery
 (
-    [Required] Guid courseOfferingId,
-    [Required] Guid examTermId,
+    [Required] Guid id,
     FilterRequest Filter
 ) : IRequest<Result<CourseOfferingExamResponse>>;

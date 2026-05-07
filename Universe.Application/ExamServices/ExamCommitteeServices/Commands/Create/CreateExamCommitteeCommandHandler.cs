@@ -8,21 +8,31 @@ public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
 
     public async Task<Result<ExamCommitteeResponse>> Handle(CreateExamCommitteeCommand request, CancellationToken cancellationToken)
     {
-        var IsRoomExist = await _unitOfWork.RoomRepository.IsExistAsync(request.RoomId, cancellationToken);
+        var room = await _unitOfWork.RoomRepository.GetByIdAsync(request.RoomId, cancellationToken);
 
-        if (!IsRoomExist)
-            return Result.Failure<ExamCommitteeResponse>(RoomErrors.RoomNotFound);
+        if (room == null)
+            return Result.Failure<ExamCommitteeResponse>(RoomErrors.NotFound);
+
+        if (room.Capacity < request.MaxCapacity)
+            return Result.Failure<ExamCommitteeResponse>(RoomErrors.UnValidCapacity);
+
+        var isRoomHasAnotherCommittee = await _unitOfWork.RoomRepository
+            .IsRoomHasAnotherCommitteeAsync(request.RoomId, request.ExamTermId, cancellationToken);
+
+        if (isRoomHasAnotherCommittee)
+            return Result.Failure<ExamCommitteeResponse>(RoomErrors.AlreadyHasCommittee);
+
+        var isExistExamTerm = await _unitOfWork.ExamRepository
+            .IsExistExamTermAsync(request.ExamTermId, cancellationToken);
+
+        if (!isExistExamTerm)
+            return Result.Failure<ExamCommitteeResponse>(ExamErrors.ExamTermNotFound);
 
         var IsExistCommitteeWithSameNumber = await _unitOfWork.ExamRepository
             .IsExistCommitteeWithSameNumberAsync(null, request.ExamTermId, request.CommitteeNumber, cancellationToken);
 
         if (IsExistCommitteeWithSameNumber)
             return Result.Failure<ExamCommitteeResponse>(ExamErrors.SameCommitteeNumber);
-
-        var roomCapacity = await _unitOfWork.RoomRepository.GetRoomCapacity(request.RoomId, cancellationToken);
-
-        if (roomCapacity < request.MaxCapacity)
-            return Result.Failure<ExamCommitteeResponse>(RoomErrors.UnValidCapacity);
 
         var examCommittee = request.Adapt<ExamCommittee>();
 

@@ -9,8 +9,10 @@ public class ExamErrors
     public static readonly Error ExamTermNotFound =
      new("ExamTerm.ExamTermNotFound", "The exam term is not found", StatusCodes.Status404NotFound);
 
-    public static readonly Error OverlabbingTime =
+    public static readonly Error OverlappingTime =
      new("ExamTerm.OverlabbingTime", "The is another exam with overlabed time", StatusCodes.Status409Conflict);
+    public static readonly Error ExamTermWithSameType =
+     new("ExamTerm.ExamTermWithSameType", "The is another exam with the same type ", StatusCodes.Status409Conflict);
     #endregion
     #region ExamCommittee
     public static readonly Error OverlappingTimeInCommittees =
@@ -32,7 +34,7 @@ public class ExamErrors
     new("CourseOfferingExam.CourseOfferingExamNotFound", "The course offering exam is not found", StatusCodes.Status404NotFound);
 
     public static readonly Error CourseOfferingExamIsExist =
-    new("CourseOfferingExam.CourseOfferingExamIsExist", "this course is already has exam", StatusCodes.Status409Conflict);
+    new("CourseOfferingExam.CourseOfferingExamIsExist", "the same course has exam term", StatusCodes.Status409Conflict);
 
 
     #endregion

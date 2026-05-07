@@ -1,34 +1,49 @@
-﻿using Universe.Application.RoomServices.Dtos;
-
+﻿using Universe.Core.Contracts.Rooms;
 namespace Universe.Application.RoomServices.Queries.GetBuildingRooms;
 
-public class GetBuildingRoomsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetBuildingRoomsQuery, Result<PaginationList<RoomResponse>>>
+public class GetBuildingRoomsQueryHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService)
+    : IRequestHandler<GetBuildingRoomsQuery, Result<PaginationList<RoomResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<PaginationList<RoomResponse>>> Handle(GetBuildingRoomsQuery request, CancellationToken cancellationToken)
     {
-        var query = _unitOfWork.Repository<Room>().GetQueryable()
-            .Where(x => x.BuildingId == request.BuildingId);
+        if (!await _unitOfWork.BuildingRepository.IsExistAsync(request.BuildingId, cancellationToken))
+            return Result.Failure<PaginationList<RoomResponse>>(BuildingErrors.NotFound);
 
         var filter = request.filter;
+        var cacheKey = RoomCacheKeys.List(request.BuildingId, filter.SearchValue, filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
+        var tags = RoomCacheKeys.Tags(request.BuildingId);
 
-        if (!string.IsNullOrEmpty(filter.SearchValue))
-            query = query.Where(x => x.Name.Contains(filter.SearchValue));
+        var response = await _cacheService.GetOrCreateAsync(
+            key: cacheKey,
+            factory: async () =>
+            {
+                var query = _unitOfWork.Repository<Room>().GetQueryable()
+                    .AsNoTracking()
+                    .Where(room => room.BuildingId == request.BuildingId && !room.IsDeleted);
 
-        if (!string.IsNullOrEmpty(filter.SortColumn))
-            query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-        
-        var source = query.Select(room => new RoomResponse(
-            room.Id,
-            room.Name,
-            room.RoomNumber,
-            room.Capacity,
-            room.RoomType.ToString()
-        ));
+                query = query.ApplySearch(filter.SearchValue, x => x.Name, x => x.RoomNumber.ToString());
 
-        var response = await PaginationList<RoomResponse>
-            .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
+                if (!string.IsNullOrEmpty(filter.SortColumn))
+                    query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+
+                var projection = query.Select(room => new RoomResponse(
+                    room.Id,
+                    room.Name,
+                    room.RoomNumber,
+                    room.Capacity,
+                    room.RoomType.ToString()
+                ));
+
+                return await PaginationList<RoomResponse>.CreateAsync(projection, filter.PageNumber, filter.PageSize, cancellationToken);
+            },
+            cancellationToken: cancellationToken,
+            tags: tags
+        );
 
         return Result.Success(response);
     }

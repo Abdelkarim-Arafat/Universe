@@ -9,6 +9,7 @@ public class ToggleAnnounceResultCommandHandler(
     public async Task<Result> Handle(ToggleAnnounceResultCommand request, CancellationToken cancellationToken)
     {
         var Semester = await _unitOfWork.AcademicYearRepository.GetSemesterByIdAsync(request.SemesterId, cancellationToken);
+
         if (Semester == null)
             return Result.Failure(SemesterErrors.NotFound);
 

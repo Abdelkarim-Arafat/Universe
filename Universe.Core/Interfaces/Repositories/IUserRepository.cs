@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 
 namespace Universe.Core.Interfaces.Repositories;
@@ -30,6 +28,5 @@ public interface IUserRepository
 
     Task<List<StudentAssessment>> GetStudentsAssessmentsAsync(List<Guid> StudentsIds, Guid CourseOfferingId, CancellationToken cancellationToken);
 
-    Task<Dictionary<Guid, decimal>>
-         GetAllStudentDegreesInCoursesAsync(Guid studentId, CancellationToken cancellationToken);
+    Task<StudentExamsResponse> GetStudentExamsTablesAsync(Guid studentId, CancellationToken cancellationToken);
 }

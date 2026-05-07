@@ -5,7 +5,6 @@ global using MapsterMapper;
 global using MediatR;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Identity;
-global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +20,5 @@ global using Universe.Core.Errors;
 global using Universe.Core.Interfaces;
 global using System.ComponentModel.DataAnnotations;
 global using System.Linq.Dynamic.Core;
-global using Universe.Application.GradeServices.GradeDtos;
-global using Universe.Application.BuildingServices.Dtos;
+global using Universe.Core.Contracts.Grades;
 

@@ -27,7 +27,7 @@ public class AddSessionCommandHandler(
 
         if (await _unitOfWork.RoomRepository
             .GetByIdAsync(request.RoomId) is not { } room
-            ) return Result.Failure<SessionResponse>(RoomErrors.RoomNotFound);
+            ) return Result.Failure<SessionResponse>(RoomErrors.NotFound);
 
         if (room.Capacity < request.Capacity)
             return Result.Failure<SessionResponse>(RoomErrors.UnValidCapacity);

@@ -1,11 +1,10 @@
 ﻿using Universe.Application.UserServices.UserDtos;
-using Universe.Core.Contracts.Level;
+using Universe.Core.Contracts.Enrollments;
 
 namespace Universe.Application.EnrollmentServices.Dtos;
 
-public record EnrollmentPageResponse
-(
+public record EnrollmentPageResponse(
     StudentInfoResponse Student,
-    LevelCoursesResponse LevelInfo,
-    List<EnrollmentInfo> EnrollmentInfos
+    LevelRegistrationCatalogDto LevelInfo,
+    List<StudentExistingEnrollment> EnrollmentInfos 
 );

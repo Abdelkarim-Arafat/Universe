@@ -13,6 +13,7 @@ public class CreateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         if (!IsSemesterExist)
             return Result.Failure<ExamTermResponse>(SemesterErrors.NotFound);
+
         var IsProgramExists = await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.AcademicProgramId, cancellationToken);
 
@@ -21,10 +22,17 @@ public class CreateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         var IsExistExamTermWithOverLabedTime = await _unitOfWork.ExamRepository
             .IsExistExamTermWithOverLabedTimeAsync
-            (null, request.SemesterId, request.StartDate, request.EndDate, cancellationToken);
+            (null, request.SemesterId, request.AcademicProgramId,
+            request.StartDate, request.EndDate, cancellationToken);
 
         if (IsExistExamTermWithOverLabedTime)
-            return Result.Failure<ExamTermResponse>(ExamErrors.OverlabbingTime);
+            return Result.Failure<ExamTermResponse>(ExamErrors.OverlappingTime);
+
+        var IsExistExamTermWithSameType = await _unitOfWork.ExamRepository.IsExistExamTermWithSameTypeAsync
+             (null, request.SemesterId, request.AcademicProgramId, request.ExamType, cancellationToken);
+
+        if (IsExistExamTermWithSameType) 
+            return Result.Failure<ExamTermResponse>(ExamErrors.ExamTermWithSameType);
 
         var examTerm = request.Adapt<ExamTerm>();
 

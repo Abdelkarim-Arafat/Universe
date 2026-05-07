@@ -6,7 +6,7 @@ using Universe.Application.CourseOfferingExamServices.Commands.Create;
 using Universe.Application.CourseOfferingExamServices.Commands.Delete;
 using Universe.Application.CourseOfferingExamServices.Commands.Update;
 using Universe.Application.CourseOfferingExamServices.Queries.Get;
-using Universe.Application.ExamServices.CourseOfferingExamServices.Commands.UpsertCourseExamCommittees;
+using Universe.Core.Entities;
 
 namespace Universe.Api.Controllers.Exams;
 
@@ -16,15 +16,14 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    [HttpGet("{courseOfferingId:guid}")]
+    [HttpGet("{id:guid}")]
 
     public async Task<IActionResult> Get(
-        [FromRoute] Guid courseOfferingId,
-        [FromRoute] Guid examTermId,
+        [FromRoute] Guid id,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var query = new GetCourseOfferingExamQuery(courseOfferingId, examTermId, filter);
+        var query = new GetCourseOfferingExamQuery(id, filter);
 
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
@@ -35,15 +34,26 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
         (
         [FromRoute] Guid examTermId,
         [FromQuery] Guid courseOfferingId,
-        [FromBody] CreateCourseOfferingExamCommand command,
+        [FromQuery] FilterRequest filter,
+        [FromBody] CreateCourseOfferingExamRequest request,
         CancellationToken cancellationToken)
 
     {
-        command = command with { ExamTermId = examTermId, CourseOfferingId = courseOfferingId };
+        var command = new CreateCourseOfferingExamCommand
+            (
+            request.Date,
+            request.StartTime,
+            request.EndTime,
+            courseOfferingId,
+            examTermId,
+            request.ExamCommitteesIds,
+            filter
+            );
+
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess
             ? CreatedAtAction(nameof(Get),
-            new { examTermId = examTermId, courseOfferingId = courseOfferingId }, result.Value)
+            new { examTermId = examTermId, id = result.Value.Id }, result.Value)
             : result.ToProblem();
     }
 
@@ -57,25 +67,22 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id,
-        [FromBody] UpdateCourseOfferingExamCommand command,
+    public async Task<IActionResult> Update(
+        [FromRoute] Guid id,
+         UpdateCourseOfferingExamRequest request,
+        [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        command = command with { Id = id };
+        var command = new UpdateCourseOfferingExamCommand(
+            id,
+            request.Date,
+            request.StartTime,
+            request.EndTime,
+            request.ExamCommitteesIds,
+            filter);
         var result = await _mediator.Send(command, cancellationToken);
-        return result.IsSuccess ? NoContent() : result.ToProblem();
-    }
-
-    [HttpPut("upsert-committees/{courseOfferingExamId:guid}")]
-    public async Task<IActionResult> UpsertCommittees(
-    [FromRoute] Guid courseOfferingExamId,
-    [FromBody] UpsertCourseExamCommitteesRequest request,
-    [FromQuery] FilterRequest filter,
-    CancellationToken cancellationToken)
-    {
-        var command = new UpsertCourseExamCommitteesCommand(courseOfferingExamId, request.ExamCommitteesIds, filter);
-
-        var result = await _mediator.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        return result.IsSuccess
+           ? Ok(result.Value)
+           : result.ToProblem();
     }
 }

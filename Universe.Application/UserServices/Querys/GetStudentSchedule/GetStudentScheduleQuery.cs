@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.EnrollmentServices.Dtos;
+﻿using Universe.Core.Contracts.Enrollments;
 
 namespace Universe.Application.UserServices.Querys.GetStudentSchedule;
 
 public record GetStudentScheduleQuery
-() : IRequest<Result<List<EnrollmentInfo>>>;
+() : IRequest<Result<List<StudentExistingEnrollment>>>;
