@@ -44,12 +44,12 @@ public class ControlController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new ToggleCourseOfferingControlCommand(courseOfferingId), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
-
+     
     [HttpGet("{AcademicProgramId:guid}")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetStudents(
-        [FromBody] GetStudentsRequest request,
+        [FromQuery] GetStudentsRequest request,
         [FromQuery] FilterRequest filter,
         [FromRoute] Guid AcademicProgramId, CancellationToken cancellationToken)
     {

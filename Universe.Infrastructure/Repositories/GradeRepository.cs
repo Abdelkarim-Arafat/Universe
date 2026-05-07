@@ -15,6 +15,7 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
         var grades = await _context.Grades
             .AsNoTracking()
             .Where(grade => grade.AcademicProgramId == AcademicProgramId && !grade.IsDeleted)
+            .OrderBy(grade => grade.MinScore)
             .Select(grade=> new GradeResponse
             (
                 grade.Id,
@@ -25,7 +26,6 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
                 grade.MinGradePoint,
                 grade.MaxGradePoint
            ))
-            .OrderBy(grade => grade.MinScore)
             .ToListAsync(cancellationToken);
         return grades;
     }

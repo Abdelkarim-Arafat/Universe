@@ -13,7 +13,6 @@ public record GetStudentsCommand
 
 public record GetStudentsRequest
 (
-    [Required] Guid AcademicProgramId,
     [Required] Guid CourseOfferingId,
                int? GroupNumber
 ) : IRequest<Result<PaginationList<StudentInformationResponse>>>;
