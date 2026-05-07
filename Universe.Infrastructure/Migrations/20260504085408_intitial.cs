@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Universe.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class addColuom : Migration
+    public partial class intitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -185,7 +185,6 @@ namespace Universe.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RequirementType = table.Column<int>(type: "int", nullable: true),
                     CollegeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1279,19 +1278,6 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AcademicYears",
-                columns: new[] { "Id", "CollegeId", "CreatedAt", "CreatedById", "DeletedAt", "EndDate", "IsDeleted", "Name", "StartDate", "UpdatedAt", "UpdatedById" },
-                values: new object[,]
-                {
-                    { new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 8, 31), false, "2020-2021", new DateOnly(2020, 9, 1), null, null },
-                    { new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 8, 31), false, "2021-2022", new DateOnly(2021, 9, 1), null, null },
-                    { new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 8, 31), false, "2022-2023", new DateOnly(2022, 9, 1), null, null },
-                    { new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 8, 31), false, "2023-2024", new DateOnly(2023, 9, 1), null, null },
-                    { new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 8, 31), false, "2024-2025", new DateOnly(2024, 9, 1), null, null },
-                    { new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 8, 31), false, "2025-2026", new DateOnly(2025, 9, 1), null, null }
-                });
-
-            migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AcademicProgramId", "AccessFailedCount", "CollegeId", "ConcurrencyStamp", "DeletedAt", "Email", "EmailConfirmed", "ImageUrl", "IsDeleted", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StudentId", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
@@ -1301,91 +1287,12 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Courses",
-                columns: new[] { "Id", "Code", "CollegeId", "CreatedAt", "CreatedById", "DeletedAt", "Description", "IsDeleted", "Name", "RequirementType", "UpdatedAt", "UpdatedById" },
-                values: new object[,]
-                {
-                    { new Guid("019df349-a51c-7aba-9caf-95890ee5ba62"), "CS101", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Introduction to programming concepts.", false, "Programming 1", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-958a05c9c32a"), "CS102", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Advanced programming and problem solving.", false, "Programming 2", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-958b81dee3d6"), "CS103", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Concepts of OOP and design principles.", false, "Object Oriented Programming", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-958c542ea45f"), "CS201", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Data organization and structures.", false, "Data Structures", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-958d58bae05b"), "CS202", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Algorithm design and analysis.", false, "Algorithms", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-958e1b56b349"), "CS203", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Database design and SQL.", false, "Database Systems", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-958f9e72f562"), "CS204", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Concepts of OS and processes.", false, "Operating Systems", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-9590bdb364c0"), "CS205", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Network architecture and protocols.", false, "Computer Networks", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-9591262e88f8"), "CS301", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Software development lifecycle.", false, "Software Engineering", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-95920fdf4a77"), "AI301", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Introduction to AI concepts.", false, "Artificial Intelligence", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-9593115238f8"), "AI302", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Supervised and unsupervised learning.", false, "Machine Learning", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-9594f9d4ca6a"), "AI303", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Neural networks and deep models.", false, "Deep Learning", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-9595b8b7914a"), "AI304", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Image processing and vision systems.", false, "Computer Vision", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-959678c41dea"), "AI305", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Text processing and NLP techniques.", false, "Natural Language Processing", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-95977f4e315c"), "CS302", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Security principles and practices.", false, "Cyber Security", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-9598a067e97e"), "CS303", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Encryption and security algorithms.", false, "Cryptography", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-9599074ce97b"), "CS304", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Concepts of distributed computing.", false, "Distributed Systems", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-959aa16694f7"), "CS305", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Cloud platforms and services.", false, "Cloud Computing", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-959b0bc724f7"), "CS306", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "User interface and UX design.", false, "Human Computer Interaction", null, null, null },
-                    { new Guid("019df349-a51c-7aba-9caf-959c5b7e0ee1"), "CS307", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Design of compilers and interpreters.", false, "Compiler Design", null, null, null }
-                });
-
-            migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId", "ApplicationUserId" },
                 values: new object[,]
                 {
                     { new Guid("0191a4b6-c4fc-752e-9d95-40b5e4e68054"), new Guid("019c0582-3473-7802-8f11-50cc1e6513d5"), null },
                     { new Guid("019c1e6e-5518-7479-b749-b1c5d4a21430"), new Guid("019c1e76-6f5a-7522-8327-a2a72adbbbe8"), null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Levels",
-                columns: new[] { "Id", "AcademicProgramId", "CreatedAt", "CreatedById", "DeletedAt", "IsDeleted", "MaxHours", "MinHours", "Name", "UpdatedAt", "UpdatedById" },
-                values: new object[,]
-                {
-                    { new Guid("019df4f8-4012-7469-9aa8-7cf36f1d180a"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 36, 0, "Level 1", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cf4d268fbec"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 72, 37, "Level 2", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cf568231cba"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 108, 73, "Level 3", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cf6124b1ecb"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 144, 109, "Level 4", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cf7ad92b89e"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 36, 0, "Level 1", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cf8937d84f4"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 72, 37, "Level 2", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cf9e82c4b82"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 108, 73, "Level 3", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cfa9abd172d"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 144, 109, "Level 4", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cfb22e7bb31"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 34, 0, "Level 1", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cfcf91e0ee9"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 68, 35, "Level 2", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cfdd431525b"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 102, 69, "Level 3", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cfeb8e8d41d"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 138, 103, "Level 4", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7cffb491c63b"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 38, 0, "Level 1", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7d00e6c3ddce"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 76, 39, "Level 2", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7d01aebd87c1"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 114, 77, "Level 3", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7d024664404f"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 150, 115, "Level 4", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7d033b7e618f"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 36, 0, "Level 1", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7d049703d7cb"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 72, 37, "Level 2", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7d05feaad5d1"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 108, 73, "Level 3", null, null },
-                    { new Guid("019df4f8-4012-7469-9aa8-7d065b1fbceb"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 144, 109, "Level 4", null, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Semesters",
-                columns: new[] { "Id", "AcademicYearId", "CreatedAt", "CreatedById", "DeletedAt", "EndDate", "IsCurrent", "IsDeleted", "IsResultAnnounced", "Name", "StartDate", "UpdatedAt", "UpdatedById" },
-                values: new object[,]
-                {
-                    { new Guid("019df776-9108-75b2-9389-ac1049b0159f"), new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 1, 31), false, false, true, 1, new DateOnly(2020, 9, 1), null, null },
-                    { new Guid("019df776-9108-75b2-9389-ac110706f6d0"), new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 6, 30), true, false, true, 2, new DateOnly(2021, 2, 1), null, null },
-                    { new Guid("019df776-9108-75b2-9389-ac1257cd67fe"), new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 8, 31), false, false, true, 3, new DateOnly(2021, 7, 1), null, null },
-                    { new Guid("019df776-bc77-7ca8-a0f6-3c3845c23a04"), new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 1, 31), true, false, true, 1, new DateOnly(2021, 9, 1), null, null },
-                    { new Guid("019df776-bc77-7ca8-a0f6-3c39222b791a"), new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 6, 30), false, false, true, 2, new DateOnly(2022, 2, 1), null, null },
-                    { new Guid("019df776-bc77-7ca8-a0f6-3c3a1ab74d05"), new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 8, 31), false, false, true, 3, new DateOnly(2022, 7, 1), null, null },
-                    { new Guid("019df776-f240-7e2a-bef0-a153c6a90cdc"), new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 1, 31), false, false, true, 1, new DateOnly(2022, 9, 1), null, null },
-                    { new Guid("019df776-f240-7e2a-bef0-a1549332c599"), new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 6, 30), false, false, true, 2, new DateOnly(2023, 2, 1), null, null },
-                    { new Guid("019df776-f240-7e2a-bef0-a1557960866d"), new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 8, 31), false, false, true, 3, new DateOnly(2023, 7, 1), null, null },
-                    { new Guid("019df777-2097-7f6a-84f3-97e02fa63d59"), new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 1, 31), false, false, true, 1, new DateOnly(2023, 9, 1), null, null },
-                    { new Guid("019df777-2097-7f6a-84f3-97e1d0a5750b"), new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 6, 30), false, false, true, 2, new DateOnly(2024, 2, 1), null, null },
-                    { new Guid("019df777-2097-7f6a-84f3-97e210d2106a"), new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 8, 31), true, false, true, 3, new DateOnly(2024, 7, 1), null, null },
-                    { new Guid("019df777-504a-712e-b906-df4fabc6b69e"), new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 1, 31), false, false, false, 1, new DateOnly(2024, 9, 1), null, null },
-                    { new Guid("019df777-504a-712e-b906-df50def24feb"), new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 6, 30), true, false, false, 2, new DateOnly(2025, 2, 1), null, null },
-                    { new Guid("019df777-504a-712e-b906-df51d6c28ef4"), new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 8, 31), false, false, false, 3, new DateOnly(2025, 7, 1), null, null },
-                    { new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 1, 31), false, false, false, 1, new DateOnly(2025, 9, 1), null, null },
-                    { new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 6, 30), true, false, false, 2, new DateOnly(2026, 2, 1), null, null },
-                    { new Guid("019df777-7a6a-7c4b-af7e-6a7b7b27fa44"), new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 8, 31), false, false, false, 3, new DateOnly(2026, 7, 1), null, null }
                 });
 
             migrationBuilder.CreateIndex(

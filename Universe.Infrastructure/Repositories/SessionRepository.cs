@@ -135,9 +135,7 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                 cancellationToken
             );
     }
-    public async Task<List<CourseOfferingSession>>
-        GetSessionsWithCourseOfferingIdAsync
-        (List<(Guid SessionId, Guid CourseOfferingId)> newSessions, CancellationToken cancellationToken)
+    public async Task<List<CourseOfferingSession>> GetSessionsWithCourseOfferingIdAsync(List<(Guid SessionId, Guid CourseOfferingId)> newSessions, CancellationToken cancellationToken)
     {
         var sessionIds = newSessions.Select(x => x.SessionId).ToList();
         var offeringIds = newSessions.Select(x => x.CourseOfferingId).ToList();

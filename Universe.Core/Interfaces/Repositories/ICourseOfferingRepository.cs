@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Contracts.CourseOffering;
+using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Entities;
 
@@ -14,6 +15,11 @@ public interface ICourseOfferingRepository
     Task<IReadOnlyList<CourseOfferingResponse>> GetLevelCoursesAsync(Guid LevelId, Guid SemesterId, CancellationToken cancellationToken);
     Task<IReadOnlyList<SessionResponse>> GetCourseOfferingSessionsAsync(Guid courseOfferingId, int GroupNumber, CancellationToken cancellationToken);
     Task<CourseOffering?> GetByIdIncludingAssessmentsAsync(Guid Id, CancellationToken cancellationToken);
+    Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
+    Guid studentId,
+    Guid semesterId,
+    Guid levelId,
+    CancellationToken cancellationToken);
     Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<List<CourseOfferingAssessment>> GetCourseOfferingAssessments(Guid CourseOfferingId, CancellationToken cancellationToken);
     Task<List<CourseOffering>> GetAvailableCourseOfferingsIncludingCourseAsync(Guid LevelId, Guid SemesterId, Guid StudentId, CancellationToken cancellationToken);

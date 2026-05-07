@@ -2,12 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Reflection;
 using System.Security.Claims;
-using System.Text;
 using Universe.Core.Entities;
 using Universe.Core.Entities.Core;
 

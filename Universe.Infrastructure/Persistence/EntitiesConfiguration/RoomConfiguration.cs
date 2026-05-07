@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Entities;
+using Universe.Core.Enums;
 using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
@@ -14,7 +15,7 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
     {
         builder.Property(r => r.Name)
             .IsRequired()
-            .HasMaxLength(20);
+            .HasMaxLength(50);
 
         builder.Property(r => r.RoomNumber)
            .IsRequired();
@@ -22,9 +23,13 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
         builder.Property(r => r.Capacity)
           .IsRequired();
 
-        builder.Property(r => r.RoomType)
-          .IsRequired()
-          .HasConversion<int>();
+        builder.Property(s => s.RoomType)
+            .HasConversion(
+                to => to.ToString(),
+                from => Enum.Parse<RoomType>(from)
+            )
+            .HasMaxLength(50)
+            .IsRequired(true);
 
         builder.HasIndex(r => new { r.RoomNumber, r.BuildingId })
             .IsUnique();

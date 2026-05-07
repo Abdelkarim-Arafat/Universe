@@ -247,19 +247,14 @@ public static class RoomCacheKeys
 public static class BuildingCacheKeys
 {
     private static readonly string Prefix = "buildings";
-
- 
     public static string RootTag => $"{Prefix}:all";
-
      
     public static string List(FilterRequest filter) =>
         $"{RootTag}:list:{filter.SearchValue ?? "null"}:{filter.SortColumn ?? "null"}:{filter.SortDirection ?? "null"}:{filter.PageNumber}:{filter.PageSize}";
 
- 
     public static string ById(Guid id) => $"{Prefix}:{id}";
 
     public static string[] ListTags() => new[] { RootTag };
-}
 }
 
 public static class CourseOfferingCacheKeys

@@ -14,7 +14,8 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
             .CreateCourseExamValidationAsync
             (request.Date, request.StartTime, request.EndTime,
             request.CourseOfferingId, request.ExamTermId, request.ExamCommitteesIds,
-            cancellationToken);
+            cancellationToken
+        );
 
         if (validationResult.isCourseOfferingExamExist)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamIsExist);

@@ -205,8 +205,7 @@ public class EnrollmentRepository(
         return await _context.Students
             .AsNoTracking() 
             .Where(s => s.Id == studentId && !s.IsDeleted)
-            .Select(s => new
-            {
+            .Select(s => new {
                 Student = s,
                 CurrentProgramId = s.StudentAcademicPrograms
                     .Where(sap => sap.Currently && !sap.IsDeleted)
@@ -262,7 +261,7 @@ public class EnrollmentRepository(
                     .Select(l => l.Name)
                     .FirstOrDefault()
             })
-            .Select(temp => new EnrollmentValidationContextDto(
+            .Select(temp => new EnrollmentValidationContextDto (
                 temp.Student.Name,
                 temp.Student.StudentCode,
                 temp.StudentLevelName,

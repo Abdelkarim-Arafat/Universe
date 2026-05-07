@@ -28,8 +28,7 @@ public class ExamRepository
            && (((Id == null)) || (e.Id != Id))
            && (e.StartDate < endDate && startDate < e.EndDate), cancellationToken);
     }
-    public async Task<bool> IsExistExamTermWithSameTypeAsync
-      (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
+    public async Task<bool> IsExistExamTermWithSameTypeAsync (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
     {
         return await _context.ExamTerms.AnyAsync(e =>
            !e.IsDeleted
@@ -69,8 +68,7 @@ public class ExamRepository
         return await _context.CourseOfferingExams.FirstOrDefaultAsync(e => e.Id == Id && !e.IsDeleted, cancellationToken);
     }
 
-    public async Task<CourseExamCommitteesValidationDto> CreateCourseExamValidationAsync
-        (DateOnly date, TimeOnly startTime, TimeOnly endTime,
+    public async Task<CourseExamCommitteesValidationDto> CreateCourseExamValidationAsync(DateOnly date, TimeOnly startTime, TimeOnly endTime,
         Guid courseOfferingId, Guid examTermId, List<Guid> examCommitteesIds, CancellationToken cancellationToken)
     {
 

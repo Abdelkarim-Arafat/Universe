@@ -196,8 +196,7 @@ public class UserRepository
         return result.Select(x => (x.Student, x.LevelName, x.Assessments)).ToList()!;
     }
 
-    public async Task<List<StudentAssessment>> 
-        GetStudentsAssessmentsAsync(List<Guid> StudentsIds, Guid CourseOfferingId, CancellationToken cancellationToken)
+    public async Task<List<StudentAssessment>> GetStudentsAssessmentsAsync(List<Guid> StudentsIds, Guid CourseOfferingId, CancellationToken cancellationToken)
     {
         return await _context.StudentAssessments
             .Include(sa => sa.CourseOfferingAssessment)
@@ -248,8 +247,7 @@ public class UserRepository
             .Select(group => new StudentExam
             (
                 group.Key.ToString(),
-                group.Select(ce => new StudentExamPerCourse
-                (
+                group.Select(ce => new StudentExamPerCourse (
                     ce.Date,
                     ce.CourseOffering.Course.Name,
                     ce.CourseOffering.Course.Code,
@@ -282,12 +280,10 @@ public class UserRepository
             .Select(s => new { s.Name, s.StudentCode })
             .FirstOrDefaultAsync(cancellationToken);
 
-        return new StudentExamsResponse
-        (
+        return new StudentExamsResponse (
            studentInfo!.Name,
            studentInfo.StudentCode,
            studentExams
         );
     }
-
 }

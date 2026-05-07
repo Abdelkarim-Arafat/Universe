@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Universe.Core.Contracts.CourseOffering;
+using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
@@ -21,7 +22,10 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                 && c.LevelId == LevelId
                 && c.CourseId == CourseId, cancellationToken);
 
-    public async Task<IReadOnlyList<SessionResponse>> GetCourseOfferingSessionsAsync(Guid courseOfferingId , int GroupNumber, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<SessionResponse>> GetCourseOfferingSessionsAsync(
+        Guid courseOfferingId,
+        int GroupNumber,
+        CancellationToken cancellationToken)
         => await _context.CourseOfferingSessions
             .AsNoTracking()
             .Where(x => x.CourseOfferingId == courseOfferingId
@@ -160,5 +164,56 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
     {
         return await _context.Enrollments
              .CountAsync(enroll => !enroll.IsDeleted && enroll.CourseOfferingId == CourseOfferingId);
+    }
+
+    public async Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
+     Guid studentId,
+     Guid semesterId,
+     Guid levelId,
+     CancellationToken cancellationToken)
+    {
+        var passedCoursesIds = _context.Enrollments
+            .Where(e => e.StudentId == studentId && e.Status == EnrollmentStatus.Passed && !e.IsDeleted)
+            .Select(e => e.CourseOffering.CourseId);
+
+        return await _context.Levels
+            .AsNoTracking()
+            .Where(l => l.Id == levelId && !l.IsDeleted)
+            .Select(l => new LevelRegistrationCatalogDto(
+                l.Name,
+
+                _context.CourseOfferings
+                    .Where(co => co.LevelId == levelId
+                              && co.SemesterId == semesterId
+                              && !co.IsDeleted
+                              && !passedCoursesIds.Contains(co.CourseId)
+                              && !_context.CoursePrerequisites
+                                    .Where(p => p.CourseId == co.CourseId)
+                                    .Any(p => !passedCoursesIds.Contains(p.PrerequisiteCourseId)))
+                    .Select(co => new CourseRegistration(
+                        co.Id,
+                        co.CourseId,
+                        co.Course.Name,
+                        co.Course.Code,
+                        co.IsOptional,
+                        co.CreditHours,
+                        false, // IsEnrolled
+                        co.CourseOfferingSessions
+                            .Where(cos => !cos.IsDeleted)
+                            .Select(cos => new SessionInfo(
+                                cos.TeachingSessionId,
+                                cos.TeachingSession.Instructor.Name,
+                                cos.TeachingSession.Type,
+                                cos.TeachingSession.GroupNumber,
+                                cos.TeachingSession.Day,
+                                cos.TeachingSession.StartTime,
+                                cos.TeachingSession.EndTime,
+                                cos.TeachingSession.Capacity
+                                - cos.TeachingSession.TeachingSessionEnrollments.Count(e => !e.IsDeleted),
+                                false // IsRegistered
+                            )).ToList()
+                    )).ToList()
+            ))
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

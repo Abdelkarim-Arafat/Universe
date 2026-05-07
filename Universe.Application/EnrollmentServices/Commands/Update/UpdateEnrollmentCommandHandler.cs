@@ -17,12 +17,9 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
 
         var incommingSessionsDetails = validationResult.Value.sessionDetails;
 
-        var sessionDetailsDict = validationResult.Value.sessionDetails
-                                            .ToDictionary(s => s.sessionId);
+        var sessionDetailsDict = validationResult.Value.sessionDetails.ToDictionary(s => s.sessionId);
 
-        var incomingCourseOfferingIds = incommingSessionsDetails
-                                            .Select(x => x.courseOfferingId)
-                                            .ToHashSet();
+        var incomingCourseOfferingIds = incommingSessionsDetails.Select(x => x.courseOfferingId).ToHashSet();
 
         var executionData = await _unitOfWork.EnrollmentRepository
                          .GetEnrollmentExecutionDataAsync
@@ -32,9 +29,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
 
         var incomingAssessmentsLookup = executionData.IncomingAssessmentsLookup;
 
-        var incomingSessionsGrouped = incommingSessionsDetails
-                                            .GroupBy(x => x.courseOfferingId)
-                                            .ToDictionary(g => g.Key, g => g.ToList());
+        var incomingSessionsGrouped = incommingSessionsDetails.GroupBy(x => x.courseOfferingId).ToDictionary(g => g.Key, g => g.ToList());
 
         var existingCourseOfferingIds = existingEnrollments
                                             .Select(x => x.CourseOfferingId)
