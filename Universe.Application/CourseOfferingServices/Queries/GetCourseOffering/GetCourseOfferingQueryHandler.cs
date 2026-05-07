@@ -1,6 +1,6 @@
 ﻿using Universe.Core.Contracts.CourseOffering;
 
-namespace Universe.Application.CourseOfferingServices.Query.GetCourseOffering;
+namespace Universe.Application.CourseOfferingServices.Queries.GetCourseOffering;
 
 public class GetCourseOfferingQueryHandler(
     IUnitOfWork unitOfWork,

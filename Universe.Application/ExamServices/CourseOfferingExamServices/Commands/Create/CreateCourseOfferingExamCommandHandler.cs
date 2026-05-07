@@ -40,7 +40,7 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.OverlappingTime);
 
         var studentsIds = await _unitOfWork.CourseOfferingRepository
-            .getStudentsIdsByCourseOfferingIdAsync(request.CourseOfferingId, cancellationToken);
+            .GetStudentsIdsByCourseOfferingIdAsync(request.CourseOfferingId, cancellationToken);
 
 
         var committeessSum = committeesDetails.Sum(c => c.Capacity);

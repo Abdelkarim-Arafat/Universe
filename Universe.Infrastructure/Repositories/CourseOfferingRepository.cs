@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Universe.Core.Contracts.CourseOffering;
 using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Contracts.TeachingSession;
@@ -8,8 +7,6 @@ using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 using System.Linq.Dynamic.Core;
-using Universe.Core.Contracts.CourseOfferings;
-using Org.BouncyCastle.Bcpg;
 
 namespace Universe.Infrastructure.Repositories;
 
@@ -62,12 +59,12 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
     public async Task<bool> IsExistAsync(Guid CourseOfferingId, CancellationToken cancellationToken)
         => await _context.CourseOfferings
             .AnyAsync(co => co.Id == CourseOfferingId && !co.IsDeleted, cancellationToken);
-    public Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
-        => _context.CourseOfferings
+    public async Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
+        => await _context.CourseOfferings
         .FirstOrDefaultAsync(c => c.Id == Id && !c.IsDeleted, cancellationToken);
 
 
-    public Task<List<Guid>> getStudentsIdsByCourseOfferingIdAsync(Guid courseOfferingId, CancellationToken cancellationToken)
+    public Task<List<Guid>> GetStudentsIdsByCourseOfferingIdAsync(Guid courseOfferingId, CancellationToken cancellationToken)
     {
         return _context.Enrollments
             .Where(e => e.CourseOfferingId == courseOfferingId && !e.IsDeleted)
@@ -91,7 +88,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
            c.MaxScore
        ))
        .ToListAsync(cancellationToken);
-
     public async Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
      Guid studentId,
      Guid semesterId,
@@ -141,5 +137,12 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                     )).ToList()
             ))
             .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<CourseOffering?> GetByIdIncludingAssessmentsAsync(Guid Id, CancellationToken cancellationToken)
+    {
+        return await _context.CourseOfferings
+            .Include(co => co.Assessments)
+            .FirstOrDefaultAsync(co => !co.IsDeleted && co.Id == Id, cancellationToken);
     }
 }

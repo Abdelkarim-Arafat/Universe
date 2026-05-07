@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Contracts.CourseOffering;
-
-using Universe.Core.Contracts.CourseOfferings;
 using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Entities;
@@ -23,5 +21,6 @@ public interface ICourseOfferingRepository
        Guid levelId,
        CancellationToken cancellationToken);
     Task<List<CourseOfferingAssessmentResponse>> GetCourseOfferingAssessmentsForViewAsync(Guid CourseOfferingId, CancellationToken cancellationToken);
-    Task<List<Guid>> getStudentsIdsByCourseOfferingIdAsync(Guid courseOfferingId, CancellationToken cancellationToken);
+    Task<List<Guid>> GetStudentsIdsByCourseOfferingIdAsync(Guid courseOfferingId, CancellationToken cancellationToken);
+    Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
 }

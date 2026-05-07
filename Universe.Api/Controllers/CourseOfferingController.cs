@@ -9,8 +9,9 @@ using Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering
 using Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 using Universe.Application.CourseOfferingServices.Queries.GetCourseOffering;
 using Universe.Application.CourseOfferingServices.Queries.GetCourseOfferingAssessments;
-using Universe.Application.CourseOfferingServices.Queries.GetLevelCourses;
 using Universe.Application.CourseOfferingServices.Queries.GetProgramCoursesForExams;
+using Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
+using Universe.Core.Constants;
 using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
@@ -29,7 +30,7 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetCourseOfferingCommand(id), cancellationToken);
+        var result = await _mediator.Send(new GetCourseOfferingQuery(id), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
