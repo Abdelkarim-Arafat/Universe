@@ -52,11 +52,4 @@ public interface ISessionRepository
     TimeOnly end,
     Enums.DayOfWeek day,
     CancellationToken cancellationToken);
-
-    Task<Dictionary<Guid, (int GroupNumber, int Capacity)>>
-         GetGroupNumberAndCapacityBulkAsync(List<Guid> sessionIds, CancellationToken cancellationToken);
-
-    Task<List<CourseOfferingSession>>
-        GetSessionsWithCourseOfferingIdAsync
-        (List<(Guid SessionId, Guid CourseOfferingId)> newSessions, CancellationToken cancellationToken);
 }

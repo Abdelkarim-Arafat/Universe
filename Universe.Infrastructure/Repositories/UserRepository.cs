@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
@@ -83,13 +83,6 @@ public class UserRepository
         !x.IsDeleted &&
         (UserId == null || x.Id == UserId), cancellationToken);
 
-    public async Task<Guid?> GetCurrentProgram(Guid StudentId, CancellationToken cancellationToken)
-     => await _context.StudentAcademicPrograms
-         .AsNoTracking()
-         .Where(x =>!x.IsDeleted && x.StudentId == StudentId && x.Currently)
-         .Select(x => x.AcademicProgramId)
-         .FirstOrDefaultAsync(cancellationToken);
-
     public async Task<decimal> CalculateCreditHoursAsync
         (Guid StudentId, Guid? SemesterId, CancellationToken cancellationToken)
     {
@@ -157,53 +150,62 @@ public class UserRepository
              .ToListAsync(cancellationToken);
     }
 
-    // فصل كل شيء من بعضه
-    public async Task<List<(Student Student, string StudentLevelName, List<StudentAssessment> Assessments)>>
-        GetStudentsByCourseOfferingAndGroupNumberAsync(
-     Guid courseOfferingId,
-     int? groupNumber,
+    public async Task<ILookup<Guid, StudentDegreeValue>> GetStudentsAssessmentsLookupAsync(
+     List<Guid> StudentsIds,
+     Guid CourseOfferingId,
      CancellationToken cancellationToken)
     {
-        var query = _context.Students
-            .AsNoTracking()
-            .Include(s => s.Enrollments)
-            .Where(stu => stu.Enrollments.Any(e =>
-                e.CourseOfferingId == courseOfferingId &&
-                ((groupNumber == null) || (e.GroupNumber == groupNumber)) &&
-                !e.IsDeleted));
-
-        var result = await query
-            .Select(s => new
+        var assessmentsList = await _context.StudentAssessments
+            .Where(sa => StudentsIds.Contains(sa.StudentId)
+                      && sa.CourseOfferingAssessment.CourseOfferingId == CourseOfferingId
+                      && !sa.IsDeleted)
+            .Select(sa => new
             {
-                Student = s,
-                TotalHours = s.Enrollments
-                    .Where(e => e.Status == Core.Enums.EnrollmentStatus.Passed)
-                    .Sum(e => e.CourseOffering.CreditHours),
-
-                LevelName = _context.Levels
-                    .Where(lv => !lv.IsDeleted &&
-                                 s.Enrollments.Where(e => e.Status == Core.Enums.EnrollmentStatus.Passed)
-                                              .Sum(e => e.CourseOffering.CreditHours) >= lv.MinHours &&
-                                 s.Enrollments.Where(e => e.Status == Core.Enums.EnrollmentStatus.Passed)
-                                              .Sum(e => e.CourseOffering.CreditHours) <= lv.MaxHours)
-                    .Select(lv => lv.Name)
-                    .FirstOrDefault(),
-                Assessments = s.StudentAssessments.ToList()
+                StudentId = sa.StudentId,
+                assessments = new StudentDegreeValue(
+                  sa.CourseOfferingAssessmentId,
+                  sa.degree
+            )
             })
             .ToListAsync(cancellationToken);
 
-
-        return result.Select(x => (x.Student, x.LevelName, x.Assessments)).ToList()!;
+        return assessmentsList.ToLookup(sa => sa.StudentId, sa => sa.assessments);
     }
-
-    public async Task<List<StudentAssessment>> 
-        GetStudentsAssessmentsAsync(List<Guid> StudentsIds, Guid CourseOfferingId, CancellationToken cancellationToken)
+    public async Task<Dictionary<Guid, string>> GetStudentsLevelNameDictionaryAsync(
+        List<Guid> StudentsIds,
+        Guid programId,
+        CancellationToken cancellationToken)
     {
-        return await _context.StudentAssessments
-            .Include(sa => sa.CourseOfferingAssessment)
-            .Where(sa => StudentsIds.Contains(sa.StudentId)
-            && sa.CourseOfferingAssessment.CourseOfferingId == CourseOfferingId && !sa.IsDeleted)
+        var levels = await _context.Levels
+            .AsNoTracking()
+            .Where(lv => !lv.IsDeleted && lv.AcademicProgramId == programId)
+            .Select(lv => new
+            {
+                lv.Name,
+                lv.MinHours,
+                lv.MaxHours
+            })
             .ToListAsync(cancellationToken);
+
+        var studentsHours = await _context.Students
+            .AsNoTracking()
+            .Where(s => StudentsIds.Contains(s.Id) && !s.IsDeleted)
+            .Select(s => new
+            {
+                StudentId = s.Id,
+                TotalEarnedHours = s.Enrollments
+                    .Where(e => e.Status == EnrollmentStatus.Passed && !e.IsDeleted) 
+                    .Sum(e => e.CourseOffering.CreditHours)
+            })
+            .ToListAsync(cancellationToken);
+
+        var studentsLevelDictionary = studentsHours.ToDictionary(
+            s => s.StudentId,
+            s => levels.FirstOrDefault
+            (lv => s.TotalEarnedHours >= lv.MinHours && s.TotalEarnedHours <= lv.MaxHours)?.Name ?? "No Level"
+        );
+
+        return studentsLevelDictionary;
     }
 
     public async Task<StudentExamsResponse> GetStudentExamsTablesAsync(Guid studentId, CancellationToken cancellationToken)
@@ -236,7 +238,10 @@ public class UserRepository
             .Select(exam => exam.Id);
 
         var studentEnrollmentsQuery = _context.Enrollments
-            .Where(e => e.StudentId == studentId && !e.IsDeleted)
+            .Where(e => e.StudentId == studentId 
+            && currentSemesterIdQuery.Contains(e.CourseOffering.SemesterId)
+            && e.Status == EnrollmentStatus.InProgress
+            &&!e.IsDeleted)
             .Select(e => e.CourseOfferingId);
    
         var studentExams = await _context.CourseOfferingExams

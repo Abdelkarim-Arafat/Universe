@@ -2,7 +2,7 @@
 using Universe.Core.Contracts.CourseOfferings;
 using Universe.Core.Enums;
 
-namespace Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
+namespace Universe.Application.CourseOfferingServices.Queries.GetLevelCourses;
 
 public record GetLevelCoursesCommand(
     [Required] Guid LevelId,

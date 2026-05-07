@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.Grades;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -9,11 +10,21 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<List<Grade>> GetProgramGradesAsync(Guid AcademicProgramId, CancellationToken cancellationToken = default)
+    public async Task<List<GradeResponse>> GetProgramGradesAsync(Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         var grades = await _context.Grades
             .AsNoTracking()
             .Where(grade => grade.AcademicProgramId == AcademicProgramId && !grade.IsDeleted)
+            .Select(grade=> new GradeResponse
+            (
+                grade.Id,
+                grade.Name,
+                grade.Code,
+                grade.MinScore,
+                grade.MaxScore,
+                grade.MinGradePoint,
+                grade.MaxGradePoint
+           ))
             .OrderBy(grade => grade.MinScore)
             .ToListAsync(cancellationToken);
         return grades;

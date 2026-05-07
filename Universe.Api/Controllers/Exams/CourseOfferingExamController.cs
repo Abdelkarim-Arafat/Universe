@@ -6,7 +6,7 @@ using Universe.Application.CourseOfferingExamServices.Commands.Create;
 using Universe.Application.CourseOfferingExamServices.Commands.Delete;
 using Universe.Application.CourseOfferingExamServices.Commands.Update;
 using Universe.Application.CourseOfferingExamServices.Queries.Get;
-using Universe.Core.Entities;
+using Universe.Application.ExamServices.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
 
 namespace Universe.Api.Controllers.Exams;
 
@@ -20,10 +20,9 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 
     public async Task<IActionResult> Get(
         [FromRoute] Guid id,
-        [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var query = new GetCourseOfferingExamQuery(id, filter);
+        var query = new GetCourseOfferingExamQuery(id);
 
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
@@ -34,7 +33,6 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
         (
         [FromRoute] Guid examTermId,
         [FromQuery] Guid courseOfferingId,
-        [FromQuery] FilterRequest filter,
         [FromBody] CreateCourseOfferingExamRequest request,
         CancellationToken cancellationToken)
 
@@ -46,8 +44,7 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
             request.EndTime,
             courseOfferingId,
             examTermId,
-            request.ExamCommitteesIds,
-            filter
+            request.ExamCommitteesIds
             );
 
         var result = await _mediator.Send(command, cancellationToken);
@@ -69,8 +66,7 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id,
-         UpdateCourseOfferingExamRequest request,
-        [FromQuery] FilterRequest filter,
+        [FromBody] UpdateCourseOfferingExamRequest request,
         CancellationToken cancellationToken)
     {
         var command = new UpdateCourseOfferingExamCommand(
@@ -78,11 +74,21 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
             request.Date,
             request.StartTime,
             request.EndTime,
-            request.ExamCommitteesIds,
-            filter);
+            request.ExamCommitteesIds);
+
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess
            ? Ok(result.Value)
            : result.ToProblem();
+    }
+
+    [HttpGet("{id:guid}/committees")]
+    public async Task<IActionResult> GetCourseCommittees(
+        [FromRoute] Guid id,
+        [FromQuery] FilterRequest filter,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetCourseExamCommitteesQuery(id, filter), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

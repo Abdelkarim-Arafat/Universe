@@ -9,33 +9,41 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
     public async Task<Result<CourseOfferingExamResponse>> Handle(CreateCourseOfferingExamCommand request, CancellationToken cancellationToken)
     {
+        var isExamAlreadyExist = await _unitOfWork.ExamRepository
+        .IsCourseOfferingExamExistAsync(request.CourseOfferingId, request.ExamTermId, cancellationToken);
 
-        var validationResult = await _unitOfWork.ExamRepository
-            .CreateCourseExamValidationAsync
-            (request.Date, request.StartTime, request.EndTime,
-            request.CourseOfferingId, request.ExamTermId, request.ExamCommitteesIds,
-            cancellationToken);
-
-        if (validationResult.isCourseOfferingExamExist)
+        if (isExamAlreadyExist)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamIsExist);
 
-        var existingIds = validationResult.examCommittees.Select(ec => ec.Id);
+        var isCourseOfferingExist = await _unitOfWork.CourseOfferingRepository
+            .IsExistAsync(request.CourseOfferingId, cancellationToken);
 
-        if (request.ExamCommitteesIds.Except(existingIds).Any())
-            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamCommitteeNotFound);
-
-        if (!validationResult.isCourseOfferingExist)
+        if (!isCourseOfferingExist)
             return Result.Failure<CourseOfferingExamResponse>(CourseOfferingErrors.NotFound);
 
-        if (!validationResult.isExamTermExist)
+        var isExamTermExist = await _unitOfWork.ExamRepository
+            .IsExistExamTermAsync(request.ExamTermId, cancellationToken);
+
+        if (!isExamTermExist)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamTermNotFound);
 
-        if (validationResult.isOverlappedTime)
+        var committeesDetails = await _unitOfWork.ExamRepository
+            .GetCommitteesDetailsAsync(request.ExamTermId, request.ExamCommitteesIds, cancellationToken);
+
+        if (committeesDetails == null || !committeesDetails.Any())
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamCommitteeNotFound);
+
+        var hasOverlappingExam = await _unitOfWork.ExamRepository
+            .HasOverlappingExamAsync(request.ExamTermId, request.ExamCommitteesIds, request.Date, request.StartTime, request.EndTime, cancellationToken);
+
+        if (hasOverlappingExam)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.OverlappingTime);
 
-        var studentsIds = validationResult.studentsIds.ToList();
+        var studentsIds = await _unitOfWork.CourseOfferingRepository
+            .getStudentsIdsByCourseOfferingIdAsync(request.CourseOfferingId, cancellationToken);
 
-        var committeessSum = validationResult.examCommittees.Sum(c => c.Capacity);
+
+        var committeessSum = committeesDetails.Sum(c => c.Capacity);
         var studentsCount = studentsIds.Count();
 
         if (committeessSum < studentsCount)
@@ -48,7 +56,7 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         int seatNumber = 1;
 
-        foreach (var committee in validationResult.examCommittees)
+        foreach (var committee in committeesDetails)
         {
             if (seatNumber > studentsCount)
                 break;
@@ -102,40 +110,12 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
                 new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
 
-        var query = _unitOfWork.Repository<CourseOfferingCommittee>()
-                 .GetQueryable()
-                 .Where(com => !com.IsDeleted && com.CourseOfferingExamId == courseOfferingExam.Id);
-
-        var filter = request.Filter;
-
-        var source = query.Select(com => new CourseExamCommittees
-               (
-                com.ExamCommitteeId,
-                com.ExamCommittee.CommitteeNumber,
-                com.ExamCommittee.MaxCapacity,
-                com.ExamSeats.Count(seat => !seat.IsDeleted),
-                com.ExamSeats.Where(seat => !seat.IsDeleted).Select(seat => (int?)seat.SeatNumber).Min() ?? 0, // check if null
-                com.ExamCommittee.Room != null
-                ? $"{com.ExamCommittee.Room.RoomNumber} - {com.ExamCommittee.Room.Building.Name}"
-                : "No Place"
-             ));
-
-        if (!string.IsNullOrEmpty(filter.SearchValue))
-            source = source.ApplySearch(filter.SearchValue, x => x.Place);
-
-        if (!string.IsNullOrEmpty(filter.SortColumn))
-            source = source.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-
-        var committeesResponse = await PaginationList<CourseExamCommittees>
-             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
-
         var response = new CourseOfferingExamResponse
             (
             courseOfferingExam.Id,
             courseOfferingExam.Date,
             courseOfferingExam.StartTime,
-            courseOfferingExam.EndTime,
-            committeesResponse
+            courseOfferingExam.EndTime
             );
 
         return Result.Success(response);

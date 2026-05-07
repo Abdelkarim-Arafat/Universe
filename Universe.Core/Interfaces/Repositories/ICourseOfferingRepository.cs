@@ -1,4 +1,6 @@
-﻿using Universe.Core.Contracts.Enrollments;
+﻿
+using Universe.Core.Contracts.CourseOfferings;
+using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Entities;
 
 namespace Universe.Core.Interfaces.Repositories;
@@ -16,4 +18,6 @@ public interface ICourseOfferingRepository
        Guid semesterId,
        Guid levelId,
        CancellationToken cancellationToken);
- }
+    Task<List<CourseOfferingAssessmentResponse>> GetCourseOfferingAssessmentsForViewAsync(Guid CourseOfferingId, CancellationToken cancellationToken);
+    Task<List<Guid>> getStudentsIdsByCourseOfferingIdAsync(Guid courseOfferingId, CancellationToken cancellationToken);
+}

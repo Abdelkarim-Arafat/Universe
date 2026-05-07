@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
  using Universe.Core.Contracts.CourseOfferings;
 
-namespace Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
+namespace Universe.Application.CourseOfferingServices.Queries.GetLevelCourses;
 
 public class GetLevelCoursesCommandHandler(
     IUnitOfWork unitOfWork

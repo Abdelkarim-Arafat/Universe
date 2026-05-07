@@ -8,8 +8,7 @@ public record UpdateCourseOfferingExamCommand
      DateOnly Date,
      TimeOnly StartTime,
      TimeOnly EndTime,
-     List<Guid> ExamCommitteesIds,
-     FilterRequest? Filter
+     List<Guid> ExamCommitteesIds
 ) : IRequest<Result<CourseOfferingExamResponse>>;
 
 public record UpdateCourseOfferingExamRequest
