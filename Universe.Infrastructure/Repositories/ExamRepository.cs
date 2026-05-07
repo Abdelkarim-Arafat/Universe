@@ -28,8 +28,7 @@ public class ExamRepository
            && (((Id == null)) || (e.Id != Id))
            && (e.StartDate < endDate && startDate < e.EndDate), cancellationToken);
     }
-    public async Task<bool> IsExistExamTermWithSameTypeAsync
-      (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
+    public async Task<bool> IsExistExamTermWithSameTypeAsync (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
     {
         return await _context.ExamTerms.AnyAsync(e =>
            !e.IsDeleted

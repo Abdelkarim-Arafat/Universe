@@ -1,4 +1,5 @@
-﻿using Universe.Core.Contracts.CourseOfferings;
+﻿using Universe.Core.Contracts.CourseOffering;
+
 
 namespace Universe.Application.CourseOfferingServices.Queries.GetProgramCoursesForExams;
 

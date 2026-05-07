@@ -1,10 +1,12 @@
 ﻿namespace Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering;
 
 public class RemoveCourseOfferingCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
     ) : IRequestHandler<RemoveCourseOfferingCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(RemoveCourseOfferingCommand request, CancellationToken cancellationToken)
     {
@@ -14,6 +16,10 @@ public class RemoveCourseOfferingCommandHandler(
 
         _unitOfWork.Repository<CourseOffering>().SoftDelete(course);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveAsync(CourseOfferingCacheKeys.ById(course.Id), cancellationToken);
+        await _cacheService.RemoveAsync(CourseOfferingCacheKeys.LevelCourses(course.LevelId, course.Id), cancellationToken);
+        await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId), cancellationToken);
 
         return Result.Success();
     }

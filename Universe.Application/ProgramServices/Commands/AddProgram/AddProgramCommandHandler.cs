@@ -17,16 +17,10 @@ public class AddAcademicProgramCommandHandler(
 
         var academicProgram = request.Adapt<AcademicProgram>();
 
-        await _cacheService.GetOrCreateAsync (
-            key: AcademicProgramCacheKeys.ById(academicProgram.Id),
-            factory: async () => academicProgram,
-            cancellationToken: cancellationToken
-        );
-
-        await _cacheService.RemoveByTagAsync(AcademicProgramCacheKeys.Tags(request.CollegeId), cancellationToken);
-
         await _unitOfWork.Repository<AcademicProgram>().AddAsync(academicProgram, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveByTagAsync(AcademicProgramCacheKeys.Tags(request.CollegeId), cancellationToken);
 
         var response = academicProgram.Adapt<AcademicProgramResponse>();
 

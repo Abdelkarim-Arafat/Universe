@@ -34,8 +34,7 @@ public class LevelRepository
         return await _context.Levels.FirstOrDefaultAsync(lv => lv.Id == id && !lv.IsDeleted, cancellationToken);
     }
 
-    public async Task<Level?> GetStudentCurrentLevelAsync
-    (Guid StudentId, CancellationToken cancellationToken)
+    public async Task<Level?> GetStudentCurrentLevelAsync(Guid StudentId, CancellationToken cancellationToken)
     {
         int creditHours = (int)await _userRepository.CalculateCreditHoursAsync(StudentId, null, cancellationToken);
         return await _context.Levels

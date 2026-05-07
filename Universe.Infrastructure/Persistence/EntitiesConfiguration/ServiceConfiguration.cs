@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Entities;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -17,5 +18,6 @@ public class ServiceConfiguration : IEntityTypeConfiguration<Service>
             .WithMany(c => c.Services)
             .HasForeignKey(s => s.CollegeId);
 
+        builder.HasData(ServiceSeed.Data);
     }
 }

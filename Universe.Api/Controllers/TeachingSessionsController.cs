@@ -1,12 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.ComponentModel.DataAnnotations;
 using Universe.Api.Extensions;
 using Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering;
 using Universe.Application.TeachingSessionServices.Commands.AddSession;
 using Universe.Application.TeachingSessionServices.Commands.RemoveSession;
 using Universe.Application.TeachingSessionServices.Queries.GetCourseSessions;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
@@ -17,7 +19,9 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpPost("")]
-    public async Task<IActionResult> AddSession(
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> AddSession (
         [FromBody] AddSessionCommand request,
         CancellationToken cancellationToken)
     {
@@ -26,6 +30,8 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{sessionId:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> RemoveSession(
         [FromRoute] Guid sessionId,
         [FromQuery] Guid courseOfferingId,
@@ -36,14 +42,14 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AllRoles)]
     public async Task<IActionResult> GetCourseSessions (
         [FromQuery] Guid courseOfferingId,
         [FromQuery] int groupNumber,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetCourseSessionsCommand(
-            courseOfferingId , groupNumber
-            ), cancellationToken);
+        var result = await _mediator.Send(new GetCourseSessionsQuery(courseOfferingId , groupNumber), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

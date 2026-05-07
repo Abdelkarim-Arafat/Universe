@@ -1,12 +1,14 @@
-﻿using Universe.Core.Contracts.CourseOfferings;
+﻿using Universe.Core.Contracts.CourseOffering;
 
 namespace Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 
 internal class AddCourseOfferingCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
     ) : IRequestHandler<AddCourseOfferingCommand, Result<CourseOfferingWithDetailsResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<CourseOfferingWithDetailsResponse>> Handle(AddCourseOfferingCommand request, CancellationToken cancellationToken)
     {
@@ -37,32 +39,17 @@ internal class AddCourseOfferingCommandHandler(
             .IsExistSemesterAsync(semester.Id , cancellationToken) is false)
             return Result.Failure<CourseOfferingWithDetailsResponse>(SemesterErrors.NotFound);
 
-        var courseOffering = new CourseOffering
-        {
-            AcademicProgramId = request.AcademicProgramId,
-            SemesterId = semester.Id,
-            LevelId = request.LevelId,
-            CourseId = request.CourseId,
-            TotalGrade = request.TotalGrade,
-            NumberOfGroups = request.NumberOfGroups,
-            SuccessPercentage = request.SuccessPercentage,
-            IsOptional = request.IsOptional,
-            OptionalGroupCode = request.OptionalGroupCode!,
-            Type = request.Type,
-            IsIncludedInGpa = request.IsIncludedInGpa,
-            CreditHours = request.CreditHours,
-            Assessments = request.Assessments.Select(static x => new CourseOfferingAssessment
-            {
-                Type = x.Type,
-                MaxScore = x.MaxScore,
-            }).ToList()
-        };
+        var courseOffering = request.Adapt<CourseOffering>();
+
+        courseOffering.SemesterId = semester.Id;
 
         await _unitOfWork.Repository<CourseOffering>().AddAsync(courseOffering, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
-        
-        var response = (courseOffering).Adapt<CourseOfferingWithDetailsResponse>();
-        
+
+        await _cacheService.RemoveAsync(CourseOfferingCacheKeys.LevelCourses(courseOffering.LevelId, courseOffering.Id), cancellationToken);
+        await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId) , cancellationToken);
+
+        var response = (courseOffering, semester).Adapt<CourseOfferingWithDetailsResponse>();
         return Result.Success(response);
     }
 }

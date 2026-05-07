@@ -68,18 +68,11 @@ public class UpdateCourseCommandHandler(
         _unitOfWork.Repository<Course>().Update(course);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        var cacheKey = CourseCacheKeys.ById(course.Id);
-        var tags = CourseCacheKeys.Tags(request.CollegeId);
+        await _cacheService.RemoveAsync(CourseCacheKeys.ById(course.Id), cancellationToken);
+        await _cacheService.RemoveByTagAsync(CourseCacheKeys.Tags(request.CollegeId), cancellationToken);
 
-        await _cacheService.RemoveAsync(cacheKey, cancellationToken);
-        await _cacheService.RemoveByTagAsync(tags, cancellationToken);
-
-        var response = await _cacheService.GetOrCreateAsync(
-            key: cacheKey,
-            factory: async () => await _unitOfWork.CourseRepository
-                    .GetCourseWithPrerequisitesAsync(course.Id, cancellationToken),
-            cancellationToken: cancellationToken
-            );
+        var response = await _unitOfWork.CourseRepository
+                        .GetCourseWithPrerequisitesAsync(course.Id, cancellationToken);
 
         return Result.Success(response!);
     }

@@ -20,23 +20,15 @@ public class UpdateAcademicProgramCommandHandler(
             .IsExistAsync(request.CollegeId, request.Name, request.Code, request.Id, cancellationToken))
             return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.AlreadyExists);
 
-        var cacheKey = AcademicProgramCacheKeys.ById(request.Id);
-
-        var academicProgram = await _cacheService.GetOrCreateAsync (
-            key: cacheKey,
-            factory: async () => await _unitOfWork.AcademicProgramRepository
-                .GetByIdAsync(request.Id, cancellationToken),
-            cancellationToken: cancellationToken
-        );
-
-        if (academicProgram is null)
-            return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
+        if (await _unitOfWork.AcademicProgramRepository
+            .GetByIdAsync(request.Id, cancellationToken) is not { } academicProgram
+            ) return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
 
         request.Adapt(academicProgram);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        await _cacheService.RemoveAsync(cacheKey, cancellationToken);
+        await _cacheService.RemoveAsync(AcademicProgramCacheKeys.ById(request.Id), cancellationToken);
         await _cacheService.RemoveByTagAsync(AcademicProgramCacheKeys.Tags(request.CollegeId), cancellationToken);
 
         var response = academicProgram.Adapt<AcademicProgramResponse>();

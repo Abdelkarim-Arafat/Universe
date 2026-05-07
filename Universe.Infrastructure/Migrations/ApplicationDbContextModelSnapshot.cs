@@ -662,7 +662,8 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -692,7 +693,44 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Buildings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-4014a33a997f"),
+                            Code = "ADM01",
+                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Main Administration Building"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"),
+                            Code = "COMP",
+                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Faculty of Computing"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"),
+                            Code = "LABS",
+                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Scientific Laboratories"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"),
+                            Code = "LIB",
+                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Central Library"
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.College", b =>
@@ -1084,6 +1122,371 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("SemesterId");
 
                     b.ToTable("CourseOfferings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019dfd68-2592-7804-b003-edf2f934b392"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-9599074ce97b"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cf36f1d180a"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            SuccessPercentage = 50m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-2592-7804-b003-edf351a1d258"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-959aa16694f7"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cf4d268fbec"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            SuccessPercentage = 55m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-2592-7804-b003-edf43f0472eb"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-959b0bc724f7"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cf4d268fbec"),
+                            NumberOfGroups = 3,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"),
+                            SuccessPercentage = 55m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-2592-7804-b003-edf5375368d1"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-959c5b7e0ee1"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cf568231cba"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            SuccessPercentage = 60m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-95890ee5ba62"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cf7ad92b89e"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            SuccessPercentage = 50m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-958a05c9c32a"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cf8937d84f4"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"),
+                            SuccessPercentage = 50m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-5448-7bac-a12f-aa7174f6b010"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-958b81dee3d6"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cf9e82c4b82"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            SuccessPercentage = 55m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-958c542ea45f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cfa9abd172d"),
+                            NumberOfGroups = 3,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            SuccessPercentage = 55m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-5448-7bac-a12f-aa73c25e495e"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-958d58bae05b"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cfb22e7bb31"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"),
+                            SuccessPercentage = 55m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-5448-7bac-a12f-aa74e02a987d"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-958e1b56b349"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cfcf91e0ee9"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            SuccessPercentage = 60m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-7d5c-74be-9adc-de7dd1e252bd"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-958f9e72f562"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cfdd431525b"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            SuccessPercentage = 60m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-7d5d-76da-9139-52b1a45f0cf6"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-9590bdb364c0"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cfeb8e8d41d"),
+                            NumberOfGroups = 2,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"),
+                            SuccessPercentage = 60m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-7d5d-76da-9139-52b2b0563e46"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-9591262e88f8"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7cffb491c63b"),
+                            NumberOfGroups = 1,
+                            SemesterId = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            SuccessPercentage = 65m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-7d5d-76da-9139-52b301bf0bb4"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-95920fdf4a77"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7d00e6c3ddce"),
+                            NumberOfGroups = 1,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            SuccessPercentage = 65m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-7d5d-76da-9139-52b45425dfbc"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-9593115238f8"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7d01aebd87c1"),
+                            NumberOfGroups = 1,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"),
+                            SuccessPercentage = 65m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-a692-7f08-971c-2c8a3cc190cd"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-9594f9d4ca6a"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = true,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7d024664404f"),
+                            NumberOfGroups = 1,
+                            OptionalGroupCode = "SEC-B",
+                            SemesterId = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            SuccessPercentage = 60m,
+                            TotalGrade = 100m,
+                            Type = "College"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-a692-7f08-971c-2c8ba2eb138f"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-9595b8b7914a"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = true,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7d033b7e618f"),
+                            NumberOfGroups = 2,
+                            OptionalGroupCode = "SEC-C",
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            SuccessPercentage = 60m,
+                            TotalGrade = 100m,
+                            Type = "College"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-a692-7f08-971c-2c8c649f9da8"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-959678c41dea"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = true,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7d049703d7cb"),
+                            NumberOfGroups = 2,
+                            OptionalGroupCode = "SEC-D",
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"),
+                            SuccessPercentage = 60m,
+                            TotalGrade = 100m,
+                            Type = "College"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-a692-7f08-971c-2c8df1a1fd0d"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-95977f4e315c"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7d05feaad5d1"),
+                            NumberOfGroups = 1,
+                            SemesterId = new Guid("019df777-504a-712e-b906-df51d6c28ef4"),
+                            SuccessPercentage = 65m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd68-a692-7f08-971c-2c8e8bbca914"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            CourseId = new Guid("019df349-a51c-7aba-9caf-9598a067e97e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            CreditHours = 3m,
+                            IsDeleted = false,
+                            IsIncludedInGpa = true,
+                            IsOpenForControl = false,
+                            IsOptional = false,
+                            LevelId = new Guid("019df4f8-4012-7469-9aa8-7d065b1fbceb"),
+                            NumberOfGroups = 1,
+                            SemesterId = new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"),
+                            SuccessPercentage = 65m,
+                            TotalGrade = 100m,
+                            Type = "Program"
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingAssessment", b =>
@@ -1124,6 +1527,422 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("CourseOfferingId");
 
                     b.ToTable("CourseOfferingAssessments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-521a1328449e"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf2f934b392"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-521b47f7b9da"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf2f934b392"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-521c0bc23ed0"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf2f934b392"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-521db4714a1b"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf351a1d258"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 50m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-521edadbeedd"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf351a1d258"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 25m,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-521f983c4154"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf351a1d258"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 25m,
+                            Type = 7
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5220eeac8ef6"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf43f0472eb"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522196b3e3e2"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf43f0472eb"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 6
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522235c95745"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf43f0472eb"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 8
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5223b06879a8"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf5375368d1"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 70m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5224ac8cfe76"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf5375368d1"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 30m,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-52250ddebeb3"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 50m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5226f41b1c02"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 25m,
+                            Type = 6
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5227dd77ac47"),
+                            CourseOfferingId = new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 25m,
+                            Type = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522819c6d43d"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5229e0278c84"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 5
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522a398ece4e"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 8
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522bfe93d0db"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa7174f6b010"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 70m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522c02c64110"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa7174f6b010"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 30m,
+                            Type = 7
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522d3922adf5"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 50m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522e68442586"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 25m,
+                            Type = 2
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-522f348abd5f"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 25m,
+                            Type = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523078141e2c"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa73c25e495e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5231fedfaa23"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa73c25e495e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 40m,
+                            Type = 8
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523203cfc55b"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa74e02a987d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 80m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5233a14c80d7"),
+                            CourseOfferingId = new Guid("019dfd68-5448-7bac-a12f-aa74e02a987d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 9
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523491c49da3"),
+                            CourseOfferingId = new Guid("019dfd68-7d5c-74be-9adc-de7dd1e252bd"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5235615ad8b0"),
+                            CourseOfferingId = new Guid("019dfd68-7d5c-74be-9adc-de7dd1e252bd"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 40m,
+                            Type = 6
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5236775caeaa"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b1a45f0cf6"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 70m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523766d785bb"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b1a45f0cf6"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 30m,
+                            Type = 5
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-52388ed2bb4c"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b2b0563e46"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5239d097942a"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b2b0563e46"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 40m,
+                            Type = 4
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523a41158b63"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b301bf0bb4"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 50m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523b94551137"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b301bf0bb4"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 50m,
+                            Type = 3
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523c1980f760"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b45425dfbc"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523d144f7b4a"),
+                            CourseOfferingId = new Guid("019dfd68-7d5d-76da-9139-52b45425dfbc"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 40m,
+                            Type = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523e925070ba"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8a3cc190cd"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 70m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-523f2eb83120"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8a3cc190cd"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 30m,
+                            Type = 8
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-524006c646b2"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8ba2eb138f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-52413d106d4e"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8ba2eb138f"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 40m,
+                            Type = 7
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5242bf73d625"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8c649f9da8"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 80m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-524356673eb5"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8c649f9da8"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 20m,
+                            Type = 9
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-524462ed43e7"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8df1a1fd0d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 60m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-52451286622f"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8df1a1fd0d"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 40m,
+                            Type = 6
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-524679c16b31"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8e8bbca914"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 70m,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfd6d-4d55-74fd-9659-5247363bb793"),
+                            CourseOfferingId = new Guid("019dfd68-a692-7f08-971c-2c8e8bbca914"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxScore = 30m,
+                            Type = 2
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.CourseOfferingCommittee", b =>
@@ -1483,13 +2302,15 @@ namespace Universe.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("MaxGradePoint")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<int>("MaxScore")
                         .HasColumnType("int");
 
                     b.Property<decimal>("MinGradePoint")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<int>("MinScore")
                         .HasColumnType("int");
@@ -1509,10 +2330,594 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
                     b.ToTable("Grades");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b98fd3fe384"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "A+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 4.00m,
+                            MaxScore = 100,
+                            MinGradePoint = 4.00m,
+                            MinScore = 95,
+                            Name = "Excellent High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b99731825a5"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "A",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.99m,
+                            MaxScore = 94,
+                            MinGradePoint = 3.70m,
+                            MinScore = 90,
+                            Name = "Excellent"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9a8ed4c213"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "B+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.69m,
+                            MaxScore = 89,
+                            MinGradePoint = 3.30m,
+                            MinScore = 85,
+                            Name = "Very Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9b4caa2568"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "B",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.29m,
+                            MaxScore = 84,
+                            MinGradePoint = 3.00m,
+                            MinScore = 80,
+                            Name = "Very Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9cc785f14a"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "C+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.99m,
+                            MaxScore = 79,
+                            MinGradePoint = 2.70m,
+                            MinScore = 75,
+                            Name = "Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9dcedc1b35"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "C",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.69m,
+                            MaxScore = 74,
+                            MinGradePoint = 2.30m,
+                            MinScore = 70,
+                            Name = "Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9ee24f9179"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "D+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.29m,
+                            MaxScore = 69,
+                            MinGradePoint = 2.00m,
+                            MinScore = 65,
+                            Name = "Fair High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9f01fa845c"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "D",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 1.99m,
+                            MaxScore = 64,
+                            MinGradePoint = 1.00m,
+                            MinScore = 60,
+                            Name = "Fair"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfa31-42cc-7d42-82ad-4ba0d37d66eb"),
+                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
+                            Code = "F",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 0.00m,
+                            MaxScore = 59,
+                            MinGradePoint = 0.00m,
+                            MinScore = 0,
+                            Name = "Failed"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b1-742e-a969-8828c4f7ff4d"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "A+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 4.00m,
+                            MaxScore = 100,
+                            MinGradePoint = 4.00m,
+                            MinScore = 95,
+                            Name = "Excellent High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b1-742e-a969-88297a435f3e"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "A",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.99m,
+                            MaxScore = 94,
+                            MinGradePoint = 3.70m,
+                            MinScore = 90,
+                            Name = "Excellent"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b1-742e-a969-882a3004369f"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "B+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.69m,
+                            MaxScore = 89,
+                            MinGradePoint = 3.30m,
+                            MinScore = 85,
+                            Name = "Very Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b2-7e48-89a1-387739f72edb"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "B",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.29m,
+                            MaxScore = 84,
+                            MinGradePoint = 3.00m,
+                            MinScore = 80,
+                            Name = "Very Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b2-7e48-89a1-38781a368e67"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "C+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.99m,
+                            MaxScore = 79,
+                            MinGradePoint = 2.70m,
+                            MinScore = 75,
+                            Name = "Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b2-7e48-89a1-387980999f01"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "C",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.69m,
+                            MaxScore = 74,
+                            MinGradePoint = 2.30m,
+                            MinScore = 70,
+                            Name = "Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b2-7e48-89a1-387aa29369f1"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "D+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.29m,
+                            MaxScore = 69,
+                            MinGradePoint = 2.00m,
+                            MinScore = 65,
+                            Name = "Fair High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b2-7e48-89a1-387bab55e7c3"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "D",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 1.99m,
+                            MaxScore = 64,
+                            MinGradePoint = 1.00m,
+                            MinScore = 60,
+                            Name = "Fair"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-89b2-7e48-89a1-387ceff9e85f"),
+                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
+                            Code = "F",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 0.00m,
+                            MaxScore = 59,
+                            MinGradePoint = 0.00m,
+                            MinScore = 0,
+                            Name = "Failed"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-3358fa7b1642"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "A+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 4.00m,
+                            MaxScore = 100,
+                            MinGradePoint = 4.00m,
+                            MinScore = 95,
+                            Name = "Excellent High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-3359d169fc7d"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "A",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.99m,
+                            MaxScore = 94,
+                            MinGradePoint = 3.70m,
+                            MinScore = 90,
+                            Name = "Excellent"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-335a5d1d7019"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "B+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.69m,
+                            MaxScore = 89,
+                            MinGradePoint = 3.30m,
+                            MinScore = 85,
+                            Name = "Very Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-335b999ecbdf"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "B",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.29m,
+                            MaxScore = 84,
+                            MinGradePoint = 3.00m,
+                            MinScore = 80,
+                            Name = "Very Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-335c4f8424a2"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "C+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.99m,
+                            MaxScore = 79,
+                            MinGradePoint = 2.70m,
+                            MinScore = 75,
+                            Name = "Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-335d0c6b8cae"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "C",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.69m,
+                            MaxScore = 74,
+                            MinGradePoint = 2.30m,
+                            MinScore = 70,
+                            Name = "Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-335e09e78831"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "D+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.29m,
+                            MaxScore = 69,
+                            MinGradePoint = 2.00m,
+                            MinScore = 65,
+                            Name = "Fair High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-335f29698be9"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "D",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 1.99m,
+                            MaxScore = 64,
+                            MinGradePoint = 1.00m,
+                            MinScore = 60,
+                            Name = "Fair"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020d-4219-7d3c-9f78-33605071bfc8"),
+                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
+                            Code = "F",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 0.00m,
+                            MaxScore = 59,
+                            MinGradePoint = 0.00m,
+                            MinScore = 0,
+                            Name = "Failed"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd27-799f-88db-57ca33299de0"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "A+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 4.00m,
+                            MaxScore = 100,
+                            MinGradePoint = 4.00m,
+                            MinScore = 95,
+                            Name = "Excellent High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-81ff9315195a"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "A",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.99m,
+                            MaxScore = 94,
+                            MinGradePoint = 3.70m,
+                            MinScore = 90,
+                            Name = "Excellent"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-8200118212d4"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "B+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.69m,
+                            MaxScore = 89,
+                            MinGradePoint = 3.30m,
+                            MinScore = 85,
+                            Name = "Very Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-8201287a9d3d"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "B",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.29m,
+                            MaxScore = 84,
+                            MinGradePoint = 3.00m,
+                            MinScore = 80,
+                            Name = "Very Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-8202ddc12c0d"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "C+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.99m,
+                            MaxScore = 79,
+                            MinGradePoint = 2.70m,
+                            MinScore = 75,
+                            Name = "Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-8203dcfb21c1"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "C",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.69m,
+                            MaxScore = 74,
+                            MinGradePoint = 2.30m,
+                            MinScore = 70,
+                            Name = "Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-820419b21584"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "D+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.29m,
+                            MaxScore = 69,
+                            MinGradePoint = 2.00m,
+                            MinScore = 65,
+                            Name = "Fair High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-820589af7293"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "D",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 1.99m,
+                            MaxScore = 64,
+                            MinGradePoint = 1.00m,
+                            MinScore = 60,
+                            Name = "Fair"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-dd29-7ea3-967f-820623c9aad1"),
+                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
+                            Code = "F",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 0.00m,
+                            MaxScore = 59,
+                            MinGradePoint = 0.00m,
+                            MinScore = 0,
+                            Name = "Failed"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1514-7bfa-82ea-af1f399f879a"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "A+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 4.00m,
+                            MaxScore = 100,
+                            MinGradePoint = 4.00m,
+                            MinScore = 95,
+                            Name = "Excellent High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1514-7bfa-82ea-af20fecac15e"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "A",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.99m,
+                            MaxScore = 94,
+                            MinGradePoint = 3.70m,
+                            MinScore = 90,
+                            Name = "Excellent"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1514-7bfa-82ea-af216971a0ec"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "B+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.69m,
+                            MaxScore = 89,
+                            MinGradePoint = 3.30m,
+                            MinScore = 85,
+                            Name = "Very Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1514-7bfa-82ea-af22fca2beca"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "B",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 3.29m,
+                            MaxScore = 84,
+                            MinGradePoint = 3.00m,
+                            MinScore = 80,
+                            Name = "Very Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1515-7cb1-b40b-df30c3ac9339"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "C+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.99m,
+                            MaxScore = 79,
+                            MinGradePoint = 2.70m,
+                            MinScore = 75,
+                            Name = "Good High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1515-7cb1-b40b-df3125700042"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "C",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.69m,
+                            MaxScore = 74,
+                            MinGradePoint = 2.30m,
+                            MinScore = 70,
+                            Name = "Good"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1515-7cb1-b40b-df32510ebbca"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "D+",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 2.29m,
+                            MaxScore = 69,
+                            MinGradePoint = 2.00m,
+                            MinScore = 65,
+                            Name = "Fair High"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1515-7cb1-b40b-df33238e9d43"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "D",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 1.99m,
+                            MaxScore = 64,
+                            MinGradePoint = 1.00m,
+                            MinScore = 60,
+                            Name = "Fair"
+                        },
+                        new
+                        {
+                            Id = new Guid("019e020c-1515-7cb1-b40b-df34f31c38c8"),
+                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
+                            Code = "F",
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            MaxGradePoint = 0.00m,
+                            MaxScore = 59,
+                            MinGradePoint = 0.00m,
+                            MinScore = 0,
+                            Name = "Failed"
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Level", b =>
@@ -1881,14 +3286,16 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomType")
-                        .HasColumnType("int");
+                    b.Property<string>("RoomType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -1900,7 +3307,89 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("BuildingId");
 
+                    b.HasIndex("RoomNumber", "BuildingId")
+                        .IsUnique();
+
                     b.ToTable("Rooms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019dfaa3-92f1-7d12-840b-4014a33a997f"),
+                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"),
+                            Capacity = 200,
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Steve Jobs Hall",
+                            RoomNumber = 101,
+                            RoomType = "LectureHall"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfaa3-92f1-7d12-840b-b67175b29c14"),
+                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"),
+                            Capacity = 25,
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Cyber Security Lab",
+                            RoomNumber = 302,
+                            RoomType = "ComputerLab"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfaa3-92f1-7d12-840b-ddcc7f909a82"),
+                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"),
+                            Capacity = 30,
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Newton Physics Lab",
+                            RoomNumber = 10,
+                            RoomType = "ScientificLab"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfaa3-92f1-7d12-840b-0356789e840b"),
+                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"),
+                            Capacity = 40,
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Mechanical Workshop",
+                            RoomNumber = 15,
+                            RoomType = "Workshop"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfaa3-92f1-7d12-840b-2da178d2adeb"),
+                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-4014a33a997f"),
+                            Capacity = 60,
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Board of Directors Hall",
+                            RoomNumber = 500,
+                            RoomType = "ClassRoom"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfaa3-92f1-7d12-840b-84cb6b07a459"),
+                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"),
+                            Capacity = 100,
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "Quiet Study Zone",
+                            RoomNumber = 1,
+                            RoomType = "ClassRoom"
+                        },
+                        new
+                        {
+                            Id = new Guid("019dfaa3-92f1-7d12-840b-a45984cb6b07"),
+                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"),
+                            Capacity = 45,
+                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Name = "E-Learning Center",
+                            RoomNumber = 2,
+                            RoomType = "LanguageLab"
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -2217,6 +3706,96 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("CollegeId");
 
                     b.ToTable("Services");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("019df8a8-8616-75c5-a883-d313c0e6105e"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Request official academic transcript.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Transcript Request",
+                            Price = 100m
+                        },
+                        new
+                        {
+                            Id = new Guid("019df8a8-8618-7a77-b23e-8622839dba17"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Issue enrollment certificate.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Enrollment Certificate",
+                            Price = 50m
+                        },
+                        new
+                        {
+                            Id = new Guid("019df8a8-8618-7a77-b23e-8623a7995017"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Withdraw from a registered course.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Course Withdrawal",
+                            Price = 75m
+                        },
+                        new
+                        {
+                            Id = new Guid("019df8a8-8618-7a77-b23e-8624951a0f61"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Request re-evaluation of exam results.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Regrade Request",
+                            Price = 60m
+                        },
+                        new
+                        {
+                            Id = new Guid("019df8a8-8618-7a77-b23e-86258a38447f"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Issue replacement student ID card.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "ID Replacement",
+                            Price = 40m
+                        },
+                        new
+                        {
+                            Id = new Guid("019df8a8-8618-7a77-b23e-8626f39bba2e"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Request graduation certificate.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Graduation Certificate",
+                            Price = 150m
+                        },
+                        new
+                        {
+                            Id = new Guid("019df8a8-8618-7a77-b23e-8627e2d629d7"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Adjust course registration.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Course Registration Adjustment",
+                            Price = 80m
+                        },
+                        new
+                        {
+                            Id = new Guid("019df8a8-8618-7a77-b23e-8628f56ee1f8"),
+                            CollegeId = new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"),
+                            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Register for courses after deadline.",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Late Registration",
+                            Price = 120m
+                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.ServiceRequest", b =>

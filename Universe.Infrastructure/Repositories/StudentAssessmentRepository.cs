@@ -20,7 +20,7 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
             .SumAsync(sa => sa.degree ?? 0, cancellationToken);
     }
     
-    public async Task<StudentAssessmentContextDto?> GetContextForDegreeUpsertAsync(
+    public async Task<StudentAssessmentContextDto?> GetContextForDegreeUpsertAsync (
         Guid studentId,
         Guid courseAssessmentId,
         Guid academicProgramId,

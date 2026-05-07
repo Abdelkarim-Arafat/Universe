@@ -4,40 +4,58 @@ namespace Universe.Infrastructure.SeedData;
 
 public static class GradeSeed
 {
-    public static readonly List<Grade> Data = new();
+    private static readonly DateTime seedDate = new DateTime(2026, 5, 6, 14, 0, 0, DateTimeKind.Utc);
 
-    static GradeSeed()
+    public static readonly Grade[] Data =
     {
-        var programIds = new[]
-        {
-            Guid.Parse("019df1d0-68a6-7696-9aa6-4014a33a997f"), // CS
-            Guid.Parse("019df1d0-b671-75b2-9c14-69ce00131461"), // AI
-            Guid.Parse("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), // IS
-            Guid.Parse("019df1d1-0356-789e-840b-56d31396608a"), // SE
-            Guid.Parse("019df1d1-2da1-78d2-adeb-84cb6b07a459")  // CY
-        };
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b98fd3fe384"), Name = "Excellent High", Code = "A+", MinScore = 95, MaxScore = 100, MinGradePoint = 4.00m, MaxGradePoint = 4.00m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b99731825a5"), Name = "Excellent",      Code = "A",  MinScore = 90, MaxScore = 94,  MinGradePoint = 3.70m, MaxGradePoint = 3.99m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9a8ed4c213"), Name = "Very Good High", Code = "B+", MinScore = 85, MaxScore = 89,  MinGradePoint = 3.30m, MaxGradePoint = 3.69m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9b4caa2568"), Name = "Very Good",      Code = "B",  MinScore = 80, MaxScore = 84,  MinGradePoint = 3.00m, MaxGradePoint = 3.29m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9cc785f14a"), Name = "Good High",      Code = "C+", MinScore = 75, MaxScore = 79,  MinGradePoint = 2.70m, MaxGradePoint = 2.99m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9dcedc1b35"), Name = "Good",           Code = "C",  MinScore = 70, MaxScore = 74,  MinGradePoint = 2.30m, MaxGradePoint = 2.69m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9ee24f9179"), Name = "Fair High",      Code = "D+", MinScore = 65, MaxScore = 69,  MinGradePoint = 2.00m, MaxGradePoint = 2.29m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9f01fa845c"), Name = "Fair",           Code = "D",  MinScore = 60, MaxScore = 64,  MinGradePoint = 1.00m, MaxGradePoint = 1.99m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4ba0d37d66eb"), Name = "Failed",         Code = "F",  MinScore = 0,  MaxScore = 59,  MinGradePoint = 0.00m, MaxGradePoint = 0.00m, AcademicProgramId = AcademicProgramSeed.Data[0].Id, CreatedAt = seedDate},
 
-        foreach (var programId in programIds)
-        {
-            Data.AddRange(GenerateGradesForProgram(programId));
-        }
-    }
+       new Grade { Id = Guid.Parse("019e020d-89b1-742e-a969-8828c4f7ff4d"), Name = "Excellent High", Code = "A+", MinScore = 95, MaxScore = 100, MinGradePoint = 4.00m, MaxGradePoint = 4.00m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b1-742e-a969-88297a435f3e"), Name = "Excellent",      Code = "A",  MinScore = 90, MaxScore = 94,  MinGradePoint = 3.70m, MaxGradePoint = 3.99m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b1-742e-a969-882a3004369f"), Name = "Very Good High", Code = "B+", MinScore = 85, MaxScore = 89,  MinGradePoint = 3.30m, MaxGradePoint = 3.69m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b2-7e48-89a1-387739f72edb"), Name = "Very Good",      Code = "B",  MinScore = 80, MaxScore = 84,  MinGradePoint = 3.00m, MaxGradePoint = 3.29m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b2-7e48-89a1-38781a368e67"), Name = "Good High",      Code = "C+", MinScore = 75, MaxScore = 79,  MinGradePoint = 2.70m, MaxGradePoint = 2.99m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b2-7e48-89a1-387980999f01"), Name = "Good",           Code = "C",  MinScore = 70, MaxScore = 74,  MinGradePoint = 2.30m, MaxGradePoint = 2.69m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b2-7e48-89a1-387aa29369f1"), Name = "Fair High",      Code = "D+", MinScore = 65, MaxScore = 69,  MinGradePoint = 2.00m, MaxGradePoint = 2.29m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b2-7e48-89a1-387bab55e7c3"), Name = "Fair",           Code = "D",  MinScore = 60, MaxScore = 64,  MinGradePoint = 1.00m, MaxGradePoint = 1.99m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-89b2-7e48-89a1-387ceff9e85f"), Name = "Failed",         Code = "F",  MinScore = 0,  MaxScore = 59,  MinGradePoint = 0.00m, MaxGradePoint = 0.00m, AcademicProgramId = AcademicProgramSeed.Data[1].Id, CreatedAt = seedDate},
 
-    private static IEnumerable<Grade> GenerateGradesForProgram(Guid programId)
-    {
-        var seedDate = new DateTime(2026, 5, 6, 8, 0, 0, DateTimeKind.Utc);
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-3358fa7b1642"), Name = "Excellent High", Code = "A+", MinScore = 95, MaxScore = 100, MinGradePoint = 4.00m, MaxGradePoint = 4.00m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-3359d169fc7d"), Name = "Excellent",      Code = "A",  MinScore = 90, MaxScore = 94,  MinGradePoint = 3.70m, MaxGradePoint = 3.99m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-335a5d1d7019"), Name = "Very Good High", Code = "B+", MinScore = 85, MaxScore = 89,  MinGradePoint = 3.30m, MaxGradePoint = 3.69m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-335b999ecbdf"), Name = "Very Good",      Code = "B",  MinScore = 80, MaxScore = 84,  MinGradePoint = 3.00m, MaxGradePoint = 3.29m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-335c4f8424a2"), Name = "Good High",      Code = "C+", MinScore = 75, MaxScore = 79,  MinGradePoint = 2.70m, MaxGradePoint = 2.99m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-335d0c6b8cae"), Name = "Good",           Code = "C",  MinScore = 70, MaxScore = 74,  MinGradePoint = 2.30m, MaxGradePoint = 2.69m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-335e09e78831"), Name = "Fair High",      Code = "D+", MinScore = 65, MaxScore = 69,  MinGradePoint = 2.00m, MaxGradePoint = 2.29m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-335f29698be9"), Name = "Fair",           Code = "D",  MinScore = 60, MaxScore = 64,  MinGradePoint = 1.00m, MaxGradePoint = 1.99m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020d-4219-7d3c-9f78-33605071bfc8"), Name = "Failed",         Code = "F",  MinScore = 0,  MaxScore = 59,  MinGradePoint = 0.00m, MaxGradePoint = 0.00m, AcademicProgramId = AcademicProgramSeed.Data[2].Id, CreatedAt = seedDate},
 
-        return new List<Grade>
-        {
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b98fd3fe384"), Name = "Excellent High", Code = "A+", MinScore = 95, MaxScore = 100, MinGradePoint = 4.00m, MaxGradePoint = 4.00m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b99731825a5"), Name = "Excellent",      Code = "A",  MinScore = 90, MaxScore = 94,  MinGradePoint = 3.70m, MaxGradePoint = 3.99m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9a8ed4c213"), Name = "Very Good High", Code = "B+", MinScore = 85, MaxScore = 89,  MinGradePoint = 3.30m, MaxGradePoint = 3.69m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9b4caa2568"), Name = "Very Good",      Code = "B",  MinScore = 80, MaxScore = 84,  MinGradePoint = 3.00m, MaxGradePoint = 3.29m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9cc785f14a"), Name = "Good High",      Code = "C+", MinScore = 75, MaxScore = 79,  MinGradePoint = 2.70m, MaxGradePoint = 2.99m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9dcedc1b35"), Name = "Good",           Code = "C",  MinScore = 70, MaxScore = 74,  MinGradePoint = 2.30m, MaxGradePoint = 2.69m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9ee24f9179"), Name = "Fair High",      Code = "D+", MinScore = 65, MaxScore = 69,  MinGradePoint = 2.00m, MaxGradePoint = 2.29m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4b9f01fa845c"), Name = "Fair",           Code = "D",  MinScore = 60, MaxScore = 64,  MinGradePoint = 1.00m, MaxGradePoint = 1.99m, AcademicProgramId = programId, CreatedAt = seedDate},
-            new() { Id = Guid.Parse("019dfa31-42cc-7d42-82ad-4ba0d37d66eb"), Name = "Failed",         Code = "F",  MinScore = 0,  MaxScore = 59,  MinGradePoint = 0.00m, MaxGradePoint = 0.00m, AcademicProgramId = programId, CreatedAt = seedDate}
-        };
-    }
+       new Grade { Id = Guid.Parse("019e020c-dd27-799f-88db-57ca33299de0"), Name = "Excellent High", Code = "A+", MinScore = 95, MaxScore = 100, MinGradePoint = 4.00m, MaxGradePoint = 4.00m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-81ff9315195a"), Name = "Excellent",      Code = "A",  MinScore = 90, MaxScore = 94,  MinGradePoint = 3.70m, MaxGradePoint = 3.99m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-8200118212d4"), Name = "Very Good High", Code = "B+", MinScore = 85, MaxScore = 89,  MinGradePoint = 3.30m, MaxGradePoint = 3.69m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-8201287a9d3d"), Name = "Very Good",      Code = "B",  MinScore = 80, MaxScore = 84,  MinGradePoint = 3.00m, MaxGradePoint = 3.29m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-8202ddc12c0d"), Name = "Good High",      Code = "C+", MinScore = 75, MaxScore = 79,  MinGradePoint = 2.70m, MaxGradePoint = 2.99m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-8203dcfb21c1"), Name = "Good",           Code = "C",  MinScore = 70, MaxScore = 74,  MinGradePoint = 2.30m, MaxGradePoint = 2.69m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-820419b21584"), Name = "Fair High",      Code = "D+", MinScore = 65, MaxScore = 69,  MinGradePoint = 2.00m, MaxGradePoint = 2.29m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-820589af7293"), Name = "Fair",           Code = "D",  MinScore = 60, MaxScore = 64,  MinGradePoint = 1.00m, MaxGradePoint = 1.99m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-dd29-7ea3-967f-820623c9aad1"), Name = "Failed",         Code = "F",  MinScore = 0,  MaxScore = 59,  MinGradePoint = 0.00m, MaxGradePoint = 0.00m, AcademicProgramId = AcademicProgramSeed.Data[3].Id, CreatedAt = seedDate},
+
+       new Grade { Id = Guid.Parse("019e020c-1514-7bfa-82ea-af1f399f879a"), Name = "Excellent High", Code = "A+", MinScore = 95, MaxScore = 100, MinGradePoint = 4.00m, MaxGradePoint = 4.00m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1514-7bfa-82ea-af20fecac15e"), Name = "Excellent",      Code = "A",  MinScore = 90, MaxScore = 94,  MinGradePoint = 3.70m, MaxGradePoint = 3.99m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1514-7bfa-82ea-af216971a0ec"), Name = "Very Good High", Code = "B+", MinScore = 85, MaxScore = 89,  MinGradePoint = 3.30m, MaxGradePoint = 3.69m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1514-7bfa-82ea-af22fca2beca"), Name = "Very Good",      Code = "B",  MinScore = 80, MaxScore = 84,  MinGradePoint = 3.00m, MaxGradePoint = 3.29m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1515-7cb1-b40b-df30c3ac9339"), Name = "Good High",      Code = "C+", MinScore = 75, MaxScore = 79,  MinGradePoint = 2.70m, MaxGradePoint = 2.99m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1515-7cb1-b40b-df3125700042"), Name = "Good",           Code = "C",  MinScore = 70, MaxScore = 74,  MinGradePoint = 2.30m, MaxGradePoint = 2.69m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1515-7cb1-b40b-df32510ebbca"), Name = "Fair High",      Code = "D+", MinScore = 65, MaxScore = 69,  MinGradePoint = 2.00m, MaxGradePoint = 2.29m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1515-7cb1-b40b-df33238e9d43"), Name = "Fair",           Code = "D",  MinScore = 60, MaxScore = 64,  MinGradePoint = 1.00m, MaxGradePoint = 1.99m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate},
+       new Grade { Id = Guid.Parse("019e020c-1515-7cb1-b40b-df34f31c38c8"), Name = "Failed",         Code = "F",  MinScore = 0,  MaxScore = 59,  MinGradePoint = 0.00m, MaxGradePoint = 0.00m, AcademicProgramId = AcademicProgramSeed.Data[4].Id, CreatedAt = seedDate}
+    };
 }

@@ -38,12 +38,8 @@ public class AddCourseCommandHandler(
 
         await _cacheService.RemoveByTagAsync(CourseCacheKeys.Tags(course.CollegeId), cancellationToken);
 
-        var response = await _cacheService.GetOrCreateAsync(
-            key: CourseCacheKeys.ById(course.Id),
-            factory: async () => await _unitOfWork.CourseRepository
-                    .GetCourseWithPrerequisitesAsync(course.Id, cancellationToken),
-            cancellationToken: cancellationToken
-            );
+        var response = await _unitOfWork.CourseRepository
+                    .GetCourseWithPrerequisitesAsync(course.Id, cancellationToken);
 
         return Result.Success(response!);
     }

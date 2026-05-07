@@ -16,13 +16,13 @@ namespace Universe.Api.Controllers;
 
 [Route("control")]
 [ApiController, Authorize]
-
 public class ControlController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+
     [HttpGet("control-status")]
     [EnableRateLimiting("ReadLimiter")]
-    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetCourseOfferingControlStatus(
         [FromQuery] Guid programId,
         [FromQuery] Guid semesterId,
@@ -36,7 +36,7 @@ public class ControlController(IMediator mediator) : ControllerBase
 
     [HttpPatch("{courseOfferingId:guid}/toggle-control")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> ToggleCourseOfferingControl(
         [FromRoute]Guid courseOfferingId,
         CancellationToken cancellationToken)
@@ -79,6 +79,7 @@ public class ControlController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
+
     [HttpPatch("toggle-announce-result")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]

@@ -1,5 +1,4 @@
-﻿ 
-using Universe.Core.Contracts.CourseOfferings;
+﻿using Universe.Core.Contracts.CourseOffering;
 using Universe.Core.Enums;
 
 namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
@@ -14,7 +13,6 @@ public record UpdateCourseOfferingCommand(
     bool IsOptional,
     string? OptionalGroupCode,
     bool IsIncludedInGpa,
-    RequirementType Type,
     TermType SemesterType,
     Guid CourseId,
     Guid LevelId,

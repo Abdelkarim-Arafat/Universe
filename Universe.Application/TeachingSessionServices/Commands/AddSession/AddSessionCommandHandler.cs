@@ -4,10 +4,12 @@ namespace Universe.Application.TeachingSessionServices.Commands.AddSession;
 
 public class AddSessionCommandHandler(
     IUnitOfWork unitOfWork,
+    ICacheService cacheService,
     UserManager<ApplicationUser> userManager
     ) : IRequestHandler<AddSessionCommand, Result<SessionResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     public async Task<Result<SessionResponse>> Handle(AddSessionCommand request, CancellationToken cancellationToken)
@@ -74,15 +76,17 @@ public class AddSessionCommandHandler(
         await _unitOfWork.Repository<CourseOfferingSession>().AddAsync(courseSession, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
+        await _cacheService.RemoveByTagAsync(SessionCacheKeys.Tags(course.Id), cancellationToken);
+
         var response = new SessionResponse(
-            session.Id.ToString(),
+            session.Id,
             session.StartTime,
             session.EndTime,
             session.Type,
             session.Day,
-            instructor.Id.ToString(),
+            instructor.Id,
             instructor.Name,
-            room.Id.ToString(),
+            room.Id,
             room.Name,
             session.GroupNumber
         );

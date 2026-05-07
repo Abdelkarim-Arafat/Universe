@@ -17,7 +17,6 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
 
     public async Task AddRangeAsync(IEnumerable<T> entity , CancellationToken cancellationToken)
         => await _context.AddRangeAsync(entity , cancellationToken);
-
     public IQueryable<T> GetQueryable()
         => _context.Set<T>().Where(x => !x.IsDeleted).AsQueryable();
 

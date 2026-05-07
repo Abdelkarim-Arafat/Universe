@@ -5,10 +5,12 @@ using System.Text;
 namespace Universe.Application.ControlServices.Commands.ToggleCourseOfferingControl;
 
 public class ToggleCourseOfferingControlCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
 ) : IRequestHandler<ToggleCourseOfferingControlCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(ToggleCourseOfferingControlCommand request, CancellationToken cancellationToken)
     {
@@ -18,8 +20,9 @@ public class ToggleCourseOfferingControlCommandHandler(
 
         course.IsOpenForControl = !course.IsOpenForControl;
 
-        _unitOfWork.Repository<CourseOffering>().Update(course);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveAsync(ControlCacheKeys.CourseOfferingsStatistics(course.AcademicProgramId, course.SemesterId) , cancellationToken);
 
         return Result.Success();
     }

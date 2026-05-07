@@ -48,7 +48,7 @@ public class AddCourseOfferingCommandValidator : AbstractValidator<AddCourseOffe
     }
 }
 
-public class CourseOfferingAssessmentDtoValidator : AbstractValidator<CourseOfferingAssessmentCommand>
+public class CourseOfferingAssessmentDtoValidator : AbstractValidator<AddAssessments>
 {
     public CourseOfferingAssessmentDtoValidator()
     {
