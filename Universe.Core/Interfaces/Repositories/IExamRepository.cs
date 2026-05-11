@@ -25,14 +25,15 @@ public interface IExamRepository
 
     #region CourseOfferingExam
     Task<CourseOfferingExam?> GetCourseOfferingExamByIdAsync(Guid Id, CancellationToken cancellationToken);
-    Task<CourseExamCommitteesValidationDto> CreateCourseExamValidationAsync
-    (DateOnly date, TimeOnly startTime, TimeOnly endTime,
-    Guid courseOfferingId, Guid examTermId, List<Guid> examCommitteesIds, CancellationToken cancellationToken);
+    Task<List<ExamCommitteesDetails>?> GetCommitteesDetailsAsync
+    (Guid examTermId, List<Guid> examCommitteesIds, CancellationToken cancellationToken);
 
     Task<UpdateCourseExamContextDto?> 
         UpdateCourseExamContextAsync
         (DateOnly date, TimeOnly startTime, TimeOnly endTime,
         Guid courseOfferingExamId, List<Guid> examCommitteesIds, CancellationToken cancellationToken);
+    Task<bool> HasOverlappingExamAsync(Guid examTermId, List<Guid> examCommitteesIds, DateOnly date, TimeOnly startTime, TimeOnly endTime, CancellationToken cancellationToken = default);
+    Task<bool> IsCourseOfferingExamExistAsync(Guid courseOfferingId, Guid examTermId, CancellationToken cancellationToken);
 
     #endregion
 

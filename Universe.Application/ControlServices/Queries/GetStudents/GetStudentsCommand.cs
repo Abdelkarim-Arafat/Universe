@@ -1,10 +1,18 @@
 ﻿using Universe.Application.ControlServices.Dtos;
 
+
 namespace Universe.Application.ControlServices.Queries.GetStudents;
 
 public record GetStudentsCommand
-(   [Required] Guid AcademicProgramId,
+(
+    Guid AcademicProgramId,
+    Guid CourseOfferingId,
+    int? GroupNumber,
+    FilterRequest Filter
+) : IRequest<Result<PaginationList<StudentInformationResponse>>>;
+
+public record GetStudentsRequest
+(
     [Required] Guid CourseOfferingId,
-               int? GroupNumber,
-               FilterRequest Filter
-) : IRequest<Result<StudentsDegreesResponse>>;
+               int? GroupNumber
+) : IRequest<Result<PaginationList<StudentInformationResponse>>>;

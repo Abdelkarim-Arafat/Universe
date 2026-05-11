@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
+using Universe.Application.Common;
 using Universe.Application.ControlServices.Commands.ToggleAnnounceResult;
 using Universe.Application.ControlServices.Commands.ToggleCourseOfferingControl;
 using Universe.Application.ControlServices.Commands.UpsertStudentDegree;
@@ -43,18 +44,23 @@ public class ControlController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new ToggleCourseOfferingControlCommand(courseOfferingId), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
-
+     
     [HttpGet("{AcademicProgramId:guid}")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetStudents([FromQuery] GetStudentsCommand request,
-        Guid AcademicProgramId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetStudents(
+        [FromQuery] GetStudentsRequest request,
+        [FromQuery] FilterRequest filter,
+        [FromRoute] Guid AcademicProgramId, CancellationToken cancellationToken)
     {
-        request = request with { AcademicProgramId = AcademicProgramId };
-        var result = await _mediator.Send(request, cancellationToken);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        var command = new GetStudentsCommand(
+            AcademicProgramId,
+            request.CourseOfferingId,
+            request.GroupNumber,
+            filter
+        );
+        var result = await _mediator.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPatch("{AcademicProgramId:guid}")]

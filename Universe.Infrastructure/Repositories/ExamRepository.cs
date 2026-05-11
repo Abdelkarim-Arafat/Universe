@@ -67,66 +67,53 @@ public class ExamRepository
     {
         return await _context.CourseOfferingExams.FirstOrDefaultAsync(e => e.Id == Id && !e.IsDeleted, cancellationToken);
     }
-
-    public async Task<CourseExamCommitteesValidationDto> CreateCourseExamValidationAsync(DateOnly date, TimeOnly startTime, TimeOnly endTime,
-        Guid courseOfferingId, Guid examTermId, List<Guid> examCommitteesIds, CancellationToken cancellationToken)
+    public async Task<bool> IsCourseOfferingExamExistAsync
+        (Guid courseOfferingId, Guid examTermId, CancellationToken cancellationToken)
+        => await _context.CourseOfferingExams.AnyAsync(coe =>
+                                          !coe.IsDeleted
+                                        && coe.CourseOfferingId == courseOfferingId
+                                        && coe.ExamTermId == examTermId, cancellationToken);
+    public async Task<bool> HasOverlappingExamAsync(
+    Guid examTermId,
+    List<Guid> examCommitteesIds,
+    DateOnly date,  
+    TimeOnly startTime,
+    TimeOnly endTime,
+    CancellationToken cancellationToken = default)
     {
-
-        var isCourseOfferingExamExist = await _context.CourseOfferingExams
+        return await _context.CourseOfferingExams
             .AnyAsync(coe => !coe.IsDeleted
-                            && coe.CourseOfferingId == courseOfferingId
-                            && coe.ExamTermId == examTermId, cancellationToken);
+                          && coe.ExamTermId == examTermId
+                          && coe.CourseOfferingCommittees
+                               .Any(committee => examCommitteesIds.Contains(committee.ExamCommitteeId))
+                          && coe.Date == date
+                          && coe.StartTime < endTime
+                          && startTime < coe.EndTime,
+                      cancellationToken);
+    }
 
-        var courseData = await _context.CourseOfferings
-            .Where(co => co.Id == courseOfferingId && !co.IsDeleted)
-            .Select(co => new
-            {
-                StudentIds = co.Enrollments
-                    .Where(en => !en.IsDeleted)
-                    .Select(en => en.StudentId)
-                    .ToList()
-            })
-            .FirstOrDefaultAsync(cancellationToken);
 
-        bool isCourseOfferingExist = courseData != null;
-
-        var studentsIds = courseData?.StudentIds ?? new List<Guid>();
-
-        
-        var isExamTermExist = await _context.ExamTerms
-            .AnyAsync(et => et.Id == examTermId, cancellationToken);
-        
-
-        var isOverlappedTime = false;
+    // تفكيك فصل الفاليديشن عن ترجيع البيانات
+    public async Task<List<ExamCommitteesDetails>?> GetCommitteesDetailsAsync
+        (Guid examTermId, List<Guid> examCommitteesIds, CancellationToken cancellationToken)
+    {
         var examCommittees = new List<ExamCommitteesDetails>();
 
         if (examCommitteesIds != null && examCommitteesIds.Any())
         {
-            isOverlappedTime = await _context.CourseOfferingExams
-            .AnyAsync(coe => !coe.IsDeleted
-                           && coe.CourseOfferingCommittees
-                              .Any(committee => examCommitteesIds.Contains(committee.ExamCommitteeId))
-                           && coe.Date == date
-                           && coe.StartTime < endTime
-                           && startTime < coe.EndTime,
-                      cancellationToken);
-
             examCommittees = await _context.ExamCommittees
             .Where(com => !com.IsDeleted && com.ExamTermId == examTermId && examCommitteesIds.Contains(com.Id))
             .Select(com => new ExamCommitteesDetails(com.Id, com.CommitteeNumber, com.MaxCapacity))
             .ToListAsync(cancellationToken);
+
+            if (examCommitteesIds.Except(examCommittees.Select(c => c.Id)).Any())
+                return null;
         }
 
-        return new CourseExamCommitteesValidationDto(
-            isCourseOfferingExamExist,
-            isCourseOfferingExist,
-            isExamTermExist,
-            isOverlappedTime,
-            examCommittees,
-            studentsIds
-        );
+        return examCommittees;
     }
 
+    // تفكيك فصل الفاليديشن عن ترجيع البيانات
     public async Task<UpdateCourseExamContextDto?> UpdateCourseExamContextAsync(
     DateOnly date, TimeOnly startTime, TimeOnly endTime,
     Guid courseOfferingExamId, List<Guid> examCommitteesIds, CancellationToken cancellationToken)

@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using Universe.Application.EnrollmentServices.Dtos;
 using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Contracts.Student;
-using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -14,7 +12,6 @@ public class EnrollmentRepository(
     ) : IEnrollmentRepository
 {
     private readonly ApplicationDbContext _context = context;
-
     public async Task<StudentAcademicHistoryContextDto?> GetStudentAcademicHistoryContextAsync(
       Guid studentId,
       CancellationToken cancellationToken)
@@ -73,8 +70,6 @@ public class EnrollmentRepository(
 
         return new StudentAcademicHistoryContextDto(studentProgramId, semesterRecords);
     }
-
-
     public async Task<List<StudentExistingEnrollment>> GetStudentScheduleAsync
         (Guid studentId, CancellationToken cancellationToken)
     {
@@ -112,9 +107,7 @@ public class EnrollmentRepository(
             ))
             .ToListAsync(cancellationToken);
     }
-
     // my own
-
     public async Task<UpdateEnrollmentValidationDto?> GetUpdateEnrollmentValidationDataAsync(
      Guid studentId,
      Guid semesterId,
@@ -171,7 +164,6 @@ public class EnrollmentRepository(
                 ))
             .FirstOrDefaultAsync(cancellationToken);
     }
-
     public async Task<EnrollmentExecutionContextDto> GetEnrollmentExecutionDataAsync(
     Guid studentId,
     Guid semesterId,
@@ -194,8 +186,6 @@ public class EnrollmentRepository(
 
         return new EnrollmentExecutionContextDto(existingEnrollments, incomingAssessmentsLookup);
     }
-
-
     // يتم المراجعه
     public async Task<EnrollmentValidationContextDto?> GetEnrollmentValidationContextAsync(
     Guid studentId,

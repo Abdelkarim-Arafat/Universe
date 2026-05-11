@@ -19,8 +19,10 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         var courseOfferingExam = courseExamContext.CourseOfferingExam;
 
-        courseOfferingExam.Adapt(request);
-
+        courseOfferingExam.Date = request.Date;
+        courseOfferingExam.StartTime = request.StartTime;
+        courseOfferingExam.EndTime = request.EndTime;
+       
 
         var checkOverLappedInCommittees = courseExamContext.isOverlappedTime;
 
@@ -113,40 +115,12 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
                 new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
 
-        var query = _unitOfWork.Repository<CourseOfferingCommittee>()
-                 .GetQueryable()
-                 .Where(com => !com.IsDeleted && com.CourseOfferingExamId == courseOfferingExam.Id);
-
-        var filter = request.Filter;
-
-        var source = query.Select(com => new CourseExamCommittees
-               (
-                com.ExamCommitteeId,
-                com.ExamCommittee.CommitteeNumber,
-                com.ExamCommittee.MaxCapacity,
-                com.ExamSeats.Count(seat => !seat.IsDeleted),
-                com.ExamSeats.Where(seat => !seat.IsDeleted).Select(seat => (int?)seat.SeatNumber).Min() ?? 0, // check if null
-                com.ExamCommittee.Room != null
-                ? $"{com.ExamCommittee.Room.RoomNumber} - {com.ExamCommittee.Room.Building.Name}"
-                : "No Place"
-             ));
-
-        if (!string.IsNullOrEmpty(filter.SearchValue))
-            source = source.ApplySearch(filter.SearchValue, x => x.Place);
-
-        if (!string.IsNullOrEmpty(filter.SortColumn))
-            source = source.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-
-        var committeesResponse = await PaginationList<CourseExamCommittees>
-             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
-
         var response = new CourseOfferingExamResponse
             (
             courseOfferingExam.Id,
             courseOfferingExam.Date,
             courseOfferingExam.StartTime,
-            courseOfferingExam.EndTime,
-            committeesResponse
+            courseOfferingExam.EndTime
             );
 
         return Result.Success(response);  

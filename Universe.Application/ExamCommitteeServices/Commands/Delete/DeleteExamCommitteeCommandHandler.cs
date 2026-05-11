@@ -11,7 +11,7 @@ public class DeleteExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
         if (examCommittee == null)
             return Result.Failure(ExamErrors.ExamCommitteeNotFound);
 
-        _unitOfWork.Repository<ExamCommittee>().SoftDelete(examCommittee);
+        _unitOfWork.Repository<ExamCommittee>().DeletePermanently(examCommittee);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
         return Result.Success();

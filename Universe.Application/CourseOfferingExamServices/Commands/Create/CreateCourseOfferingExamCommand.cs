@@ -9,8 +9,7 @@ public record CreateCourseOfferingExamCommand
      TimeOnly EndTime,
    [Required] Guid CourseOfferingId,
    [Required] Guid ExamTermId,
-     List<Guid> ExamCommitteesIds,
-     FilterRequest? Filter
+     List<Guid> ExamCommitteesIds
 ) : IRequest<Result<CourseOfferingExamResponse>>;
 
 public record CreateCourseOfferingExamRequest

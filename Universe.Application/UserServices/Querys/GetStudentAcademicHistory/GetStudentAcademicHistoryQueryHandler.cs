@@ -5,11 +5,13 @@ namespace Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 public class GetStudentAcademicHistoryQueryHandler(
     IUnitOfWork unitOfWork,
-    IHttpContextAccessor httpContextAccessor
-    ) : IRequestHandler<GetStudentAcademicHistoryQuery, Result<List<TranscriptSemesterResponse>>>
+    IHttpContextAccessor httpContextAccessor,
+    ICacheService cacheService
+    ) : IRequestHandler<GetStudentAcademicHistoryCommand, Result<List<TranscriptSemesterResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<List<TranscriptSemesterResponse>>> Handle(GetStudentAcademicHistoryQuery request, CancellationToken cancellationToken)
     {
@@ -26,8 +28,11 @@ public class GetStudentAcademicHistoryQueryHandler(
         if (studentHistoryDate.CurrentAcademicProgramId == null)
             return Result.Failure<List<TranscriptSemesterResponse>>(StudentErrors.NoProgram);
 
-        var letterDegrees = await _unitOfWork.GradeRepository
-            .GetProgramGradesAsync(studentHistoryDate.CurrentAcademicProgramId.Value, cancellationToken); 
+        
+        var letterDegrees = await _unitOfWork.GetProgramGradesWithCacheAsync
+            (_cacheService,
+            studentHistoryDate.CurrentAcademicProgramId.Value,
+            cancellationToken);
 
         var response = new List<TranscriptSemesterResponse>();
 

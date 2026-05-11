@@ -1,7 +1,7 @@
 ﻿using Universe.Core.Contracts.CourseOffering;
 
 
-namespace Universe.Application.CourseOfferingServices.Query.GetProgramCoursesForExams;
+namespace Universe.Application.CourseOfferingServices.Queries.GetProgramCoursesForExams;
 
 public record GetProgramCoursesForExamsQuery
 (

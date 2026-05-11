@@ -1,5 +1,5 @@
 ﻿using Universe.Core.Contracts.CourseOffering;
-using Universe.Application.CourseOfferingServices.Query.GetProgramCoursesForExams;
+namespace Universe.Application.CourseOfferingServices.Queries.GetProgramCoursesForExams;
 
 public class GetProgramCoursesForExamsQueryHandler(
     IUnitOfWork unitOfWork,
