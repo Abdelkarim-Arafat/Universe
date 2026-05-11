@@ -128,7 +128,7 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-//app.UseStaticFiles();
+app.UseStaticFiles();
 
 
 app.UseCors("AllowedOrigins");

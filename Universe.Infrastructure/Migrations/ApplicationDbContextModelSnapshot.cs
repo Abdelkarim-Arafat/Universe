@@ -3853,9 +3853,6 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<Guid?>("AdvisorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CollegeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -3922,8 +3919,6 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AdvisorId");
 
-                    b.HasIndex("CollegeId");
-
                     b.ToTable("Students");
                 });
 
@@ -3947,7 +3942,7 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("EndDate")
+                    b.Property<DateOnly?>("EndDate")
                         .HasColumnType("date");
 
                     b.Property<bool>("IsDeleted")
@@ -4711,12 +4706,6 @@ namespace Universe.Infrastructure.Migrations
                         .WithMany("AdvisedStudents")
                         .HasForeignKey("AdvisorId");
 
-                    b.HasOne("Universe.Core.Entities.College", "College")
-                        .WithMany("Students")
-                        .HasForeignKey("CollegeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Universe.Core.Entities.ApplicationUser", "ApplicationUser")
                         .WithOne("Student")
                         .HasForeignKey("Universe.Core.Entities.Student", "Id")
@@ -4895,12 +4884,11 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Navigation("ApplicationUser");
 
-                    b.Navigation("College");
-
                     b.Navigation("ContactInfo")
                         .IsRequired();
 
-                    b.Navigation("MilitaryInfo");
+                    b.Navigation("MilitaryInfo")
+                        .IsRequired();
 
                     b.Navigation("ParentInfo")
                         .IsRequired();
@@ -5075,8 +5063,6 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("Courses");
 
                     b.Navigation("Services");
-
-                    b.Navigation("Students");
 
                     b.Navigation("Users");
                 });

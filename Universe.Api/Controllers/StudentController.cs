@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
 using Universe.Application.UserServices.Commands.ChangePassword;
@@ -20,35 +21,40 @@ using Universe.Application.UserServices.Querys.GetPreviousQualificationData;
 using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 using Universe.Application.UserServices.Querys.GetStudentExams;
 using Universe.Application.UserServices.Querys.GetStudentSchedule;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
-[Route("colleges/{collegeId:guid}/students")]
+[Route("programs/{programId:guid}/students")]
 [ApiController , Authorize]
 public class StudentController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-
     public Guid GetUserId() => Guid.Parse(User.GetUserId()!);
 
     [HttpDelete("{studentId:guid}")]
-    public async Task<IActionResult> RemoveStudent(
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> RemoveStudent (
+        [FromRoute] Guid programId,
         [FromRoute] Guid studentId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new RemoveStudentCommand(studentId), cancellationToken);
+        var result = await _mediator.Send(new RemoveStudentCommand(programId, studentId), cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
 
-
     [HttpPost("")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> RegisterStudent (
-        [FromRoute] Guid collegeId,
+        [FromQuery] Guid collegeId,
+        [FromRoute] Guid programId,
         [FromBody] RegisterStudentCommand request,
         CancellationToken cancellationToken)
     {
-        request = request with { CollegeId = collegeId };
+        request = request with { CollegeId = collegeId , ProgramId = programId};
         var result = await _mediator.Send(request, cancellationToken);
 
         return result.IsSuccess
@@ -57,26 +63,28 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAllStudent(
-        [FromRoute] Guid collegeId,
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> GetAllStudent (
+        [FromRoute] Guid programId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAllStudentsCommand(collegeId, filter), cancellationToken);
+        var result = await _mediator.Send(new GetProgramStudentsQuery(programId, filter), cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpGet("contact-data")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetContactData (
         [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
         if(User.IsInRole("Student")) studentId = GetUserId();
 
-        var result = await _mediator.Send(new GetContactDataCommand(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetContactDataQuery(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -84,13 +92,15 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("parent-data")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetFamilyData(
        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
         if (User.IsInRole("Student")) studentId = GetUserId();
 
-        var result = await _mediator.Send(new GetParentDataCommand(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetParentDataQuery(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -98,13 +108,15 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("military-data")]
-    public async Task<IActionResult> GetMilitaryData(
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
+    public async Task<IActionResult> GetMilitaryData (
        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
         if (User.IsInRole("Student")) studentId = GetUserId();
 
-        var result = await _mediator.Send(new GetMilitaryDataCommand(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetMilitaryDataQuery(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -112,12 +124,14 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("personal-data")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetPersonalData(
         [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
         if (User.IsInRole("Student")) studentId = GetUserId();
-        var result = await _mediator.Send(new GetPersonalDataCommand(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetPersonalDataQuery(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -125,12 +139,14 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("previous-qualification-data")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetPreviousQualification(
         [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
         if (User.IsInRole("Student")) studentId = GetUserId();
-        var result = await _mediator.Send(new GetPreviousQualificationDataCommand(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetPreviousQualificationDataQuery(studentId!.Value), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -139,6 +155,8 @@ public class StudentController(IMediator mediator) : ControllerBase
 
 
     [HttpPut("contact-data")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateContactData(
         [FromBody] UpdateContactDataCommand request,
         [FromQuery] Guid? studentId,
@@ -156,6 +174,8 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("parent-data")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateFamilyData(
         [FromBody] UpdateParentDataCommand request,
         [FromQuery] Guid? studentId,
@@ -173,6 +193,8 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("military-data")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateMilitaryData(
         [FromBody] UpdateMilitaryDataCommand request,
         [FromQuery] Guid? studentId,
@@ -190,15 +212,17 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("personal-data")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdatePersonalData(
-        [FromRoute] Guid collegeId,
+        [FromRoute] Guid programId,
         [FromBody] UpdatePersonalDataCommand request,
         [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
         if (User.IsInRole("Student")) studentId = GetUserId();
 
-        request = request with { StudentId = studentId!.Value, CollegeId = collegeId };
+        request = request with { StudentId = studentId!.Value, ProgramId = programId };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -208,6 +232,8 @@ public class StudentController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("previous-qualification-data")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdatePreviousQualification(
         [FromBody] UpdatePreviousQualificationCommand request,
         [FromQuery] Guid? studentId,
@@ -224,18 +250,24 @@ public class StudentController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
     [HttpGet("academic-history")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetStudentAcademicHistory(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentAcademicHistoryCommand(), cancellationToken);
+        var result = await _mediator.Send(new GetStudentAcademicHistoryQuery(), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("student-schedule")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetStudentSchedule(CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetStudentScheduleQuery(), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("student-exams")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetStudentExams(CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetStudentExamsQuery(), cancellationToken);

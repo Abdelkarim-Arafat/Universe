@@ -200,7 +200,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                         false, // IsEnrolled
                         co.CourseOfferingSessions
                             .Where(cos => !cos.IsDeleted)
-                            .Select(cos => new SessionInfo(
+                            .Select(cos => new SessionInfo (
                                 cos.TeachingSessionId,
                                 cos.TeachingSession.Instructor.Name,
                                 cos.TeachingSession.Type,

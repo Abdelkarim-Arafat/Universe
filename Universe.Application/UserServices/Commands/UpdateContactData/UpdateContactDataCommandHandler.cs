@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.User;
 using Universe.Core.Interfaces;
 
 namespace Universe.Application.UserServices.Commands.UpdateContactData;
@@ -15,8 +15,8 @@ internal class UpdateContactDataCommandHandler(
     public async Task<Result<ContactDataResponse>> Handle(UpdateContactDataCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.UserRepository
-            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
-            return Result.Failure<ContactDataResponse>(StudentErrors.UserNotFound);
+            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student
+            ) return Result.Failure<ContactDataResponse>(StudentErrors.UserNotFound);
 
         request.Adapt(student.ContactInfo);
         _unitOfWork.Repository<Student>().Update(student);

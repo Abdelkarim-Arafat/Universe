@@ -1,10 +1,10 @@
-﻿using Universe.Application.UserServices.UserDtos;
-using Universe.Core.Enums;
+﻿using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Commands.RegisterStudent;
 
-public record RegisterStudentCommand(
+public record RegisterStudentCommand (
     [Required] Guid CollegeId,
+    [Required] Guid ProgramId,
     string Name,
     string StudentCode,
     string NationalIdOrPassport,

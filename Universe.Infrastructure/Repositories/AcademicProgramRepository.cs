@@ -36,6 +36,16 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
         .Where(x => x.ProgramId == ProgramId && x.SemesterId == SemesterId)
         .SingleOrDefaultAsync(cancellationToken);
 
+    public async Task<StudentAcademicProgram?> GetCurrentStudentAcademicProgramAsync(Guid studentId , CancellationToken cancellationToken)
+        => await _context.StudentAcademicPrograms
+                .Where(x => x.StudentId == studentId && x.Currently)
+                .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task<StudentAcademicProgram?> GetStudentAcademicProgramAsync(Guid programId , Guid studentId , CancellationToken cancellationToken)
+        => await _context.StudentAcademicPrograms
+               .Where(x => x.StudentId == studentId && x.AcademicProgramId == programId)
+               .FirstOrDefaultAsync(cancellationToken);
+
     public async Task<Guid?> GetCurrentAcademicProgramIdAsync(Guid StudentId, CancellationToken cancellationToken)
     {
         return await _context.StudentAcademicPrograms

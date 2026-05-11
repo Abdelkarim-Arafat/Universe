@@ -1,5 +1,5 @@
 ﻿
-using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Commands.UpdateContactData;
 

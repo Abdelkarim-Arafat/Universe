@@ -1,5 +1,5 @@
 ﻿
-using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.User;
 using Universe.Core.Entities;
 
 namespace Universe.Application.UserServices.Commands.RegisterStaff;
@@ -45,7 +45,7 @@ public class RegisterStaffCommandHandler(
 
         await _userManager.AddToRolesAsync(user, request.Roles);
 
-        return Result.Success(new StuffWithDetailsResponse (
+        return Result.Success(new StuffWithDetailsResponse(
             user.Id.ToString(),
             user.Name,
             request.Roles,

@@ -24,6 +24,23 @@ public static class AcademicProgramCacheKeys
                $"{pageNumber}:{pageSize}";
     }
 }
+
+public static class StudentCacheKeys
+{
+    private static readonly string Prefix = "students";
+    public static string ById(Guid id) => $"{Prefix}:{id}";
+    public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}" };
+    public static string List(
+       Guid programId,
+       string? searchValue,
+       int pageNumber,
+       int pageSize)
+    {
+        return $"{Prefix}:{programId}:list:" +
+               $"{searchValue ?? "null"}:" +
+               $"{pageNumber}:{pageSize}";
+    }
+}
 public static class ServiceCacheKeys
 {
     private static readonly string Prefix = "services";

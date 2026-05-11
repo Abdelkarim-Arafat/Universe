@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.User;
 using Universe.Core.Entities;
 
 namespace Universe.Application.UserServices.Commands.UpdateStuff;

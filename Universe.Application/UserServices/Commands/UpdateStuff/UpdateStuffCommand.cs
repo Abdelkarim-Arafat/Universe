@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Commands.UpdateStuff;
 

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
+using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -11,6 +12,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.HasKey(s => s.Id);
 
+        
 
         builder.HasOne(s => s.Advisor)
             .WithMany(u => u.AdvisedStudents)
@@ -57,6 +59,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasMaxLength(50)
             .IsRequired(false);
 
+
         // ================== Contact Info ==================
         builder.OwnsOne(s => s.ContactInfo, contact =>
         {
@@ -78,6 +81,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
             contact.Property(c => c.Email)
                 .HasMaxLength(150)
                 .IsRequired();
+
         });
 
         // ================== Parent Info ==================
@@ -136,6 +140,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
             )
             .HasMaxLength(50)
             .IsRequired(false);
+
         });
 
         // ================== Military Info ==================
@@ -155,6 +160,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
             )
             .HasMaxLength(50)
             .IsRequired(false);
+
         });
     }
 }

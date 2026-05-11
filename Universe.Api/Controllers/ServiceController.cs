@@ -22,7 +22,7 @@ public class ServiceController(IMediator mediator) : ControllerBase
     [HttpPost("")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> AddService(
+    public async Task<IActionResult> AddService (
         [FromRoute] Guid collegeId,
         [FromBody] AddServiceCommand request,
         CancellationToken cancellationToken)
