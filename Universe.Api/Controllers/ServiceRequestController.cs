@@ -69,7 +69,7 @@ public class ServiceRequestController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> GetAllServiceRequests(
+    public async Task<IActionResult> GetAllServiceRequests (
     [FromRoute] Guid collegeId,
     [FromQuery] FilterRequest filter,
     CancellationToken cancellationToken)

@@ -25,7 +25,7 @@ using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
-[Route("programs/{programId:guid}/students")]
+[Route("students")]
 [ApiController , Authorize]
 public class StudentController(IMediator mediator) : ControllerBase
 {
@@ -36,11 +36,11 @@ public class StudentController(IMediator mediator) : ControllerBase
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> RemoveStudent (
-        [FromRoute] Guid programId,
+        [FromQuery] Guid academicProgramId,
         [FromRoute] Guid studentId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new RemoveStudentCommand(programId, studentId), cancellationToken);
+        var result = await _mediator.Send(new RemoveStudentCommand(academicProgramId, studentId), cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
@@ -50,11 +50,11 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> RegisterStudent (
         [FromQuery] Guid collegeId,
-        [FromRoute] Guid programId,
+        [FromQuery] Guid academicProgramId,
         [FromBody] RegisterStudentCommand request,
         CancellationToken cancellationToken)
     {
-        request = request with { CollegeId = collegeId , ProgramId = programId};
+        request = request with { CollegeId = collegeId , ProgramId = academicProgramId};
         var result = await _mediator.Send(request, cancellationToken);
 
         return result.IsSuccess
@@ -66,12 +66,11 @@ public class StudentController(IMediator mediator) : ControllerBase
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetAllStudent (
-        [FromRoute] Guid programId,
+        [FromQuery] Guid academicProgramId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetProgramStudentsQuery(programId, filter), cancellationToken);
-
+        var result = await _mediator.Send(new GetProgramStudentsQuery(academicProgramId, filter), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
@@ -159,12 +158,10 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateContactData(
         [FromBody] UpdateContactDataCommand request,
-        [FromQuery] Guid? studentId,
+        [FromQuery] Guid studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
-
-        request = request with { StudentId = studentId!.Value };
+        request = request with { StudentId = studentId };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -178,51 +175,42 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdateFamilyData(
         [FromBody] UpdateParentDataCommand request,
-        [FromQuery] Guid? studentId,
+        [FromQuery] Guid studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
 
-        request = request with { StudentId = studentId!.Value };
+        request = request with { StudentId = studentId };
 
         var result = await _mediator.Send(request, cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPut("military-data")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> UpdateMilitaryData(
+    public async Task<IActionResult> UpdateMilitaryData (
         [FromBody] UpdateMilitaryDataCommand request,
-        [FromQuery] Guid? studentId,
+        [FromQuery] Guid studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
-
-        request = request with { StudentId = studentId!.Value };
+        request = request with { StudentId = studentId };
 
         var result = await _mediator.Send(request, cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPut("personal-data")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdatePersonalData(
-        [FromRoute] Guid programId,
+        [FromQuery] Guid academicProgramId,
         [FromBody] UpdatePersonalDataCommand request,
-        [FromQuery] Guid? studentId,
+        [FromQuery] Guid studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
-
-        request = request with { StudentId = studentId!.Value, ProgramId = programId };
+        request = request with { StudentId = studentId, ProgramId = academicProgramId };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -236,12 +224,10 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> UpdatePreviousQualification(
         [FromBody] UpdatePreviousQualificationCommand request,
-        [FromQuery] Guid? studentId,
+        [FromQuery] Guid studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
-
-        request = request with { StudentId = studentId!.Value };
+        request = request with { StudentId = studentId };
 
         var result = await _mediator.Send(request, cancellationToken);
 

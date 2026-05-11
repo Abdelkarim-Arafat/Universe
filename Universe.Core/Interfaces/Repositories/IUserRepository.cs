@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.Student;
 using Universe.Core.Contracts.User;
 using Universe.Core.Entities;
