@@ -5,6 +5,8 @@ namespace Universe.Core.Interfaces.Repositories;
 public interface IStudentAssessmentRepository
 {
     Task<decimal> GetStudentDegreeInCourseAsync(Guid studentId, Guid courseOfferingId, CancellationToken cancellationToken);
- 
-    Task<StudentAssessmentContextDto?>GetContextForDegreeUpsertAsync(Guid studentId, Guid courseAssessmentId, Guid academicProgramId, CancellationToken cancellationToken);
+    Task<StudentAssessmenDto?> GetAssessmentWithMaxScoreAsync(
+          Guid studentId,
+          Guid courseAssessmentId,
+          CancellationToken cancellationToken);
 }

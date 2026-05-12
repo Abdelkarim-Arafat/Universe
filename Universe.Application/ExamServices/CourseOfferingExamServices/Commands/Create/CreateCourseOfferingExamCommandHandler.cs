@@ -34,13 +34,14 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamCommitteeNotFound);
 
         var hasOverlappingExam = await _unitOfWork.ExamRepository
-            .HasOverlappingExamAsync(request.ExamTermId, request.ExamCommitteesIds, request.Date, request.StartTime, request.EndTime, cancellationToken);
+            .HasOverlappingExamAsync
+            (null, request.ExamTermId, request.ExamCommitteesIds, request.Date, request.StartTime, request.EndTime, cancellationToken);
 
         if (hasOverlappingExam)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.OverlappingTime);
 
         var studentsIds = await _unitOfWork.CourseOfferingRepository
-            .GetStudentsIdsByCourseOfferingIdAsync(request.CourseOfferingId, cancellationToken);
+            .GetStudentsIdsEnrolledInCourseAsync(request.CourseOfferingId, cancellationToken);
 
 
         var committeessSum = committeesDetails.Sum(c => c.Capacity);

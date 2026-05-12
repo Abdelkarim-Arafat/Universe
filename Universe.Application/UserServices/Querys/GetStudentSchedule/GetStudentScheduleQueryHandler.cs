@@ -1,25 +1,36 @@
-﻿using System.Security.Claims;
-using Universe.Core.Contracts.Enrollments;
+﻿using Universe.Core.Contracts.Enrollments;
 
 namespace Universe.Application.UserServices.Querys.GetStudentSchedule;
 
-internal class GetStudentScheduleQueryHandler(
-    IUnitOfWork unitOfWork,
-    IHttpContextAccessor httpContextAccessor
+public class GetStudentScheduleQueryHandler(
+    IUnitOfWork unitOfWork
     ) : IRequestHandler<GetStudentScheduleQuery, Result<List<StudentExistingEnrollment>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Result<List<StudentExistingEnrollment>>> Handle(GetStudentScheduleQuery request, CancellationToken cancellationToken)
     {
-        var User = _httpContextAccessor.HttpContext?.User;
-        var value = User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        var StudentId = Guid.TryParse(value, out var userId) ? userId : Guid.Empty;
+        var isUserExist = await _unitOfWork.UserRepository.UserIsExistAsync(request.StudentId, cancellationToken);
+
+        if (!isUserExist)
+            return Result.Failure<List<StudentExistingEnrollment>>(StudentErrors.NotFound);
+
+        var studentCollegeId = await _unitOfWork.UserRepository.GetStudentCollegeIdAsync(request.StudentId, cancellationToken);
+
+        if (!studentCollegeId.HasValue)
+            return Result.Failure<List<StudentExistingEnrollment>>(CollegeErrors.NotFound);
+
+        var currentYear = await _unitOfWork.AcademicYearRepository
+            .GetCurrentYearAsync(studentCollegeId.Value, cancellationToken);
+
+        var currentSemester = await _unitOfWork.AcademicYearRepository
+            .GetCurrentSemesterAsync(studentCollegeId.Value, cancellationToken);
+
+        if (currentSemester == null)
+            return Result.Failure<List<StudentExistingEnrollment>>(SemesterErrors.NotFound);
 
         var studentSchedule = await _unitOfWork.EnrollmentRepository
-            .GetStudentScheduleAsync(StudentId, cancellationToken);
-
+            .GetStudentScheduleAsync(request.StudentId, currentSemester.Id, cancellationToken);
         return Result.Success(studentSchedule);
     }
 }

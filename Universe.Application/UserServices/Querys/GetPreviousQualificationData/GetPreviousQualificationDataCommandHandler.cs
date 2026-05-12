@@ -12,7 +12,7 @@ public class GetPreviousQualificationDataCommandHandler(
     public async Task<Result<PreviousQualificationResponse>> Handle(GetPreviousQualificationDataCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.UserRepository.GetStudentByIdAsync(request.StudentId , cancellationToken)
-            is not { } student) return Result.Failure<PreviousQualificationResponse>(StudentErrors.UserNotFound);
+            is not { } student) return Result.Failure<PreviousQualificationResponse>(StudentErrors.NotFound);
 
         return Result.Success(student.PreviousQualification.Adapt<PreviousQualificationResponse>());
     }

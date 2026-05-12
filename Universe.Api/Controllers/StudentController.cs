@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
-using Universe.Application.UserServices.Commands.ChangePassword;
 using Universe.Application.UserServices.Commands.RegisterStudent;
 using Universe.Application.UserServices.Commands.RemoveStudent;
 using Universe.Application.UserServices.Commands.UpdateContactData;
@@ -226,19 +225,19 @@ public class StudentController(IMediator mediator) : ControllerBase
     [HttpGet("academic-history")]
     public async Task<IActionResult> GetStudentAcademicHistory(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentAcademicHistoryCommand(), cancellationToken);
+        var result = await _mediator.Send(new GetStudentAcademicHistoryCommand(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("student-schedule")]
     public async Task<IActionResult> GetStudentSchedule(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentScheduleQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetStudentScheduleQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("student-exams")]
     public async Task<IActionResult> GetStudentExams(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentExamsQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetStudentExamsQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

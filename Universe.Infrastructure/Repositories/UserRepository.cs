@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
+using Universe.Application.UserServices.UserDtos;
 using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
@@ -59,7 +60,6 @@ public class UserRepository
             .ToListAsync(cancellationToken);
     }
 
-
     public async Task UpdatePersonalDataAsync(Guid StudentId, CancellationToken cancellationToken)
         => await _context.Students
         .Where(x => x.Id == StudentId)
@@ -88,7 +88,7 @@ public class UserRepository
     {
         return await _context.Enrollments
             .Where(x => x.StudentId == StudentId
-            && x.Status == Core.Enums.EnrollmentStatus.Passed
+            && x.Status == EnrollmentStatus.Passed
             && ((SemesterId == null) || (x.CourseOffering.SemesterId == SemesterId))
             && !x.IsDeleted
             && !x.CourseOffering.IsDeleted)
@@ -97,7 +97,7 @@ public class UserRepository
     public async Task<decimal> CalculateGpaAsync(Guid studentId, Guid? semesterId, CancellationToken cancellationToken)
     {
         var academicProgramId = await _academicProgramRepository
-            .GetCurrentAcademicProgramIdAsync(studentId, cancellationToken);
+            .GetStudentCurrentProgramIdAsync(studentId, cancellationToken);
 
         if (academicProgramId == null) return 0;
 
@@ -161,7 +161,7 @@ public class UserRepository
                       && !sa.IsDeleted)
             .Select(sa => new
             {
-                StudentId = sa.StudentId,
+                  sa.StudentId,
                 assessments = new StudentDegreeValue(
                   sa.CourseOfferingAssessmentId,
                   sa.degree
@@ -208,88 +208,62 @@ public class UserRepository
         return studentsLevelDictionary;
     }
 
-    public async Task<StudentExamsResponse> GetStudentExamsTablesAsync(Guid studentId, CancellationToken cancellationToken)
+    public async Task<List<StudentExam>> GetStudentExamsTablesAsync
+    (Guid studentId, List<Guid> currentCoursesIds, List<Guid> examTermsIds, CancellationToken cancellationToken)
     {
-       // الحركة دي بتخلي الكويري يتكتب لكن ميتنفذش ف اللحظه دي و يتنفذ اول م اناديه و كده اوفر one hit للداتا بيز
-
-        var currentProgramIdQuery = _context.StudentAcademicPrograms
-            .Where(sp => sp.StudentId == studentId && sp.Currently && !sp.IsDeleted)
-            .Select(sp => sp.AcademicProgramId);
-
-        var today = DateOnly.FromDateTime(DateTime.Now);
-
-        var currentYearId = await _context.AcademicYears
-            .Where(ay => !ay.IsDeleted &&
-                         today >= ay.StartDate &&
-                         today <= ay.EndDate)
-            .Select(ay => ay.Id)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        // شيك علي موضوع ال current في السيميستر
-        var currentSemesterIdQuery = _context.Semesters
-            .Where(s => s.AcademicYearId == currentYearId && s.IsCurrent && !s.IsDeleted)
-            .Select(s => s.Id);
-
-        var examTermsQuery = _context.ExamTerms
-            .Where(exam => !exam.IsDeleted
-                && currentProgramIdQuery.Contains(exam.AcademicProgramId)
-                && exam.SemesterId == currentSemesterIdQuery.FirstOrDefault()
-                && exam.IsPublished)
-            .Select(exam => exam.Id);
-
-        var studentEnrollmentsQuery = _context.Enrollments
-            .Where(e => e.StudentId == studentId 
-            && currentSemesterIdQuery.Contains(e.CourseOffering.SemesterId)
-            && e.Status == EnrollmentStatus.InProgress
-            &&!e.IsDeleted)
-            .Select(e => e.CourseOfferingId);
-   
-        var studentExams = await _context.CourseOfferingExams
+        var examsData = await _context.CourseOfferingExams
             .AsNoTracking()
             .Where(ce => !ce.IsDeleted
-                         && examTermsQuery.Contains(ce.ExamTermId)
-                         && studentEnrollmentsQuery.Contains(ce.CourseOfferingId))
-            .GroupBy(ce => ce.ExamTerm.ExamType)
+                         && examTermsIds.Contains(ce.ExamTermId)
+                         && currentCoursesIds.Contains(ce.CourseOfferingId))
+            .Select(ce => new
+            {
+                ce.ExamTerm.ExamType,
+                ce.Date,
+                ce.StartTime,
+                ce.EndTime,
+                CourseName = ce.CourseOffering.Course.Name,
+                CourseCode = ce.CourseOffering.Course.Code,
+                StudentSeatInfo = _context.ExamSeats
+                    .Where(s => !s.IsDeleted
+                             && s.StudentId == studentId
+                             && s.CourseOfferingCommittee.CourseOfferingExamId == ce.Id)
+                    .Select(s => new
+                    {
+                        s.SeatNumber,
+                        s.CourseOfferingCommittee.ExamCommittee.CommitteeNumber,
+                        Place = $"{s.CourseOfferingCommittee.ExamCommittee.Room.RoomNumber} - {s.CourseOfferingCommittee.ExamCommittee.Room.Building.Name}"
+                    })
+                    .FirstOrDefault()
+            })
+            .ToListAsync(cancellationToken);
+
+        var result = examsData
+            .GroupBy(x => x.ExamType)
             .Select(group => new StudentExam
             (
                 group.Key.ToString(),
-                group.Select(ce => new StudentExamPerCourse (
-                    ce.Date,
-                    ce.CourseOffering.Course.Name,
-                    ce.CourseOffering.Course.Code,
-                    ce.StartTime,
-                    ce.EndTime,
-                    ce.CourseOfferingCommittees
-                        .Where(c => !c.IsDeleted)
-                        .Select(c => $"{c.ExamCommittee.Room.RoomNumber} - {c.ExamCommittee.Room.Building.Name}")
-                        .FirstOrDefault() ?? "No Place Now",
-
-                    _context.ExamSeats
-                        .Where(s => !s.IsDeleted && s.StudentId == studentId
-                         && s.CourseOfferingCommittee.CourseOfferingExamId == ce.Id)
-                        .Select(s => s.SeatNumber)
-                        .FirstOrDefault(),
-
-                    ce.CourseOfferingCommittees
-                        .Where(c => !c.IsDeleted)
-                        .Select(c => c.ExamCommittee.CommitteeNumber)
-                        .FirstOrDefault()
-                )
-                {
-
-                }).ToList()
+                group.Select(x => new StudentExamPerCourse(
+                    x.Date,
+                    x.CourseName,
+                    x.CourseCode,
+                    x.StartTime,
+                    x.EndTime,
+                    x.StudentSeatInfo?.Place ?? "No Place Now ^_^",
+                    x.StudentSeatInfo!.SeatNumber,
+                    x.StudentSeatInfo!.CommitteeNumber   // check if info is null
+                )).ToList()
             ))
-            .ToListAsync(cancellationToken);
+            .ToList();
 
-        var studentInfo = await _context.Students
+        return result;
+    }
+
+    public async Task<Guid?> GetStudentCollegeIdAsync(Guid studentId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Students
             .Where(s => s.Id == studentId && !s.IsDeleted)
-            .Select(s => new { s.Name, s.StudentCode })
+            .Select(s => s.CollegeId)
             .FirstOrDefaultAsync(cancellationToken);
-
-        return new StudentExamsResponse (
-           studentInfo!.Name,
-           studentInfo.StudentCode,
-           studentExams
-        );
     }
 }

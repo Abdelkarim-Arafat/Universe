@@ -14,7 +14,7 @@ public class GetContactDataCommandHandler(
     public async Task<Result<ContactDataResponse>> Handle(GetContactDataCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.UserRepository.GetStudentByIdAsync(request.StudentId, cancellationToken)
-            is not { } student) return Result.Failure<ContactDataResponse>(StudentErrors.UserNotFound);
+            is not { } student) return Result.Failure<ContactDataResponse>(StudentErrors.NotFound);
 
         return Result.Success(student.ContactInfo.Adapt<ContactDataResponse>());
     }

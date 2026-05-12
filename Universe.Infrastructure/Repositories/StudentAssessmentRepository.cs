@@ -19,29 +19,18 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
                          && !sa.IsDeleted)
             .SumAsync(sa => sa.degree ?? 0, cancellationToken);
     }
-    
-    public async Task<StudentAssessmentContextDto?> GetContextForDegreeUpsertAsync (
+
+    public async Task<StudentAssessmenDto?> GetAssessmentWithMaxScoreAsync(
         Guid studentId,
         Guid courseAssessmentId,
-        Guid academicProgramId,
         CancellationToken cancellationToken)
     {
-        var data = await _context.StudentAssessments
+        return await _context.StudentAssessments
             .Where(sa => sa.StudentId == studentId && sa.CourseOfferingAssessmentId == courseAssessmentId)
-            .Select(sa => new StudentAssessmentContextDto(
-                _context.AcademicPrograms.Any(p => p.Id == academicProgramId),
-                sa.CourseOfferingAssessment.CourseOffering.IsOpenForControl, 
-                sa.CourseOfferingAssessment.CourseOffering.SuccessPercentage, 
-                sa.CourseOfferingAssessment.MaxScore,                       
-                sa.CourseOfferingAssessment.CourseOfferingId,                
-                _context.Enrollments
-                .FirstOrDefault(e => 
-                e.StudentId == studentId
-                && e.CourseOfferingId == sa.CourseOfferingAssessment.CourseOfferingId),
-                sa                                                           
-            ))
+            .Select(sa => new StudentAssessmenDto(
+                sa.CourseOfferingAssessment.MaxScore,
+                sa
+              ))
             .FirstOrDefaultAsync(cancellationToken);
-
-        return data;
     }
 }

@@ -14,7 +14,7 @@ public class GetMilitaryDataCommandHandler(
     public async Task<Result<MilitaryDataResponse>> Handle(GetMilitaryDataCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.UserRepository.GetStudentByIdAsync(request.StudentId, cancellationToken)
-            is not { } student) return Result.Failure<MilitaryDataResponse>(StudentErrors.UserNotFound);
+            is not { } student) return Result.Failure<MilitaryDataResponse>(StudentErrors.NotFound);
 
         return Result.Success(student.MilitaryInfo.Adapt<MilitaryDataResponse>())!;
     }

@@ -16,7 +16,7 @@ public class GetParentDataCommandHandler(
     public async Task<Result<ParentDataResponse>> Handle(GetParentDataCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.UserRepository.GetStudentByIdAsync(request.StudentId, cancellationToken)
-            is not { } student) return Result.Failure<ParentDataResponse>(StudentErrors.UserNotFound);
+            is not { } student) return Result.Failure<ParentDataResponse>(StudentErrors.NotFound);
 
         return Result.Success(student.ParentInfo.Adapt<ParentDataResponse>());
     }

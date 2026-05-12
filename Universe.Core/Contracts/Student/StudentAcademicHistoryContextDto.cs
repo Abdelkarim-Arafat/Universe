@@ -1,22 +1,22 @@
 ﻿namespace Universe.Core.Contracts.Student;
 
 public record StudentAcademicHistoryContextDto(
-    Guid? CurrentAcademicProgramId,
     List<StudentSemesterRecord> Semesters
 );
 
 public record StudentSemesterRecord(
+    Guid  SemesterId,
     string SemesterName,
     string AcademicYearName,
     DateOnly SemesterStartDate,  
-    List<CourseRecord> Courses
+    List<CourseDetailsDto> Courses
 );
 
-public record CourseRecord(
-    Guid CourseOfferingId,
+public record CourseDetailsDto(
     string CourseCode,
     string CourseName,
     decimal CreditHours,
-    decimal TotalGrade,
+    decimal TotalDegree,
+    string LetterGrade,
     bool IsPassed
 );

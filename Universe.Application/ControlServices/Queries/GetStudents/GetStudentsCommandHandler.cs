@@ -1,4 +1,4 @@
-﻿using Universe.Application.Extensions;
+﻿
 using Universe.Core.Enums;
  
 namespace Universe.Application.ControlServices.Queries.GetStudents;
@@ -58,8 +58,8 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
         var studentsLevelNameDictionary = await _unitOfWork.UserRepository
             .GetStudentsLevelNameDictionaryAsync(pagedStudentIds, command.AcademicProgramId, cancellationToken);
 
-        var letterGrades = await _unitOfWork.GetProgramGradesWithCacheAsync
-           (_cacheService, command.AcademicProgramId, cancellationToken);
+        var letterGrades = await _unitOfWork.GradeRepository
+            .GetProgramGradesAsync(command.AcademicProgramId, cancellationToken);
 
         var responseItems = pagedStudents.Select(student =>
         {

@@ -183,9 +183,22 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
                 new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
 
-        var studentSchedule = await _unitOfWork.EnrollmentRepository
-            .GetStudentScheduleAsync(command.StudentId, cancellationToken);
+        var studentCollegeId = await _unitOfWork.UserRepository.GetStudentCollegeIdAsync(command.StudentId, cancellationToken);
 
+        if (!studentCollegeId.HasValue)
+            return Result.Failure<List<StudentExistingEnrollment>>(CollegeErrors.NotFound);
+
+        var currentYear = await _unitOfWork.AcademicYearRepository
+            .GetCurrentYearAsync(studentCollegeId.Value, cancellationToken);
+
+        var currentSemester = await _unitOfWork.AcademicYearRepository
+            .GetCurrentSemesterAsync(studentCollegeId.Value, cancellationToken);
+
+        if (currentSemester == null)
+            return Result.Failure<List<StudentExistingEnrollment>>(SemesterErrors.NotFound);
+
+        var studentSchedule = await _unitOfWork.EnrollmentRepository
+            .GetStudentScheduleAsync(command.StudentId, currentSemester.Id, cancellationToken);
         return Result.Success(studentSchedule);
     }
     private async Task<Result<UpdateEnrollmentValidationDto>> ValidateUpdateEnrollmentAsync(
@@ -200,7 +213,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
             (command.StudentId, command.SemesterId, courseOfferingsIds, sessionIds, cancellationToken);
 
         if (validationResult is null)
-            return Result.Failure<UpdateEnrollmentValidationDto>(StudentErrors.UserNotFound);
+            return Result.Failure<UpdateEnrollmentValidationDto>(StudentErrors.NotFound);
 
         if (!validationResult.isSemesterExist)
             return Result.Failure<UpdateEnrollmentValidationDto>(SemesterErrors.NotFound);

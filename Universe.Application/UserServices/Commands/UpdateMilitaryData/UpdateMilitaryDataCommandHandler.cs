@@ -15,7 +15,7 @@ public class UpdateMilitaryDataCommandHandler(
     {
         if (await _unitOfWork.UserRepository
            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
-            return Result.Failure<MilitaryDataResponse>(StudentErrors.UserNotFound);
+            return Result.Failure<MilitaryDataResponse>(StudentErrors.NotFound);
 
         request.Adapt(student.MilitaryInfo);
         _unitOfWork.Repository<Student>().Update(student);

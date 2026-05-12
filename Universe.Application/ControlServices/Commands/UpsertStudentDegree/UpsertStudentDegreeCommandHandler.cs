@@ -6,46 +6,60 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     public async Task<Result<UpsertDegreeResponse>> Handle(UpsertStudentDegreeCommand command, CancellationToken cancellationToken)
     {
-        var studentData = await _unitOfWork.StudentAssessmentRepository
-            .GetContextForDegreeUpsertAsync(command.StudentId, command.CourseAssessmentId, command.AcademicProgramId, cancellationToken);
+        var isStudentExist = await _unitOfWork.UserRepository.UserIsExistAsync(command.StudentId, cancellationToken);
 
-        if (studentData == null)
-            return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.NotFound);
+        if (!isStudentExist)
+            return Result.Failure<UpsertDegreeResponse>(StudentErrors.NotFound);
 
-        if (!studentData.IsAcademicProgramValid)
+        var isProgramExist = await _unitOfWork.AcademicProgramRepository
+            .IsExistAsync(command.AcademicProgramId,cancellationToken);
+
+        if (!isProgramExist)
             return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.NotFound);
 
-        if (!studentData.IsCourseOpenForControl)
+        var courseData = await _unitOfWork.CourseOfferingRepository
+            .GetCourseOfferingDataByAssessmentIdAsync(command.CourseAssessmentId, cancellationToken);
+
+        if (courseData == null)
+            return Result.Failure<UpsertDegreeResponse>(CourseOfferingErrors.NotFoundAssessment);
+
+        if (!courseData.IsCourseOpenForControl)
             return Result.Failure<UpsertDegreeResponse>(CourseOfferingErrors.NotOpenForControl);
 
-        if (studentData.AssessmentToUpdate == null)
+        var assessmentData = await _unitOfWork.StudentAssessmentRepository.
+             GetAssessmentWithMaxScoreAsync(command.StudentId, command.CourseAssessmentId, cancellationToken);
+
+        if (assessmentData == null)
             return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.NotFound);
 
-        if (studentData.EnrollmentToUpdate == null)
-            return Result.Failure<UpsertDegreeResponse>(EnrollmentErrors.NotFound); // extra
-
-        if (command.Degree > studentData.MaxScore)
+        if (command.Degree > assessmentData.MaxScore)
             return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.AssessmentDegreeExceedsMaxScore);
 
-        var TotalDegree = await _unitOfWork.StudentAssessmentRepository
-         .GetStudentDegreeInCourseAsync(command.StudentId, studentData.CourseOfferingId, cancellationToken);
+        var enrollment = await _unitOfWork.EnrollmentRepository
+            .GetEnrollmentDataByCourseOfferingIdAsync(courseData.CourseOfferingId, command.StudentId, cancellationToken);
 
-        var assDegree = studentData.AssessmentToUpdate.degree;
-        TotalDegree += command.Degree - (assDegree.HasValue ? assDegree.Value : 0);
-        studentData.AssessmentToUpdate.degree = command.Degree;
+        if (enrollment == null)
+            return Result.Failure<UpsertDegreeResponse>(EnrollmentErrors.NotFound);
 
-        studentData.EnrollmentToUpdate.Status = TotalDegree >= studentData.SuccessPercentage
+        var totalDegree = await _unitOfWork.StudentAssessmentRepository
+         .GetStudentDegreeInCourseAsync(command.StudentId, courseData.CourseOfferingId, cancellationToken);
+
+        var oldDegree = assessmentData.Assessment!.degree;
+        totalDegree += command.Degree - (oldDegree.HasValue ? oldDegree.Value : 0);
+        assessmentData.Assessment.degree = command.Degree;
+
+        enrollment.Status = totalDegree >= courseData.SuccessPercentage
             ? Core.Enums.EnrollmentStatus.Passed
             : Core.Enums.EnrollmentStatus.Failed;
 
-        _unitOfWork.Repository<StudentAssessment>().Update(studentData.AssessmentToUpdate);
-        _unitOfWork.Repository<Enrollment>().Update(studentData.EnrollmentToUpdate);
+        _unitOfWork.Repository<StudentAssessment>().Update(assessmentData.Assessment);
+        _unitOfWork.Repository<Enrollment>().Update(enrollment);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
         var letterGrade = await _unitOfWork.GradeRepository
-            .GetLetterGradeByTotalDegree(command.AcademicProgramId, TotalDegree, cancellationToken);
+            .GetLetterGradeByTotalDegree(command.AcademicProgramId, totalDegree, cancellationToken);
 
-        return Result.Success(new UpsertDegreeResponse(TotalDegree, letterGrade));
+        return Result.Success(new UpsertDegreeResponse(totalDegree, letterGrade));
     }
 }

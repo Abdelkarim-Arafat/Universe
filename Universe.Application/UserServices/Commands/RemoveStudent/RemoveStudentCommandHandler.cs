@@ -20,7 +20,7 @@ public class RemoveStudentCommandHandler(
             .Include(x => x.Student)
             .FirstOrDefaultAsync(x => x.Id == request.Id && !x.IsDeleted);
 
-        if (user is null) return Result.Failure(StudentErrors.UserNotFound);
+        if (user is null) return Result.Failure(StudentErrors.NotFound);
 
         user.IsDeleted = true;
         user.DeletedAt = DateTime.UtcNow;

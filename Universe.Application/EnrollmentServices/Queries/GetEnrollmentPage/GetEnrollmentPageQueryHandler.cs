@@ -15,7 +15,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             .GetEnrollmentValidationContextAsync(query.StudentId, query.SemesterId, cancellationToken);
 
         if (enrollmentContextDto is null)
-            return Result.Failure<EnrollmentPageResponse>(StudentErrors.UserNotFound);
+            return Result.Failure<EnrollmentPageResponse>(StudentErrors.NotFound);
 
         if (enrollmentContextDto.StudentLevelName is null)
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.StudentLevelNotFound);

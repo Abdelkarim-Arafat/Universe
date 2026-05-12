@@ -7,6 +7,7 @@ using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 using System.Linq.Dynamic.Core;
+using Universe.Core.Contracts.Student;
 
 namespace Universe.Infrastructure.Repositories;
 
@@ -63,8 +64,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         => await _context.CourseOfferings
         .FirstOrDefaultAsync(c => c.Id == Id && !c.IsDeleted, cancellationToken);
 
-
-    public Task<List<Guid>> GetStudentsIdsByCourseOfferingIdAsync(Guid courseOfferingId, CancellationToken cancellationToken)
+    public Task<List<Guid>> GetStudentsIdsEnrolledInCourseAsync(Guid courseOfferingId, CancellationToken cancellationToken)
     {
         return _context.Enrollments
             .Where(e => e.CourseOfferingId == courseOfferingId && !e.IsDeleted)
@@ -88,6 +88,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
            c.MaxScore
        ))
        .ToListAsync(cancellationToken);
+
     public async Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
      Guid studentId,
      Guid semesterId,
@@ -144,5 +145,17 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         return await _context.CourseOfferings
             .Include(co => co.Assessments)
             .FirstOrDefaultAsync(co => !co.IsDeleted && co.Id == Id, cancellationToken);
+    }
+    public async Task<CourseOfferingData?> GetCourseOfferingDataByAssessmentIdAsync
+        (Guid courseOfferingAssessmentId, CancellationToken cancellationToken)
+    {
+        return await _context.CourseOfferingAssessments
+            .Where(co => co.Id == courseOfferingAssessmentId && !co.IsDeleted)
+            .Select(co => new CourseOfferingData(
+                co.CourseOffering.IsOpenForControl,
+                co.CourseOffering.SuccessPercentage,
+                co.CourseOfferingId
+            ))
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }
