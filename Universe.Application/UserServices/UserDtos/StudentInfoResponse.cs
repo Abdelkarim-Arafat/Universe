@@ -8,5 +8,5 @@ string StudentCode,
 decimal RegisteredHours,
 decimal MaxAllowedHours,
 decimal MinAllowedHours,
-decimal GPA
+decimal Gpa
 );

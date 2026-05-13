@@ -23,8 +23,11 @@ public class GetStudentScheduleQueryHandler(
         var currentYear = await _unitOfWork.AcademicYearRepository
             .GetCurrentYearAsync(studentCollegeId.Value, cancellationToken);
 
+        if (currentYear == null)
+            return Result.Failure<List<StudentExistingEnrollment>>(AcademicYearErrors.NotFound);
+
         var currentSemester = await _unitOfWork.AcademicYearRepository
-            .GetCurrentSemesterAsync(studentCollegeId.Value, cancellationToken);
+            .GetCurrentSemesterAsync(currentYear.Id, cancellationToken);
 
         if (currentSemester == null)
             return Result.Failure<List<StudentExistingEnrollment>>(SemesterErrors.NotFound);

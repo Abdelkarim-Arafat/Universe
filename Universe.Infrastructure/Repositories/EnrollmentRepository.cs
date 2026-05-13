@@ -103,7 +103,7 @@ public class EnrollmentRepository(
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<Enrollment>> GetExistingEnrollmentAsync(
+    public async Task<List<Enrollment>> GetExistingEnrollmentIncludingSessionsAsync(
     Guid studentId,
     Guid semesterId,
     CancellationToken cancellationToken)
@@ -117,86 +117,30 @@ public class EnrollmentRepository(
             .ToListAsync(cancellationToken);
 
     }
-    // update 
-    public async Task<EnrollmentValidationContextDto?> GetEnrollmentValidationContextAsync(
-    Guid studentId,
-    Guid semesterId,
-    CancellationToken cancellationToken)
+    public async Task<List<StudentExistingEnrollment>> GetExistingEnrollmentsInfoAsync
+    (Guid studentId, Guid semesterId, CancellationToken cancellationToken)
     {
-        return await _context.Students
-            .AsNoTracking() 
-            .Where(s => s.Id == studentId && !s.IsDeleted)
-            .Select(s => new {
-                Student = s,
-                CurrentProgramId = s.StudentAcademicPrograms
-                    .Where(sap => sap.Currently && !sap.IsDeleted)
-                    .Select(sap => sap.AcademicProgramId)
-                    .FirstOrDefault(),
-
-                TotalEarnedHours = s.Enrollments
-                    .Where(e => e.Status == EnrollmentStatus.Passed && !e.IsDeleted)
-                    .Sum(e => (decimal?)e.CourseOffering.CreditHours) ?? 0,
-
-                CurrentRegisteredHours = s.Enrollments
-                    .Where(e => e.CourseOffering.SemesterId == semesterId
-                             && e.Status == EnrollmentStatus.InProgress
-                             && !e.IsDeleted)
-                    .Sum(e => (decimal?)e.CourseOffering.CreditHours) ?? 0,
-
-                ExistingEnrollments = s.Enrollments
-                    .Where(e => e.CourseOffering.SemesterId == semesterId
-                             && e.Status == EnrollmentStatus.InProgress
-                             && !e.IsDeleted)
-                    .SelectMany(e => e.TeachingSessionEnrollments.Where(ts => !ts.IsDeleted))
-                    .Select(te => new StudentExistingEnrollment(
-                        te.TeachingSessionId,
-                        te.Enrollment.CourseOfferingId,
-                        te.Enrollment.CourseOffering.Course.Name,
-                        te.TeachingSession.Instructor.Name,
-                        te.TeachingSession.Room.Building.Name,
-                        te.TeachingSession.Room.RoomNumber,
-                        te.Enrollment.GroupNumber,
-                        te.TeachingSession.Type,
-                        te.TeachingSession.StartTime,
-                        te.TeachingSession.EndTime,
-                        te.TeachingSession.Day
-                    )).ToList()
-            })
-            .Select(temp => new
-            {
-                temp.Student,
-                temp.CurrentProgramId,
-                temp.CurrentRegisteredHours,
-                temp.ExistingEnrollments,
-
-                StudyLoad = _context.StudyLoadByLevels
-                    .Where(sl => sl.Level.AcademicProgramId == temp.CurrentProgramId
-                              && temp.TotalEarnedHours >= sl.Level.MinHours
-                              && temp.TotalEarnedHours <= sl.Level.MaxHours
-                              && sl.SemesterId == semesterId
-                              && !sl.IsDeleted)
-                    .Select(sl => new { sl.MinHours, sl.MaxHours })
-                    .FirstOrDefault(),
-                  StudentLevelName = _context.Levels
-                    .Where(l=> !l.IsDeleted && temp.CurrentRegisteredHours >=l.MinHours && temp.CurrentRegisteredHours<=l.MaxHours) 
-                    .Select(l => l.Name)
-                    .FirstOrDefault()
-            })
-            .Select(temp => new EnrollmentValidationContextDto (
-                temp.Student.Name,
-                temp.Student.StudentCode,
-                temp.StudentLevelName,
-                temp.CurrentProgramId,
-                _context.Semesters.Any(sem => sem.Id == semesterId && !sem.IsDeleted),
-                temp.StudyLoad != null ? temp.StudyLoad.MinHours : null,
-                temp.StudyLoad != null ? temp.StudyLoad.MaxHours : null,
-                temp.CurrentRegisteredHours,
-                temp.ExistingEnrollments
-            ))
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(cancellationToken);
+        return await _context.TeachingSessionEnrollments
+            .AsNoTracking()
+            .Where(te => te.Enrollment.StudentId == studentId
+                      && te.Enrollment.CourseOffering.SemesterId == semesterId
+                      && te.Enrollment.Status == EnrollmentStatus.InProgress
+                      && !te.Enrollment.IsDeleted
+                      && !te.IsDeleted)
+            .Select(te => new StudentExistingEnrollment(
+                te.TeachingSessionId,
+                te.Enrollment.CourseOfferingId,
+                te.Enrollment.CourseOffering.Course.Name,
+                te.TeachingSession.Instructor.Name,
+                te.TeachingSession.Room.Building.Name,
+                te.TeachingSession.Room.RoomNumber,
+                te.Enrollment.GroupNumber,
+                te.TeachingSession.Type,
+                te.TeachingSession.StartTime,
+                te.TeachingSession.EndTime,
+                te.TeachingSession.Day
+            )).ToListAsync(cancellationToken);
     }
-
     public async Task<List<Guid>> GetRegisteredCourseOfferingIdsInCurrentSemesterAsync
         (Guid studentId, Guid semesterId, CancellationToken cancellationToken)
     {
@@ -208,5 +152,16 @@ public class EnrollmentRepository(
                      && !e.IsDeleted)
             .Select(e => e.CourseOfferingId)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<decimal> CalculateCurrentRegisteredHoursAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken)
+    {
+        return await _context.Enrollments
+            .AsNoTracking()
+            .Where(e => e.StudentId == studentId
+                     && e.Status == EnrollmentStatus.InProgress
+                     && e.CourseOffering.SemesterId == semesterId
+                     && !e.IsDeleted)
+            .SumAsync(e => e.CourseOffering.CreditHours);
     }
 }

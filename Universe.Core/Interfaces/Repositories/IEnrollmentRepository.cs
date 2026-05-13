@@ -11,13 +11,12 @@ public interface IEnrollmentRepository
         GetStudentAcademicHistoryContextAsync
         (Guid studentId, List<GradeResponse> letterDegrees, CancellationToken cancellationToken);
 
-
-    Task<EnrollmentValidationContextDto?>
-        GetEnrollmentValidationContextAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
     Task<List<StudentExistingEnrollment>> GetStudentScheduleAsync
         (Guid studentId, Guid currentSemesterId, CancellationToken cancellationToken);
-    Task<List<Enrollment>> GetExistingEnrollmentAsync
+    Task<List<Enrollment>> GetExistingEnrollmentIncludingSessionsAsync
     (Guid studentId, Guid semesterId, CancellationToken cancellationToken);
     Task<List<Guid>> GetRegisteredCourseOfferingIdsInCurrentSemesterAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
     Task<Enrollment?> GetEnrollmentDataByCourseOfferingIdAsync(Guid courseOfferingId, Guid studentId, CancellationToken cancellationToken);
+    Task<List<StudentExistingEnrollment>> GetExistingEnrollmentsInfoAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
+    Task<decimal> CalculateCurrentRegisteredHoursAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
 }

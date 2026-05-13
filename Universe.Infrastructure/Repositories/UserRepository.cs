@@ -96,15 +96,11 @@ public class UserRepository
     }
 
     // update
-    public async Task<decimal> CalculateGpaAsync(Guid studentId, Guid? semesterId, CancellationToken cancellationToken)
+    public async Task<decimal> CalculateGpaAsync(Guid studentId, Guid? semesterId, Guid programId, CancellationToken cancellationToken)
     {
-        var academicProgramId = await _academicProgramRepository
-            .GetStudentCurrentProgramIdAsync(studentId, cancellationToken);
-
-        if (academicProgramId == null) return 0;
 
         var gradeScales = await _gradeRepository
-            .GetProgramGradesAsync(academicProgramId.Value, cancellationToken);
+            .GetProgramGradesAsync(programId, cancellationToken);
 
         var coursePerformance = await _context.Enrollments
             .AsNoTracking()
@@ -116,7 +112,7 @@ public class UserRepository
             .Select(e => new
             {
                 e.CourseOffering.CreditHours,
-         
+
                 TotalScore = _context.StudentAssessments
                     .Where(sa => sa.StudentId == studentId
                               && sa.CourseOfferingAssessment.CourseOfferingId == e.CourseOfferingId
@@ -125,7 +121,8 @@ public class UserRepository
             })
             .ToListAsync(cancellationToken);
 
-        if (!coursePerformance.Any()) return 0;
+        if (!coursePerformance.Any())
+            return 0;
 
         decimal totalQualityPoints = 0;
         decimal totalHours = 0;

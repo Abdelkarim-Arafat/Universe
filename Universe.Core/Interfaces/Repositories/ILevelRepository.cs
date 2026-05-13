@@ -9,4 +9,5 @@ public interface ILevelRepository
     Task<Level?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<Guid?> GetStudentCurrentLevelIdAsync
         (Guid programId, decimal totalEarnedHours, CancellationToken cancellationToken);
+    Task<bool> IsLevelExistAsync(Guid levelId, CancellationToken cancellationToken);
 }

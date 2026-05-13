@@ -27,7 +27,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
 
 
         var existingEnrollments = await _unitOfWork.EnrollmentRepository
-               .GetExistingEnrollmentAsync(command.StudentId, command.SemesterId, cancellationToken);
+               .GetExistingEnrollmentIncludingSessionsAsync(command.StudentId, command.SemesterId, cancellationToken);
 
         var incomingSessionsGrouped = incomingSessionsDetails.GroupBy(x => x.courseOfferingId).ToDictionary(g => g.Key, g => g.ToList());
 

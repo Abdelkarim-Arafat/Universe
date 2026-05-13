@@ -91,7 +91,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
 
 
     // راجع
-    public async Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
+    public async Task<List<CourseRegistrationData>> GetAvailableCoursesForRegistrationAsync(
      Guid studentId,
      Guid semesterId,
      Guid levelId,
@@ -101,28 +101,25 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             .Where(e => e.StudentId == studentId && e.Status == EnrollmentStatus.Passed && !e.IsDeleted)
             .Select(e => e.CourseOffering.CourseId);
 
-        return await _context.Levels
-            .AsNoTracking()
-            .Where(l => l.Id == levelId && !l.IsDeleted)
-            .Select(l => new LevelRegistrationCatalogDto(
-                l.Name,
-
-                _context.CourseOfferings
+        return await _context.CourseOfferings
+                    .AsNoTracking()
                     .Where(co => co.LevelId == levelId
                               && co.SemesterId == semesterId
                               && !co.IsDeleted
                               && !passedCoursesIds.Contains(co.CourseId)
-                              && !_context.CoursePrerequisites
+                              && _context.CoursePrerequisites
                                     .Where(p => p.CourseId == co.CourseId)
-                                    .Any(p => !passedCoursesIds.Contains(p.PrerequisiteCourseId)))
-                    .Select(co => new CourseRegistration(
+                                    .All(p => passedCoursesIds.Contains(p.PrerequisiteCourseId)))
+                    .Select(co => new CourseRegistrationData(
                         co.Id,
                         co.CourseId,
                         co.Course.Name,
                         co.Course.Code,
                         co.IsOptional,
                         co.CreditHours,
-                        false, // IsEnrolled
+                        co.Enrollments.Any(enrollment => !enrollment.IsDeleted
+                                                       && enrollment.StudentId == studentId
+                                                       && enrollment.Status == EnrollmentStatus.InProgress),
                         co.CourseOfferingSessions
                             .Where(cos => !cos.IsDeleted)
                             .Select(cos => new SessionInfo(
@@ -135,11 +132,10 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                                 cos.TeachingSession.EndTime,
                                 cos.TeachingSession.Capacity
                                 - cos.TeachingSession.TeachingSessionEnrollments.Count(e => !e.IsDeleted),
-                                false // IsRegistered
+                                (cos.TeachingSession.TeachingSessionEnrollments.Any(tse =>
+                                tse.Enrollment.StudentId == studentId && !tse.IsDeleted))
                             )).ToList()
-                    )).ToList()
-            ))
-            .FirstOrDefaultAsync(cancellationToken);
+                    )).ToListAsync(cancellationToken);
     }
 
     public async Task<CourseOffering?> GetByIdIncludingAssessmentsAsync(Guid Id, CancellationToken cancellationToken)

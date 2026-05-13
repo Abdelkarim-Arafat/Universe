@@ -2,17 +2,6 @@
 
 namespace Universe.Core.Contracts.Enrollments;
 
-public record EnrollmentValidationContextDto(
-    string StudentName,
-    string StudentCode,
-    string? StudentLevelName,
-    Guid? AcademicProgramId,
-    bool IsSemesterValid,
-    decimal? MinHours,
-    decimal? MaxHours,
-    decimal CurrentRegisteredHours,
-    List<StudentExistingEnrollment> ExistingEnrollments 
-);
 public record StudentExistingEnrollment(
     Guid SessionId,
     Guid CourseOfferingId,

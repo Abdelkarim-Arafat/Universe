@@ -16,11 +16,11 @@ public interface ICourseOfferingRepository
     Task<IReadOnlyList<CourseOfferingResponse>> GetLevelCoursesAsync(Guid LevelId, Guid SemesterId, CancellationToken cancellationToken);
     Task<IReadOnlyList<SessionResponse>> GetCourseOfferingSessionsAsync(Guid courseOfferingId, int GroupNumber, CancellationToken cancellationToken);
     Task<CourseOffering?> GetByIdIncludingAssessmentsAsync(Guid Id, CancellationToken cancellationToken);
-    Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
-       Guid studentId,
-       Guid semesterId,
-       Guid levelId,
-       CancellationToken cancellationToken);
+    Task<List<CourseRegistrationData>> GetAvailableCoursesForRegistrationAsync(
+        Guid studentId,
+        Guid semesterId,
+        Guid levelId,
+        CancellationToken cancellationToken);
     Task<List<CourseOfferingAssessmentResponse>> GetCourseOfferingAssessmentsForViewAsync(Guid CourseOfferingId, CancellationToken cancellationToken);
     Task<List<Guid>> GetStudentsIdsEnrolledInCourseAsync(Guid courseOfferingId, CancellationToken cancellationToken);
     Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
