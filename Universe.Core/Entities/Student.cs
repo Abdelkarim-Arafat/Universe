@@ -27,19 +27,14 @@ public class Student : BaseEntity
     public ContactInfo ContactInfo { get; set; } = default!; // بيانات الاتصال
     public ParentInfo ParentInfo { get; set; } = default!; // بيانات ولي الامر
     public PreviousQualification PreviousQualification { get; set; } = default!; // بيانات المؤهل السابق
-    public MilitaryInfo? MilitaryInfo { get; set; } // بيانات التجنيد
-
-
+    public MilitaryInfo MilitaryInfo { get; set; } = default!; // بيانات التجنيد
 
     public Guid? AdvisorId { get; set; }
     public ApplicationUser Advisor { get; set; } = default!;
 
-    public Guid CollegeId { get; set; }
-    public College College { get; set; } = default!;
     public ICollection<Enrollment> Enrollments { get; set; } = [];
     public ICollection<StudentAcademicProgram> StudentAcademicPrograms { get; set; } = [];
     public ICollection<StudentAssessment> StudentAssessments { get; set; } = [];
     public ICollection<ExamSeat> ExamSeats { get; set; } = [];
-
     public ICollection<Payment> Payments { get; set; } = [];
 }

@@ -8,10 +8,12 @@ namespace Universe.Application.UserServices.Commands.RemoveStudent;
 
 public class RemoveStudentCommandHandler(
     IUnitOfWork unitOfWork,
+    ICacheService cacheService,
     UserManager<ApplicationUser> userManager
     ) : IRequestHandler<RemoveStudentCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     public async Task<Result> Handle(RemoveStudentCommand request, CancellationToken cancellationToken)
@@ -27,6 +29,8 @@ public class RemoveStudentCommandHandler(
 
         _unitOfWork.Repository<Student>().SoftDelete(user.Student);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveByTagAsync(StudentCacheKeys.Tags(request.ProgramId), cancellationToken);
 
         return Result.Success();
     }

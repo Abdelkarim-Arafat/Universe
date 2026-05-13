@@ -122,7 +122,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                                                        && enrollment.Status == EnrollmentStatus.InProgress),
                         co.CourseOfferingSessions
                             .Where(cos => !cos.IsDeleted)
-                            .Select(cos => new SessionInfo(
+                            .Select(cos => new SessionInfo (
                                 cos.TeachingSessionId,
                                 cos.TeachingSession.Instructor.Name,
                                 cos.TeachingSession.Type,

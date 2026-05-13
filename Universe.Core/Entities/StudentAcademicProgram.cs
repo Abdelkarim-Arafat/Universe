@@ -13,6 +13,6 @@ public class StudentAcademicProgram : BaseEntity
     public AcademicProgram AcademicProgram { get; set; } = default!;
 
     public DateOnly StartDate { get; set; }
-    public DateOnly EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
     public bool Currently { get; set; } = true;
 }

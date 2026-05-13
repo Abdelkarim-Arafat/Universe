@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.UserServices.UserDtos;
+using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Commands.UpdatePersonalData;
 
 public class UpdatePersonalDataCommandHandler(
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
     ) : IRequestHandler<UpdatePersonalDataCommand, Result<PersonalDataResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<PersonalDataResponse>> Handle(UpdatePersonalDataCommand request, CancellationToken cancellationToken)
     {
@@ -26,8 +28,10 @@ public class UpdatePersonalDataCommandHandler(
             return Result.Failure<PersonalDataResponse>(StudentErrors.DuplicateNationalIdOrPassport);
 
         request.Adapt(student);
-        _unitOfWork.Repository<Student>().Update(student);
+
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveByTagAsync(StudentCacheKeys.Tags(request.ProgramId), cancellationToken);
 
         return Result.Success(student.Adapt<PersonalDataResponse>());
     }

@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Universe.Application.UserServices.Commands.RemoveStudent;
 
-public record RemoveStudentCommand(
+public record RemoveStudentCommand (
+    [Required] Guid ProgramId,
     [Required] Guid Id
 ) : IRequest<Result>;

@@ -1,7 +1,9 @@
 ﻿using Universe.Application.CourseOfferingServices.Commands.AddCourseOffering;
 using Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 using Universe.Core.Contracts.CourseOffering;
+using Universe.Core.Contracts.User;
 using Universe.Core.Entities;
+using Universe.Core.Entities.StudentInfo;
 
 namespace Universe.Application.Common;
 
@@ -25,5 +27,11 @@ public class MapsterConfiguration : IRegister
 
         config.NewConfig<(CourseOffering, UpdateCourseOfferingCommand), CourseOfferingWithDetailsResponse>()
             .Map(dest => dest.SemesterType, src => src.Item2.SemesterType);
+
+        config.NewConfig<Student, PersonalDataResponse>();
+        config.NewConfig<ContactInfo, ContactDataResponse>();
+        config.NewConfig<ParentInfo, ParentDataResponse>();
+        config.NewConfig<MilitaryInfo, MilitaryDataResponse>();
+        config.NewConfig<PreviousQualification, PreviousQualificationResponse>();
     }
 }

@@ -4,6 +4,8 @@ namespace Universe.Core.Interfaces.Repositories;
 
 public interface IAcademicProgramRepository
 {
+    Task<StudentAcademicProgram?> GetStudentAcademicProgramAsync(Guid programId, Guid studentId, CancellationToken cancellationToken);
+    Task<StudentAcademicProgram?> GetCurrentStudentAcademicProgramAsync(Guid studentId, CancellationToken cancellationToken);
     Task<bool> IsExistAsync(Guid AcademicProgramId, string Name, string Code, Guid? excludeId, CancellationToken cancellationToken);
     Task<bool> IsExistAsync(Guid AcademicProgramId, CancellationToken cancellationToken);
     Task<AcademicProgram?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
