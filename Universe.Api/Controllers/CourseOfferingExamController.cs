@@ -6,7 +6,7 @@ using Universe.Application.CourseOfferingExamServices.Commands.Create;
 using Universe.Application.CourseOfferingExamServices.Commands.Delete;
 using Universe.Application.CourseOfferingExamServices.Commands.Update;
 using Universe.Application.CourseOfferingExamServices.Queries.Get;
-using Universe.Application.ExamServices.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
+using Universe.Application.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
 
 namespace Universe.Api.Controllers;
 

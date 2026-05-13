@@ -1,8 +1,6 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using Universe.Application.UserServices.UserDtos;
-using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.Student;
 using Universe.Core.Contracts.User;
 using Universe.Core.Entities;
@@ -291,9 +289,9 @@ public class UserRepository
 
     public async Task<Guid?> GetStudentCollegeIdAsync(Guid studentId, CancellationToken cancellationToken = default)
     {
-        return await _context.Students
-            .Where(s => s.Id == studentId && !s.IsDeleted)
-            .Select(s => s.CollegeId)
-            .FirstOrDefaultAsync(cancellationToken);
+        return await _context.StudentAcademicPrograms
+             .Where(sap => !sap.IsDeleted && sap.StudentId == studentId && sap.Currently)
+             .Select(sap => sap.AcademicProgram.CollegeId)
+             .FirstOrDefaultAsync(cancellationToken);
     }
 }

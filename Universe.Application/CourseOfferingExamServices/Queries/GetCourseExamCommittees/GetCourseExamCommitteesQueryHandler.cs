@@ -1,6 +1,6 @@
 ﻿using Universe.Core.Contracts.ExamCommittees;
 
-namespace Universe.Application.ExamServices.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
+namespace Universe.Application.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
 
 public class GetCourseExamCommitteesQueryHandler(IUnitOfWork unitOfWork) 
     : IRequestHandler<GetCourseExamCommitteesQuery, Result<PaginationList<CourseExamCommitteesResponse>>>

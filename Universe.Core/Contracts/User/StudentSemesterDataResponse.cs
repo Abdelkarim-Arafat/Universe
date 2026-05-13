@@ -1,7 +1,7 @@
 ﻿using Universe.Core.Contracts.Student;
 
-namespace Universe.Application.UserServices.UserDtos;
- 
+namespace Universe.Core.Contracts.User;
+
 public record StudentSemesterDataResponse
 (
    string SemesterName,

@@ -1,13 +1,13 @@
-﻿ using Universe.Application.UserServices.UserDtos;
+﻿using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
-public class GetStudentAcademicHistoryCommandHandler(
+public class GetStudentAcademicHistoryQueryHandler(
     IUnitOfWork unitOfWork
-    ) : IRequestHandler<GetStudentAcademicHistoryCommand, Result<List<StudentSemesterDataResponse>>>
+    ) : IRequestHandler<GetStudentAcademicHistoryQuery, Result<List<StudentSemesterDataResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    public async Task<Result<List<StudentSemesterDataResponse>>> Handle(GetStudentAcademicHistoryCommand request, CancellationToken cancellationToken)
+    public async Task<Result<List<StudentSemesterDataResponse>>> Handle(GetStudentAcademicHistoryQuery request, CancellationToken cancellationToken)
     {
 
         var studentCurrentProgramId = await _unitOfWork.AcademicProgramRepository

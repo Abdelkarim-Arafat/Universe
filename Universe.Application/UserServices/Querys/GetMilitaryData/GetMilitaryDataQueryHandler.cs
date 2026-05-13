@@ -15,7 +15,7 @@ public class GetMilitaryDataQueryHandler(
     {
         if (await _unitOfWork.UserRepository
             .GetStudentMilitaryDataAsync(request.StudentId, cancellationToken) is not { } militaryResponse
-            ) return Result.Failure<MilitaryDataResponse>(StudentErrors.UserNotFound);
+            ) return Result.Failure<MilitaryDataResponse>(StudentErrors.NotFound);
 
         return Result.Success(militaryResponse);
     }

@@ -9,7 +9,7 @@ public class ChangeStudentProgramCommandHandler(IUnitOfWork unitOfWork) : IReque
     {
         if(await _unitOfWork.UserRepository
             .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student
-            ) return Result.Failure(StudentErrors.UserNotFound);
+            ) return Result.Failure(StudentErrors.NotFound);
 
         if(!(await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.ProgramId, cancellationToken))

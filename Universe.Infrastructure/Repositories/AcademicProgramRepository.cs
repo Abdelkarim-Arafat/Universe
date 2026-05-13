@@ -45,8 +45,6 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
         => await _context.StudentAcademicPrograms
                .Where(x => x.StudentId == studentId && x.AcademicProgramId == programId)
                .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<Guid?> GetCurrentAcademicProgramIdAsync(Guid StudentId, CancellationToken cancellationToken)
     public async Task<Guid?> GetStudentCurrentProgramIdAsync(Guid StudentId, CancellationToken cancellationToken)
     {
         return await _context.StudentAcademicPrograms

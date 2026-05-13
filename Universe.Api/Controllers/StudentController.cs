@@ -239,7 +239,7 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetStudentAcademicHistory(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentAcademicHistoryCommand(GetUserId()), cancellationToken);
+        var result = await _mediator.Send(new GetStudentAcademicHistoryQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("student-schedule")]

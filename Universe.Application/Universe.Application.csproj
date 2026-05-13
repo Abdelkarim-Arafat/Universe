@@ -60,10 +60,4 @@
 		<None Include="StudyLoadByLevelServices\Commands\AddStudyLoad\AddStudyLoadByLevelCommandValidator.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="EnrollmentServices\Dtos\" />
-	  <Folder Include="ExamServices\CourseOfferingExamServices\Dtos\" />
-	  <Folder Include="ExamServices\ExamTermServices\Dtos\" />
-	</ItemGroup>
-
 </Project>

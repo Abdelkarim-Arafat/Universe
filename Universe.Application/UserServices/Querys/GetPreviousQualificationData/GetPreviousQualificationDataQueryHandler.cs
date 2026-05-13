@@ -13,7 +13,7 @@ public class GetPreviousQualificationDataQueryHandler(
     {
         if (await _unitOfWork.UserRepository
             .GetStudentPreviousQualificationAsync(request.StudentId , cancellationToken) is not { } qualificationResponse
-            ) return Result.Failure<PreviousQualificationResponse>(StudentErrors.UserNotFound);
+            ) return Result.Failure<PreviousQualificationResponse>(StudentErrors.NotFound);
 
         return Result.Success(qualificationResponse);
     }
