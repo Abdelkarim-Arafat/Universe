@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Enums;
+﻿using Universe.Core.Enums;
 
 namespace Universe.Core.Contracts.Enrollments;
 
-public record UpdateEnrollmentValidationDto
-(
-    bool isSemesterExist,
-    decimal? minHours,
-    decimal? maxHours,
-    decimal  registeredHours,
-    List<SessionDetailsDto> sessionDetails
-);
 public record SessionDetailsDto
 (
         Guid sessionId,

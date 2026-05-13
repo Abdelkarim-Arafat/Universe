@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.Level;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -37,5 +38,18 @@ public class StudyLoadByLevelRepository(
     {
         return await _context.StudyLoadByLevels
             .FirstOrDefaultAsync(s => s.LevelId == LevelId && s.SemesterId == SemesterId && !s.IsDeleted, cancellationToken);
+    }
+
+    public async Task<StudentStudyLoadDto?> GetLevelStudyLoadAsync
+      (Guid levelId, Guid semesterId, CancellationToken cancellationToken)
+    {
+        return await _context.StudyLoadByLevels
+            .Where(studyLoad => studyLoad.LevelId == levelId && studyLoad.SemesterId == semesterId && !studyLoad.IsDeleted)
+            .Select(s => new StudentStudyLoadDto
+            (
+                s.Level.Name,
+                s.MinHours,
+                s.MaxHours
+            )).FirstOrDefaultAsync(cancellationToken);
     }
 }

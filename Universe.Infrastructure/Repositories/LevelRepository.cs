@@ -5,11 +5,9 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Repositories;
 
 public class LevelRepository
-    (ApplicationDbContext context,
-    IUserRepository userRepository) : ILevelRepository
+    (ApplicationDbContext context) : ILevelRepository
 {
     private readonly ApplicationDbContext _context = context;
-    private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<bool> CheckOverLabedHoursAsync(int MinHours, int MaxHours, Guid AcademicProgramId, CancellationToken cancellationToken)
     {
@@ -34,12 +32,16 @@ public class LevelRepository
         return await _context.Levels.FirstOrDefaultAsync(lv => lv.Id == id && !lv.IsDeleted, cancellationToken);
     }
 
-    public async Task<Level?> GetStudentCurrentLevelAsync(Guid StudentId, CancellationToken cancellationToken)
+    public async Task<Guid?> GetStudentCurrentLevelIdAsync
+        (Guid programId, decimal studentTotalEarnedHours, CancellationToken cancellationToken)
     {
-        int creditHours = (int)await _userRepository.CalculateCreditHoursAsync(StudentId, null, cancellationToken);
-        return await _context.Levels
-            .FirstOrDefaultAsync(lv => creditHours >= lv.MinHours
-            && creditHours <= lv.MaxHours
-            && !lv.IsDeleted, cancellationToken);
+
+        return await _context.Levels.Where(
+            lv => !lv.IsDeleted
+            && lv.AcademicProgramId == programId
+            && lv.MinHours <= studentTotalEarnedHours
+            && lv.MaxHours >= studentTotalEarnedHours)
+            .Select(lv => lv.Id)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

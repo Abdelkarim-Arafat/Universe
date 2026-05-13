@@ -1,4 +1,5 @@
-﻿using Universe.Core.Entities;
+﻿using Universe.Core.Contracts.Enrollments;
+using Universe.Core.Entities;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Interfaces.Repositories;
@@ -52,4 +53,5 @@ public interface ISessionRepository
     TimeOnly end,
     Enums.DayOfWeek day,
     CancellationToken cancellationToken);
+    Task<List<SessionDetailsDto>> GetIncomingSessionsDetailsAsync(List<Guid> sessionIds, CancellationToken cancellationToken);
 }

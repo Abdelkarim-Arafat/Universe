@@ -86,7 +86,6 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
         }
 
         using var trx = await _unitOfWork
-          .Repository<CourseOfferingCommittee>()
           .BeginTransactionIsolatedAsync(cancellationToken);
 
         try

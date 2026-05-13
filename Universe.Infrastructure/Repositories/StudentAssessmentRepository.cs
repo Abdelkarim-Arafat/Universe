@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.Student;
+using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
  
@@ -33,4 +35,35 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
               ))
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<List<StudentAssessment>> GetStudentAssessmentByCourseOfferingBulkAsync
+    (List<Guid> ToRemoveCourses, Guid StudentId, CancellationToken cancellationToken)
+    {
+        return await _context.StudentAssessments.
+             Where(ass => ass.StudentId == StudentId
+             && ToRemoveCourses.Contains(ass.CourseOfferingAssessment.CourseOfferingId)
+             && !ass.IsDeleted)
+             .ToListAsync(cancellationToken);
+    }
+    public async Task<ILookup<Guid, StudentDegreeValue>> GetStudentsAssessmentsLookupAsync(
+     List<Guid> StudentsIds,
+     Guid CourseOfferingId,
+     CancellationToken cancellationToken)
+    {
+        var assessmentsList = await _context.StudentAssessments
+            .Where(sa => StudentsIds.Contains(sa.StudentId)
+                      && sa.CourseOfferingAssessment.CourseOfferingId == CourseOfferingId
+                      && !sa.IsDeleted)
+            .Select(sa => new
+            {
+                sa.StudentId,
+                assessments = new StudentDegreeValue(
+                  sa.CourseOfferingAssessmentId,
+                  sa.degree
+            )
+            })
+            .ToListAsync(cancellationToken);
+
+        return assessmentsList.ToLookup(sa => sa.StudentId, sa => sa.assessments);
+     }
 }

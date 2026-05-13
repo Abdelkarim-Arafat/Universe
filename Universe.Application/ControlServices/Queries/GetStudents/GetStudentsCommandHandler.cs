@@ -52,7 +52,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
 
         var pagedStudentIds = pagedStudents.Select(s => s.Id).ToList();
 
-        var studentsAssessmentsLookUp = await _unitOfWork.UserRepository
+        var studentsAssessmentsLookUp = await _unitOfWork.StudentAssessmentRepository
             .GetStudentsAssessmentsLookupAsync(pagedStudentIds, command.CourseOfferingId, cancellationToken);
 
         var studentsLevelNameDictionary = await _unitOfWork.UserRepository

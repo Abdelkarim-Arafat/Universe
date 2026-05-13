@@ -6,7 +6,7 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     public async Task<Result<UpsertDegreeResponse>> Handle(UpsertStudentDegreeCommand command, CancellationToken cancellationToken)
     {
-        var isStudentExist = await _unitOfWork.UserRepository.UserIsExistAsync(command.StudentId, cancellationToken);
+        var isStudentExist = await _unitOfWork.UserRepository.IsUserExistAsync(command.StudentId, cancellationToken);
 
         if (!isStudentExist)
             return Result.Failure<UpsertDegreeResponse>(StudentErrors.NotFound);

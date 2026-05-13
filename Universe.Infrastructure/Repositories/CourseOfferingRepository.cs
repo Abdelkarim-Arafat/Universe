@@ -89,6 +89,8 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
        ))
        .ToListAsync(cancellationToken);
 
+
+    // راجع
     public async Task<LevelRegistrationCatalogDto?> GetAvailableCoursesCatalogAsync(
      Guid studentId,
      Guid semesterId,
@@ -157,5 +159,26 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                 co.CourseOfferingId
             ))
             .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<decimal> CalculateCreditHoursForCoursesAsync
+        (List<Guid> courseOfferingsIds, CancellationToken cancellationToken)
+    {
+        return await _context.CourseOfferings
+            .Where(c => courseOfferingsIds.Contains(c.Id) && !c.IsDeleted)
+            .SumAsync(c => c.CreditHours, cancellationToken);
+    }
+
+    public async Task<ILookup<Guid, Guid>> GetAssessmentIdsGroupedByOfferingAsync(
+    List<Guid> incomingCourseOfferingIds,
+    CancellationToken cancellationToken)
+    {
+        var assessments = await _context.CourseOfferingAssessments
+            .AsNoTracking()
+            .Where(a => incomingCourseOfferingIds.Contains(a.CourseOfferingId) && !a.IsDeleted)
+            .Select(a => new { a.CourseOfferingId, a.Id })
+            .ToListAsync(cancellationToken);
+
+        return assessments.ToLookup(a => a.CourseOfferingId, a => a.Id);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
@@ -51,8 +52,8 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
             .AnyAsync(x => x.CourseOffering.AcademicProgramId == programId
                         && x.CourseOffering.SemesterId == semesterId);
 
-    public async Task<TeachingSession?> GetByIdAsync(Guid sessionId , CancellationToken cancellationToken)
-        => await _context.TeachingSessions.FirstOrDefaultAsync(x => x.Id == sessionId , cancellationToken);
+    public async Task<TeachingSession?> GetByIdAsync(Guid sessionId, CancellationToken cancellationToken)
+        => await _context.TeachingSessions.FirstOrDefaultAsync(x => x.Id == sessionId, cancellationToken);
 
     public async Task<bool> HasOtherCoursesAsync(Guid sessionId, Guid courseId, CancellationToken cancellationToken)
         => await _context.CourseOfferingSessions
@@ -96,7 +97,7 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                ((start >= x.StartTime && start <= x.EndTime) ||
                (end >= x.StartTime && end <= x.EndTime)) &&
                ((start >= x.StartTime && start < x.EndTime) ||
-               (end > x.StartTime && end < x.EndTime)) && 
+               (end > x.StartTime && end < x.EndTime)) &&
                x.CourseOfferingSessions.Any(cs =>
                    cs.CourseOffering.SemesterId == semesterId &&
                    !cs.CourseOffering.IsDeleted),
@@ -122,6 +123,26 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                    cs.CourseOffering.SemesterId == semesterId &&
                    !cs.CourseOffering.IsDeleted),
                cancellationToken);
+    }
+
+    public async Task<List<SessionDetailsDto>> GetIncomingSessionsDetailsAsync(
+     List<Guid> sessionIds,
+     CancellationToken cancellationToken)
+    {
+        return await _context.CourseOfferingSessions
+                       .Where(cos => sessionIds.Contains(cos.TeachingSessionId) && !cos.IsDeleted)
+                       .Select(cos => new SessionDetailsDto
+                       (
+                           cos.TeachingSessionId,
+                           cos.CourseOfferingId,
+                           cos.TeachingSession.Day,
+                           cos.TeachingSession.StartTime,
+                           cos.TeachingSession.EndTime,
+                           cos.TeachingSession.Type,
+                           cos.TeachingSession.GroupNumber,
+                           cos.TeachingSession.Capacity,
+                           cos.TeachingSession.TeachingSessionEnrollments.Count(ts => !ts.IsDeleted)
+                       )).ToListAsync(cancellationToken);
     }
 
 }

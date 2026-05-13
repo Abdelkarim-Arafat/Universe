@@ -1,12 +1,10 @@
-﻿using CloudinaryDotNet;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Contracts.Grades;
 using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
-using Universe.Core.Interfaces;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Repositories;
@@ -26,7 +24,8 @@ public class EnrollmentRepository(
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    // update
+    // check later
+
     public async Task<StudentAcademicHistoryContextDto> GetStudentAcademicHistoryContextAsync(
       Guid studentId,
       List<GradeResponse> letterDegrees,
@@ -103,70 +102,13 @@ public class EnrollmentRepository(
             ))
             .ToListAsync(cancellationToken);
     }
-    // update
-    public async Task<UpdateEnrollmentValidationDto?> GetUpdateEnrollmentValidationDataAsync(
-     Guid studentId,
-     Guid semesterId,
-     List<Guid> courseOfferingIds,
-     List<Guid> sessionIds,
-     CancellationToken cancellationToken)
-    {
-        return await _context.Students
-            .AsNoTracking()
-            .Where(s => s.Id == studentId && !s.IsDeleted)
-            .Select(s => new
-            {
-                TotalEarnedHours = s.Enrollments
-                    .Where(e => e.Status == EnrollmentStatus.Passed && !e.IsDeleted)
-                    .Sum(e => (decimal?)e.CourseOffering.CreditHours) ?? 0,
-                Student = s,
-                CurrentProgramId = s.StudentAcademicPrograms
-                    .Where(sap => sap.Currently)
-                    .Select(sap => sap.AcademicProgramId)
-                    .FirstOrDefault()
-            })
-            .Select(temp => new
-            {
-                BaseData = temp,
-                StudyLoad = _context.StudyLoadByLevels
-                    .Where(sl => sl.Level.AcademicProgramId == temp.CurrentProgramId
-                         && temp.TotalEarnedHours >= sl.Level.MinHours
-                         && temp.TotalEarnedHours <= sl.Level.MaxHours
-                         && sl.SemesterId == semesterId)
-                    .Select(sl => new { sl.MinHours, sl.MaxHours })
-                    .FirstOrDefault()
-            })
-            .Select(temp => new UpdateEnrollmentValidationDto(
-                _context.Semesters.Any(sem => sem.Id == semesterId && !sem.IsDeleted),
-                temp.StudyLoad.MinHours,
-                temp.StudyLoad.MaxHours,
-                _context.CourseOfferings
-                       .Where(co => courseOfferingIds.Contains(co.Id) && !co.IsDeleted)
-                       .Sum(co => co.CreditHours),
-                _context.CourseOfferingSessions
-                       .Where(cos => sessionIds.Contains(cos.TeachingSessionId) && !cos.IsDeleted)
-                       .Select(cos => new SessionDetailsDto
-                       (
-                           cos.TeachingSessionId,
-                           cos.CourseOfferingId,
-                           cos.TeachingSession.Day,
-                           cos.TeachingSession.StartTime,
-                           cos.TeachingSession.EndTime,
-                           cos.TeachingSession.Type,
-                           cos.TeachingSession.GroupNumber,
-                           cos.TeachingSession.Capacity,
-                           cos.TeachingSession.TeachingSessionEnrollments.Count(ts => !ts.IsDeleted)
-                       )).ToList()
-                ))
-            .FirstOrDefaultAsync(cancellationToken);
-    }
-    public async Task<EnrollmentExecutionContextDto> GetEnrollmentExecutionDataAsync(
+
+    public async Task<List<Enrollment>> GetExistingEnrollmentAsync(
     Guid studentId,
     Guid semesterId,
-    HashSet<Guid> incomingCourseOfferingIds,
     CancellationToken cancellationToken)
     {
-        var existingEnrollments = await _context.Enrollments
+        return await _context.Enrollments
             .Include(e => e.TeachingSessionEnrollments.Where(ts => !ts.IsDeleted))
             .Where(e => !e.IsDeleted
                  && e.StudentId == studentId
@@ -174,13 +116,6 @@ public class EnrollmentRepository(
                  && e.CourseOffering.SemesterId == semesterId)
             .ToListAsync(cancellationToken);
 
-        var incomingAssessmentsLookup = (await _context.CourseOfferingAssessments
-            .Where(a => incomingCourseOfferingIds.Contains(a.CourseOfferingId) && !a.IsDeleted)
-            .Select(a => new { a.CourseOfferingId, a.Id })
-            .ToListAsync(cancellationToken))
-            .ToLookup(a => a.CourseOfferingId, a => a.Id);
-
-        return new EnrollmentExecutionContextDto(existingEnrollments, incomingAssessmentsLookup);
     }
     // update 
     public async Task<EnrollmentValidationContextDto?> GetEnrollmentValidationContextAsync(

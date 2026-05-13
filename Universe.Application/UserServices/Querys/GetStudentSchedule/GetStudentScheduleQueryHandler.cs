@@ -10,7 +10,7 @@ public class GetStudentScheduleQueryHandler(
 
     public async Task<Result<List<StudentExistingEnrollment>>> Handle(GetStudentScheduleQuery request, CancellationToken cancellationToken)
     {
-        var isUserExist = await _unitOfWork.UserRepository.UserIsExistAsync(request.StudentId, cancellationToken);
+        var isUserExist = await _unitOfWork.UserRepository.IsUserExistAsync(request.StudentId, cancellationToken);
 
         if (!isUserExist)
             return Result.Failure<List<StudentExistingEnrollment>>(StudentErrors.NotFound);
