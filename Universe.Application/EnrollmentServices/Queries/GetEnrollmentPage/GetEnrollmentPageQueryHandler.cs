@@ -1,7 +1,4 @@
-﻿using Universe.Application.EnrollmentServices.Dtos;
-using Universe.Application.UserServices.UserDtos;
-using Universe.Core.Contracts.Enrollments;
-
+﻿
 namespace Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
 
 public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetEnrollmentPageQuery, Result<EnrollmentPageResponse>>

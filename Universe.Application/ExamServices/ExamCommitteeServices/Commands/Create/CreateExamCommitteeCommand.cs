@@ -1,5 +1,3 @@
-using Universe.Application.ExamCommitteeServices.Dtos;
-
 namespace Universe.Application.ExamCommitteeServices.Commands.Create;
 
 public record CreateExamCommitteeCommand

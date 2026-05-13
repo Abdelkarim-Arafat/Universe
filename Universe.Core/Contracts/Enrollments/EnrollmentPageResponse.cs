@@ -1,7 +1,6 @@
-﻿using Universe.Application.UserServices.UserDtos;
-using Universe.Core.Contracts.Enrollments;
+﻿using Universe.Core.Contracts.Student;
 
-namespace Universe.Application.EnrollmentServices.Dtos;
+namespace Universe.Core.Contracts.Enrollments;
 
 public record EnrollmentPageResponse(
     StudentInfoResponse Student,

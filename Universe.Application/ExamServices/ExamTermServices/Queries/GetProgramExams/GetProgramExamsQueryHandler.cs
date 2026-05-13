@@ -1,11 +1,13 @@
-﻿using Universe.Application.ExamServices.ExamTermServices.Dtos;
-
+﻿
 namespace Universe.Application.ExamServices.ExamTermServices.Queries.GetProgramExams;
 
-public class GetProgramExamsQueryHandler(IUnitOfWork unitOfWork) 
+public class GetProgramExamsQueryHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService)
     : IRequestHandler<GetProgramExamsQuery, Result<PaginationList<ExamTermResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<PaginationList<ExamTermResponse>>> Handle(GetProgramExamsQuery request, CancellationToken cancellationToken)
     {
@@ -33,8 +35,15 @@ public class GetProgramExamsQueryHandler(IUnitOfWork unitOfWork)
         
         var source = query.Select(x => x.Adapt<ExamTermResponse>());
 
-        var response = await PaginationList<ExamTermResponse>
-            .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
+        var cacheKey = ExamTermCacheKeys.List(request.AcademicProgramId, filter.SearchValue, filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
+        var tags = ExamTermCacheKeys.Tags(request.AcademicProgramId);
+
+        var response = await _cacheService.GetOrCreateAsync(
+           key: cacheKey,
+           factory: async () => await PaginationList<ExamTermResponse>.CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken),
+           cancellationToken: cancellationToken,
+           tags: tags
+       );
 
         return Result.Success(response);
     }

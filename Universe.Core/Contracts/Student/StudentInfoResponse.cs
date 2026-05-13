@@ -1,4 +1,4 @@
-﻿namespace Universe.Application.UserServices.UserDtos;
+﻿namespace Universe.Core.Contracts.Student;
 
 public record StudentInfoResponse
 (

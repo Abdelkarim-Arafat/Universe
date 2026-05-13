@@ -1,4 +1,3 @@
-using Universe.Application.CourseOfferingExamServices.Dtos;
 
 namespace Universe.Application.CourseOfferingExamServices.Commands.Create;
 
@@ -44,10 +43,10 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
             .GetStudentsIdsEnrolledInCourseAsync(request.CourseOfferingId, cancellationToken);
 
 
-        var committeessSum = committeesDetails.Sum(c => c.Capacity);
-        var studentsCount = studentsIds.Count();
+        var committeesCapacitiesSum = committeesDetails.Sum(c => c.Capacity);
+        var numberOfRegistredStudents = studentsIds.Count();
 
-        if (committeessSum < studentsCount)
+        if (committeesCapacitiesSum < numberOfRegistredStudents)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.TotalCapacitiesIsNotEnough);
 
         var courseOfferingExam = request.Adapt<CourseOfferingExam>();
@@ -59,7 +58,7 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         foreach (var committee in committeesDetails)
         {
-            if (seatNumber > studentsCount)
+            if (seatNumber > numberOfRegistredStudents)
                 break;
 
             var courseOfferingCommittee = new CourseOfferingCommittee
@@ -70,7 +69,7 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
             courseOfferingCommitteesToAdd.Add(courseOfferingCommittee);
 
-            for (int index = 0; (index < committee.Capacity) && (seatNumber <= studentsCount); index++, seatNumber++)
+            for (int index = 0; (index < committee.Capacity) && (seatNumber <= numberOfRegistredStudents); index++, seatNumber++)
             {
                 var studentIndex = seatNumber - 1;
 

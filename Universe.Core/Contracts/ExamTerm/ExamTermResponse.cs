@@ -1,6 +1,6 @@
 using Universe.Core.Enums;
 
-namespace Universe.Application.ExamServices.ExamTermServices.Dtos;
+namespace Universe.Core.Contracts.ExamTerm;
 
 public record ExamTermResponse
 (

@@ -62,7 +62,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="CourseOfferingServices\Dtos\" />
+	  <Folder Include="EnrollmentServices\Dtos\" />
+	  <Folder Include="ExamServices\CourseOfferingExamServices\Dtos\" />
+	  <Folder Include="ExamServices\ExamTermServices\Dtos\" />
 	</ItemGroup>
 
 </Project>

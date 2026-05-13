@@ -1,10 +1,12 @@
-using Universe.Application.ExamServices.ExamTermServices.Dtos;
 
 namespace Universe.Application.ExamServices.ExamTermServices.Commands.Update;
 
-public class UpdateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateExamTermCommand, Result>
+public class UpdateExamTermCommandHandler
+     (IUnitOfWork unitOfWork,
+      ICacheService cacheService) : IRequestHandler<UpdateExamTermCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(UpdateExamTermCommand request, CancellationToken cancellationToken)
     {
@@ -34,6 +36,9 @@ public class UpdateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
 
         _unitOfWork.Repository<ExamTerm>().Update(examTerm);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        var tags = ExamTermCacheKeys.Tags(examTerm.AcademicProgramId);
+        await _cacheService.RemoveByTagAsync(tags, cancellationToken);
 
         return Result.Success();
     }

@@ -13,11 +13,9 @@ namespace Universe.Infrastructure.Repositories;
 
 public class UserRepository
     (ApplicationDbContext context,
-    IAcademicProgramRepository academicProgramRepository,
     IGradeRepository gradeRepository) : IUserRepository
 {
     private readonly ApplicationDbContext _context = context;
-    private readonly IAcademicProgramRepository _academicProgramRepository = academicProgramRepository;
     private readonly IGradeRepository _gradeRepository = gradeRepository;
 
 
@@ -102,7 +100,7 @@ public class UserRepository
         var gradeScales = await _gradeRepository
             .GetProgramGradesAsync(programId, cancellationToken);
 
-        var coursePerformance = await _context.Enrollments
+        var courseData = await _context.Enrollments
             .AsNoTracking()
             .Where(e => e.StudentId == studentId
                    && e.Status == EnrollmentStatus.Passed
@@ -121,13 +119,13 @@ public class UserRepository
             })
             .ToListAsync(cancellationToken);
 
-        if (!coursePerformance.Any())
+        if (!courseData.Any())
             return 0;
 
         decimal totalQualityPoints = 0;
         decimal totalHours = 0;
 
-        foreach (var item in coursePerformance)
+        foreach (var item in courseData)
         {
             var grade = gradeScales.FirstOrDefault(g => item.TotalScore >= g.MinScore && item.TotalScore <= g.MaxScore);
             var points = grade?.MinGradePoint ?? 0;

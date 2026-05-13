@@ -20,9 +20,7 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
         => field ??= new RoleRepository(_context);
 
     public IUserRepository UserRepository
-        => field ??= new UserRepository(_context,
-            AcademicProgramRepository,
-            GradeRepository);
+        => field ??= new UserRepository(_context, GradeRepository);
 
     public ICourseOfferingRepository CourseOfferingRepository
         => field ??= new CourseOfferingRepository(_context);

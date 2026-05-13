@@ -1,5 +1,4 @@
-﻿using Universe.Application.ExamServices.ExamTermServices.Dtos;
-
+﻿
 namespace Universe.Application.ExamServices.ExamTermServices.Queries.GetProgramExams;
 
 public record GetProgramExamsQuery

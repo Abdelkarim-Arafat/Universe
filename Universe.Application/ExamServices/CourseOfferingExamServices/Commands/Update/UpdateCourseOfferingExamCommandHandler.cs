@@ -1,4 +1,3 @@
-using Universe.Application.CourseOfferingExamServices.Dtos;
 
 namespace Universe.Application.CourseOfferingExamServices.Commands.Update;
 

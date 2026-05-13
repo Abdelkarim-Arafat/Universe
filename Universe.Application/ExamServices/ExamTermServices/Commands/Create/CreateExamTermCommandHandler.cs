@@ -1,10 +1,12 @@
-using Universe.Application.ExamServices.ExamTermServices.Dtos;
 
 namespace Universe.Application.ExamServices.ExamTermServices.Commands.Create;
 
-public class CreateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateExamTermCommand, Result<ExamTermResponse>>
+public class CreateExamTermCommandHandler
+    (IUnitOfWork unitOfWork,
+     ICacheService cacheService) : IRequestHandler<CreateExamTermCommand, Result<ExamTermResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<ExamTermResponse>> Handle(CreateExamTermCommand request, CancellationToken cancellationToken)
     {
@@ -39,7 +41,17 @@ public class CreateExamTermCommandHandler(IUnitOfWork unitOfWork) : IRequestHand
         await _unitOfWork.Repository<ExamTerm>().AddAsync(examTerm, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        var response = examTerm.Adapt<ExamTermResponse>();
+        var tags = ExamTermCacheKeys.Tags(request.AcademicProgramId);
+        await _cacheService.RemoveByTagAsync(tags, cancellationToken);
+
+        var response = new ExamTermResponse
+        (
+            examTerm.Id,
+            examTerm.ExamType,
+            examTerm.StartDate,
+            examTerm.EndDate,
+            examTerm.IsPublished
+        );
 
         return Result.Success(response);
     }

@@ -22,3 +22,9 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Linq.Dynamic.Core;
 global using Universe.Core.Contracts.Grades;
 global using Universe.Core.Contracts.Control;
+global using Universe.Core.Contracts.Student;
+global using Universe.Core.Contracts.Enrollments;
+global using Universe.Core.Contracts.ExamTerm;
+global using Universe.Core.Contracts.ExamCommittees;
+global using Universe.Core.Contracts.CourseOfferingExams;
+

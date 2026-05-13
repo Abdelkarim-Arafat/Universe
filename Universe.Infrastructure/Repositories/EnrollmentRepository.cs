@@ -154,7 +154,8 @@ public class EnrollmentRepository(
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<decimal> CalculateCurrentRegisteredHoursAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken)
+    public async Task<decimal> CalculateCurrentRegisteredHoursAsync
+        (Guid studentId, Guid semesterId, CancellationToken cancellationToken)
     {
         return await _context.Enrollments
             .AsNoTracking()

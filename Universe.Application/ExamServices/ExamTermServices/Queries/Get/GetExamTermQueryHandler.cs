@@ -1,4 +1,3 @@
-using Universe.Application.ExamServices.ExamTermServices.Dtos;
 
 namespace Universe.Application.ExamServices.ExamTermServices.Queries.Get;
 

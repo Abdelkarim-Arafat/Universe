@@ -1,4 +1,4 @@
-namespace Universe.Application.CourseOfferingExamServices.Dtos;
+namespace Universe.Core.Contracts.CourseOfferingExams;
 
 public record CourseOfferingExamResponse
 (
