@@ -28,7 +28,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         int GroupNumber,
         CancellationToken cancellationToken)
         => await _context.CourseOfferingSessions
-            .AsNoTracking()
             .Where(x => x.CourseOfferingId == courseOfferingId
                 && x.TeachingSession.GroupNumber == GroupNumber)
             .Select(x => new SessionResponse(
@@ -47,7 +46,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
 
     public async Task<IReadOnlyList<CourseOfferingResponse>> GetLevelCoursesAsync(Guid LevelId, Guid SemesterId, CancellationToken cancellationToken)
         => await _context.CourseOfferings
-            .AsNoTracking()
             .Where(c => c.LevelId == LevelId && c.SemesterId == SemesterId && !c.IsDeleted)
             .Select(c => new CourseOfferingResponse(
                 c.Id,
@@ -59,12 +57,13 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
 
     public async Task<bool> IsExistAsync(Guid CourseOfferingId, CancellationToken cancellationToken)
         => await _context.CourseOfferings
-            .AnyAsync(co => co.Id == CourseOfferingId && !co.IsDeleted, cancellationToken);
+                       .AnyAsync(co => co.Id == CourseOfferingId && !co.IsDeleted, cancellationToken);
     public async Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.CourseOfferings
-        .FirstOrDefaultAsync(c => c.Id == Id && !c.IsDeleted, cancellationToken);
+                      .FirstOrDefaultAsync(c => c.Id == Id && !c.IsDeleted, cancellationToken);
 
-    public Task<List<Guid>> GetStudentsIdsEnrolledInCourseAsync(Guid courseOfferingId, CancellationToken cancellationToken)
+    public Task<List<Guid>> GetStudentsIdsEnrolledInCourseAsync
+        (Guid courseOfferingId, CancellationToken cancellationToken)
     {
         return _context.Enrollments
             .Where(e => e.CourseOfferingId == courseOfferingId && !e.IsDeleted)
@@ -102,13 +101,11 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             .Select(e => e.CourseOffering.CourseId);
 
         return await _context.CourseOfferings
-                    .AsNoTracking()
-                    .Where(co => co.LevelId == levelId
-                              && co.SemesterId == semesterId
+                    .Where(co =>  co.LevelId == levelId
+                              &&  co.SemesterId == semesterId
                               && !co.IsDeleted
                               && !passedCoursesIds.Contains(co.CourseId)
-                              && _context.CoursePrerequisites
-                                    .Where(p => p.CourseId == co.CourseId)
+                              &&  co.Course.Prerequisites
                                     .All(p => passedCoursesIds.Contains(p.PrerequisiteCourseId)))
                     .Select(co => new CourseRegistrationData(
                         co.Id,
@@ -118,8 +115,8 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                         co.IsOptional,
                         co.CreditHours,
                         co.Enrollments.Any(enrollment => !enrollment.IsDeleted
-                                                       && enrollment.StudentId == studentId
-                                                       && enrollment.Status == EnrollmentStatus.InProgress),
+                                               && enrollment.StudentId == studentId
+                                               && enrollment.Status == EnrollmentStatus.InProgress),
                         co.CourseOfferingSessions
                             .Where(cos => !cos.IsDeleted)
                             .Select(cos => new SessionInfo (
@@ -170,7 +167,6 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
     CancellationToken cancellationToken)
     {
         var assessments = await _context.CourseOfferingAssessments
-            .AsNoTracking()
             .Where(a => incomingCourseOfferingIds.Contains(a.CourseOfferingId) && !a.IsDeleted)
             .Select(a => new { a.CourseOfferingId, a.Id })
             .ToListAsync(cancellationToken);

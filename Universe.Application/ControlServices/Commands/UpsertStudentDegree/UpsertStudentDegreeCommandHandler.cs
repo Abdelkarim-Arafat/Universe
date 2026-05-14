@@ -6,7 +6,8 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     public async Task<Result<UpsertDegreeResponse>> Handle(UpsertStudentDegreeCommand command, CancellationToken cancellationToken)
     {
-        var isStudentExist = await _unitOfWork.UserRepository.IsUserExistAsync(command.StudentId, cancellationToken);
+        var isStudentExist = await _unitOfWork.UserRepository
+            .IsUserExistAsync(command.StudentId, cancellationToken);
 
         if (!isStudentExist)
             return Result.Failure<UpsertDegreeResponse>(StudentErrors.NotFound);
@@ -26,13 +27,15 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
         if (!courseData.IsCourseOpenForControl)
             return Result.Failure<UpsertDegreeResponse>(CourseOfferingErrors.NotOpenForControl);
 
-        var assessmentData = await _unitOfWork.StudentAssessmentRepository.
-             GetAssessmentWithMaxScoreAsync(command.StudentId, command.CourseAssessmentId, cancellationToken);
+        var assessmentData = await _unitOfWork.StudentAssessmentRepository
+             .GetAssessmentWithMaxScoreAsync(command.StudentId, command.CourseAssessmentId, cancellationToken);
 
         if (assessmentData == null)
             return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.NotFound);
 
-        if (command.Degree > assessmentData.MaxScore)
+        bool isExceedingMaxScore = command.Degree > assessmentData.MaxScore;
+
+        if (isExceedingMaxScore)
             return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.AssessmentDegreeExceedsMaxScore);
 
         var enrollment = await _unitOfWork.EnrollmentRepository
@@ -45,7 +48,11 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
          .GetStudentDegreeInCourseAsync(command.StudentId, courseData.CourseOfferingId, cancellationToken);
 
         var oldDegree = assessmentData.Assessment!.degree;
-        totalDegree += command.Degree - (oldDegree.HasValue ? oldDegree.Value : 0);
+
+        var difference = command.Degree - (oldDegree.HasValue ? oldDegree.Value : 0);
+
+        totalDegree += difference;
+
         assessmentData.Assessment.degree = command.Degree;
 
         enrollment.Status = totalDegree >= courseData.SuccessPercentage

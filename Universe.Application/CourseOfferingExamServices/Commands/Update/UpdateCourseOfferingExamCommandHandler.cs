@@ -34,9 +34,11 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         var numberOfRegistredStudents = studentsIds.Count();
 
-        var committeesCapacitiesSum = newCommitteesDetails.Sum(ec => ec.Capacity);
+        var numberOfCommitteesSeats = newCommitteesDetails.Sum(ec => ec.Capacity);
 
-        if (committeesCapacitiesSum < numberOfRegistredStudents)
+        bool isThereEnoughSeats = numberOfCommitteesSeats >= numberOfRegistredStudents;
+
+        if (!isThereEnoughSeats)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.TotalCapacitiesIsNotEnough);
       
         var examSeatsToDelete = new List<ExamSeat>();
@@ -96,11 +98,13 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         try
         {
-            _unitOfWork.Repository<ExamSeat>()
-               .DeletePermanentlyRange(examSeatsToDelete);
+            if (examSeatsToDelete.Count > 0)
+                _unitOfWork.Repository<ExamSeat>()
+                   .DeletePermanentlyRange(examSeatsToDelete);
 
-            _unitOfWork.Repository<CourseOfferingCommittee>()
-               .DeletePermanentlyRange(courseOfferingCommitteesToDelete);
+            if (courseOfferingCommitteesToDelete.Count > 0)
+                _unitOfWork.Repository<CourseOfferingCommittee>()
+                   .DeletePermanentlyRange(courseOfferingCommitteesToDelete);
 
             _unitOfWork.Repository<CourseOfferingExam>().Update(courseOfferingExam);
 

@@ -43,10 +43,13 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
             .GetStudentsIdsEnrolledInCourseAsync(request.CourseOfferingId, cancellationToken);
 
 
-        var committeesCapacitiesSum = committeesDetails.Sum(c => c.Capacity);
+        var numberOfCommitteesSeats = committeesDetails.Sum(c => c.Capacity);
+
         var numberOfRegistredStudents = studentsIds.Count();
 
-        if (committeesCapacitiesSum < numberOfRegistredStudents)
+        bool isThereEnoughSeats = numberOfCommitteesSeats >= numberOfRegistredStudents;
+
+        if (!isThereEnoughSeats)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.TotalCapacitiesIsNotEnough);
 
         var courseOfferingExam = request.Adapt<CourseOfferingExam>();

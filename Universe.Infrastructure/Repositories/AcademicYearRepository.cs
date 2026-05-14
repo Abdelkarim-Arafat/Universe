@@ -50,15 +50,13 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
         Guid? Id, CancellationToken cancellationToken)
     {
         return await _context.AcademicYears
-            .AnyAsync(x => (Id == null || x.Id != Id) &&
-             CollegeId == x.CollegeId &&
-             (Name == x.Name ||
-             ((start >= x.StartDate && start <= x.EndDate)
+            .AnyAsync(x => (Id == null || x.Id != Id)
+             && CollegeId == x.CollegeId
+             && (Name == x.Name ||
+              ((start >= x.StartDate && start <= x.EndDate)
             || (end >= x.StartDate && end <= x.EndDate))), cancellationToken);
     }
         
-
-
     public async Task<Semester?> GetSemesterByTypeAsync(Guid academicYearId, TermType type, CancellationToken cancellationToken)
         => await _context.Semesters
         .FirstOrDefaultAsync(x => x.AcademicYearId == academicYearId && x.Name == type, cancellationToken);

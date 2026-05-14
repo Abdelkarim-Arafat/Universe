@@ -52,7 +52,6 @@ public class UserRepository
 	Guid studentId,
 	CancellationToken cancellationToken = default)
 	    => await _context.Students
-			.AsNoTracking()
 			.Where(x => x.Id == studentId)
 			.ProjectToType<PersonalDataResponse>()
 			.FirstOrDefaultAsync(cancellationToken);
@@ -60,7 +59,6 @@ public class UserRepository
 	Guid studentId,
 	CancellationToken cancellationToken = default)
 	    => await _context.Students
-			.AsNoTracking()
 			.Where(x => x.Id == studentId)
 			.Select(x => x.ContactInfo)
 			.ProjectToType<ContactDataResponse>()
@@ -78,7 +76,6 @@ public class UserRepository
 	Guid studentId,
 	CancellationToken cancellationToken = default)
 		=> await _context.Students
-			.AsNoTracking()
 			.Where(x => x.Id == studentId)
 			.Select(x => x.MilitaryInfo!)
 			.ProjectToType<MilitaryDataResponse>()
@@ -88,7 +85,6 @@ public class UserRepository
     Guid studentId,
     CancellationToken cancellationToken = default)
         => await _context.Students
-            .AsNoTracking()
             .Where(x => x.Id == studentId)
             .Select(x => x.PreviousQualification)
             .ProjectToType<PreviousQualificationResponse>()
@@ -111,17 +107,16 @@ public class UserRepository
             setter.SetProperty(x => x.Name, x => x.Name)
         );
 
-	public async Task<bool> IsStudentCodeExistsAsync(
-	Guid collegeId,
-	Guid? userId,
-	string studentCode,
-	CancellationToken cancellationToken)
-	=> await _context.StudentAcademicPrograms.AnyAsync(x =>
-		x.AcademicProgram.CollegeId == collegeId &&
-		x.Student.StudentCode == studentCode &&
-		!x.Student.IsDeleted &&
-		(userId == null || x.StudentId != userId),
-		cancellationToken);
+    public async Task<bool> IsStudentCodeExistsAsync(
+    Guid collegeId,
+    Guid? userId,
+    string studentCode,
+    CancellationToken cancellationToken)
+    => await _context.StudentAcademicPrograms.AnyAsync(x =>
+               x.AcademicProgram.CollegeId == collegeId
+            && x.Student.StudentCode == studentCode
+            && !x.Student.IsDeleted &&
+            (userId == null || x.StudentId != userId), cancellationToken);
 
 	public async Task<bool> IsStudentNationalIdExistsAsync(
 	Guid collegeId,
@@ -137,7 +132,6 @@ public class UserRepository
 
 	public async Task<Guid?> GetCurrentProgram(Guid StudentId, CancellationToken cancellationToken)
      => await _context.StudentAcademicPrograms
-         .AsNoTracking()
          .Where(x =>!x.IsDeleted && x.StudentId == StudentId && x.Currently)
          .Select(x => x.AcademicProgramId)
          .FirstOrDefaultAsync(cancellationToken);
@@ -205,7 +199,6 @@ public class UserRepository
         CancellationToken cancellationToken)
     {
         var levels = await _context.Levels
-            .AsNoTracking()
             .Where(lv => !lv.IsDeleted && lv.AcademicProgramId == programId)
             .Select(lv => new
             {
@@ -216,7 +209,6 @@ public class UserRepository
             .ToListAsync(cancellationToken);
 
         var studentsHours = await _context.Students
-            .AsNoTracking()
             .Where(s => StudentsIds.Contains(s.Id) && !s.IsDeleted)
             .Select(s => new
             {
@@ -240,7 +232,6 @@ public class UserRepository
     (Guid studentId, List<Guid> currentCoursesIds, List<Guid> examTermsIds, CancellationToken cancellationToken)
     {
         var examsData = await _context.CourseOfferingExams
-            .AsNoTracking()
             .Where(ce => !ce.IsDeleted
                          && examTermsIds.Contains(ce.ExamTermId)
                          && currentCoursesIds.Contains(ce.CourseOfferingId))

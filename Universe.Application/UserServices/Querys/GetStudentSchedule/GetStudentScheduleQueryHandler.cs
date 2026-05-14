@@ -34,6 +34,7 @@ public class GetStudentScheduleQueryHandler(
 
         var studentSchedule = await _unitOfWork.EnrollmentRepository
             .GetStudentScheduleAsync(request.StudentId, currentSemester.Id, cancellationToken);
+
         return Result.Success(studentSchedule);
     }
 }

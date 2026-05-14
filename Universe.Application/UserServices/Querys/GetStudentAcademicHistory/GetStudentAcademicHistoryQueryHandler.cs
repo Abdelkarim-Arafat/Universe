@@ -22,7 +22,6 @@ public class GetStudentAcademicHistoryQueryHandler(
         var studentHistory = await _unitOfWork.EnrollmentRepository
             .GetStudentAcademicHistoryContextAsync(request.StudentId, letterDegrees, cancellationToken);
 
-
         var response = new List<StudentSemesterDataResponse>();
 
         decimal totalQualityPoints = 0, totalHours = 0;
@@ -32,7 +31,6 @@ public class GetStudentAcademicHistoryQueryHandler(
 
             var courseDetails = semester.Courses;
 
-            // حساب gpas
             decimal semesterPoints = 0;
             decimal semesterHours = 0;
             decimal semesterPassedHourse = 0;
@@ -43,15 +41,21 @@ public class GetStudentAcademicHistoryQueryHandler(
                    .FirstOrDefault(g => course.TotalDegree >= g.MinScore && course.TotalDegree <= g.MaxScore)?
                    .MinGradePoint ?? 0; // لو شلتها هتضرب
 
-                semesterPoints += (gradePoints * course.CreditHours);
+                var coursePoints = gradePoints * course.CreditHours;
+
+                semesterPoints += coursePoints;
+
                 semesterHours += course.CreditHours;
+
                 semesterPassedHourse += course.IsPassed ? course.CreditHours : 0;
             }
 
             decimal semesterGpa = semesterHours > 0 ? semesterPoints / semesterHours : 0;
 
             totalQualityPoints += semesterPoints;
+
             totalHours += semesterHours;
+
             decimal cumulativeGpa = totalHours > 0 ? totalQualityPoints / totalHours : 0;
 
             response.Add(new StudentSemesterDataResponse(
@@ -62,10 +66,12 @@ public class GetStudentAcademicHistoryQueryHandler(
                 semesterHours,
                 semesterPassedHourse,
                 letterDegrees.FirstOrDefault(ld => 
-                ld.MinGradePoint <= semesterGpa && ld.MaxGradePoint > semesterGpa)?.Code ?? "-",
+                   ld.MinGradePoint <= semesterGpa 
+                && ld.MaxGradePoint > semesterGpa)?.Code ?? "-",
 
                 letterDegrees.FirstOrDefault(ld => 
-                ld.MinGradePoint <= cumulativeGpa && ld.MaxGradePoint > cumulativeGpa)?.Code ?? "-",
+                   ld.MinGradePoint <= cumulativeGpa 
+                && ld.MaxGradePoint > cumulativeGpa)?.Code ?? "-",
                 courseDetails
             ));
         }

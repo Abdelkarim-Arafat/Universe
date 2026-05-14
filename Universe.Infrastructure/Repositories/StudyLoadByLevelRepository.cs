@@ -44,7 +44,9 @@ public class StudyLoadByLevelRepository(
       (Guid levelId, Guid semesterId, CancellationToken cancellationToken)
     {
         return await _context.StudyLoadByLevels
-            .Where(studyLoad => studyLoad.LevelId == levelId && studyLoad.SemesterId == semesterId && !studyLoad.IsDeleted)
+            .Where(studyLoad => studyLoad.LevelId == levelId 
+                && studyLoad.SemesterId == semesterId 
+                && !studyLoad.IsDeleted)
             .Select(s => new StudentStudyLoadDto
             (
                 s.Level.Name,

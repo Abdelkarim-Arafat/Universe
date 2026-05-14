@@ -15,7 +15,6 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
         (Guid studentId, Guid courseOfferingId, CancellationToken cancellationToken)
     {
         return await _context.StudentAssessments
-            .AsNoTracking()
             .Where(sa => sa.StudentId == studentId
                          && sa.CourseOfferingAssessment.CourseOfferingId == courseOfferingId
                          && !sa.IsDeleted)
@@ -56,8 +55,8 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
                       && !sa.IsDeleted)
             .Select(sa => new
             {
-                sa.StudentId,
-                assessments = new StudentDegreeValue(
+                  sa.StudentId,
+                  assessments = new StudentDegreeValue(
                   sa.CourseOfferingAssessmentId,
                   sa.degree
             )

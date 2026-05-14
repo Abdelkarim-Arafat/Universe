@@ -30,11 +30,13 @@ public class ExamRepository
     }
     public async Task<bool> IsExistExamTermWithSameTypeAsync (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
     {
+        bool isNullableId = Id == null;
+
         return await _context.ExamTerms.AnyAsync(e =>
            !e.IsDeleted
            && e.AcademicProgramId == AcademicProgramId
            && e.SemesterId == SemesterId
-           && (((Id == null)) || (e.Id != Id))
+           && (isNullableId || (e.Id != Id))
            && examType == e.ExamType, cancellationToken);
     }
 
@@ -64,9 +66,11 @@ public class ExamRepository
     public async Task<bool> IsExistCommitteeWithSameNumberAsync
         (Guid? Id, Guid ExamTermId, int CommitteeNumber, CancellationToken cancellationToken)
     {
+        bool isNullableId = Id == null;
+
         return await _context.ExamCommittees.AnyAsync(e =>
            !e.IsDeleted
-           && ((Id == null) || (Id != e.Id))
+           && (isNullableId || (e.Id != Id))
            && e.ExamTermId == ExamTermId
            && e.CommitteeNumber == CommitteeNumber, cancellationToken);
     }
@@ -102,9 +106,11 @@ public class ExamRepository
     TimeOnly endTime,
     CancellationToken cancellationToken = default)
     {
+        bool isNullableId = courseOfferingExamId == null;
+
         return await _context.CourseOfferingExams
             .AnyAsync(coe => !coe.IsDeleted
-                          && ((courseOfferingExamId == null) || (coe.Id != courseOfferingExamId))
+                          && (isNullableId || (coe.Id != courseOfferingExamId))
                           && coe.ExamTermId == examTermId
                           && coe.CourseOfferingCommittees
                                .Any(committee => examCommitteesIds.Contains(committee.ExamCommitteeId))
@@ -116,18 +122,24 @@ public class ExamRepository
     public async Task<List<ExamCommitteesDetails>?> GetCommitteesDetailsAsync
         (Guid examTermId, List<Guid> examCommitteesIds, CancellationToken cancellationToken)
     {
-        if (examCommitteesIds == null || !examCommitteesIds.Any())
+        if (examCommitteesIds == null || examCommitteesIds.Count == 0)
             return null;
 
+        var uniqueRequestedIdsCount = examCommitteesIds.Distinct().Count();
+
         var examCommittees = await _context.ExamCommittees
-            .Where(com => !com.IsDeleted && com.ExamTermId == examTermId && examCommitteesIds.Contains(com.Id))
+            .Where(com => !com.IsDeleted
+                        && com.ExamTermId == examTermId 
+                        && examCommitteesIds.Contains(com.Id))
             .Select(com => new ExamCommitteesDetails(com.Id, com.CommitteeNumber, com.MaxCapacity))
             .ToListAsync(cancellationToken);
 
-        if (examCommitteesIds.Except(examCommittees.Select(c => c.Id)).Any())
-            return null;
+        bool areAllRequestedIdsExist = examCommittees.Count == uniqueRequestedIdsCount;
 
-        return examCommittees;
+        if (areAllRequestedIdsExist)
+            return examCommittees;  
+
+        return null;
     }
     #endregion
 

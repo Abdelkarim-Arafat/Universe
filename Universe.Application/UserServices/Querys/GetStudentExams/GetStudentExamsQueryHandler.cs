@@ -4,12 +4,10 @@ using Universe.Core.Contracts.Student;
 namespace Universe.Application.UserServices.Querys.GetStudentExams;
 
 internal class GetStudentExamsQueryHandler(
-    IUnitOfWork unitOfWork,
-    IHttpContextAccessor httpContextAccessor
+    IUnitOfWork unitOfWork
     ) : IRequestHandler<GetStudentExamsQuery, Result<StudentExamsResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<Result<StudentExamsResponse>> Handle(GetStudentExamsQuery request, CancellationToken cancellationToken)
     {
@@ -35,7 +33,7 @@ internal class GetStudentExamsQueryHandler(
         var currentYear = await _unitOfWork.AcademicYearRepository
             .GetCurrentYearAsync(studentCollegeId.Value, cancellationToken);
 
-        if(currentYear == null)
+        if (currentYear == null)
             return Result.Failure<StudentExamsResponse>(AcademicYearErrors.NotFound);
 
         var currentSemester = await _unitOfWork.AcademicYearRepository
@@ -58,7 +56,7 @@ internal class GetStudentExamsQueryHandler(
             .Where(student => !student.IsDeleted && student.Id == StudentId)
             .Select(student => new
             {
-                Name = student.Name,
+                student.Name,
                 Code = student.StudentCode
             }).FirstOrDefault();
 

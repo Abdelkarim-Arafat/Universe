@@ -40,6 +40,8 @@ public class RoomRepository(ApplicationDbContext context) : IRoomRepository
         (Guid RoomId, Guid ExamTermId, CancellationToken cancellationToken = default)
     {
         return await _context.ExamCommittees
-            .AnyAsync(com => com.RoomId == RoomId && com.ExamTermId == ExamTermId && !com.IsDeleted, cancellationToken);
+            .AnyAsync(com => com.RoomId == RoomId 
+                          && com.ExamTermId == ExamTermId 
+                          && !com.IsDeleted, cancellationToken);
     }
 }

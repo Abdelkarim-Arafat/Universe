@@ -12,15 +12,17 @@ public class ToggleCourseOfferingControlCommandHandler(
 
     public async Task<Result> Handle(ToggleCourseOfferingControlCommand request, CancellationToken cancellationToken)
     {
-        if (await _unitOfWork.CourseOfferingRepository
-            .GetByIdAsync(request.CourseOfferingId, cancellationToken) is not { } course
-            ) return Result.Failure(CourseOfferingErrors.NotFound);
+        var courseOffering = await _unitOfWork.CourseOfferingRepository
+            .GetByIdAsync(request.CourseOfferingId, cancellationToken);
 
-        course.IsOpenForControl = !course.IsOpenForControl;
+        if (courseOffering == null)
+            return Result.Failure(CourseOfferingErrors.NotFound);
+
+        courseOffering.IsOpenForControl = !courseOffering.IsOpenForControl;
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        await _cacheService.RemoveAsync(ControlCacheKeys.CourseOfferingsStatistics(course.AcademicProgramId, course.SemesterId) , cancellationToken);
+        await _cacheService.RemoveAsync(ControlCacheKeys.CourseOfferingsStatistics(courseOffering.AcademicProgramId, courseOffering.SemesterId) , cancellationToken);
 
         return Result.Success();
     }
