@@ -8,6 +8,7 @@ namespace Universe.Core.Interfaces.Repositories;
 
 public interface IUserRepository
 {
+    Task<GraduationDetailsResponse?> GetStudentGraduationDetailsAsync(Guid studentId, CancellationToken cancellationToken);
     Task<PersonalDataResponse?> GetStudentPersonalDataAsync(Guid studentId,CancellationToken cancellationToken = default);
     Task<ContactDataResponse?> GetStudentContactDataAsync(Guid studentId, CancellationToken cancellationToken = default);
     Task<ParentDataResponse?> GetStudentParentDataAsync(Guid studentId, CancellationToken cancellationToken = default);

@@ -70,8 +70,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         decimal Gpa = await _unitOfWork.UserRepository
             .CalculateGpaAsync(query.StudentId, null, cancellationToken);
 
-        var StudentInfo = new StudentInfoResponse
-           (
+        var StudentInfo = new StudentInfoResponse (
             enrollmentContextDto.StudentName,
             enrollmentContextDto.StudentLevelName,
             enrollmentContextDto.StudentCode,
@@ -79,7 +78,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             enrollmentContextDto.MaxHours!.Value,
             enrollmentContextDto.MinHours!.Value,
             Gpa
-           );
+        );
 
         var Response = new EnrollmentPageResponse(
             StudentInfo,

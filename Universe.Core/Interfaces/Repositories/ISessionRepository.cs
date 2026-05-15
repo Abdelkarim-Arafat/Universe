@@ -1,4 +1,5 @@
-﻿using Universe.Core.Entities;
+﻿using Universe.Core.Contracts.TeachingSession;
+using Universe.Core.Entities;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Interfaces.Repositories;
@@ -10,6 +11,12 @@ public interface ISessionRepository
         Guid courseId,
         Guid sessionId,
         CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<SessionResponse>> GetInstructorSessionsAsync(
+     Guid programId,
+     Guid instructorId,
+     Guid semesterId,
+     CancellationToken cancellationToken);
 
     Task<TeachingSession?> GetMatchingSessionAsync(
     Guid courseId,

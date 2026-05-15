@@ -12,5 +12,5 @@ public record PreviousQualificationResponse(
      string Qualification, // المؤهل
      string GraduationYear, // سنة التخرج
      decimal TotalGrade, // مجموع الدرجات
-     AdmissionType AdmissionType // نوع القبول
+     AdmissionType? AdmissionType // نوع القبول
 );

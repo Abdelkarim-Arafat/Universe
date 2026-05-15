@@ -12,7 +12,7 @@ public class ChangeStudentProgramCommandHandler(IUnitOfWork unitOfWork) : IReque
             ) return Result.Failure(StudentErrors.UserNotFound);
 
         if(!(await _unitOfWork.AcademicProgramRepository
-            .IsExistAsync(request.ProgramId, cancellationToken))
+            .IsExistAsync(request.NewProgramId, cancellationToken))
             ) return Result.Failure(AcademicProgramErrors.NotFound);
 
         var currentProgram = await _unitOfWork.AcademicProgramRepository
@@ -20,20 +20,20 @@ public class ChangeStudentProgramCommandHandler(IUnitOfWork unitOfWork) : IReque
 
         if(currentProgram is null) return Result.Failure(AcademicProgramErrors.NotFound);
 
-        if (currentProgram.AcademicProgramId == request.ProgramId) return Result.Success();
+        if (currentProgram.AcademicProgramId == request.NewProgramId) return Result.Success();
 
         currentProgram.Currently = false;
         currentProgram.EndDate = DateOnly.FromDateTime(DateTime.UtcNow);
 
         var studentProgram = await _unitOfWork.AcademicProgramRepository
-                        .GetStudentAcademicProgramAsync(request.ProgramId, student.Id, cancellationToken);
+                        .GetStudentAcademicProgramAsync(request.NewProgramId, student.Id, cancellationToken);
 
         if (studentProgram == null)
         {
             studentProgram = new StudentAcademicProgram
             {
                 StudentId = student.Id,
-                AcademicProgramId = request.ProgramId,
+                AcademicProgramId = request.NewProgramId,
                 StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
             };
             await _unitOfWork.Repository<StudentAcademicProgram>().AddAsync(studentProgram , cancellationToken);
