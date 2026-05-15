@@ -10,7 +10,7 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
             .IsUserExistAsync(command.StudentId, cancellationToken);
 
         if (!isStudentExist)
-            return Result.Failure<UpsertDegreeResponse>(StudentErrors.NotFound);
+            return Result.Failure<UpsertDegreeResponse>(StudentErrors.UserNotFound);
 
         var isProgramExist = await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(command.AcademicProgramId,cancellationToken);

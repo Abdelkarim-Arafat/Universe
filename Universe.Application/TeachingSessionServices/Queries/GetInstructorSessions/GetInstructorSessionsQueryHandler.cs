@@ -19,7 +19,7 @@ internal class GetInstructorSessionsQueryHandler(
         var instructorId = Guid.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         if (await _unitOfWork.UserRepository
-            .UserIsExistAsync(instructorId, cancellationToken) is false
+            .IsUserExistAsync(instructorId, cancellationToken) is false
             ) return Result.Failure<IReadOnlyList<SessionResponse>>(AuthErrors.UserNotFound);
 
         if (await _unitOfWork.AcademicProgramRepository

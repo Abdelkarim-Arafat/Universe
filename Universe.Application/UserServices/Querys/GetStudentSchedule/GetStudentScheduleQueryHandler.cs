@@ -13,7 +13,7 @@ public class GetStudentScheduleQueryHandler(
         var isUserExist = await _unitOfWork.UserRepository.IsUserExistAsync(request.StudentId, cancellationToken);
 
         if (!isUserExist)
-            return Result.Failure<List<StudentExistingEnrollment>>(StudentErrors.NotFound);
+            return Result.Failure<List<StudentExistingEnrollment>>(StudentErrors.UserNotFound);
 
         var studentCollegeId = await _unitOfWork.UserRepository.GetStudentCollegeIdAsync(request.StudentId, cancellationToken);
 

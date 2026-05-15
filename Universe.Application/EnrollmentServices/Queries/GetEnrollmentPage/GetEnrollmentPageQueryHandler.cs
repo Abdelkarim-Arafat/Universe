@@ -10,7 +10,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         var isUserExist = await _unitOfWork.UserRepository.IsUserExistAsync(query.StudentId, cancellationToken);
 
         if (!isUserExist)
-            return Result.Failure<EnrollmentPageResponse>(StudentErrors.NotFound);
+            return Result.Failure<EnrollmentPageResponse>(StudentErrors.UserNotFound);
 
         var isSemesterExist = await _unitOfWork.AcademicYearRepository
             .IsSemesterExistAsync(query.SemesterId, cancellationToken);

@@ -15,7 +15,7 @@ public class UpdateParentDataCommandHandler(
     {
         if (await _unitOfWork.UserRepository
             .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
-            return Result.Failure<ParentDataResponse>(StudentErrors.NotFound);
+            return Result.Failure<ParentDataResponse>(StudentErrors.UserNotFound);
 
         request.Adapt(student.ParentInfo);
         _unitOfWork.Repository<Student>().Update(student);

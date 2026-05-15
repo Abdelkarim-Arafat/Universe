@@ -15,8 +15,11 @@ public class GetStudentGraduationDetailsQueryHandler (
         GetStudentGraduationDetailsQuery request,
         CancellationToken cancellationToken)
     {
+        var studentProgramId = await _unitOfWork.AcademicProgramRepository
+            .GetStudentCurrentProgramIdAsync(request.StudentId, cancellationToken);
+
         var response = await _unitOfWork.UserRepository
-            .GetStudentGraduationDetailsAsync(request.StudentId, cancellationToken);
+            .GetStudentGraduationDetailsAsync(request.StudentId, studentProgramId.Value, cancellationToken);
 
         if(response is null) return Result.Failure<GraduationDetailsResponse>(StudentErrors.UserNotFound);
 

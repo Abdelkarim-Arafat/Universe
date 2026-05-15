@@ -34,7 +34,7 @@ public class UserRepository
         => await _context.Users.AnyAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);
 
     public async Task<RefreshToken?> GetRefreshTokenAsync(string token, CancellationToken cancellationToken)
-        => await _context.RefreshTokens.SingleOrDefaultAsync(x => x.Token == token && x.IsActive);
+        => await _context.RefreshTokens.SingleOrDefaultAsync(x => x.Token == token && x.IsActive, cancellationToken);
 
     //public async Task GetPasswordResetOtpAsync(Guid userId, string codeHash , CancellationToken cancellationToken)
     //    => await _context.PasswordResetOtps
@@ -86,9 +86,9 @@ public class UserRepository
     //    await _context.SaveChangesAsync(cancellationToken);
     //}
 
-    public async Task<GraduationDetailsResponse?> GetStudentGraduationDetailsAsync(Guid studentId, CancellationToken cancellationToken)
+    public async Task<GraduationDetailsResponse?> GetStudentGraduationDetailsAsync(Guid studentId,Guid programId, CancellationToken cancellationToken)
     {
-        var gpa = await CalculateGpaAsync(studentId, null, cancellationToken);
+        var gpa = await CalculateGpaAsync(studentId, null, programId, cancellationToken);
 
         return await _context.Students
             .AsNoTracking()
@@ -102,73 +102,6 @@ public class UserRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<PersonalDataResponse?> GetStudentPersonalDataAsync(
-    Guid studentId,
-    CancellationToken cancellationToken = default)
-    => await _context.Students
-        .AsNoTracking()
-        .Where(x => x.Id == studentId)
-        .Select(x => new PersonalDataResponse(
-            x.Name,
-            x.StudentCode,
-            x.NationalIdOrPassport,
-            x.Religion,
-            x.Gender,
-            x.DateOfBirth,
-            x.MaritalStatus,
-            x.PlaceOfBirth,
-            x.Nationality
-        ))
-        .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<ContactDataResponse?> GetStudentContactDataAsync(
-        Guid studentId,
-        CancellationToken cancellationToken = default)
-        => await _context.Students
-            .AsNoTracking()
-            .Where(x => x.Id == studentId)
-            .Select(x => new ContactDataResponse(
-                x.ContactInfo.City,
-                x.ContactInfo.Address,
-                x.ContactInfo.PostalCode,
-                x.ContactInfo.PhoneNumber,
-                x.ContactInfo.Email
-            ))
-            .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<ParentDataResponse?> GetStudentParentDataAsync(
-        Guid studentId,
-        CancellationToken cancellationToken = default)
-        => await _context.Students
-            .AsNoTracking()
-            .Where(x => x.Id == studentId)
-            .Select(x => new ParentDataResponse(
-                x.ParentInfo.GuardianName,
-                x.ParentInfo.RelationshipDegree,
-                x.ParentInfo.Job,
-                x.ParentInfo.MotherName,
-                x.ParentInfo.GuardianCity,
-                x.ParentInfo.GuardianEmail,
-                x.ParentInfo.GuardianPhoneNumber,
-                x.ParentInfo.GuardianAddress
-            ))
-            .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<MilitaryDataResponse?> GetStudentMilitaryDataAsync(
-        Guid studentId,
-        CancellationToken cancellationToken = default)
-        => await _context.Students
-            .AsNoTracking()
-            .Where(x => x.Id == studentId)
-            .Select(x => new MilitaryDataResponse(
-                x.MilitaryInfo!.MilitaryStatus,
-                x.MilitaryInfo.MilitaryNumber,
-                x.MilitaryInfo.DecisionNumber,
-                x.MilitaryInfo.DecisionDate,
-                x.MilitaryInfo.EnrollmentDate,
-                x.MilitaryInfo.EndDate
-            ))
-            .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<PreviousQualificationResponse?> GetStudentPreviousQualificationAsync(
         Guid studentId,
@@ -201,7 +134,7 @@ public class UserRepository
         .Where(x => x.Id == StudentId)
         .ExecuteUpdateAsync(setter =>
             setter.SetProperty(x => x.Name, x => x.Name)
-        );
+        , cancellationToken);
 
     public async Task<bool> IsStudentCodeExistsAsync(
     Guid collegeId,
@@ -270,7 +203,7 @@ public class UserRepository
             })
             .ToListAsync(cancellationToken);
 
-        if (!courseData.Any())
+        if (courseData.Count == 0)
             return 0;
 
         decimal totalQualityPoints = 0;
@@ -351,7 +284,7 @@ public class UserRepository
                     {
                         seat.SeatNumber,
                         seat.CourseOfferingCommittee.ExamCommittee.CommitteeNumber,
-                        RoomNumber = seat.CourseOfferingCommittee.ExamCommittee.Room.RoomNumber,
+                        seat.CourseOfferingCommittee.ExamCommittee.Room.RoomNumber,
                         BuildingName = seat.CourseOfferingCommittee.ExamCommittee.Room.Building.Name
                     })
                     .FirstOrDefault()
