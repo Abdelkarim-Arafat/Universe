@@ -26,7 +26,7 @@ public class GetCourseOfferingQueryHandler(
                 var semester = await _unitOfWork.AcademicYearRepository
                         .GetSemesterByIdAsync(courseOffering.SemesterId, cancellationToken);
 
-                return (courseOffering, semester).Adapt<CourseOfferingWithDetailsResponse>();
+                return (courseOffering).Adapt<CourseOfferingWithDetailsResponse>();
             },
             cancellationToken: cancellationToken
         );

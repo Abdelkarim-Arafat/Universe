@@ -15,7 +15,7 @@ public class GetContactDataQueryHandler(
     {
         if (await _unitOfWork.UserRepository
             .GetStudentContactDataAsync(request.StudentId, cancellationToken) is not { } contactResponse
-            ) return Result.Failure<ContactDataResponse>(StudentErrors.NotFound);
+            ) return Result.Failure<ContactDataResponse>(StudentErrors.UserNotFound);
 
         return Result.Success(contactResponse);
     }

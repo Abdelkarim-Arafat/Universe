@@ -49,7 +49,7 @@ internal class AddCourseOfferingCommandHandler(
         await _cacheService.RemoveAsync(CourseOfferingCacheKeys.LevelCourses(courseOffering.LevelId, courseOffering.Id), cancellationToken);
         await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId) , cancellationToken);
 
-        var response = (courseOffering, semester).Adapt<CourseOfferingWithDetailsResponse>();
+        var response = (courseOffering).Adapt<CourseOfferingWithDetailsResponse>();
         return Result.Success(response);
     }
 }

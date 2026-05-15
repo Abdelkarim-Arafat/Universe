@@ -13,8 +13,8 @@ public class CreateLevelCommandHandler(
 
     public async Task<Result<LevelResponse>> Handle(CreateLevelCommand request, CancellationToken cancellationToken)
     {
-        if (await _unitOfWork.AcademicProgramRepository
-            .IsExistAsync(request.AcademicProgramId, cancellationToken) is false
+        if (!await _unitOfWork.AcademicProgramRepository
+            .IsExistAsync(request.AcademicProgramId, cancellationToken)
            ) return Result.Failure<LevelResponse>(AcademicProgramErrors.NotFound);
 
         if(await _unitOfWork.LevelRepository

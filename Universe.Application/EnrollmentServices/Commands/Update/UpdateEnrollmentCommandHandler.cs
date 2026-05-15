@@ -200,7 +200,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
         var isUserExist = await _unitOfWork.UserRepository.IsUserExistAsync(command.StudentId, cancellationToken);
 
         if (!isUserExist)
-            return Result.Failure(StudentErrors.NotFound);
+            return Result.Failure(StudentErrors.UserNotFound);
 
         var isSemesterExist = await _unitOfWork.AcademicYearRepository
             .IsSemesterExistAsync(command.SemesterId, cancellationToken);

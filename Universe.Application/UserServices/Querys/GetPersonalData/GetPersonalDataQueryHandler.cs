@@ -12,7 +12,7 @@ public class GetPersonalDataQueryHandler(
     {
         if (await _unitOfWork.UserRepository
             .GetStudentPersonalDataAsync(request.StudentId , cancellationToken) is not { } personalDataResponse
-            ) return Result.Failure<PersonalDataResponse>(StudentErrors.NotFound);
+            ) return Result.Failure<PersonalDataResponse>(StudentErrors.UserNotFound);
 
         return Result.Success(personalDataResponse);
     }

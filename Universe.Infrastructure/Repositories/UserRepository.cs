@@ -34,7 +34,7 @@ public class UserRepository
         => await _context.Users.AnyAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);
 
     public async Task<RefreshToken?> GetRefreshTokenAsync(string token, CancellationToken cancellationToken)
-        => await _context.RefreshTokens.SingleOrDefaultAsync(x => x.Token == token && x.IsActive);
+        => await _context.RefreshTokens.SingleOrDefaultAsync(x => x.Token == token && x.IsActive, cancellationToken);
 
     //public async Task GetPasswordResetOtpAsync(Guid userId, string codeHash , CancellationToken cancellationToken)
     //    => await _context.PasswordResetOtps
@@ -66,74 +66,6 @@ public class UserRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<PersonalDataResponse?> GetStudentPersonalDataAsync(
-    Guid studentId,
-    CancellationToken cancellationToken = default)
-    => await _context.Students
-        .AsNoTracking()
-        .Where(x => x.Id == studentId)
-        .Select(x => new PersonalDataResponse(
-            x.Name,
-            x.StudentCode,
-            x.NationalIdOrPassport,
-            x.Religion,
-            x.Gender,
-            x.DateOfBirth,
-            x.MaritalStatus,
-            x.PlaceOfBirth,
-            x.Nationality
-        ))
-        .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<ContactDataResponse?> GetStudentContactDataAsync(
-        Guid studentId,
-        CancellationToken cancellationToken = default)
-        => await _context.Students
-            .AsNoTracking()
-            .Where(x => x.Id == studentId)
-            .Select(x => new ContactDataResponse(
-                x.ContactInfo.City,
-                x.ContactInfo.Address,
-                x.ContactInfo.PostalCode,
-                x.ContactInfo.PhoneNumber,
-                x.ContactInfo.Email
-            ))
-            .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<ParentDataResponse?> GetStudentParentDataAsync(
-        Guid studentId,
-        CancellationToken cancellationToken = default)
-        => await _context.Students
-            .AsNoTracking()
-            .Where(x => x.Id == studentId)
-            .Select(x => new ParentDataResponse(
-                x.ParentInfo.GuardianName,
-                x.ParentInfo.RelationshipDegree,
-                x.ParentInfo.Job,
-                x.ParentInfo.MotherName,
-                x.ParentInfo.GuardianCity,
-                x.ParentInfo.GuardianEmail,
-                x.ParentInfo.GuardianPhoneNumber,
-                x.ParentInfo.GuardianAddress
-            ))
-            .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<MilitaryDataResponse?> GetStudentMilitaryDataAsync(
-        Guid studentId,
-        CancellationToken cancellationToken = default)
-        => await _context.Students
-            .AsNoTracking()
-            .Where(x => x.Id == studentId)
-            .Select(x => new MilitaryDataResponse(
-                x.MilitaryInfo!.MilitaryStatus,
-                x.MilitaryInfo.MilitaryNumber,
-                x.MilitaryInfo.DecisionNumber,
-                x.MilitaryInfo.DecisionDate,
-                x.MilitaryInfo.EnrollmentDate,
-                x.MilitaryInfo.EndDate
-            ))
-            .FirstOrDefaultAsync(cancellationToken);
-
     public async Task<PreviousQualificationResponse?> GetStudentPreviousQualificationAsync(
         Guid studentId,
         CancellationToken cancellationToken = default)
@@ -150,7 +82,6 @@ public class UserRepository
             ))
             .FirstOrDefaultAsync(cancellationToken);
 
-
     public async Task<List<Student>> GetStudentsByIdsAsync(
     List<Guid> studentIds,
     CancellationToken cancellationToken)
@@ -165,7 +96,7 @@ public class UserRepository
         .Where(x => x.Id == StudentId)
         .ExecuteUpdateAsync(setter =>
             setter.SetProperty(x => x.Name, x => x.Name)
-        );
+        , cancellationToken);
 
     public async Task<bool> IsStudentCodeExistsAsync(
     Guid collegeId,
@@ -190,12 +121,6 @@ public class UserRepository
 		(userId == null || x.StudentId != userId),
 		cancellationToken);
 
-	public async Task<Guid?> GetCurrentProgram(Guid StudentId, CancellationToken cancellationToken)
-     => await _context.StudentAcademicPrograms
-         .Where(x =>!x.IsDeleted && x.StudentId == StudentId && x.Currently)
-         .Select(x => x.AcademicProgramId)
-         .FirstOrDefaultAsync(cancellationToken);
-
     public async Task<decimal> CalculateCreditHoursAsync
         (Guid StudentId, Guid? SemesterId, CancellationToken cancellationToken)
     {
@@ -216,9 +141,8 @@ public class UserRepository
             .GetProgramGradesAsync(programId, cancellationToken);
 
         var courseData = await _context.Enrollments
-            .AsNoTracking()
             .Where(e => e.StudentId == studentId
-                   && e.Status == EnrollmentStatus.Passed
+                   && e.Status != EnrollmentStatus.InProgress
                    && e.CourseOffering.IsIncludedInGpa
                    && (semesterId == null || e.CourseOffering.SemesterId == semesterId)
                    && !e.IsDeleted
@@ -235,7 +159,7 @@ public class UserRepository
             })
             .ToListAsync(cancellationToken);
 
-        if (!courseData.Any())
+        if (courseData.Count == 0)
             return 0;
 
         decimal totalQualityPoints = 0;
@@ -289,30 +213,35 @@ public class UserRepository
         return studentsLevelDictionary;
     }
 
-    public async Task<List<StudentExam>> GetStudentExamsTablesAsync
-    (Guid studentId, List<Guid> currentCoursesIds, List<Guid> examTermsIds, CancellationToken cancellationToken)
+    public async Task<List<StudentExam>> GetStudentExamsTablesAsync(
+    Guid studentId,
+    List<Guid> currentCoursesIds,
+    List<Guid> examTermsIds,
+    CancellationToken cancellationToken)
     {
         var examsData = await _context.CourseOfferingExams
             .Where(ce => !ce.IsDeleted
                          && examTermsIds.Contains(ce.ExamTermId)
                          && currentCoursesIds.Contains(ce.CourseOfferingId))
-            .Select(ce => new
+            .Select(coe => new
             {
-                ce.ExamTerm.ExamType,
-                ce.Date,
-                ce.StartTime,
-                ce.EndTime,
-                CourseName = ce.CourseOffering.Course.Name,
-                CourseCode = ce.CourseOffering.Course.Code,
-                StudentSeatInfo = _context.ExamSeats
-                    .Where(s => !s.IsDeleted
-                             && s.StudentId == studentId
-                             && s.CourseOfferingCommittee.CourseOfferingExamId == ce.Id)
-                    .Select(s => new
+                coe.ExamTerm.ExamType,
+                coe.Date,
+                coe.StartTime,
+                coe.EndTime,
+                CourseName = coe.CourseOffering.Course.Name,
+                CourseCode = coe.CourseOffering.Course.Code,
+
+                Seat = _context.ExamSeats
+                    .Where(seat => !seat.IsDeleted
+                              && seat.StudentId == studentId
+                              && seat.CourseOfferingCommittee.CourseOfferingExamId == coe.Id)
+                    .Select(seat => new
                     {
-                        s.SeatNumber,
-                        s.CourseOfferingCommittee.ExamCommittee.CommitteeNumber,
-                        Place = $"{s.CourseOfferingCommittee.ExamCommittee.Room.RoomNumber} - {s.CourseOfferingCommittee.ExamCommittee.Room.Building.Name}"
+                        seat.SeatNumber,
+                        seat.CourseOfferingCommittee.ExamCommittee.CommitteeNumber,
+                        seat.CourseOfferingCommittee.ExamCommittee.Room.RoomNumber,
+                        BuildingName = seat.CourseOfferingCommittee.ExamCommittee.Room.Building.Name
                     })
                     .FirstOrDefault()
             })
@@ -323,15 +252,15 @@ public class UserRepository
             .Select(group => new StudentExam
             (
                 group.Key.ToString(),
-                group.Select(x => new StudentExamPerCourse(
-                    x.Date,
-                    x.CourseName,
-                    x.CourseCode,
-                    x.StartTime,
-                    x.EndTime,
-                    x.StudentSeatInfo?.Place ?? "No Place Now ^_^",
-                    x.StudentSeatInfo!.SeatNumber,
-                    x.StudentSeatInfo!.CommitteeNumber   // check if info is null
+                group.Select(info => new StudentExamPerCourse(
+                    info.Date,
+                    info.CourseName,
+                    info.CourseCode,
+                    info.StartTime,
+                    info.EndTime,
+                    info.Seat != null ? $"{info.Seat.RoomNumber} - {info.Seat.BuildingName}" : "No Place Assigned",
+                    info.Seat?.SeatNumber ?? 0,  
+                    info.Seat?.CommitteeNumber ?? 0
                 )).ToList()
             ))
             .ToList();

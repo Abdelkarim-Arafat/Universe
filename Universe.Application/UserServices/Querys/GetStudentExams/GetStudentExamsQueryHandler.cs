@@ -16,7 +16,7 @@ internal class GetStudentExamsQueryHandler(
         var IsStudentExist = await _unitOfWork.UserRepository.IsUserExistAsync(StudentId, cancellationToken);
 
         if (!IsStudentExist)
-            return Result.Failure<StudentExamsResponse>(StudentErrors.NotFound);
+            return Result.Failure<StudentExamsResponse>(StudentErrors.UserNotFound);
 
         var currentProgramId = await _unitOfWork.AcademicProgramRepository
             .GetStudentCurrentProgramIdAsync(StudentId, cancellationToken);
