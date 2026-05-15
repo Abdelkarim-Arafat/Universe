@@ -78,7 +78,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             studentLevelStudyLoad.MaxHours,
             studentLevelStudyLoad.MinHours,
             Gpa
-           );
+        );
 
         var Response = new EnrollmentPageResponse(
             StudentInfo,

@@ -20,7 +20,9 @@ public class Student : BaseEntity
     public DateOnly? DateOfBirth { get; set; } // تاريخ الميلاد
     public string PlaceOfBirth { get; set; } = string.Empty; // محل الميلاد
     public string Nationality { get; set; } = string.Empty; // بلد الجنسية
-
+    public string GraduationYear { get; set; } = string.Empty;
+    public string GraduationSemester { get; set; } = string.Empty;
+    public string GraduationProjectName { get; set; } = string.Empty;
     public string NationalIdOrPassport { get; set; } = string.Empty; // الرقم القومي او جواز السفر
 
     public MaritalStatus? MaritalStatus { get; set; } // الحالة الاجتماعية

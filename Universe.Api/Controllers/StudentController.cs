@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
+using Universe.Application.UserServices.Commands.ChangePassword;
+using Universe.Application.UserServices.Commands.ChangeStudentProgram;
 using Universe.Application.UserServices.Commands.RegisterStudent;
 using Universe.Application.UserServices.Commands.RemoveStudent;
 using Universe.Application.UserServices.Commands.UpdateContactData;
@@ -11,6 +13,7 @@ using Universe.Application.UserServices.Commands.UpdateFamilyData;
 using Universe.Application.UserServices.Commands.UpdateMilitaryData;
 using Universe.Application.UserServices.Commands.UpdatePersonalData;
 using Universe.Application.UserServices.Commands.UpdatePreviousQualification;
+using Universe.Application.UserServices.Commands.UpdateStudentGraduationDetails;
 using Universe.Application.UserServices.Querys.GetAllStudents;
 using Universe.Application.UserServices.Querys.GetContactData;
 using Universe.Application.UserServices.Querys.GetMilitaryData;
@@ -19,6 +22,7 @@ using Universe.Application.UserServices.Querys.GetPersonalData;
 using Universe.Application.UserServices.Querys.GetPreviousQualificationData;
 using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 using Universe.Application.UserServices.Querys.GetStudentExams;
+using Universe.Application.UserServices.Querys.GetStudentGraduationDetails;
 using Universe.Application.UserServices.Querys.GetStudentSchedule;
 using Universe.Core.Constants;
 
@@ -30,6 +34,33 @@ public class StudentController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
     public Guid GetUserId() => Guid.Parse(User.GetUserId()!);
+
+
+    [HttpPatch("{studentId:guid}/change-program")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> ChangeStudentProgram (
+        [FromQuery] Guid newProgramId,
+        [FromRoute] Guid studentId,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new ChangeStudentProgramCommand(newProgramId, studentId), cancellationToken);
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+
+    [HttpPatch("{studentId:guid}/graduation-details")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> UpdateGraduationDetails(
+        [FromRoute] Guid studentId,
+        [FromBody] UpdateStudentGraduationDetailsCommand request,
+        CancellationToken cancellationToken)
+    {
+        request = request with { Id = studentId };
+        var result = await _mediator.Send(request, cancellationToken);
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
 
     [HttpDelete("{studentId:guid}")]
     [EnableRateLimiting("WriteLimiter")]
@@ -70,6 +101,18 @@ public class StudentController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetProgramStudentsQuery(academicProgramId, filter), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+
+    [HttpGet("{studentId:guid}/graduation-details")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> GetStudentGraduationDetails(
+        [FromRoute] Guid studentId,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetStudentGraduationDetailsQuery(studentId), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
@@ -258,4 +301,6 @@ public class StudentController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new GetStudentExamsQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
+
 }

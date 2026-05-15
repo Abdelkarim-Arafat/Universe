@@ -8,7 +8,9 @@ using Universe.Application.CourseOfferingServices.Commands.RemoveCourseOeffering
 using Universe.Application.TeachingSessionServices.Commands.AddSession;
 using Universe.Application.TeachingSessionServices.Commands.RemoveSession;
 using Universe.Application.TeachingSessionServices.Queries.GetCourseSessions;
+using Universe.Application.TeachingSessionServices.Queries.GetInstructorSessions;
 using Universe.Core.Constants;
+using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
 
@@ -50,6 +52,19 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetCourseSessionsQuery(courseOfferingId , groupNumber), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+    [HttpGet("instructor-sessions")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetInstructorSessions(
+        [FromQuery] Guid programId,
+        [FromQuery] Guid academicYearId,
+        [FromQuery] TermType termType,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetInstructorSessionsQuery(programId, academicYearId, termType), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

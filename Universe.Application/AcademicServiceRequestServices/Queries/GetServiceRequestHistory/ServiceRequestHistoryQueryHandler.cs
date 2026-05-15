@@ -29,7 +29,7 @@ public class GetServiceRequestHistoryQueryHandler(
             key: cacheKey,
             factory: async () =>
             {
-                var query = _unitOfWork.Repository<ServiceRequest>()
+                var source = _unitOfWork.Repository<ServiceRequest>()
                     .GetQueryable()
                     .AsNoTracking()
                     .Where(x => x.Service.CollegeId == request.CollegeId &&
@@ -46,7 +46,7 @@ public class GetServiceRequestHistoryQueryHandler(
                     ));
 
                 return await PaginationList<ServiceRequestHistoryResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags

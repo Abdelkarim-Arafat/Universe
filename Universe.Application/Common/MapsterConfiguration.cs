@@ -29,7 +29,8 @@ public class MapsterConfiguration : IRegister
             .Map(dest => dest.SemesterType, src => src.Item2.SemesterType);
 
         config.NewConfig<Student, PersonalDataResponse>();
-        config.NewConfig<ContactInfo, ContactDataResponse>();
+        TypeAdapterConfig<ContactInfo, ContactDataResponse>
+            .NewConfig();
         config.NewConfig<ParentInfo, ParentDataResponse>();
         config.NewConfig<MilitaryInfo, MilitaryDataResponse>();
         config.NewConfig<PreviousQualification, PreviousQualificationResponse>();

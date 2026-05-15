@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
@@ -10,6 +11,35 @@ namespace Universe.Infrastructure.Repositories;
 public class SessionRepository(ApplicationDbContext context) : ISessionRepository
 {
     private readonly ApplicationDbContext _context = context;
+    public async Task<IReadOnlyList<SessionResponse>> GetInstructorSessionsAsync(
+     Guid programId,
+     Guid instructorId,
+     Guid semesterId,
+     CancellationToken cancellationToken)
+    {
+        return await _context.TeachingSessions
+            .AsNoTracking()
+            .Where(x =>
+                x.InstructorId == instructorId &&
+                x.CourseOfferingSessions.Any(cos =>
+                    cos.CourseOffering.AcademicProgramId == programId &&
+                    cos.CourseOffering.SemesterId == semesterId
+                )
+            )
+            .Select(x => new SessionResponse(
+                x.Id,
+                x.StartTime,
+                x.EndTime,
+                x.Type,
+                x.Day,
+                x.InstructorId,
+                x.Instructor.Name,
+                x.RoomId,
+                x.Room.Name,
+                x.GroupNumber
+            ))
+            .ToListAsync(cancellationToken);
+    }
     public async Task<CourseOfferingSession?> GetCourseOfferingSessionByIdAsync(
         Guid courseId,
         Guid sessionId,
