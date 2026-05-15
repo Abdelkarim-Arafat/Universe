@@ -11,5 +11,5 @@ public interface IAcademicProgramRepository
     Task<AcademicProgram?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<ProgramSchedule?> GetScheduleAsync(Guid ProgramId, Guid SemesterId, CancellationToken cancellationToken);
     Task<IEnumerable<AcademicProgram>> GetAllAsync(Guid AcademicProgramId, CancellationToken cancellationToken);
-    Task<Guid?> GetCurrentAcademicProgramIdAsync(Guid StudentId, CancellationToken cancellationToken);
+    Task<Guid?> GetStudentCurrentProgramIdAsync(Guid StudentId, CancellationToken cancellationToken);
 }

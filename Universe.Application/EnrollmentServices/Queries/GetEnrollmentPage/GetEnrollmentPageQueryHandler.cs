@@ -1,7 +1,4 @@
-﻿using Universe.Application.EnrollmentServices.Dtos;
-using Universe.Core.Contracts.User;
-using Universe.Core.Contracts.Enrollments;
-
+﻿
 namespace Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
 
 public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetEnrollmentPageQuery, Result<EnrollmentPageResponse>>
@@ -10,80 +7,83 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
 
     public async Task<Result<EnrollmentPageResponse>> Handle(GetEnrollmentPageQuery query, CancellationToken cancellationToken)
     {
+        var isUserExist = await _unitOfWork.UserRepository.IsUserExistAsync(query.StudentId, cancellationToken);
 
-        var enrollmentContextDto = await _unitOfWork.EnrollmentRepository
-            .GetEnrollmentValidationContextAsync(query.StudentId, query.SemesterId, cancellationToken);
+        if (!isUserExist)
+            return Result.Failure<EnrollmentPageResponse>(StudentErrors.NotFound);
 
-        if (enrollmentContextDto is null)
-            return Result.Failure<EnrollmentPageResponse>(StudentErrors.UserNotFound);
+        var isSemesterExist = await _unitOfWork.AcademicYearRepository
+            .IsSemesterExistAsync(query.SemesterId, cancellationToken);
 
-        if (enrollmentContextDto.StudentLevelName is null)
-            return Result.Failure<EnrollmentPageResponse>(LevelErrors.StudentLevelNotFound);
-
-        if ((enrollmentContextDto.MinHours is null) || (enrollmentContextDto.MaxHours is null))
-            return Result.Failure<EnrollmentPageResponse>(StudyLoadRuleErrors.NotFound);
-
-        if (!enrollmentContextDto.IsSemesterValid)
+        if (!isSemesterExist)
             return Result.Failure<EnrollmentPageResponse>(SemesterErrors.NotFound);
 
-        if (enrollmentContextDto.AcademicProgramId is null)
-            return Result.Failure<EnrollmentPageResponse>(StudentErrors.NoProgram);
+        var isLevelExist = await _unitOfWork.LevelRepository
+            .IsLevelExistAsync(query.LevelId, cancellationToken);
 
-        var levelAvailableCourses = await _unitOfWork.CourseOfferingRepository
-               .GetAvailableCoursesCatalogAsync
-               (query.StudentId, query.SemesterId, query.LevelId, cancellationToken);
-
-        if (levelAvailableCourses is null)
+        if (!isLevelExist)
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.NotFound);
 
-        var updatedCourses = levelAvailableCourses.Courses.Select(course =>
-        {
-            var existingEnrollment = enrollmentContextDto.ExistingEnrollments
-                .FirstOrDefault(e => e.CourseOfferingId == course.CourseOfferingId);
+        var studentCurrentProgramId = await _unitOfWork.AcademicProgramRepository
+           .GetStudentCurrentProgramIdAsync(query.StudentId, cancellationToken);
 
-            if (existingEnrollment == null)
-                return course;
+        if (!studentCurrentProgramId.HasValue)
+            return Result.Failure<EnrollmentPageResponse>(StudentErrors.NoProgram);
 
-            var updatedSessions = course.Sessions.Select(session =>
-            {
-                if (session.SessionId == existingEnrollment.SessionId)
-                {
-                    return session with { IsRegistered = true };
-                }
+        var totalEarnedHours = await _unitOfWork.UserRepository
+           .CalculateCreditHoursAsync(query.StudentId, null, cancellationToken);
 
-                return session;
-            }).ToList(); 
+        var studentCurrentLevelId = await _unitOfWork.LevelRepository
+            .GetStudentCurrentLevelIdAsync
+            (studentCurrentProgramId.Value, totalEarnedHours, cancellationToken);
 
-            return course with
-            {
-                IsEnrolled = true,
-                Sessions = updatedSessions
-            };
+        if (!studentCurrentLevelId.HasValue)
+            return Result.Failure<EnrollmentPageResponse>(LevelErrors.StudentLevelNotFound);
 
-        }).ToList(); 
+        var studentLevelStudyLoad = await _unitOfWork.StudyLoadByLevelRepository
+            .GetLevelStudyLoadAsync(studentCurrentLevelId.Value, query.SemesterId, cancellationToken);
 
-        var updatedLevelInfo = new LevelRegistrationCatalogDto( 
-            levelAvailableCourses.LevelName,
-            updatedCourses
-        );
+        if (studentLevelStudyLoad == null)
+            return Result.Failure<EnrollmentPageResponse>(StudyLoadByLevelErrors.NotFound);
+
+        var existingEnrollmentsInfos = await _unitOfWork.EnrollmentRepository
+            .GetExistingEnrollmentsInfoAsync(query.StudentId, query.SemesterId, cancellationToken);
+         
+        var availableCourses = await _unitOfWork.CourseOfferingRepository
+               .GetAvailableCoursesForRegistrationAsync
+               (query.StudentId, query.SemesterId, query.LevelId, cancellationToken);
 
         decimal Gpa = await _unitOfWork.UserRepository
-            .CalculateGpaAsync(query.StudentId, null, cancellationToken);
+            .CalculateGpaAsync(query.StudentId, null, studentCurrentProgramId.Value, cancellationToken);
 
-        var StudentInfo = new StudentInfoResponse (
-            enrollmentContextDto.StudentName,
-            enrollmentContextDto.StudentLevelName,
-            enrollmentContextDto.StudentCode,
-            enrollmentContextDto.CurrentRegisteredHours,
-            enrollmentContextDto.MaxHours!.Value,
-            enrollmentContextDto.MinHours!.Value,
+        var studentData = await _unitOfWork.Repository<Student>()
+            .GetQueryable()
+            .Where(s => s.Id == query.StudentId && !s.IsDeleted)
+            .Select(s => new
+            {
+                s.Name,
+                s.StudentCode
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var currentRegisteredHours = await _unitOfWork.EnrollmentRepository
+            .CalculateCurrentRegisteredHoursAsync(query.StudentId, query.SemesterId, cancellationToken);
+
+        var StudentInfo = new StudentInfoResponse
+           (
+            studentData!.Name,
+            studentLevelStudyLoad.LevelName,
+            studentData.StudentCode,
+            currentRegisteredHours,
+            studentLevelStudyLoad.MaxHours,
+            studentLevelStudyLoad.MinHours,
             Gpa
         );
 
         var Response = new EnrollmentPageResponse(
             StudentInfo,
-            updatedLevelInfo,
-            enrollmentContextDto.ExistingEnrollments);
+            availableCourses,
+            existingEnrollmentsInfos);
 
         return Result.Success(Response);
     }

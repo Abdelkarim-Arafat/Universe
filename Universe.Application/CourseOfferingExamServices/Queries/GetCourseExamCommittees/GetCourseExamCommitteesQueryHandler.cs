@@ -1,6 +1,6 @@
 ﻿using Universe.Core.Contracts.ExamCommittees;
 
-namespace Universe.Application.ExamServices.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
+namespace Universe.Application.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
 
 public class GetCourseExamCommitteesQueryHandler(IUnitOfWork unitOfWork) 
     : IRequestHandler<GetCourseExamCommitteesQuery, Result<PaginationList<CourseExamCommitteesResponse>>>
@@ -30,9 +30,7 @@ public class GetCourseExamCommitteesQueryHandler(IUnitOfWork unitOfWork)
         if (!string.IsNullOrEmpty(filter.SortColumn))
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
         
-
         var totalCount = await query.CountAsync(cancellationToken);
-
 
         var pagedData = await query
             .Skip((filter.PageNumber - 1) * filter.PageSize)

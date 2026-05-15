@@ -334,3 +334,47 @@ public static class AcademicEventCacheKeys
         $"{Prefix}:{programId}:{semesterId}"
     ];
 }
+
+public static class ExamCommitteeCacheKeys
+{
+    private const string Prefix = "exam-committees";
+
+    public static string List(
+        Guid examTermId,
+        string? searchValue,
+        string? sortColumn,
+        string? sortDirection,
+        int pageNumber,
+        int pageSize
+    ) =>
+        $"{Prefix}:{examTermId}:{searchValue}:{sortColumn}:{sortDirection}:{pageNumber}:{pageSize}";
+
+    public static string[] Tags(
+        Guid examTermId
+    ) =>
+    [
+        $"{Prefix}:{examTermId}"
+    ];
+}
+
+public static class ExamTermCacheKeys
+{
+    private const string Prefix = "exam-terms";
+
+    public static string List(
+        Guid programId,
+        string? searchValue,
+        string? sortColumn,
+        string? sortDirection,
+        int pageNumber,
+        int pageSize
+    ) =>
+        $"{Prefix}:{programId}:{searchValue}:{sortColumn}:{sortDirection}:{pageNumber}:{pageSize}";
+
+    public static string[] Tags(
+        Guid programId
+    ) =>
+    [
+        $"{Prefix}:{programId}"
+    ];
+}

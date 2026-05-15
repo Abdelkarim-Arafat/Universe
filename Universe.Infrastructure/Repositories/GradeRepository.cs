@@ -13,7 +13,6 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
     public async Task<List<GradeResponse>> GetProgramGradesAsync(Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         var grades = await _context.Grades
-            .AsNoTracking()
             .Where(grade => grade.AcademicProgramId == AcademicProgramId && !grade.IsDeleted)
             .OrderBy(grade => grade.MinScore)
             .Select(grade=> new GradeResponse
@@ -37,29 +36,30 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
     public async Task<bool> CheckOverLabedPointsAsync
         (decimal MinGradePoint, decimal MaxGradePoint, Guid? Id, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
+        bool isNullableId = Id == null;
         return await _context.Grades
             .AnyAsync(g => (!(g.MinGradePoint > MaxGradePoint || g.MaxGradePoint < MinGradePoint))
-             && ((Id == null)||(g.Id != Id))
-            && !g.IsDeleted
-            && g.AcademicProgramId == AcademicProgramId, cancellationToken);
+                        && (isNullableId || (g.Id != Id))
+                        && !g.IsDeleted
+                        && g.AcademicProgramId == AcademicProgramId, cancellationToken);
     }
 
     public async Task<bool> CheckOverLabedScoresAsync
         (int MinScore, int MaxScore, Guid? Id, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
+        bool isNullableId = Id == null;
         return await _context.Grades
            .AnyAsync(g => (!(g.MinScore > MaxScore || g.MaxScore < MinScore))
-           && !g.IsDeleted
-           && ((Id == null) || (g.Id != Id))
-           && g.AcademicProgramId == AcademicProgramId, cancellationToken);
+                       && !g.IsDeleted
+                       && (isNullableId || (g.Id != Id))
+                       && g.AcademicProgramId == AcademicProgramId, cancellationToken);
     }
     public async Task<string> GetLetterGradeByTotalDegree(Guid AcademicProgramId, decimal TotalDegree, CancellationToken cancellationToken = default)
     {
         return await _context.Grades
-            .AsNoTracking()
             .Where(g => g.AcademicProgramId == AcademicProgramId
-            && !g.IsDeleted
-            && TotalDegree >= g.MinScore && TotalDegree <= g.MaxScore)
+                          && TotalDegree >= g.MinScore && TotalDegree <= g.MaxScore
+                          && !g.IsDeleted)
             .Select(g => g.Code)
             .FirstOrDefaultAsync(cancellationToken) ?? "-";
     }

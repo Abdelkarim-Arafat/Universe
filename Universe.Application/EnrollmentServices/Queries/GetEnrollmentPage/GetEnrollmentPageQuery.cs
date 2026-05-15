@@ -1,5 +1,4 @@
-﻿using Universe.Application.EnrollmentServices.Dtos;
-
+﻿
 namespace Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
 
 public record GetEnrollmentPageQuery

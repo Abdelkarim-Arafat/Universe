@@ -1,4 +1,4 @@
-namespace Universe.Application.ExamCommitteeServices.Dtos;
+namespace Universe.Core.Contracts.ExamCommittees;
 
 public record ExamCommitteeResponse
 (

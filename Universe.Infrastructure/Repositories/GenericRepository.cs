@@ -34,10 +34,4 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
         entity.UpdatedAt = DateTime.UtcNow;
         _context.Set<T>().Update(entity);
     }
-
-    public async Task<IDbContextTransaction> BeginTransactionIsolatedAsync(CancellationToken cancellationToken)
-    {
-       return  await _context.Database
-        .BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
-    }
 }

@@ -16,8 +16,8 @@ public class UpdatePersonalDataCommandHandler(
     public async Task<Result<PersonalDataResponse>> Handle(UpdatePersonalDataCommand request, CancellationToken cancellationToken)
     {
         if (await _unitOfWork.UserRepository
-            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student
-            ) return Result.Failure<PersonalDataResponse>(StudentErrors.UserNotFound);
+            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
+            return Result.Failure<PersonalDataResponse>(StudentErrors.NotFound);
 
         if (await _unitOfWork.UserRepository
             .IsStudentCodeExistsAsync(request.CollegeId , student.Id, request.StudentCode, cancellationToken))

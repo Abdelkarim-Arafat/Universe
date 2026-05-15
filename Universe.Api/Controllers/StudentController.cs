@@ -282,7 +282,7 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetStudentAcademicHistory(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentAcademicHistoryQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetStudentAcademicHistoryQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("student-schedule")]
@@ -290,7 +290,7 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetStudentSchedule(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentScheduleQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetStudentScheduleQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("student-exams")]
@@ -298,7 +298,7 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
     public async Task<IActionResult> GetStudentExams(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentExamsQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetStudentExamsQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 

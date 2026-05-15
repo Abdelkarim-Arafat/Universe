@@ -4,15 +4,7 @@ public class UpdateEnrollmentCommandValidator : AbstractValidator<UpdateEnrollme
 {
     public UpdateEnrollmentCommandValidator()
     {
-       
-        RuleFor(x => x.StudentId)
-            .NotEmpty().WithMessage("Student identifier is required.");
 
- 
-        RuleFor(x => x.SemesterId)
-            .NotEmpty().WithMessage("Semester identifier is required.");
-
-        
         RuleFor(x => x.newSessions)
             .NotNull().WithMessage("Sessions list cannot be null.")
             .Must(x => x.Count > 0).WithMessage("At least one session must be provided.")

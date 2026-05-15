@@ -6,7 +6,7 @@ using Universe.Application.ExamCommitteeServices.Commands.Create;
 using Universe.Application.ExamCommitteeServices.Commands.Delete;
 using Universe.Application.ExamCommitteeServices.Commands.Update;
 using Universe.Application.ExamCommitteeServices.Queries.Get;
-using Universe.Application.ExamCommitteeServices.Queries.GetAll;
+using Universe.Application.ExamCommitteeServices.Queries.GetExamTermCommittees;
 
 namespace Universe.Api.Controllers;
 
@@ -55,12 +55,12 @@ public class ExamCommitteeController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(
+    public async Task<IActionResult> GetExamTermCommittees(
         [FromRoute] Guid examTermId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var query = new GetAllExamCommitteesQuery(filter, examTermId);
+        var query = new GetExamTermCommitteesQuery(filter, examTermId);
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }

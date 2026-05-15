@@ -1,4 +1,3 @@
-using Universe.Application.ExamTermServices.Dtos;
 using Universe.Core.Enums;
 
 namespace Universe.Application.ExamTermServices.Commands.Create;

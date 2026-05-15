@@ -1,4 +1,3 @@
-using Universe.Application.CourseOfferingExamServices.Dtos;
 
 namespace Universe.Application.CourseOfferingExamServices.Commands.Create;
 
@@ -34,19 +33,23 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamCommitteeNotFound);
 
         var hasOverlappingExam = await _unitOfWork.ExamRepository
-            .HasOverlappingExamAsync(request.ExamTermId, request.ExamCommitteesIds, request.Date, request.StartTime, request.EndTime, cancellationToken);
+            .HasOverlappingExamAsync
+            (null, request.ExamTermId, request.ExamCommitteesIds, request.Date, request.StartTime, request.EndTime, cancellationToken);
 
         if (hasOverlappingExam)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.OverlappingTime);
 
         var studentsIds = await _unitOfWork.CourseOfferingRepository
-            .GetStudentsIdsByCourseOfferingIdAsync(request.CourseOfferingId, cancellationToken);
+            .GetStudentsIdsEnrolledInCourseAsync(request.CourseOfferingId, cancellationToken);
 
 
-        var committeessSum = committeesDetails.Sum(c => c.Capacity);
-        var studentsCount = studentsIds.Count();
+        var numberOfCommitteesSeats = committeesDetails.Sum(c => c.Capacity);
 
-        if (committeessSum < studentsCount)
+        var numberOfRegistredStudents = studentsIds.Count();
+
+        bool isThereEnoughSeats = numberOfCommitteesSeats >= numberOfRegistredStudents;
+
+        if (!isThereEnoughSeats)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.TotalCapacitiesIsNotEnough);
 
         var courseOfferingExam = request.Adapt<CourseOfferingExam>();
@@ -58,7 +61,7 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         foreach (var committee in committeesDetails)
         {
-            if (seatNumber > studentsCount)
+            if (seatNumber > numberOfRegistredStudents)
                 break;
 
             var courseOfferingCommittee = new CourseOfferingCommittee
@@ -69,7 +72,7 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
             courseOfferingCommitteesToAdd.Add(courseOfferingCommittee);
 
-            for (int index = 0; (index < committee.Capacity) && (seatNumber <= studentsCount); index++, seatNumber++)
+            for (int index = 0; (index < committee.Capacity) && (seatNumber <= numberOfRegistredStudents); index++, seatNumber++)
             {
                 var studentIndex = seatNumber - 1;
 
@@ -85,7 +88,6 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
         }
 
         using var trx = await _unitOfWork
-          .Repository<CourseOfferingCommittee>()
           .BeginTransactionIsolatedAsync(cancellationToken);
 
         try

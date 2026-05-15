@@ -1,10 +1,12 @@
-using Universe.Application.ExamCommitteeServices.Dtos;
 
 namespace Universe.Application.ExamCommitteeServices.Commands.Create;
 
-public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateExamCommitteeCommand, Result<ExamCommitteeResponse>>
+public class CreateExamCommitteeCommandHandler
+    (IUnitOfWork unitOfWork,
+    ICacheService cacheService) : IRequestHandler<CreateExamCommitteeCommand, Result<ExamCommitteeResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<ExamCommitteeResponse>> Handle(CreateExamCommitteeCommand request, CancellationToken cancellationToken)
     {
@@ -39,7 +41,11 @@ public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
         var building = await _unitOfWork.BuildingRepository.GetByIdAsync(room.BuildingId, cancellationToken);
 
         await _unitOfWork.Repository<ExamCommittee>().AddAsync(examCommittee, cancellationToken);
+
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        var tags = ExamCommitteeCacheKeys.Tags(request.ExamTermId);
+        await _cacheService.RemoveByTagAsync(tags, cancellationToken);
 
         var response = new ExamCommitteeResponse
         (
@@ -50,5 +56,6 @@ public class CreateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
         );
 
         return Result.Success(response);
+
     }
 }

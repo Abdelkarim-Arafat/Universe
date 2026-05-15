@@ -12,11 +12,10 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
 
     public async Task<AcademicProgram?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => await _context.AcademicPrograms
-                .SingleOrDefaultAsync(d => d.Id == id && !d.IsDeleted, cancellationToken);
+                .FirstOrDefaultAsync(d => d.Id == id && !d.IsDeleted, cancellationToken);
 
     public async Task<IEnumerable<AcademicProgram>> GetAllAsync(Guid CollegeId, CancellationToken cancellationToken)
         => await _context.AcademicPrograms
-                .AsNoTracking()
                 .Where(d => d.CollegeId == CollegeId && !d.IsDeleted).ToListAsync(cancellationToken);
     public async Task<bool> IsExistAsync(Guid AcademicProgramId, string Name, string Code, Guid? excludeId, CancellationToken cancellationToken)
     => await _context.AcademicPrograms
@@ -33,8 +32,8 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
 
     public async Task<ProgramSchedule?> GetScheduleAsync(Guid ProgramId , Guid SemesterId , CancellationToken cancellationToken)
         => await _context.ProgramSchedules
-        .Where(x => x.ProgramId == ProgramId && x.SemesterId == SemesterId)
-        .SingleOrDefaultAsync(cancellationToken);
+                .Where(x => x.ProgramId == ProgramId && x.SemesterId == SemesterId)
+                .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<StudentAcademicProgram?> GetCurrentStudentAcademicProgramAsync(Guid studentId , CancellationToken cancellationToken)
         => await _context.StudentAcademicPrograms
@@ -45,8 +44,7 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
         => await _context.StudentAcademicPrograms
                .Where(x => x.StudentId == studentId && x.AcademicProgramId == programId)
                .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<Guid?> GetCurrentAcademicProgramIdAsync(Guid StudentId, CancellationToken cancellationToken)
+    public async Task<Guid?> GetStudentCurrentProgramIdAsync(Guid StudentId, CancellationToken cancellationToken)
     {
         return await _context.StudentAcademicPrograms
             .Where(pro => pro.StudentId == StudentId

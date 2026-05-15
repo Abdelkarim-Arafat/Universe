@@ -3,4 +3,4 @@
 namespace Universe.Application.UserServices.Querys.GetStudentSchedule;
 
 public record GetStudentScheduleQuery
-() : IRequest<Result<List<StudentExistingEnrollment>>>;
+([Required] Guid StudentId) : IRequest<Result<List<StudentExistingEnrollment>>>;

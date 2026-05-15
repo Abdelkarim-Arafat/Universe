@@ -1,6 +1,8 @@
-﻿
+﻿using Universe.Core.Contracts.Student;
+
 namespace Universe.Core.Contracts.User;
-public record TranscriptSemesterResponse
+
+public record StudentSemesterDataResponse
 (
    string SemesterName,
    string AcademicYear,
@@ -11,12 +13,4 @@ public record TranscriptSemesterResponse
    string SemesterGrade,
    string CumulativeGrade,
    List<CourseDetailsDto> Courses 
-);
-public record CourseDetailsDto
-(
-     string CourseCode,
-     string CourseName,
-     decimal CreditHours,
-     string LetterGrade,
-     decimal? FinalGrade
 );

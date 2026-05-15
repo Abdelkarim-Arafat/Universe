@@ -17,7 +17,7 @@ public class BuildingRepository(ApplicationDbContext context) : IBuildingReposit
     }
     public async Task<bool> CheckIfRoomExistAsync(Guid id, CancellationToken cancellationToken = default)
     {
-      return await _context.Rooms.AnyAsync(r => r.BuildingId == id && !r.IsDeleted, cancellationToken);
+        return await _context.Rooms.AnyAsync(r => r.BuildingId == id && !r.IsDeleted, cancellationToken);
     }
 
     public async Task<bool> IsExistAsync(Guid id, CancellationToken cancellationToken = default)

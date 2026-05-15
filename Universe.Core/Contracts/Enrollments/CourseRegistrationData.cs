@@ -3,12 +3,7 @@
 namespace Universe.Core.Contracts.Enrollments;
 
 
-public record LevelRegistrationCatalogDto(
-    string LevelName,
-    List<CourseRegistration> Courses
-);
-
-public record CourseRegistration(
+public record CourseRegistrationData(
     Guid CourseOfferingId,
     Guid CourseId,
     string CourseName,

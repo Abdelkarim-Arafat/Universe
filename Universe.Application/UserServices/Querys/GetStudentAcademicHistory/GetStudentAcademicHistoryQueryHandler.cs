@@ -1,88 +1,77 @@
-﻿using System.Security.Claims;
-using Universe.Application.Extensions;
-using Universe.Core.Contracts.User;
+﻿using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 public class GetStudentAcademicHistoryQueryHandler(
-    IUnitOfWork unitOfWork,
-    IHttpContextAccessor httpContextAccessor,
-    ICacheService cacheService
-    ) : IRequestHandler<GetStudentAcademicHistoryQuery, Result<List<TranscriptSemesterResponse>>>
+    IUnitOfWork unitOfWork
+    ) : IRequestHandler<GetStudentAcademicHistoryQuery, Result<List<StudentSemesterDataResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly ICacheService _cacheService = cacheService;
-
-    public async Task<Result<List<TranscriptSemesterResponse>>> Handle(GetStudentAcademicHistoryQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<StudentSemesterDataResponse>>> Handle(GetStudentAcademicHistoryQuery request, CancellationToken cancellationToken)
     {
-        var User = _httpContextAccessor.HttpContext?.User;
-        var value = User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        var StudentId = Guid.TryParse(value, out var userId) ? userId : Guid.Empty;
 
-        var studentHistoryDate = await _unitOfWork.EnrollmentRepository
-            .GetStudentAcademicHistoryContextAsync(StudentId, cancellationToken);
+        var studentCurrentProgramId = await _unitOfWork.AcademicProgramRepository
+            .GetStudentCurrentProgramIdAsync(request.StudentId, cancellationToken);
 
-        if (studentHistoryDate == null)
-            return Result.Failure<List<TranscriptSemesterResponse>>(StudentErrors.UserNotFound);
+        if (studentCurrentProgramId == null)
+            return Result.Failure<List<StudentSemesterDataResponse>>(StudentErrors.NoProgram);
 
-        if (studentHistoryDate.CurrentAcademicProgramId == null)
-            return Result.Failure<List<TranscriptSemesterResponse>>(StudentErrors.NoProgram);
+        var letterDegrees = await _unitOfWork.GradeRepository
+            .GetProgramGradesAsync(studentCurrentProgramId.Value, cancellationToken);
 
+        var studentHistory = await _unitOfWork.EnrollmentRepository
+            .GetStudentAcademicHistoryContextAsync(request.StudentId, letterDegrees, cancellationToken);
 
-        var letterDegrees = await unitOfWork.GradeRepository
-            .GetProgramGradesAsync(studentHistoryDate.CurrentAcademicProgramId.Value, cancellationToken);
-
-        var response = new List<TranscriptSemesterResponse>();
+        var response = new List<StudentSemesterDataResponse>();
 
         decimal totalQualityPoints = 0, totalHours = 0;
 
-        foreach (var semester in studentHistoryDate.Semesters)
+        foreach (var semester in studentHistory.Semesters)
         {
 
-            // courses data 
-            var courseDetails = semester.Courses.Select(course =>
-            new CourseDetailsDto(
-                    course.CourseCode,
-                    course.CourseName,
-                    course.CreditHours,
-                    letterDegrees.FirstOrDefault(g => 
-                       course.TotalGrade >= g.MinScore && course.TotalGrade <= g.MaxScore)?.Code ?? "-",
+            var courseDetails = semester.Courses;
 
-                    course.TotalGrade
-                    )).ToList();
-
-            // حساب gpas
             decimal semesterPoints = 0;
-            decimal semesterHours = semester.Courses.Sum(course => course.CreditHours);
+            decimal semesterHours = 0;
+            decimal semesterPassedHourse = 0;
 
             foreach (var course in courseDetails)
             {
                 var gradePoints = letterDegrees
-                   .FirstOrDefault(g => course.FinalGrade >= g.MinScore && course.FinalGrade <= g.MaxScore)?
+                   .FirstOrDefault(g => course.TotalDegree >= g.MinScore && course.TotalDegree <= g.MaxScore)?
                    .MinGradePoint ?? 0; // لو شلتها هتضرب
 
-                semesterPoints += (gradePoints * course.CreditHours);
+                var coursePoints = gradePoints * course.CreditHours;
+
+                semesterPoints += coursePoints;
+
+                semesterHours += course.CreditHours;
+
+                semesterPassedHourse += course.IsPassed ? course.CreditHours : 0;
             }
 
             decimal semesterGpa = semesterHours > 0 ? semesterPoints / semesterHours : 0;
 
             totalQualityPoints += semesterPoints;
+
             totalHours += semesterHours;
+
             decimal cumulativeGpa = totalHours > 0 ? totalQualityPoints / totalHours : 0;
 
-            response.Add(new TranscriptSemesterResponse(
+            response.Add(new StudentSemesterDataResponse(
                 semester.SemesterName,
                 semester.AcademicYearName,
                 semesterGpa,
                 cumulativeGpa,
                 semesterHours,
-                semester.Courses.Where(e => e.IsPassed).Sum(e => e.CreditHours),
+                semesterPassedHourse,
                 letterDegrees.FirstOrDefault(ld => 
-                ld.MinGradePoint <= semesterGpa && ld.MaxGradePoint > semesterGpa)?.Code ?? "-",
+                   ld.MinGradePoint <= semesterGpa 
+                && ld.MaxGradePoint > semesterGpa)?.Code ?? "-",
 
                 letterDegrees.FirstOrDefault(ld => 
-                ld.MinGradePoint <= cumulativeGpa && ld.MaxGradePoint > cumulativeGpa)?.Code ?? "-",
+                   ld.MinGradePoint <= cumulativeGpa 
+                && ld.MaxGradePoint > cumulativeGpa)?.Code ?? "-",
                 courseDetails
             ));
         }

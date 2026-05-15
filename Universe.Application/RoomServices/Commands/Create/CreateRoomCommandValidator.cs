@@ -16,9 +16,6 @@ public class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
 
         RuleFor(x => x.RoomType)
             .IsInEnum().WithMessage("Invalid Room Type selection.");
-
-        RuleFor(x => x.BuildingId)
-            .NotEmpty().WithMessage("Building selection is required.");
     }
 }
 

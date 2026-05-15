@@ -1,10 +1,11 @@
-﻿using Universe.Application.ExamTermServices.Dtos;
+﻿namespace Universe.Application.ExamTermServices.Commands.TogglePublisher;
 
-namespace Universe.Application.ExamTermServices.Commands.TogglePublisher;
-
-public class TogglePublisherCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<TogglePublisherCommand, Result>
+public class TogglePublisherCommandHandler
+     (IUnitOfWork unitOfWork,
+      ICacheService cacheService) : IRequestHandler<TogglePublisherCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(TogglePublisherCommand request, CancellationToken cancellationToken)
     {
@@ -16,6 +17,9 @@ public class TogglePublisherCommandHandler(IUnitOfWork unitOfWork) : IRequestHan
 
         _unitOfWork.Repository<ExamTerm>().Update(examTerm);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        var tags = ExamTermCacheKeys.Tags(examTerm.AcademicProgramId);
+        await _cacheService.RemoveByTagAsync(tags, cancellationToken);
 
         return Result.Success();
     }

@@ -17,7 +17,7 @@ public class GetParentDataQueryHandler(
     {
         if (await _unitOfWork.UserRepository
             .GetStudentParentDataAsync(request.StudentId, cancellationToken) is not { } parentResponse
-            ) return Result.Failure<ParentDataResponse>(StudentErrors.UserNotFound);
+            ) return Result.Failure<ParentDataResponse>(StudentErrors.NotFound);
 
         return Result.Success(parentResponse);
     }

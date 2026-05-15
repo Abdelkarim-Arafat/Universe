@@ -14,6 +14,7 @@ public interface IExamRepository
     Task<bool> IsExistExamTermAsync(Guid Id, CancellationToken cancellationToken);
     Task<bool> IsExistExamTermWithSameTypeAsync
         (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken);
+    Task<List<Guid>> GetCurrentExamTermIdsAsync(Guid programId, Guid semesterId, CancellationToken cancellationToken);
 
     #endregion
 
@@ -27,13 +28,10 @@ public interface IExamRepository
     Task<CourseOfferingExam?> GetCourseOfferingExamByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<List<ExamCommitteesDetails>?> GetCommitteesDetailsAsync
     (Guid examTermId, List<Guid> examCommitteesIds, CancellationToken cancellationToken);
-
-    Task<UpdateCourseExamContextDto?> 
-        UpdateCourseExamContextAsync
-        (DateOnly date, TimeOnly startTime, TimeOnly endTime,
-        Guid courseOfferingExamId, List<Guid> examCommitteesIds, CancellationToken cancellationToken);
-    Task<bool> HasOverlappingExamAsync(Guid examTermId, List<Guid> examCommitteesIds, DateOnly date, TimeOnly startTime, TimeOnly endTime, CancellationToken cancellationToken = default);
+    Task<bool> HasOverlappingExamAsync(Guid? courseOfferingExamId, Guid examTermId, List<Guid> examCommitteesIds,
+    DateOnly date, TimeOnly startTime, TimeOnly endTime, CancellationToken cancellationToken = default);
     Task<bool> IsCourseOfferingExamExistAsync(Guid courseOfferingId, Guid examTermId, CancellationToken cancellationToken);
+    Task<CourseOfferingExam?> GetCourseOfferingExamIncludingCommitteesAndSeatsAsync(Guid Id, CancellationToken cancellationToken);
 
     #endregion
 

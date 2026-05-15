@@ -1,4 +1,3 @@
-using Universe.Application.CourseOfferingExamServices.Dtos;
 
 namespace Universe.Application.CourseOfferingExamServices.Commands.Update;
 
@@ -9,42 +8,46 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
     public async Task<Result<CourseOfferingExamResponse>> Handle(UpdateCourseOfferingExamCommand request, CancellationToken cancellationToken)
     {
-        var courseExamContext = await _unitOfWork.ExamRepository
-           .UpdateCourseExamContextAsync
-           (request.Date, request.StartTime, request.EndTime,
-           request.Id, request.ExamCommitteesIds, cancellationToken);
 
-        if (courseExamContext == null)
+        var courseOfferingExam = await _unitOfWork.ExamRepository
+            .GetCourseOfferingExamIncludingCommitteesAndSeatsAsync(request.Id, cancellationToken);
+
+        if (courseOfferingExam == null)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamNotFound);
 
-        var courseOfferingExam = courseExamContext.CourseOfferingExam;
+        var hasOverlappingExam = await _unitOfWork.ExamRepository
+         .HasOverlappingExamAsync
+         (courseOfferingExam.Id, courseOfferingExam.ExamTermId,
+          request.ExamCommitteesIds, request.Date, request.StartTime, request.EndTime, cancellationToken);
 
-        courseOfferingExam.Date = request.Date;
-        courseOfferingExam.StartTime = request.StartTime;
-        courseOfferingExam.EndTime = request.EndTime;
-       
+        if (hasOverlappingExam)
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.OverlappingTime);
 
-        var checkOverLappedInCommittees = courseExamContext.isOverlappedTime;
+        var newCommitteesDetails = await _unitOfWork.ExamRepository
+            .GetCommitteesDetailsAsync(courseOfferingExam.ExamTermId, request.ExamCommitteesIds, cancellationToken);
 
-        if (checkOverLappedInCommittees)
-            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.OverlappingTimeInCommittees);
+        if (newCommitteesDetails == null || !newCommitteesDetails.Any())
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamCommitteeNotFound);
 
-        var committeesCapacitiesSum = courseExamContext.examCommittees.Sum(ec => ec.Capacity);
-
-        var studentsIds = courseExamContext.studentsIds;
+        var studentsIds = await _unitOfWork.CourseOfferingRepository
+             .GetStudentsIdsEnrolledInCourseAsync(courseOfferingExam.CourseOfferingId, cancellationToken);
 
         var numberOfRegistredStudents = studentsIds.Count();
 
-        if (committeesCapacitiesSum < numberOfRegistredStudents)
-            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.TotalCapacitiesIsNotEnough);
+        var numberOfCommitteesSeats = newCommitteesDetails.Sum(ec => ec.Capacity);
 
+        bool isThereEnoughSeats = numberOfCommitteesSeats >= numberOfRegistredStudents;
+
+        if (!isThereEnoughSeats)
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.TotalCapacitiesIsNotEnough);
+      
         var examSeatsToDelete = new List<ExamSeat>();
         var courseOfferingCommitteesToDelete = new List<CourseOfferingCommittee>();
 
         var examSeatsToAdd = new List<ExamSeat>();
         var courseOfferingCommitteesToAdd = new List<CourseOfferingCommittee>();
 
-        var committeesToRemove = courseExamContext.committeesToRemove;
+        var committeesToRemove = courseOfferingExam.CourseOfferingCommittees;
 
         foreach (var committee in committeesToRemove)
         {
@@ -56,7 +59,7 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         int seatNumber = 1;
 
-        foreach (var committee in courseExamContext.examCommittees)
+        foreach (var committee in newCommitteesDetails)
         {
             if (seatNumber > numberOfRegistredStudents)
                 break;
@@ -84,17 +87,24 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
                 examSeatsToAdd.Add(examSeat);
             }
         }
+
+        courseOfferingExam.Date = request.Date;
+        courseOfferingExam.StartTime = request.StartTime;
+        courseOfferingExam.EndTime = request.EndTime;
+
+
         using var trx = await _unitOfWork
-          .Repository<CourseOfferingCommittee>()
           .BeginTransactionIsolatedAsync(cancellationToken);
 
         try
         {
-            _unitOfWork.Repository<ExamSeat>()
-               .DeletePermanentlyRange(examSeatsToDelete);
+            if (examSeatsToDelete.Count > 0)
+                _unitOfWork.Repository<ExamSeat>()
+                   .DeletePermanentlyRange(examSeatsToDelete);
 
-            _unitOfWork.Repository<CourseOfferingCommittee>()
-               .DeletePermanentlyRange(courseOfferingCommitteesToDelete);
+            if (courseOfferingCommitteesToDelete.Count > 0)
+                _unitOfWork.Repository<CourseOfferingCommittee>()
+                   .DeletePermanentlyRange(courseOfferingCommitteesToDelete);
 
             _unitOfWork.Repository<CourseOfferingExam>().Update(courseOfferingExam);
 

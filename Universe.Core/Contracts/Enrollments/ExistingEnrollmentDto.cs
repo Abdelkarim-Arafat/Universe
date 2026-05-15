@@ -2,7 +2,7 @@
 
 namespace Universe.Core.Contracts.Enrollments;
 
-public record EnrollmentExecutionContextDto(
+public record ExistingEnrollmentDto(
     List<Enrollment> ExistingEnrollments,
     ILookup<Guid, Guid> IncomingAssessmentsLookup 
 );

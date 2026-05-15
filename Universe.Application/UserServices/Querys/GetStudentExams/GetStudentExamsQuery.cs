@@ -3,5 +3,5 @@
 namespace Universe.Application.UserServices.Querys.GetStudentExams;
 
 public record GetStudentExamsQuery
-() : IRequest<Result<StudentExamsResponse>>;
+([Required] Guid StudentId) : IRequest<Result<StudentExamsResponse>>;
 

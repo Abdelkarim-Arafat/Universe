@@ -1,7 +1,6 @@
-﻿using Mapster.Utils;
-using Universe.Core.Enums;
+﻿using Universe.Core.Enums;
 
-namespace Universe.Application.EnrollmentServices.Dtos;
+namespace Universe.Core.Contracts.Enrollments;
 
 public record EnrollmentInfo
 (
@@ -15,5 +14,5 @@ public record EnrollmentInfo
     SessionType Type,
     TimeOnly StartTime,
     TimeOnly EndTime,
-    Core.Enums.DayOfWeek DayOfWeek
+    Enums.DayOfWeek DayOfWeek
 );

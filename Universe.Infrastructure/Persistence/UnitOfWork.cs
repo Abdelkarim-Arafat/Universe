@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Universe.Core.Entities.Core;
-using Universe.Core.Interfaces;
-using Universe.Core.Interfaces.Repositories;
-using Universe.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Entities;
+using Universe.Core.Entities.Core;
+using Universe.Core.Interfaces;
+using Universe.Core.Interfaces.Repositories;
+using Universe.Infrastructure.Repositories;
 
 namespace Universe.Infrastructure.Persistence;
 
@@ -19,9 +20,7 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
         => field ??= new RoleRepository(_context);
 
     public IUserRepository UserRepository
-        => field ??= new UserRepository(_context,
-            AcademicProgramRepository,
-            GradeRepository);
+        => field ??= new UserRepository(_context, GradeRepository);
 
     public ICourseOfferingRepository CourseOfferingRepository
         => field ??= new CourseOfferingRepository(_context);
@@ -43,8 +42,7 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
  
 
     public ILevelRepository LevelRepository
-        => field ??= new LevelRepository(_context,
-            UserRepository);
+        => field ??= new LevelRepository(_context);
 
     public IStudyLoadRuleRepository StudyLoadRuleRepository
         => field ??= new StudyLoadRuleRepository(_context);
@@ -80,6 +78,12 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     //   => field ??= new StudentSemesterSummaryRepository(_context);
     public async Task<int> CompleteAsync(CancellationToken cancellationToken)
         => await _context.SaveChangesAsync(cancellationToken);
+
+    public async Task<IDbContextTransaction> BeginTransactionIsolatedAsync(CancellationToken cancellationToken)
+    {
+        return await _context.Database
+         .BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
+    }
 
     public ValueTask DisposeAsync() => _context.DisposeAsync();
 

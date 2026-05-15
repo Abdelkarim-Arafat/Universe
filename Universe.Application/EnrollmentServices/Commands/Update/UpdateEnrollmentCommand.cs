@@ -3,8 +3,8 @@
 namespace Universe.Application.EnrollmentServices.Commands.Update;
 
 public record UpdateEnrollmentCommand(
-     Guid StudentId,
-     Guid SemesterId,
+    [Required]   Guid StudentId,
+    [Required] Guid SemesterId,
     List<SessionAndCourseOfferingIds> newSessions  
 ) : IRequest<Result<List<StudentExistingEnrollment>>>;
 

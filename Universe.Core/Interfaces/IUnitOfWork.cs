@@ -1,4 +1,5 @@
-﻿using Universe.Core.Entities.Core;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Universe.Core.Entities.Core;
 using Universe.Core.Interfaces.Repositories;
 
 
@@ -28,4 +29,5 @@ public interface IUnitOfWork: IAsyncDisposable
     IStudentAssessmentRepository StudentAssessmentRepository { get; }
     IExamRepository ExamRepository { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);
+    Task<IDbContextTransaction> BeginTransactionIsolatedAsync(CancellationToken cancellationToken);
 }

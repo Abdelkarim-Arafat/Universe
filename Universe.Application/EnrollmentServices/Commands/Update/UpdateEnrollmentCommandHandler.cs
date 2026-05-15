@@ -9,31 +9,30 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
 
     public async Task<Result<List<StudentExistingEnrollment>>>
         Handle(UpdateEnrollmentCommand command, CancellationToken cancellationToken)
+
     {
-        var validationResult = await ValidateUpdateEnrollmentAsync(command, cancellationToken);
+        var sessionIds = command.newSessions.Select(e => e.SessionId).Distinct().ToList();
+        var incomingCourseOfferingIds = command.newSessions.Select(e => e.CourseOfferingId).Distinct().ToList();
 
-        if (validationResult.IsFailure)
-            return Result.Failure<List<StudentExistingEnrollment>>(validationResult.Error);
+        var incomingSessionsDetails = await _unitOfWork.SessionRepository
+            .GetIncomingSessionsDetailsAsync(sessionIds, cancellationToken);
 
-        var incommingSessionsDetails = validationResult.Value.sessionDetails;
+        var result = await ValidateBusinessRulesAsync
+             (command, incomingSessionsDetails, incomingCourseOfferingIds, cancellationToken);
 
-        var sessionDetailsDict = validationResult.Value.sessionDetails.ToDictionary(s => s.sessionId);
+        if (result.IsFailure)
+            return Result.Failure<List<StudentExistingEnrollment>>(result.Error);
 
-        var incomingCourseOfferingIds = incommingSessionsDetails.Select(x => x.courseOfferingId).ToHashSet();
+        var sessionDetailsDict = incomingSessionsDetails.ToDictionary(s => s.sessionId);
 
-        var executionData = await _unitOfWork.EnrollmentRepository
-                         .GetEnrollmentExecutionDataAsync
-                         (command.StudentId, command.SemesterId, incomingCourseOfferingIds, cancellationToken);
 
-        var existingEnrollments = executionData.ExistingEnrollments;
+        var existingEnrollments = await _unitOfWork.EnrollmentRepository
+               .GetExistingEnrollmentIncludingSessionsAsync(command.StudentId, command.SemesterId, cancellationToken);
 
-        var incomingAssessmentsLookup = executionData.IncomingAssessmentsLookup;
-
-        var incomingSessionsGrouped = incommingSessionsDetails.GroupBy(x => x.courseOfferingId).ToDictionary(g => g.Key, g => g.ToList());
+        var incomingSessionsGrouped = incomingSessionsDetails.GroupBy(x => x.courseOfferingId).ToDictionary(g => g.Key, g => g.ToList());
 
         var existingCourseOfferingIds = existingEnrollments
-                                            .Select(x => x.CourseOfferingId)
-                                            .ToHashSet();
+                                            .Select(x => x.CourseOfferingId).ToList();
         //Diff Courses
         var toAddCourses = incomingCourseOfferingIds.Except(existingCourseOfferingIds).ToList();
         var toRemoveCourses = existingCourseOfferingIds.Except(incomingCourseOfferingIds).ToList();
@@ -42,15 +41,18 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
         var enrollmentsToAdd = new List<Enrollment>();
         var enrollmentsToDelete = new List<Enrollment>();
 
-        var sessionEnrollmentsToAdd = new List<TeachingSessionEnrollment>();
-        var sessionEnrollmentsToDelete = new List<TeachingSessionEnrollment>();
+        var enrollmentsSessionsToAdd = new List<TeachingSessionEnrollment>();
+        var enrollmentsSessionsToDelete = new List<TeachingSessionEnrollment>();
 
-        var AssessmentsToAdd = new List<StudentAssessment>();
-        var AssessmentsToRemove = new List<StudentAssessment>();
+        var assessmentsToAdd = new List<StudentAssessment>();
+        var assessmentsToRemove = new List<StudentAssessment>();
 
         if (toRemoveCourses.Any())
-            AssessmentsToRemove = await _unitOfWork.UserRepository
+            assessmentsToRemove = await _unitOfWork.StudentAssessmentRepository
                 .GetStudentAssessmentByCourseOfferingBulkAsync(toRemoveCourses, command.StudentId, cancellationToken);
+
+        var incomingAssessmentsLookup = await _unitOfWork.CourseOfferingRepository
+       .GetAssessmentIdsGroupedByOfferingAsync(toAddCourses, cancellationToken);
 
         //  Add Courses
         foreach (var courseOfferingId in toAddCourses)
@@ -78,7 +80,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
                 if (session.occupiedSeats >= session.capacity)
                     return Result.Failure<List<StudentExistingEnrollment>>(SessionErrors.NoAvailableSeats);
 
-                sessionEnrollmentsToAdd.Add(new TeachingSessionEnrollment
+                enrollmentsSessionsToAdd.Add(new TeachingSessionEnrollment
                 {
                     EnrollmentId = enrollment.Id,
                     TeachingSessionId = session.sessionId
@@ -92,7 +94,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
 
             foreach (var assessmentId in assessmentsIds)
             {
-                AssessmentsToAdd.Add(new StudentAssessment
+                assessmentsToAdd.Add(new StudentAssessment
                 {
                     StudentId = command.StudentId,
                     CourseOfferingAssessmentId = assessmentId
@@ -104,26 +106,26 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
         foreach (var enrollment in existingEnrollments.Where(x => toRemoveCourses.Contains(x.CourseOfferingId)))
         {
             foreach (var session in enrollment.TeachingSessionEnrollments)
-                sessionEnrollmentsToDelete.Add(session);
+                enrollmentsSessionsToDelete.Add(session);
 
             enrollmentsToDelete.Add(enrollment);
         }
 
         // Update Keep Courses
-        foreach (var enrollment in executionData.ExistingEnrollments.Where(x => toKeepCourses.Contains(x.CourseOfferingId)))
+        foreach (var enrollment in existingEnrollments.Where(x => toKeepCourses.Contains(x.CourseOfferingId)))
         {
 
-            var existingSessions = enrollment.TeachingSessionEnrollments
+            var existingSessionsIds = enrollment.TeachingSessionEnrollments
                 .Select(x => x.TeachingSessionId)
                 .ToHashSet();
 
-            if (!incomingSessionsGrouped.TryGetValue(enrollment.CourseOfferingId, out var newSessionsList))
+            if (!incomingSessionsGrouped.TryGetValue(enrollment.CourseOfferingId, out var newSessionsDetails))
                 return Result.Failure<List<StudentExistingEnrollment>>(CourseOfferingErrors.NotFound);
 
-            var incomingSessionIds = newSessionsList.Select(x => x.sessionId).ToHashSet();
+            var incomingSessionIds = newSessionsDetails.Select(x => x.sessionId).ToHashSet();
 
-            var sessionsToAdd = incomingSessionIds.Except(existingSessions).ToList();
-            var sessionsToRemove = existingSessions.Except(incomingSessionIds).ToHashSet();
+            var sessionsToAdd = incomingSessionIds.Except(existingSessionsIds).ToList();
+            var sessionsToRemove = existingSessionsIds.Except(incomingSessionIds).ToList();
 
             foreach (var sessionId in sessionsToAdd)
             {
@@ -133,7 +135,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
                 if (sessionInfo.occupiedSeats >= sessionInfo.capacity)
                     return Result.Failure<List<StudentExistingEnrollment>>(SessionErrors.NoAvailableSeats);
 
-                sessionEnrollmentsToAdd.Add(new TeachingSessionEnrollment
+                enrollmentsSessionsToAdd.Add(new TeachingSessionEnrollment
                 {
                     EnrollmentId = enrollment.Id,
                     TeachingSessionId = sessionId
@@ -142,36 +144,37 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
 
             foreach (var tse in enrollment.TeachingSessionEnrollments
                 .Where(x => sessionsToRemove.Contains(x.TeachingSessionId)))
-                sessionEnrollmentsToDelete.Add(tse);
+            {
 
+                enrollmentsSessionsToDelete.Add(tse);
+            }
         }
 
         using var trx = await _unitOfWork
-       .Repository<Enrollment>()
        .BeginTransactionIsolatedAsync(cancellationToken);
 
         try
         {
-            if (sessionEnrollmentsToDelete.Any())
+            if (enrollmentsSessionsToDelete.Any())
                 _unitOfWork.Repository<TeachingSessionEnrollment>()
-                   .DeletePermanentlyRange(sessionEnrollmentsToDelete);
+                   .DeletePermanentlyRange(enrollmentsSessionsToDelete);
 
             if (enrollmentsToDelete.Any())
                 _unitOfWork.Repository<Enrollment>()
                .DeletePermanentlyRange(enrollmentsToDelete);
 
-            if (AssessmentsToRemove.Any())
+            if (assessmentsToRemove.Any())
                 _unitOfWork.Repository<StudentAssessment>()
-               .DeletePermanentlyRange(AssessmentsToRemove);
+               .DeletePermanentlyRange(assessmentsToRemove);
 
             await _unitOfWork.Repository<Enrollment>()
                 .AddRangeAsync(enrollmentsToAdd, cancellationToken);
 
             await _unitOfWork.Repository<TeachingSessionEnrollment>()
-                .AddRangeAsync(sessionEnrollmentsToAdd, cancellationToken);
+                .AddRangeAsync(enrollmentsSessionsToAdd, cancellationToken);
 
             await _unitOfWork.Repository<StudentAssessment>()
-                .AddRangeAsync(AssessmentsToAdd, cancellationToken);
+                .AddRangeAsync(assessmentsToAdd, cancellationToken);
 
             await _unitOfWork.CompleteAsync(cancellationToken);
             await trx.CommitAsync(cancellationToken);
@@ -184,55 +187,76 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
         }
 
         var studentSchedule = await _unitOfWork.EnrollmentRepository
-            .GetStudentScheduleAsync(command.StudentId, cancellationToken);
+            .GetStudentScheduleAsync(command.StudentId,command.SemesterId, cancellationToken);
 
         return Result.Success(studentSchedule);
     }
-    private async Task<Result<UpdateEnrollmentValidationDto>> ValidateUpdateEnrollmentAsync(
+    private async Task<Result> ValidateBusinessRulesAsync(
     UpdateEnrollmentCommand command,
+    List<SessionDetailsDto> sessionDetails,
+    List<Guid> courseOfferingsIds,
     CancellationToken cancellationToken)
     {
-        var courseOfferingsIds = command.newSessions.Select(e => e.CourseOfferingId).Distinct().ToList();
-        var sessionIds = command.newSessions.Select(e => e.SessionId).Distinct().ToList();
+        var isUserExist = await _unitOfWork.UserRepository.IsUserExistAsync(command.StudentId, cancellationToken);
 
-        var validationResult = await _unitOfWork.EnrollmentRepository
-            .GetUpdateEnrollmentValidationDataAsync
-            (command.StudentId, command.SemesterId, courseOfferingsIds, sessionIds, cancellationToken);
+        if (!isUserExist)
+            return Result.Failure(StudentErrors.NotFound);
 
-        if (validationResult is null)
-            return Result.Failure<UpdateEnrollmentValidationDto>(StudentErrors.UserNotFound);
+        var isSemesterExist = await _unitOfWork.AcademicYearRepository
+            .IsSemesterExistAsync(command.SemesterId, cancellationToken);
 
-        if (!validationResult.isSemesterExist)
-            return Result.Failure<UpdateEnrollmentValidationDto>(SemesterErrors.NotFound);
+        if (!isSemesterExist)
+            return Result.Failure(SemesterErrors.NotFound);
 
-        if (!validationResult.minHours.HasValue || !validationResult.maxHours.HasValue)
-            return Result.Failure<UpdateEnrollmentValidationDto>(StudyLoadRuleErrors.NotFound);
+        var studentCurrentProgramId = await _unitOfWork.AcademicProgramRepository
+            .GetStudentCurrentProgramIdAsync(command.StudentId, cancellationToken);
 
-        if (validationResult.registeredHours < validationResult.minHours
-            || validationResult.registeredHours > validationResult.maxHours)
-            return Result.Failure<UpdateEnrollmentValidationDto>(StudyLoadRuleErrors.NotAllowedHours);
+        if (!studentCurrentProgramId.HasValue)
+            return Result.Failure(StudentErrors.NoProgram);
+
+        var totalEarnedHours = await _unitOfWork.UserRepository
+           .CalculateCreditHoursAsync(command.StudentId, null, cancellationToken);
+
+        var studentCurrentLevelId = await _unitOfWork.LevelRepository
+            .GetStudentCurrentLevelIdAsync
+            (studentCurrentProgramId.Value, totalEarnedHours, cancellationToken);
+
+        if (!studentCurrentLevelId.HasValue)
+            return Result.Failure(LevelErrors.StudentLevelNotFound);
+        
+        var levelStudyLoad = await _unitOfWork.StudyLoadByLevelRepository
+            .GetLevelStudyLoadAsync(studentCurrentLevelId.Value, command.SemesterId, cancellationToken);
+
+        if (levelStudyLoad == null)
+            return Result.Failure(StudyLoadByLevelErrors.NotFound);
+
+        var incomingCreditHours = await _unitOfWork.CourseOfferingRepository
+            .CalculateCreditHoursForCoursesAsync(courseOfferingsIds, cancellationToken);
+
+        if (incomingCreditHours < levelStudyLoad.MinHours || incomingCreditHours > levelStudyLoad.MaxHours)
+            return Result.Failure(StudyLoadRuleErrors.NotAllowedHours);
 
         var typeCheckSet = new HashSet<(Guid CourseOfferingId, SessionType Type)>();
         var courseGroupMap = new Dictionary<Guid, int>();
 
-        foreach (var item in validationResult.sessionDetails)
+        foreach (var item in sessionDetails)
         {
             if (!typeCheckSet.Add((item.courseOfferingId, item.type)))
-                return Result.Failure<UpdateEnrollmentValidationDto>(EnrollmentErrors.DublicatedSessionWithSameType);
+                return Result.Failure(EnrollmentErrors.DuplicatedSessionWithSameType);
 
             if (courseGroupMap.TryGetValue(item.courseOfferingId, out var currentGroup))
             {
                 if (currentGroup != item.groupNumber)
-                    return Result.Failure<UpdateEnrollmentValidationDto>(EnrollmentErrors.DublicatedGroup);
+                    return Result.Failure(EnrollmentErrors.DuplicatedGroup);
             }
             else
                 courseGroupMap[item.courseOfferingId] = item.groupNumber;
         }
 
-        if (HasOverlapPerDay(validationResult.sessionDetails))
-            return Result.Failure<UpdateEnrollmentValidationDto>(EnrollmentErrors.DublicatedSessions);
+        if (HasOverlapPerDay(sessionDetails))
+            return Result.Failure(EnrollmentErrors.DublicatedSessions);
 
-        return Result.Success(validationResult);
+        return Result.Success(sessionDetails);
     }
     private bool HasOverlapPerDay(List<SessionDetailsDto> sessionDetails)
     {

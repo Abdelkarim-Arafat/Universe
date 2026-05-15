@@ -1,10 +1,12 @@
-using Universe.Application.ExamCommitteeServices.Dtos;
 
 namespace Universe.Application.ExamCommitteeServices.Commands.Update;
 
-public class UpdateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateExamCommitteeCommand, Result>
+public class UpdateExamCommitteeCommandHandler
+    (IUnitOfWork unitOfWork,
+    ICacheService cacheService) : IRequestHandler<UpdateExamCommitteeCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(UpdateExamCommitteeCommand request, CancellationToken cancellationToken)
     {
@@ -30,6 +32,9 @@ public class UpdateExamCommitteeCommandHandler(IUnitOfWork unitOfWork) : IReques
 
         _unitOfWork.Repository<ExamCommittee>().Update(examCommittee);
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        var tags = ExamCommitteeCacheKeys.Tags(examCommittee.ExamTermId);
+        await _cacheService.RemoveByTagAsync(tags, cancellationToken);
 
         return Result.Success();
     }
