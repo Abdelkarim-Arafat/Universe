@@ -48,52 +48,16 @@ public class UserRepository
 	//    _context.Students.ExecuteUpdateAsync();
 	//    await _context.SaveChangesAsync(cancellationToken);
 	//}
-	public async Task<PersonalDataResponse?> GetStudentPersonalDataAsync(
-	Guid studentId,
-	CancellationToken cancellationToken = default)
-	    => await _context.Students
-			.Where(x => x.Id == studentId)
-			.ProjectToType<PersonalDataResponse>()
-			.FirstOrDefaultAsync(cancellationToken);
-	public async Task<ContactDataResponse?> GetStudentContactDataAsync(
-	Guid studentId,
-	CancellationToken cancellationToken = default)
-	    => await _context.Students
-			.Where(x => x.Id == studentId)
-			.Select(x => x.ContactInfo)
-			.ProjectToType<ContactDataResponse>()
-			.FirstOrDefaultAsync(cancellationToken);
-	public async Task<ParentDataResponse?> GetStudentParentDataAsync(
-	Guid studentId,
-	CancellationToken cancellationToken = default)
-		=> await _context.Students
-			.AsNoTracking()
-			.Where(x => x.Id == studentId)
-			.Select(x => x.ParentInfo)
-			.ProjectToType<ParentDataResponse>()
-			.FirstOrDefaultAsync(cancellationToken);
-	public async Task<MilitaryDataResponse?> GetStudentMilitaryDataAsync(
-	Guid studentId,
-	CancellationToken cancellationToken = default)
-		=> await _context.Students
-			.Where(x => x.Id == studentId)
-			.Select(x => x.MilitaryInfo!)
-			.ProjectToType<MilitaryDataResponse>()
-			.FirstOrDefaultAsync(cancellationToken);
-    //public async Task UpdatePersonalDataAsync(Student student, CancellationToken cancellationToken)
-    //{
-    //    _context.Students.ExecuteUpdateAsync();
-    //    await _context.SaveChangesAsync(cancellationToken);
-    //}
 
-    public async Task<GraduationDetailsResponse?> GetStudentGraduationDetailsAsync(Guid studentId, CancellationToken cancellationToken)
+
+    public async Task<GraduationDetailsResponse?> GetStudentGraduationDetailsAsync(Guid studentId, Guid programId, CancellationToken cancellationToken)
     {
-        var gpa = await CalculateGpaAsync(studentId, null, cancellationToken);
+        var gpa = await CalculateGpaAsync(studentId, null, programId, cancellationToken);
 
         return await _context.Students
             .AsNoTracking()
             .Where(x => x.Id == studentId)
-            .Select(x => new GraduationDetailsResponse(
+            .Select(x => new GraduationDetailsResponse (
                 gpa,
                 x.GraduationYear,
                 x.GraduationSemester,
