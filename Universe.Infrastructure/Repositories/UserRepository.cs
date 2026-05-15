@@ -156,9 +156,8 @@ public class UserRepository
             .GetProgramGradesAsync(programId, cancellationToken);
 
         var courseData = await _context.Enrollments
-            .AsNoTracking()
             .Where(e => e.StudentId == studentId
-                   && e.Status == EnrollmentStatus.Passed
+                   && e.Status != EnrollmentStatus.InProgress
                    && e.CourseOffering.IsIncludedInGpa
                    && (semesterId == null || e.CourseOffering.SemesterId == semesterId)
                    && !e.IsDeleted)
@@ -228,30 +227,35 @@ public class UserRepository
         return studentsLevelDictionary;
     }
 
-    public async Task<List<StudentExam>> GetStudentExamsTablesAsync
-    (Guid studentId, List<Guid> currentCoursesIds, List<Guid> examTermsIds, CancellationToken cancellationToken)
+    public async Task<List<StudentExam>> GetStudentExamsTablesAsync(
+    Guid studentId,
+    List<Guid> currentCoursesIds,
+    List<Guid> examTermsIds,
+    CancellationToken cancellationToken)
     {
         var examsData = await _context.CourseOfferingExams
             .Where(ce => !ce.IsDeleted
                          && examTermsIds.Contains(ce.ExamTermId)
                          && currentCoursesIds.Contains(ce.CourseOfferingId))
-            .Select(ce => new
+            .Select(coe => new
             {
-                ce.ExamTerm.ExamType,
-                ce.Date,
-                ce.StartTime,
-                ce.EndTime,
-                CourseName = ce.CourseOffering.Course.Name,
-                CourseCode = ce.CourseOffering.Course.Code,
-                StudentSeatInfo = _context.ExamSeats
-                    .Where(s => !s.IsDeleted
-                             && s.StudentId == studentId
-                             && s.CourseOfferingCommittee.CourseOfferingExamId == ce.Id)
-                    .Select(s => new
+                coe.ExamTerm.ExamType,
+                coe.Date,
+                coe.StartTime,
+                coe.EndTime,
+                CourseName = coe.CourseOffering.Course.Name,
+                CourseCode = coe.CourseOffering.Course.Code,
+
+                Seat = _context.ExamSeats
+                    .Where(seat => !seat.IsDeleted
+                              && seat.StudentId == studentId
+                              && seat.CourseOfferingCommittee.CourseOfferingExamId == coe.Id)
+                    .Select(seat => new
                     {
-                        s.SeatNumber,
-                        s.CourseOfferingCommittee.ExamCommittee.CommitteeNumber,
-                        Place = $"{s.CourseOfferingCommittee.ExamCommittee.Room.RoomNumber} - {s.CourseOfferingCommittee.ExamCommittee.Room.Building.Name}"
+                        seat.SeatNumber,
+                        seat.CourseOfferingCommittee.ExamCommittee.CommitteeNumber,
+                        RoomNumber = seat.CourseOfferingCommittee.ExamCommittee.Room.RoomNumber,
+                        BuildingName = seat.CourseOfferingCommittee.ExamCommittee.Room.Building.Name
                     })
                     .FirstOrDefault()
             })
@@ -262,15 +266,15 @@ public class UserRepository
             .Select(group => new StudentExam
             (
                 group.Key.ToString(),
-                group.Select(x => new StudentExamPerCourse(
-                    x.Date,
-                    x.CourseName,
-                    x.CourseCode,
-                    x.StartTime,
-                    x.EndTime,
-                    x.StudentSeatInfo?.Place ?? "No Place Now ^_^",
-                    x.StudentSeatInfo!.SeatNumber,
-                    x.StudentSeatInfo!.CommitteeNumber   // check if info is null
+                group.Select(info => new StudentExamPerCourse(
+                    info.Date,
+                    info.CourseName,
+                    info.CourseCode,
+                    info.StartTime,
+                    info.EndTime,
+                    info.Seat != null ? $"{info.Seat.RoomNumber} - {info.Seat.BuildingName}" : "No Place Assigned",
+                    info.Seat?.SeatNumber ?? 0,  
+                    info.Seat?.CommitteeNumber ?? 0
                 )).ToList()
             ))
             .ToList();

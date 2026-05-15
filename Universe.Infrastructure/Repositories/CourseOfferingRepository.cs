@@ -79,14 +79,18 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
 
     public async Task<List<CourseOfferingAssessmentResponse>> GetCourseOfferingAssessmentsForViewAsync
         (Guid CourseOfferingId, CancellationToken cancellationToken)
-       => await _context.CourseOfferingAssessments
-       .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
+       => await _context.CourseOfferings
+       .Where(c => c.Id == CourseOfferingId && !c.IsDeleted)
        .Select(c => new CourseOfferingAssessmentResponse(
-           c.Id,
-           c.Type,
-           c.MaxScore
-       ))
-       .ToListAsync(cancellationToken);
+           c.Assessments
+           .Where(a => !a.IsDeleted)
+           .Select(a => new AssessmentDto(
+               a.Id,
+               a.Type,
+               a.MaxScore
+           )).ToList(),
+           c.TotalGrade
+       )).ToListAsync(cancellationToken);
 
 
     // راجع
