@@ -102,7 +102,6 @@ public class UserRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-
     public async Task<PreviousQualificationResponse?> GetStudentPreviousQualificationAsync(
         Guid studentId,
         CancellationToken cancellationToken = default)
@@ -118,7 +117,6 @@ public class UserRepository
                 x.PreviousQualification.AdmissionType
             ))
             .FirstOrDefaultAsync(cancellationToken);
-
 
     public async Task<List<Student>> GetStudentsByIdsAsync(
     List<Guid> studentIds,
@@ -158,12 +156,6 @@ public class UserRepository
 		!x.Student.IsDeleted &&
 		(userId == null || x.StudentId != userId),
 		cancellationToken);
-
-	public async Task<Guid?> GetCurrentProgram(Guid StudentId, CancellationToken cancellationToken)
-     => await _context.StudentAcademicPrograms
-         .Where(x =>!x.IsDeleted && x.StudentId == StudentId && x.Currently)
-         .Select(x => x.AcademicProgramId)
-         .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<decimal> CalculateCreditHoursAsync
         (Guid StudentId, Guid? SemesterId, CancellationToken cancellationToken)

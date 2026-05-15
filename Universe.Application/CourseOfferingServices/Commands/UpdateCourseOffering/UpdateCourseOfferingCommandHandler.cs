@@ -65,8 +65,8 @@ internal class UpdateCourseOfferingCommandHandler (
         await _cacheService.RemoveAsync(CourseOfferingCacheKeys.LevelCourses(course.LevelId, course.Id), cancellationToken);
         await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId), cancellationToken);
 
-        var response = (course, semester).Adapt<CourseOfferingWithDetailsResponse>();
+        var response = (course).Adapt<CourseOfferingWithDetailsResponse>();
 
-        return Result.Success(response!);
+        return Result.Success(response);
     }
 }
