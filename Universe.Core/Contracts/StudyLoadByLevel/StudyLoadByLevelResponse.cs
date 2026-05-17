@@ -5,9 +5,9 @@ namespace Universe.Core.Contracts.StudyLoadByLevel;
 
 public record StudyLoadByLevelResponse(
     Guid Id,
-    Guid LevelId,
-    string LevelName,
     TermType SemesterName,
+    string LevelName,
+    Guid LevelId,
     int MinHours,
     int MaxHours
 );

@@ -12,14 +12,14 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
         if (!isUserExist)
             return Result.Failure<EnrollmentPageResponse>(StudentErrors.UserNotFound);
 
-        var isSemesterExist = await _unitOfWork.AcademicYearRepository
-            .IsSemesterExistAsync(query.SemesterId, cancellationToken);
+        var semester = await _unitOfWork.AcademicYearRepository
+            .GetSemesterByIdAsync(query.SemesterId, cancellationToken);
 
-        if (!isSemesterExist)
+        if (semester == null)
             return Result.Failure<EnrollmentPageResponse>(SemesterErrors.NotFound);
 
         var isLevelExist = await _unitOfWork.LevelRepository
-            .IsLevelExistAsync(query.LevelId, cancellationToken);
+            .IsExistAsync(query.LevelId, cancellationToken);
 
         if (!isLevelExist)
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.NotFound);
@@ -41,7 +41,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             return Result.Failure<EnrollmentPageResponse>(LevelErrors.StudentLevelNotFound);
 
         var studentLevelStudyLoad = await _unitOfWork.StudyLoadByLevelRepository
-            .GetLevelStudyLoadAsync(studentCurrentLevelId.Value, query.SemesterId, cancellationToken);
+            .GetLevelStudyLoadAsync(studentCurrentLevelId.Value, semester.Name, cancellationToken);
 
         if (studentLevelStudyLoad == null)
             return Result.Failure<EnrollmentPageResponse>(StudyLoadByLevelErrors.NotFound);

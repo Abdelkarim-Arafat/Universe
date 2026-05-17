@@ -32,15 +32,15 @@ public class GetStudyLoadByLevelsQueryHandler(
                 var query = _unitOfWork.Repository<StudyLoadByLevel>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(x => x.AcademicProgramId == request.ProgramId)
+                    .Where(studyLoad => studyLoad.AcademicProgramId == request.ProgramId)
                     .ApplySearch(filter.SearchValue, x => x.Level.Name)
-                    .Select(x => new StudyLoadByLevelResponse(
-                        x.Id,
-                        x.LevelId,
-                        x.Level.Name,
-                        x.Sememester.Name,
-                        x.MinHours,
-                        x.MaxHours
+                    .Select(studyLoad => new StudyLoadByLevelResponse(
+                        studyLoad.Id,
+                        studyLoad.SemesterType,
+                        studyLoad.Level.Name,
+                        studyLoad.LevelId,
+                        studyLoad.MinHours,
+                        studyLoad.MaxHours
                     ));
 
                 return await PaginationList<StudyLoadByLevelResponse>

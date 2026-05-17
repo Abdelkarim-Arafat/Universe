@@ -17,10 +17,6 @@ internal class SemesterConfiguration : IEntityTypeConfiguration<Semester>
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.HasMany(x => x.StudyLoadByLevels)
-            .WithOne(x => x.Sememester)
-            .HasForeignKey(x => x.SemesterId);
-
         builder.HasData(AcademicYearSeed.Semesters);
     }
 }

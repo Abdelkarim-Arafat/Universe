@@ -29,9 +29,9 @@ public class UpdateStudyLoadByLevelCommandHandler(
 
         var response = new StudyLoadByLevelResponse(
             studyLoad.Id,
-            studyLoad.LevelId,
+            studyLoad.SemesterType,
             studyLoad.Level.Name,
-            studyLoad.Sememester.Name,
+            studyLoad.LevelId,
             studyLoad.MinHours,
             studyLoad.MaxHours
         );

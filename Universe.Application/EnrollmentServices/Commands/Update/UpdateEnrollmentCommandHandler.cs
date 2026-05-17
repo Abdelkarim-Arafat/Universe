@@ -1,5 +1,4 @@
-﻿using Universe.Core.Contracts.Enrollments;
-using Universe.Core.Enums;
+﻿using Universe.Core.Enums;
 
 namespace Universe.Application.EnrollmentServices.Commands.Update;
 public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) 
@@ -24,7 +23,6 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
             return Result.Failure<List<StudentExistingEnrollment>>(result.Error);
 
         var sessionDetailsDict = incomingSessionsDetails.ToDictionary(s => s.sessionId);
-
 
         var existingEnrollments = await _unitOfWork.EnrollmentRepository
                .GetExistingEnrollmentIncludingSessionsAsync(command.StudentId, command.SemesterId, cancellationToken);
@@ -202,10 +200,10 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
         if (!isUserExist)
             return Result.Failure(StudentErrors.UserNotFound);
 
-        var isSemesterExist = await _unitOfWork.AcademicYearRepository
-            .IsSemesterExistAsync(command.SemesterId, cancellationToken);
+        var semester = await _unitOfWork.AcademicYearRepository
+            .GetSemesterByIdAsync(command.SemesterId, cancellationToken);
 
-        if (!isSemesterExist)
+        if (semester == null)
             return Result.Failure(SemesterErrors.NotFound);
 
         var studentCurrentProgramId = await _unitOfWork.AcademicProgramRepository
@@ -223,9 +221,9 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
 
         if (!studentCurrentLevelId.HasValue)
             return Result.Failure(LevelErrors.StudentLevelNotFound);
-        
+
         var levelStudyLoad = await _unitOfWork.StudyLoadByLevelRepository
-            .GetLevelStudyLoadAsync(studentCurrentLevelId.Value, command.SemesterId, cancellationToken);
+            .GetLevelStudyLoadAsync(studentCurrentLevelId.Value, semester.Name, cancellationToken);
 
         if (levelStudyLoad == null)
             return Result.Failure(StudyLoadByLevelErrors.NotFound);

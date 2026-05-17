@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Universe.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class intitial : Migration
+    public partial class again : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,7 @@ namespace Universe.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -96,10 +96,10 @@ namespace Universe.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     RoomNumber = table.Column<int>(type: "int", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
-                    RoomType = table.Column<int>(type: "int", nullable: false),
+                    RoomType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BuildingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -185,6 +185,7 @@ namespace Universe.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    RequirementType = table.Column<int>(type: "int", nullable: true),
                     CollegeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -284,8 +285,8 @@ namespace Universe.Infrastructure.Migrations
                     Code = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
                     MinScore = table.Column<int>(type: "int", nullable: false),
                     MaxScore = table.Column<int>(type: "int", nullable: false),
-                    MinGradePoint = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MaxGradePoint = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MinGradePoint = table.Column<decimal>(type: "decimal(3,2)", precision: 3, scale: 2, nullable: false),
+                    MaxGradePoint = table.Column<decimal>(type: "decimal(3,2)", precision: 3, scale: 2, nullable: false),
                     AcademicProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -571,6 +572,9 @@ namespace Universe.Infrastructure.Migrations
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true),
                     PlaceOfBirth = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    GraduationYear = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GraduationSemester = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GraduationProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NationalIdOrPassport = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     MaritalStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ContactInfo_City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -594,13 +598,12 @@ namespace Universe.Infrastructure.Migrations
                     PreviousQualification_TotalGrade = table.Column<decimal>(type: "decimal(6,2)", nullable: false),
                     PreviousQualification_AdmissionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MilitaryInfo_MilitaryStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    MilitaryInfo_MilitaryNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    MilitaryInfo_DecisionNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    MilitaryInfo_MilitaryNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MilitaryInfo_DecisionNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     MilitaryInfo_DecisionDate = table.Column<DateOnly>(type: "date", nullable: true),
                     MilitaryInfo_EnrollmentDate = table.Column<DateOnly>(type: "date", nullable: true),
                     MilitaryInfo_EndDate = table.Column<DateOnly>(type: "date", nullable: true),
                     AdvisorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CollegeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -620,12 +623,6 @@ namespace Universe.Infrastructure.Migrations
                         name: "FK_Students_AspNetUsers_Id",
                         column: x => x.Id,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Students_Colleges_CollegeId",
-                        column: x => x.CollegeId,
-                        principalTable: "Colleges",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -905,7 +902,7 @@ namespace Universe.Infrastructure.Migrations
                     StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AcademicProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: true),
                     Currently = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1261,6 +1258,17 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Buildings",
+                columns: new[] { "Id", "Code", "CreatedAt", "CreatedById", "DeletedAt", "IsDeleted", "Name", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"), "LIB", new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Central Library", null, null },
+                    { new Guid("019dfa7b-3b1a-7b3a-9e1d-4014a33a997f"), "ADM01", new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Main Administration Building", null, null },
+                    { new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"), "COMP", new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Faculty of Computing", null, null },
+                    { new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"), "LABS", new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Scientific Laboratories", null, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Colleges",
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DeletedAt", "Description", "ImageUrl", "IsDeleted", "MaxGpa", "Name", "UpdatedAt", "UpdatedById" },
                 values: new object[] { new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, false, 0m, "Computers and Artificial Intelligence", null, null });
@@ -1278,6 +1286,19 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AcademicYears",
+                columns: new[] { "Id", "CollegeId", "CreatedAt", "CreatedById", "DeletedAt", "EndDate", "IsDeleted", "Name", "StartDate", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 8, 31), false, "2020-2021", new DateOnly(2020, 9, 1), null, null },
+                    { new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 8, 31), false, "2021-2022", new DateOnly(2021, 9, 1), null, null },
+                    { new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 8, 31), false, "2022-2023", new DateOnly(2022, 9, 1), null, null },
+                    { new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 8, 31), false, "2023-2024", new DateOnly(2023, 9, 1), null, null },
+                    { new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 8, 31), false, "2024-2025", new DateOnly(2024, 9, 1), null, null },
+                    { new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 8, 31), false, "2025-2026", new DateOnly(2025, 9, 1), null, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AcademicProgramId", "AccessFailedCount", "CollegeId", "ConcurrencyStamp", "DeletedAt", "Email", "EmailConfirmed", "ImageUrl", "IsDeleted", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StudentId", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
@@ -1287,12 +1308,252 @@ namespace Universe.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Courses",
+                columns: new[] { "Id", "Code", "CollegeId", "CreatedAt", "CreatedById", "DeletedAt", "Description", "IsDeleted", "Name", "RequirementType", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019df349-a51c-7aba-9caf-95890ee5ba62"), "CS101", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Introduction to programming concepts.", false, "Programming 1", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-958a05c9c32a"), "CS102", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Advanced programming and problem solving.", false, "Programming 2", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-958b81dee3d6"), "CS103", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Concepts of OOP and design principles.", false, "Object Oriented Programming", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-958c542ea45f"), "CS201", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Data organization and structures.", false, "Data Structures", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-958d58bae05b"), "CS202", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Algorithm design and analysis.", false, "Algorithms", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-958e1b56b349"), "CS203", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Database design and SQL.", false, "Database Systems", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-958f9e72f562"), "CS204", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Concepts of OS and processes.", false, "Operating Systems", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-9590bdb364c0"), "CS205", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Network architecture and protocols.", false, "Computer Networks", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-9591262e88f8"), "CS301", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Software development lifecycle.", false, "Software Engineering", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-95920fdf4a77"), "AI301", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Introduction to AI concepts.", false, "Artificial Intelligence", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-9593115238f8"), "AI302", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Supervised and unsupervised learning.", false, "Machine Learning", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-9594f9d4ca6a"), "AI303", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Neural networks and deep models.", false, "Deep Learning", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-9595b8b7914a"), "AI304", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Image processing and vision systems.", false, "Computer Vision", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-959678c41dea"), "AI305", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Text processing and NLP techniques.", false, "Natural Language Processing", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-95977f4e315c"), "CS302", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Security principles and practices.", false, "Cyber Security", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-9598a067e97e"), "CS303", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Encryption and security algorithms.", false, "Cryptography", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-9599074ce97b"), "CS304", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Concepts of distributed computing.", false, "Distributed Systems", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-959aa16694f7"), "CS305", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Cloud platforms and services.", false, "Cloud Computing", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-959b0bc724f7"), "CS306", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "User interface and UX design.", false, "Human Computer Interaction", null, null, null },
+                    { new Guid("019df349-a51c-7aba-9caf-959c5b7e0ee1"), "CS307", new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Design of compilers and interpreters.", false, "Compiler Design", null, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Rooms",
+                columns: new[] { "Id", "BuildingId", "Capacity", "CreatedAt", "CreatedById", "DeletedAt", "IsDeleted", "Name", "RoomNumber", "RoomType", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019dfaa3-92f1-7d12-840b-0356789e840b"), new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"), 40, new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Mechanical Workshop", 15, "Workshop", null, null },
+                    { new Guid("019dfaa3-92f1-7d12-840b-2da178d2adeb"), new Guid("019dfa7b-3b1a-7b3a-9e1d-4014a33a997f"), 60, new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Board of Directors Hall", 500, "ClassRoom", null, null },
+                    { new Guid("019dfaa3-92f1-7d12-840b-4014a33a997f"), new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"), 200, new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Steve Jobs Hall", 101, "LectureHall", null, null },
+                    { new Guid("019dfaa3-92f1-7d12-840b-84cb6b07a459"), new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"), 100, new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Quiet Study Zone", 1, "ClassRoom", null, null },
+                    { new Guid("019dfaa3-92f1-7d12-840b-a45984cb6b07"), new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"), 45, new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, "E-Learning Center", 2, "LanguageLab", null, null },
+                    { new Guid("019dfaa3-92f1-7d12-840b-b67175b29c14"), new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"), 25, new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Cyber Security Lab", 302, "ComputerLab", null, null },
+                    { new Guid("019dfaa3-92f1-7d12-840b-ddcc7f909a82"), new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"), 30, new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, "Newton Physics Lab", 10, "ScientificLab", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Services",
+                columns: new[] { "Id", "CollegeId", "CreatedAt", "CreatedById", "DeletedAt", "Description", "IsActive", "IsDeleted", "Name", "Price", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019df8a8-8616-75c5-a883-d313c0e6105e"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Request official academic transcript.", true, false, "Transcript Request", 100m, null, null },
+                    { new Guid("019df8a8-8618-7a77-b23e-8622839dba17"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Issue enrollment certificate.", true, false, "Enrollment Certificate", 50m, null, null },
+                    { new Guid("019df8a8-8618-7a77-b23e-8623a7995017"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Withdraw from a registered course.", true, false, "Course Withdrawal", 75m, null, null },
+                    { new Guid("019df8a8-8618-7a77-b23e-8624951a0f61"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Request re-evaluation of exam results.", true, false, "Regrade Request", 60m, null, null },
+                    { new Guid("019df8a8-8618-7a77-b23e-86258a38447f"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Issue replacement student ID card.", true, false, "ID Replacement", 40m, null, null },
+                    { new Guid("019df8a8-8618-7a77-b23e-8626f39bba2e"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Request graduation certificate.", true, false, "Graduation Certificate", 150m, null, null },
+                    { new Guid("019df8a8-8618-7a77-b23e-8627e2d629d7"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Adjust course registration.", true, false, "Course Registration Adjustment", 80m, null, null },
+                    { new Guid("019df8a8-8618-7a77-b23e-8628f56ee1f8"), new Guid("019c1ea6-1738-71cb-8cfd-a90e126d177e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, "Register for courses after deadline.", true, false, "Late Registration", 120m, null, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId", "ApplicationUserId" },
                 values: new object[,]
                 {
                     { new Guid("0191a4b6-c4fc-752e-9d95-40b5e4e68054"), new Guid("019c0582-3473-7802-8f11-50cc1e6513d5"), null },
                     { new Guid("019c1e6e-5518-7479-b749-b1c5d4a21430"), new Guid("019c1e76-6f5a-7522-8327-a2a72adbbbe8"), null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Grades",
+                columns: new[] { "Id", "AcademicProgramId", "Code", "CreatedAt", "CreatedById", "DeletedAt", "IsDeleted", "MaxGradePoint", "MaxScore", "MinGradePoint", "MinScore", "Name", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b98fd3fe384"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "A+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 4.00m, 100, 4.00m, 95, "Excellent High", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b99731825a5"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "A", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.99m, 94, 3.70m, 90, "Excellent", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b9a8ed4c213"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "B+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.69m, 89, 3.30m, 85, "Very Good High", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b9b4caa2568"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "B", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.29m, 84, 3.00m, 80, "Very Good", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b9cc785f14a"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "C+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.99m, 79, 2.70m, 75, "Good High", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b9dcedc1b35"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "C", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.69m, 74, 2.30m, 70, "Good", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b9ee24f9179"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "D+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.29m, 69, 2.00m, 65, "Fair High", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4b9f01fa845c"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "D", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 1.99m, 64, 1.00m, 60, "Fair", null, null },
+                    { new Guid("019dfa31-42cc-7d42-82ad-4ba0d37d66eb"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), "F", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 0.00m, 59, 0.00m, 0, "Failed", null, null },
+                    { new Guid("019e020c-1514-7bfa-82ea-af1f399f879a"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "A+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 4.00m, 100, 4.00m, 95, "Excellent High", null, null },
+                    { new Guid("019e020c-1514-7bfa-82ea-af20fecac15e"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "A", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.99m, 94, 3.70m, 90, "Excellent", null, null },
+                    { new Guid("019e020c-1514-7bfa-82ea-af216971a0ec"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "B+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.69m, 89, 3.30m, 85, "Very Good High", null, null },
+                    { new Guid("019e020c-1514-7bfa-82ea-af22fca2beca"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "B", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.29m, 84, 3.00m, 80, "Very Good", null, null },
+                    { new Guid("019e020c-1515-7cb1-b40b-df30c3ac9339"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "C+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.99m, 79, 2.70m, 75, "Good High", null, null },
+                    { new Guid("019e020c-1515-7cb1-b40b-df3125700042"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "C", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.69m, 74, 2.30m, 70, "Good", null, null },
+                    { new Guid("019e020c-1515-7cb1-b40b-df32510ebbca"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "D+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.29m, 69, 2.00m, 65, "Fair High", null, null },
+                    { new Guid("019e020c-1515-7cb1-b40b-df33238e9d43"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "D", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 1.99m, 64, 1.00m, 60, "Fair", null, null },
+                    { new Guid("019e020c-1515-7cb1-b40b-df34f31c38c8"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), "F", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 0.00m, 59, 0.00m, 0, "Failed", null, null },
+                    { new Guid("019e020c-dd27-799f-88db-57ca33299de0"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "A+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 4.00m, 100, 4.00m, 95, "Excellent High", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-81ff9315195a"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "A", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.99m, 94, 3.70m, 90, "Excellent", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-8200118212d4"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "B+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.69m, 89, 3.30m, 85, "Very Good High", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-8201287a9d3d"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "B", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.29m, 84, 3.00m, 80, "Very Good", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-8202ddc12c0d"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "C+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.99m, 79, 2.70m, 75, "Good High", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-8203dcfb21c1"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "C", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.69m, 74, 2.30m, 70, "Good", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-820419b21584"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "D+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.29m, 69, 2.00m, 65, "Fair High", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-820589af7293"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "D", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 1.99m, 64, 1.00m, 60, "Fair", null, null },
+                    { new Guid("019e020c-dd29-7ea3-967f-820623c9aad1"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), "F", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 0.00m, 59, 0.00m, 0, "Failed", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-3358fa7b1642"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "A+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 4.00m, 100, 4.00m, 95, "Excellent High", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-3359d169fc7d"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "A", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.99m, 94, 3.70m, 90, "Excellent", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-335a5d1d7019"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "B+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.69m, 89, 3.30m, 85, "Very Good High", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-335b999ecbdf"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "B", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.29m, 84, 3.00m, 80, "Very Good", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-335c4f8424a2"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "C+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.99m, 79, 2.70m, 75, "Good High", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-335d0c6b8cae"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "C", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.69m, 74, 2.30m, 70, "Good", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-335e09e78831"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "D+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.29m, 69, 2.00m, 65, "Fair High", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-335f29698be9"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "D", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 1.99m, 64, 1.00m, 60, "Fair", null, null },
+                    { new Guid("019e020d-4219-7d3c-9f78-33605071bfc8"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), "F", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 0.00m, 59, 0.00m, 0, "Failed", null, null },
+                    { new Guid("019e020d-89b1-742e-a969-8828c4f7ff4d"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "A+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 4.00m, 100, 4.00m, 95, "Excellent High", null, null },
+                    { new Guid("019e020d-89b1-742e-a969-88297a435f3e"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "A", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.99m, 94, 3.70m, 90, "Excellent", null, null },
+                    { new Guid("019e020d-89b1-742e-a969-882a3004369f"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "B+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.69m, 89, 3.30m, 85, "Very Good High", null, null },
+                    { new Guid("019e020d-89b2-7e48-89a1-387739f72edb"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "B", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 3.29m, 84, 3.00m, 80, "Very Good", null, null },
+                    { new Guid("019e020d-89b2-7e48-89a1-38781a368e67"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "C+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.99m, 79, 2.70m, 75, "Good High", null, null },
+                    { new Guid("019e020d-89b2-7e48-89a1-387980999f01"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "C", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.69m, 74, 2.30m, 70, "Good", null, null },
+                    { new Guid("019e020d-89b2-7e48-89a1-387aa29369f1"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "D+", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 2.29m, 69, 2.00m, 65, "Fair High", null, null },
+                    { new Guid("019e020d-89b2-7e48-89a1-387bab55e7c3"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "D", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 1.99m, 64, 1.00m, 60, "Fair", null, null },
+                    { new Guid("019e020d-89b2-7e48-89a1-387ceff9e85f"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), "F", new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc), null, null, false, 0.00m, 59, 0.00m, 0, "Failed", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Levels",
+                columns: new[] { "Id", "AcademicProgramId", "CreatedAt", "CreatedById", "DeletedAt", "IsDeleted", "MaxHours", "MinHours", "Name", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019df4f8-4012-7469-9aa8-7cf36f1d180a"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 36, 0, "Level 1", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cf4d268fbec"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 72, 37, "Level 2", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cf568231cba"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 108, 73, "Level 3", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cf6124b1ecb"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 144, 109, "Level 4", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cf7ad92b89e"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 36, 0, "Level 1", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cf8937d84f4"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 72, 37, "Level 2", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cf9e82c4b82"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 108, 73, "Level 3", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cfa9abd172d"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 144, 109, "Level 4", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cfb22e7bb31"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 34, 0, "Level 1", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cfcf91e0ee9"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 68, 35, "Level 2", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cfdd431525b"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 102, 69, "Level 3", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cfeb8e8d41d"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 138, 103, "Level 4", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7cffb491c63b"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 38, 0, "Level 1", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7d00e6c3ddce"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 76, 39, "Level 2", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7d01aebd87c1"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 114, 77, "Level 3", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7d024664404f"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 150, 115, "Level 4", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7d033b7e618f"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 36, 0, "Level 1", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7d049703d7cb"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 72, 37, "Level 2", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7d05feaad5d1"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 108, 73, "Level 3", null, null },
+                    { new Guid("019df4f8-4012-7469-9aa8-7d065b1fbceb"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 144, 109, "Level 4", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Semesters",
+                columns: new[] { "Id", "AcademicYearId", "CreatedAt", "CreatedById", "DeletedAt", "EndDate", "IsCurrent", "IsDeleted", "IsResultAnnounced", "Name", "StartDate", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019df776-9108-75b2-9389-ac1049b0159f"), new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 1, 31), false, false, true, 1, new DateOnly(2020, 9, 1), null, null },
+                    { new Guid("019df776-9108-75b2-9389-ac110706f6d0"), new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 6, 30), true, false, true, 2, new DateOnly(2021, 2, 1), null, null },
+                    { new Guid("019df776-9108-75b2-9389-ac1257cd67fe"), new Guid("019df776-1f8f-76e6-abf8-02c380bbdf4f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2021, 8, 31), false, false, true, 3, new DateOnly(2021, 7, 1), null, null },
+                    { new Guid("019df776-bc77-7ca8-a0f6-3c3845c23a04"), new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 1, 31), true, false, true, 1, new DateOnly(2021, 9, 1), null, null },
+                    { new Guid("019df776-bc77-7ca8-a0f6-3c39222b791a"), new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 6, 30), false, false, true, 2, new DateOnly(2022, 2, 1), null, null },
+                    { new Guid("019df776-bc77-7ca8-a0f6-3c3a1ab74d05"), new Guid("019df776-1f8f-76e6-abf8-02c488f9b604"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2022, 8, 31), false, false, true, 3, new DateOnly(2022, 7, 1), null, null },
+                    { new Guid("019df776-f240-7e2a-bef0-a153c6a90cdc"), new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 1, 31), false, false, true, 1, new DateOnly(2022, 9, 1), null, null },
+                    { new Guid("019df776-f240-7e2a-bef0-a1549332c599"), new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 6, 30), false, false, true, 2, new DateOnly(2023, 2, 1), null, null },
+                    { new Guid("019df776-f240-7e2a-bef0-a1557960866d"), new Guid("019df776-1f8f-76e6-abf8-02c591133e7d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2023, 8, 31), false, false, true, 3, new DateOnly(2023, 7, 1), null, null },
+                    { new Guid("019df777-2097-7f6a-84f3-97e02fa63d59"), new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 1, 31), false, false, true, 1, new DateOnly(2023, 9, 1), null, null },
+                    { new Guid("019df777-2097-7f6a-84f3-97e1d0a5750b"), new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 6, 30), false, false, true, 2, new DateOnly(2024, 2, 1), null, null },
+                    { new Guid("019df777-2097-7f6a-84f3-97e210d2106a"), new Guid("019df776-1f8f-76e6-abf8-02c6d020e3cf"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2024, 8, 31), true, false, true, 3, new DateOnly(2024, 7, 1), null, null },
+                    { new Guid("019df777-504a-712e-b906-df4fabc6b69e"), new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 1, 31), false, false, false, 1, new DateOnly(2024, 9, 1), null, null },
+                    { new Guid("019df777-504a-712e-b906-df50def24feb"), new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 6, 30), true, false, false, 2, new DateOnly(2025, 2, 1), null, null },
+                    { new Guid("019df777-504a-712e-b906-df51d6c28ef4"), new Guid("019df776-1f8f-76e6-abf8-02c790dab613"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2025, 8, 31), false, false, false, 3, new DateOnly(2025, 7, 1), null, null },
+                    { new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 1, 31), false, false, false, 1, new DateOnly(2025, 9, 1), null, null },
+                    { new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 6, 30), true, false, false, 2, new DateOnly(2026, 2, 1), null, null },
+                    { new Guid("019df777-7a6a-7c4b-af7e-6a7b7b27fa44"), new Guid("019df776-1f8f-76e6-abf8-02c8c484f18c"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, new DateOnly(2026, 8, 31), false, false, false, 3, new DateOnly(2026, 7, 1), null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CourseOfferings",
+                columns: new[] { "Id", "AcademicProgramId", "CourseId", "CreatedAt", "CreatedById", "CreditHours", "DeletedAt", "IsDeleted", "IsIncludedInGpa", "IsOpenForControl", "IsOptional", "LevelId", "NumberOfGroups", "OptionalGroupCode", "SemesterId", "SuccessPercentage", "TotalGrade", "Type", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019dfd68-2592-7804-b003-edf2f934b392"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new Guid("019df349-a51c-7aba-9caf-9599074ce97b"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cf36f1d180a"), 2, null, new Guid("019df777-504a-712e-b906-df51d6c28ef4"), 50m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-2592-7804-b003-edf351a1d258"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new Guid("019df349-a51c-7aba-9caf-959aa16694f7"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cf4d268fbec"), 2, null, new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), 55m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-2592-7804-b003-edf43f0472eb"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new Guid("019df349-a51c-7aba-9caf-959b0bc724f7"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cf4d268fbec"), 3, null, new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), 55m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-2592-7804-b003-edf5375368d1"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new Guid("019df349-a51c-7aba-9caf-959c5b7e0ee1"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cf568231cba"), 2, null, new Guid("019df777-504a-712e-b906-df51d6c28ef4"), 60m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new Guid("019df349-a51c-7aba-9caf-95890ee5ba62"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cf7ad92b89e"), 2, null, new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), 50m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new Guid("019df349-a51c-7aba-9caf-958a05c9c32a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cf8937d84f4"), 2, null, new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), 50m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-5448-7bac-a12f-aa7174f6b010"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new Guid("019df349-a51c-7aba-9caf-958b81dee3d6"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cf9e82c4b82"), 2, null, new Guid("019df777-504a-712e-b906-df51d6c28ef4"), 55m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new Guid("019df349-a51c-7aba-9caf-958c542ea45f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cfa9abd172d"), 3, null, new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), 55m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-5448-7bac-a12f-aa73c25e495e"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new Guid("019df349-a51c-7aba-9caf-958d58bae05b"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cfb22e7bb31"), 2, null, new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), 55m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-5448-7bac-a12f-aa74e02a987d"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new Guid("019df349-a51c-7aba-9caf-958e1b56b349"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cfcf91e0ee9"), 2, null, new Guid("019df777-504a-712e-b906-df51d6c28ef4"), 60m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-7d5c-74be-9adc-de7dd1e252bd"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new Guid("019df349-a51c-7aba-9caf-958f9e72f562"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cfdd431525b"), 2, null, new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), 60m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-7d5d-76da-9139-52b1a45f0cf6"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new Guid("019df349-a51c-7aba-9caf-9590bdb364c0"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cfeb8e8d41d"), 2, null, new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), 60m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-7d5d-76da-9139-52b2b0563e46"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new Guid("019df349-a51c-7aba-9caf-9591262e88f8"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7cffb491c63b"), 1, null, new Guid("019df777-504a-712e-b906-df51d6c28ef4"), 65m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-7d5d-76da-9139-52b301bf0bb4"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new Guid("019df349-a51c-7aba-9caf-95920fdf4a77"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7d00e6c3ddce"), 1, null, new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), 65m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-7d5d-76da-9139-52b45425dfbc"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new Guid("019df349-a51c-7aba-9caf-9593115238f8"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7d01aebd87c1"), 1, null, new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), 65m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-a692-7f08-971c-2c8a3cc190cd"), new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"), new Guid("019df349-a51c-7aba-9caf-9594f9d4ca6a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, true, new Guid("019df4f8-4012-7469-9aa8-7d024664404f"), 1, "SEC-B", new Guid("019df777-504a-712e-b906-df51d6c28ef4"), 60m, 100m, "College", null, null },
+                    { new Guid("019dfd68-a692-7f08-971c-2c8ba2eb138f"), new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"), new Guid("019df349-a51c-7aba-9caf-9595b8b7914a"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, true, new Guid("019df4f8-4012-7469-9aa8-7d033b7e618f"), 2, "SEC-C", new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), 60m, 100m, "College", null, null },
+                    { new Guid("019dfd68-a692-7f08-971c-2c8c649f9da8"), new Guid("019df1d1-0356-789e-840b-56d31396608a"), new Guid("019df349-a51c-7aba-9caf-959678c41dea"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, true, new Guid("019df4f8-4012-7469-9aa8-7d049703d7cb"), 2, "SEC-D", new Guid("019df777-7a6a-7c4b-af7e-6a7affd69cb7"), 60m, 100m, "College", null, null },
+                    { new Guid("019dfd68-a692-7f08-971c-2c8df1a1fd0d"), new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"), new Guid("019df349-a51c-7aba-9caf-95977f4e315c"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7d05feaad5d1"), 1, null, new Guid("019df777-504a-712e-b906-df51d6c28ef4"), 65m, 100m, "Program", null, null },
+                    { new Guid("019dfd68-a692-7f08-971c-2c8e8bbca914"), new Guid("019df1d0-b671-75b2-9c14-69ce00131461"), new Guid("019df349-a51c-7aba-9caf-9598a067e97e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, 3m, null, false, true, false, false, new Guid("019df4f8-4012-7469-9aa8-7d065b1fbceb"), 1, null, new Guid("019df777-7a6a-7c4b-af7e-6a7903807bf7"), 65m, 100m, "Program", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CourseOfferingAssessments",
+                columns: new[] { "Id", "CourseOfferingId", "CreatedAt", "CreatedById", "DeletedAt", "IsDeleted", "MaxScore", "Type", "UpdatedAt", "UpdatedById" },
+                values: new object[,]
+                {
+                    { new Guid("019dfd6d-4d55-74fd-9659-521a1328449e"), new Guid("019dfd68-2592-7804-b003-edf2f934b392"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-521b47f7b9da"), new Guid("019dfd68-2592-7804-b003-edf2f934b392"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 2, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-521c0bc23ed0"), new Guid("019dfd68-2592-7804-b003-edf2f934b392"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 10, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-521db4714a1b"), new Guid("019dfd68-2592-7804-b003-edf351a1d258"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 50m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-521edadbeedd"), new Guid("019dfd68-2592-7804-b003-edf351a1d258"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 25m, 2, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-521f983c4154"), new Guid("019dfd68-2592-7804-b003-edf351a1d258"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 25m, 7, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5220eeac8ef6"), new Guid("019dfd68-2592-7804-b003-edf43f0472eb"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522196b3e3e2"), new Guid("019dfd68-2592-7804-b003-edf43f0472eb"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 6, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522235c95745"), new Guid("019dfd68-2592-7804-b003-edf43f0472eb"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 8, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5223b06879a8"), new Guid("019dfd68-2592-7804-b003-edf5375368d1"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 70m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5224ac8cfe76"), new Guid("019dfd68-2592-7804-b003-edf5375368d1"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 30m, 2, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-52250ddebeb3"), new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 50m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5226f41b1c02"), new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 25m, 6, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5227dd77ac47"), new Guid("019dfd68-2592-7804-b003-edf682ae1f8d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 25m, 10, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522819c6d43d"), new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5229e0278c84"), new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 5, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522a398ece4e"), new Guid("019dfd68-5448-7bac-a12f-aa70587164d3"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 8, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522bfe93d0db"), new Guid("019dfd68-5448-7bac-a12f-aa7174f6b010"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 70m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522c02c64110"), new Guid("019dfd68-5448-7bac-a12f-aa7174f6b010"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 30m, 7, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522d3922adf5"), new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 50m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522e68442586"), new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 25m, 2, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-522f348abd5f"), new Guid("019dfd68-5448-7bac-a12f-aa7242c9ea80"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 25m, 10, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523078141e2c"), new Guid("019dfd68-5448-7bac-a12f-aa73c25e495e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5231fedfaa23"), new Guid("019dfd68-5448-7bac-a12f-aa73c25e495e"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 40m, 8, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523203cfc55b"), new Guid("019dfd68-5448-7bac-a12f-aa74e02a987d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 80m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5233a14c80d7"), new Guid("019dfd68-5448-7bac-a12f-aa74e02a987d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 9, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523491c49da3"), new Guid("019dfd68-7d5c-74be-9adc-de7dd1e252bd"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5235615ad8b0"), new Guid("019dfd68-7d5c-74be-9adc-de7dd1e252bd"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 40m, 6, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5236775caeaa"), new Guid("019dfd68-7d5d-76da-9139-52b1a45f0cf6"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 70m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523766d785bb"), new Guid("019dfd68-7d5d-76da-9139-52b1a45f0cf6"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 30m, 5, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-52388ed2bb4c"), new Guid("019dfd68-7d5d-76da-9139-52b2b0563e46"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5239d097942a"), new Guid("019dfd68-7d5d-76da-9139-52b2b0563e46"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 40m, 4, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523a41158b63"), new Guid("019dfd68-7d5d-76da-9139-52b301bf0bb4"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 50m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523b94551137"), new Guid("019dfd68-7d5d-76da-9139-52b301bf0bb4"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 50m, 3, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523c1980f760"), new Guid("019dfd68-7d5d-76da-9139-52b45425dfbc"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523d144f7b4a"), new Guid("019dfd68-7d5d-76da-9139-52b45425dfbc"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 40m, 10, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523e925070ba"), new Guid("019dfd68-a692-7f08-971c-2c8a3cc190cd"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 70m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-523f2eb83120"), new Guid("019dfd68-a692-7f08-971c-2c8a3cc190cd"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 30m, 8, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-524006c646b2"), new Guid("019dfd68-a692-7f08-971c-2c8ba2eb138f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-52413d106d4e"), new Guid("019dfd68-a692-7f08-971c-2c8ba2eb138f"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 40m, 7, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5242bf73d625"), new Guid("019dfd68-a692-7f08-971c-2c8c649f9da8"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 80m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-524356673eb5"), new Guid("019dfd68-a692-7f08-971c-2c8c649f9da8"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 20m, 9, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-524462ed43e7"), new Guid("019dfd68-a692-7f08-971c-2c8df1a1fd0d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 60m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-52451286622f"), new Guid("019dfd68-a692-7f08-971c-2c8df1a1fd0d"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 40m, 6, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-524679c16b31"), new Guid("019dfd68-a692-7f08-971c-2c8e8bbca914"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 70m, 1, null, null },
+                    { new Guid("019dfd6d-4d55-74fd-9659-5247363bb793"), new Guid("019dfd68-a692-7f08-971c-2c8e8bbca914"), new DateTime(2026, 5, 4, 8, 0, 0, 0, DateTimeKind.Utc), null, null, false, 30m, 2, null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1385,6 +1646,12 @@ namespace Universe.Infrastructure.Migrations
                 name: "IX_Buildings_Code",
                 table: "Buildings",
                 column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Buildings_Name",
+                table: "Buildings",
+                column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1499,12 +1766,6 @@ namespace Universe.Infrastructure.Migrations
                 column: "AcademicProgramId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Grades_Code",
-                table: "Grades",
-                column: "Code",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Levels_AcademicProgramId",
                 table: "Levels",
                 column: "AcademicProgramId");
@@ -1534,6 +1795,12 @@ namespace Universe.Infrastructure.Migrations
                 name: "IX_Rooms_BuildingId",
                 table: "Rooms",
                 column: "BuildingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_RoomNumber_BuildingId",
+                table: "Rooms",
+                columns: new[] { "RoomNumber", "BuildingId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Semesters_AcademicYearId",
@@ -1574,11 +1841,6 @@ namespace Universe.Infrastructure.Migrations
                 name: "IX_Students_AdvisorId",
                 table: "Students",
                 column: "AdvisorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Students_CollegeId",
-                table: "Students",
-                column: "CollegeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudyLoadByLevels_AcademicProgramId",

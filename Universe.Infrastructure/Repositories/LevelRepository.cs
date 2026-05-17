@@ -44,7 +44,7 @@ public class LevelRepository
             .Select(lv => lv.Id)
             .FirstOrDefaultAsync(cancellationToken);
     }
-    public async Task<bool> IsLevelExistAsync(Guid levelId, CancellationToken cancellationToken)
+    public async Task<bool> IsExistAsync(Guid levelId, CancellationToken cancellationToken)
     {
         return await _context.Levels.AnyAsync(lv => lv.Id == levelId && !lv.IsDeleted, cancellationToken);
     }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.StudyLoadByLevel;
-using Universe.Application.StudyLoadRuleServices.Dtos;
+﻿using Universe.Core.Contracts.StudyLoadByLevel;
+
 
 namespace Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;
 
@@ -16,24 +13,24 @@ public class AddStudyLoadByLevelCommandHandler(
 
     public async Task<Result<StudyLoadByLevelResponse>> Handle(AddStudyLoadByLevelCommand request, CancellationToken cancellationToken)
     {
-        if (await _unitOfWork.AcademicYearRepository
-            .GetSemesterByTypeAsync(request.AcademicYearId, request.SemesterType, cancellationToken) is not { } semester
-            ) return Result.Failure<StudyLoadByLevelResponse>(SemesterErrors.NotFound);
 
-        if (await _unitOfWork.StudyLoadByLevelRepository
-            .IsExistAsync(request.ProgramId, request.LevelId, semester.Id, cancellationToken)
-            ) return Result.Failure<StudyLoadByLevelResponse>(StudyLoadByLevelErrors.AlreadyExist);
+        var level = await _unitOfWork.LevelRepository
+            .GetByIdAsync(request.LevelId, cancellationToken);
 
-        if (await _unitOfWork.LevelRepository
-            .GetByIdAsync(request.LevelId, cancellationToken) is not { } level
-            ) return Result.Failure<StudyLoadByLevelResponse>(LevelErrors.NotFound);
+        if (level == null)
+            return Result.Failure<StudyLoadByLevelResponse>(LevelErrors.NotFound);
 
+        var isStudyLoadLevelExist = await _unitOfWork.StudyLoadByLevelRepository
+            .IsExistAsync(request.ProgramId, request.LevelId, request.SemesterType, cancellationToken);
+
+        if (isStudyLoadLevelExist)
+            return Result.Failure<StudyLoadByLevelResponse>(StudyLoadByLevelErrors.AlreadyExist);
 
         var studyLoad = new StudyLoadByLevel
         {
             AcademicProgramId = request.ProgramId,
             LevelId = request.LevelId,
-            SemesterId = semester.Id,
+            SemesterType = request.SemesterType,
             MinHours = request.MinHours,
             MaxHours = request.MaxHours,
         };
@@ -46,9 +43,9 @@ public class AddStudyLoadByLevelCommandHandler(
 
         var response = new StudyLoadByLevelResponse(
             studyLoad.Id,
-            level.Id,
-            level.Name,
             request.SemesterType,
+            level.Name,
+            level.Id,
             studyLoad.MinHours,
             studyLoad.MaxHours
         );

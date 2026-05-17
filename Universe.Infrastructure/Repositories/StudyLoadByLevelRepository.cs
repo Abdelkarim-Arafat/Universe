@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Universe.Core.Contracts.Level;
 using Universe.Core.Entities;
+using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 
@@ -14,38 +15,29 @@ public class StudyLoadByLevelRepository(
     public async Task<bool> IsExistAsync(
         Guid programId,
         Guid levelId,
-        Guid semesterId,
+        TermType semesterType,
         CancellationToken cancellationToken)
     {
         return await _context.StudyLoadByLevels
-                .AnyAsync(x => x.AcademicProgramId == programId && x.LevelId == levelId && x.SemesterId == semesterId);
+                .AnyAsync(x => x.AcademicProgramId == programId && x.LevelId == levelId && x.SemesterType == semesterType);
     }
 
     public async Task<StudyLoadByLevel?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => await _context.StudyLoadByLevels
-        .Include(x => x.Sememester)
         .Include(x => x.Level)
         .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
     public async Task<IQueryable<StudyLoadByLevel>> GetAllStudyLoadByLevelAsync(Guid programId, CancellationToken cancellationToken)
         => _context.StudyLoadByLevels
-        .Include(x => x.Sememester)
         .Include(x => x.Level)
         .Where(x => x.AcademicProgramId == programId);
 
-    public async Task<StudyLoadByLevel?> GetByLevelIdAndSemesterIdAsync
-        (Guid LevelId, Guid SemesterId, CancellationToken cancellationToken)
-    {
-        return await _context.StudyLoadByLevels
-            .FirstOrDefaultAsync(s => s.LevelId == LevelId && s.SemesterId == SemesterId && !s.IsDeleted, cancellationToken);
-    }
-
     public async Task<StudentStudyLoadDto?> GetLevelStudyLoadAsync
-      (Guid levelId, Guid semesterId, CancellationToken cancellationToken)
+      (Guid levelId, TermType semesterType, CancellationToken cancellationToken)
     {
         return await _context.StudyLoadByLevels
             .Where(studyLoad => studyLoad.LevelId == levelId 
-                && studyLoad.SemesterId == semesterId 
+                && studyLoad.SemesterType == semesterType 
                 && !studyLoad.IsDeleted)
             .Select(s => new StudentStudyLoadDto
             (

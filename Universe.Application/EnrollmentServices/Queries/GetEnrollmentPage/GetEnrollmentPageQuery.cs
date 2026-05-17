@@ -1,4 +1,6 @@
 ﻿
+using Universe.Core.Enums;
+
 namespace Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
 
 public record GetEnrollmentPageQuery

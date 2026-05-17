@@ -1,8 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.Ocsp;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.StudyLoadByLevel;
+﻿using Universe.Core.Contracts.StudyLoadByLevel;
 using Universe.Core.Enums;
 
 namespace Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;

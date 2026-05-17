@@ -3869,6 +3869,18 @@ namespace Universe.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("GraduationProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GraduationSemester")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GraduationYear")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -4030,8 +4042,8 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("MinHours")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SemesterId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("SemesterType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -4044,8 +4056,6 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("AcademicProgramId");
 
                     b.HasIndex("LevelId");
-
-                    b.HasIndex("SemesterId");
 
                     b.ToTable("StudyLoadByLevels");
                 });
@@ -4949,17 +4959,9 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Universe.Core.Entities.Semester", "Sememester")
-                        .WithMany("StudyLoadByLevels")
-                        .HasForeignKey("SemesterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AcademicProgram");
 
                     b.Navigation("Level");
-
-                    b.Navigation("Sememester");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadRule", b =>
@@ -5136,8 +5138,6 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("ExamTerms");
 
                     b.Navigation("ProgramSchedules");
-
-                    b.Navigation("StudyLoadByLevels");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Service", b =>

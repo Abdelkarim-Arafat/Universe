@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260511120240_addSeed")]
-    partial class addSeed
+    [Migration("20260515144343_again")]
+    partial class again
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -3871,6 +3871,18 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<string>("Gender")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("GraduationProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GraduationSemester")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GraduationYear")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
