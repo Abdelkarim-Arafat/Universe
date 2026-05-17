@@ -110,9 +110,10 @@ public class StudentController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetStudentGraduationDetails(
         [FromRoute] Guid studentId,
+        [FromQuery] Guid programId,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStudentGraduationDetailsQuery(studentId), cancellationToken);
+        var result = await _mediator.Send(new GetStudentGraduationDetailsQuery(studentId, programId), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 

@@ -13,7 +13,7 @@ internal class UpdateStudentGraduationDetailsCommandHandler(IUnitOfWork unitOfWo
     {
         if(await _unitOfWork.UserRepository
             .GetStudentByIdAsync(request.Id , cancellationToken) is not { } student
-            ) return Result.Failure<GraduationDetailsResponse>(StudentErrors.UserNotFound);
+            ) return Result.Failure<GraduationDetailsResponse>(StudentErrors.DisabledUser);
 
         request.Adapt(student);
 

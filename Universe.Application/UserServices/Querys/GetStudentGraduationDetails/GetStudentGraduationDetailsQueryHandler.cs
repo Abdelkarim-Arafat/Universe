@@ -19,9 +19,9 @@ public class GetStudentGraduationDetailsQueryHandler (
             .GetStudentCurrentProgramIdAsync(request.StudentId, cancellationToken);
 
         var response = await _unitOfWork.UserRepository
-            .GetStudentGraduationDetailsAsync(request.StudentId, studentProgramId.Value, cancellationToken);
+            .GetStudentGraduationDetailsAsync(request.StudentId, request.ProgramId, cancellationToken);
 
-        if(response is null) return Result.Failure<GraduationDetailsResponse>(StudentErrors.UserNotFound);
+        if(response is null) return Result.Failure<GraduationDetailsResponse>(StudentErrors.DisabledUser);
 
         return Result.Success(response);
     }
