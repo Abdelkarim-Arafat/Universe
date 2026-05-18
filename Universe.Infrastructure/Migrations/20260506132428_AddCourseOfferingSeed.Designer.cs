@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260517192353_UpdateOnStudyLoad")]
-    partial class UpdateOnStudyLoad
+    [Migration("20260506132428_AddCourseOfferingSeed")]
+    partial class AddCourseOfferingSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -665,8 +665,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -696,44 +695,7 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Buildings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-4014a33a997f"),
-                            Code = "ADM01",
-                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Main Administration Building"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"),
-                            Code = "COMP",
-                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Faculty of Computing"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"),
-                            Code = "LABS",
-                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Scientific Laboratories"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"),
-                            Code = "LIB",
-                            CreatedAt = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Central Library"
-                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.College", b =>
@@ -2305,15 +2267,13 @@ namespace Universe.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("MaxGradePoint")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("decimal(3,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("MaxScore")
                         .HasColumnType("int");
 
                     b.Property<decimal>("MinGradePoint")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("decimal(3,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("MinScore")
                         .HasColumnType("int");
@@ -2333,594 +2293,10 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AcademicProgramId");
 
-                    b.ToTable("Grades");
+                    b.HasIndex("Code")
+                        .IsUnique();
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b98fd3fe384"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "A+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 4.00m,
-                            MaxScore = 100,
-                            MinGradePoint = 4.00m,
-                            MinScore = 95,
-                            Name = "Excellent High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b99731825a5"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "A",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.99m,
-                            MaxScore = 94,
-                            MinGradePoint = 3.70m,
-                            MinScore = 90,
-                            Name = "Excellent"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9a8ed4c213"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "B+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.69m,
-                            MaxScore = 89,
-                            MinGradePoint = 3.30m,
-                            MinScore = 85,
-                            Name = "Very Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9b4caa2568"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "B",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.29m,
-                            MaxScore = 84,
-                            MinGradePoint = 3.00m,
-                            MinScore = 80,
-                            Name = "Very Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9cc785f14a"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "C+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.99m,
-                            MaxScore = 79,
-                            MinGradePoint = 2.70m,
-                            MinScore = 75,
-                            Name = "Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9dcedc1b35"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "C",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.69m,
-                            MaxScore = 74,
-                            MinGradePoint = 2.30m,
-                            MinScore = 70,
-                            Name = "Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9ee24f9179"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "D+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.29m,
-                            MaxScore = 69,
-                            MinGradePoint = 2.00m,
-                            MinScore = 65,
-                            Name = "Fair High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4b9f01fa845c"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "D",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 1.99m,
-                            MaxScore = 64,
-                            MinGradePoint = 1.00m,
-                            MinScore = 60,
-                            Name = "Fair"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfa31-42cc-7d42-82ad-4ba0d37d66eb"),
-                            AcademicProgramId = new Guid("019df1d0-68a6-7696-9aa6-4014a33a997f"),
-                            Code = "F",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 0.00m,
-                            MaxScore = 59,
-                            MinGradePoint = 0.00m,
-                            MinScore = 0,
-                            Name = "Failed"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b1-742e-a969-8828c4f7ff4d"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "A+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 4.00m,
-                            MaxScore = 100,
-                            MinGradePoint = 4.00m,
-                            MinScore = 95,
-                            Name = "Excellent High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b1-742e-a969-88297a435f3e"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "A",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.99m,
-                            MaxScore = 94,
-                            MinGradePoint = 3.70m,
-                            MinScore = 90,
-                            Name = "Excellent"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b1-742e-a969-882a3004369f"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "B+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.69m,
-                            MaxScore = 89,
-                            MinGradePoint = 3.30m,
-                            MinScore = 85,
-                            Name = "Very Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b2-7e48-89a1-387739f72edb"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "B",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.29m,
-                            MaxScore = 84,
-                            MinGradePoint = 3.00m,
-                            MinScore = 80,
-                            Name = "Very Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b2-7e48-89a1-38781a368e67"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "C+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.99m,
-                            MaxScore = 79,
-                            MinGradePoint = 2.70m,
-                            MinScore = 75,
-                            Name = "Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b2-7e48-89a1-387980999f01"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "C",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.69m,
-                            MaxScore = 74,
-                            MinGradePoint = 2.30m,
-                            MinScore = 70,
-                            Name = "Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b2-7e48-89a1-387aa29369f1"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "D+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.29m,
-                            MaxScore = 69,
-                            MinGradePoint = 2.00m,
-                            MinScore = 65,
-                            Name = "Fair High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b2-7e48-89a1-387bab55e7c3"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "D",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 1.99m,
-                            MaxScore = 64,
-                            MinGradePoint = 1.00m,
-                            MinScore = 60,
-                            Name = "Fair"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-89b2-7e48-89a1-387ceff9e85f"),
-                            AcademicProgramId = new Guid("019df1d0-b671-75b2-9c14-69ce00131461"),
-                            Code = "F",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 0.00m,
-                            MaxScore = 59,
-                            MinGradePoint = 0.00m,
-                            MinScore = 0,
-                            Name = "Failed"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-3358fa7b1642"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "A+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 4.00m,
-                            MaxScore = 100,
-                            MinGradePoint = 4.00m,
-                            MinScore = 95,
-                            Name = "Excellent High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-3359d169fc7d"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "A",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.99m,
-                            MaxScore = 94,
-                            MinGradePoint = 3.70m,
-                            MinScore = 90,
-                            Name = "Excellent"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-335a5d1d7019"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "B+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.69m,
-                            MaxScore = 89,
-                            MinGradePoint = 3.30m,
-                            MinScore = 85,
-                            Name = "Very Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-335b999ecbdf"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "B",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.29m,
-                            MaxScore = 84,
-                            MinGradePoint = 3.00m,
-                            MinScore = 80,
-                            Name = "Very Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-335c4f8424a2"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "C+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.99m,
-                            MaxScore = 79,
-                            MinGradePoint = 2.70m,
-                            MinScore = 75,
-                            Name = "Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-335d0c6b8cae"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "C",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.69m,
-                            MaxScore = 74,
-                            MinGradePoint = 2.30m,
-                            MinScore = 70,
-                            Name = "Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-335e09e78831"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "D+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.29m,
-                            MaxScore = 69,
-                            MinGradePoint = 2.00m,
-                            MinScore = 65,
-                            Name = "Fair High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-335f29698be9"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "D",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 1.99m,
-                            MaxScore = 64,
-                            MinGradePoint = 1.00m,
-                            MinScore = 60,
-                            Name = "Fair"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020d-4219-7d3c-9f78-33605071bfc8"),
-                            AcademicProgramId = new Guid("019df1d0-ddcc-7f90-9a82-1e1d8d1c0cfe"),
-                            Code = "F",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 0.00m,
-                            MaxScore = 59,
-                            MinGradePoint = 0.00m,
-                            MinScore = 0,
-                            Name = "Failed"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd27-799f-88db-57ca33299de0"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "A+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 4.00m,
-                            MaxScore = 100,
-                            MinGradePoint = 4.00m,
-                            MinScore = 95,
-                            Name = "Excellent High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-81ff9315195a"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "A",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.99m,
-                            MaxScore = 94,
-                            MinGradePoint = 3.70m,
-                            MinScore = 90,
-                            Name = "Excellent"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-8200118212d4"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "B+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.69m,
-                            MaxScore = 89,
-                            MinGradePoint = 3.30m,
-                            MinScore = 85,
-                            Name = "Very Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-8201287a9d3d"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "B",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.29m,
-                            MaxScore = 84,
-                            MinGradePoint = 3.00m,
-                            MinScore = 80,
-                            Name = "Very Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-8202ddc12c0d"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "C+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.99m,
-                            MaxScore = 79,
-                            MinGradePoint = 2.70m,
-                            MinScore = 75,
-                            Name = "Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-8203dcfb21c1"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "C",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.69m,
-                            MaxScore = 74,
-                            MinGradePoint = 2.30m,
-                            MinScore = 70,
-                            Name = "Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-820419b21584"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "D+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.29m,
-                            MaxScore = 69,
-                            MinGradePoint = 2.00m,
-                            MinScore = 65,
-                            Name = "Fair High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-820589af7293"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "D",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 1.99m,
-                            MaxScore = 64,
-                            MinGradePoint = 1.00m,
-                            MinScore = 60,
-                            Name = "Fair"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-dd29-7ea3-967f-820623c9aad1"),
-                            AcademicProgramId = new Guid("019df1d1-0356-789e-840b-56d31396608a"),
-                            Code = "F",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 0.00m,
-                            MaxScore = 59,
-                            MinGradePoint = 0.00m,
-                            MinScore = 0,
-                            Name = "Failed"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1514-7bfa-82ea-af1f399f879a"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "A+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 4.00m,
-                            MaxScore = 100,
-                            MinGradePoint = 4.00m,
-                            MinScore = 95,
-                            Name = "Excellent High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1514-7bfa-82ea-af20fecac15e"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "A",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.99m,
-                            MaxScore = 94,
-                            MinGradePoint = 3.70m,
-                            MinScore = 90,
-                            Name = "Excellent"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1514-7bfa-82ea-af216971a0ec"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "B+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.69m,
-                            MaxScore = 89,
-                            MinGradePoint = 3.30m,
-                            MinScore = 85,
-                            Name = "Very Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1514-7bfa-82ea-af22fca2beca"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "B",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 3.29m,
-                            MaxScore = 84,
-                            MinGradePoint = 3.00m,
-                            MinScore = 80,
-                            Name = "Very Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1515-7cb1-b40b-df30c3ac9339"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "C+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.99m,
-                            MaxScore = 79,
-                            MinGradePoint = 2.70m,
-                            MinScore = 75,
-                            Name = "Good High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1515-7cb1-b40b-df3125700042"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "C",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.69m,
-                            MaxScore = 74,
-                            MinGradePoint = 2.30m,
-                            MinScore = 70,
-                            Name = "Good"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1515-7cb1-b40b-df32510ebbca"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "D+",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 2.29m,
-                            MaxScore = 69,
-                            MinGradePoint = 2.00m,
-                            MinScore = 65,
-                            Name = "Fair High"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1515-7cb1-b40b-df33238e9d43"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "D",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 1.99m,
-                            MaxScore = 64,
-                            MinGradePoint = 1.00m,
-                            MinScore = 60,
-                            Name = "Fair"
-                        },
-                        new
-                        {
-                            Id = new Guid("019e020c-1515-7cb1-b40b-df34f31c38c8"),
-                            AcademicProgramId = new Guid("019df1d1-2da1-78d2-adeb-84cb6b07a459"),
-                            Code = "F",
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            MaxGradePoint = 0.00m,
-                            MaxScore = 59,
-                            MinGradePoint = 0.00m,
-                            MinScore = 0,
-                            Name = "Failed"
-                        });
+                    b.ToTable("Grades");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Level", b =>
@@ -3289,16 +2665,14 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
 
-                    b.Property<string>("RoomType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("RoomType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -3310,89 +2684,7 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("BuildingId");
 
-                    b.HasIndex("RoomNumber", "BuildingId")
-                        .IsUnique();
-
                     b.ToTable("Rooms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("019dfaa3-92f1-7d12-840b-4014a33a997f"),
-                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"),
-                            Capacity = 200,
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Steve Jobs Hall",
-                            RoomNumber = 101,
-                            RoomType = "LectureHall"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfaa3-92f1-7d12-840b-b67175b29c14"),
-                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-b67175b29c14"),
-                            Capacity = 25,
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Cyber Security Lab",
-                            RoomNumber = 302,
-                            RoomType = "ComputerLab"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfaa3-92f1-7d12-840b-ddcc7f909a82"),
-                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"),
-                            Capacity = 30,
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Newton Physics Lab",
-                            RoomNumber = 10,
-                            RoomType = "ScientificLab"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfaa3-92f1-7d12-840b-0356789e840b"),
-                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-ddcc7f909a82"),
-                            Capacity = 40,
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Mechanical Workshop",
-                            RoomNumber = 15,
-                            RoomType = "Workshop"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfaa3-92f1-7d12-840b-2da178d2adeb"),
-                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-4014a33a997f"),
-                            Capacity = 60,
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Board of Directors Hall",
-                            RoomNumber = 500,
-                            RoomType = "ClassRoom"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfaa3-92f1-7d12-840b-84cb6b07a459"),
-                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"),
-                            Capacity = 100,
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Quiet Study Zone",
-                            RoomNumber = 1,
-                            RoomType = "ClassRoom"
-                        },
-                        new
-                        {
-                            Id = new Guid("019dfaa3-92f1-7d12-840b-a45984cb6b07"),
-                            BuildingId = new Guid("019dfa7b-3b1a-7b3a-9e1d-0356789e840b"),
-                            Capacity = 45,
-                            CreatedAt = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "E-Learning Center",
-                            RoomNumber = 2,
-                            RoomType = "LanguageLab"
-                        });
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Semester", b =>
@@ -3856,6 +3148,9 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<Guid?>("AdvisorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CollegeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -3871,18 +3166,6 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<string>("Gender")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("GraduationProjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GraduationSemester")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GraduationYear")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -3934,6 +3217,8 @@ namespace Universe.Infrastructure.Migrations
 
                     b.HasIndex("AdvisorId");
 
+                    b.HasIndex("CollegeId");
+
                     b.ToTable("Students");
                 });
 
@@ -3957,7 +3242,7 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly?>("EndDate")
+                    b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
                     b.Property<bool>("IsDeleted")
@@ -4045,8 +3330,8 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("MinHours")
                         .HasColumnType("int");
 
-                    b.Property<int>("SemesterType")
-                        .HasColumnType("int");
+                    b.Property<Guid>("SemesterId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -4059,6 +3344,8 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("AcademicProgramId");
 
                     b.HasIndex("LevelId");
+
+                    b.HasIndex("SemesterId");
 
                     b.ToTable("StudyLoadByLevels");
                 });
@@ -4719,6 +4006,12 @@ namespace Universe.Infrastructure.Migrations
                         .WithMany("AdvisedStudents")
                         .HasForeignKey("AdvisorId");
 
+                    b.HasOne("Universe.Core.Entities.College", "College")
+                        .WithMany("Students")
+                        .HasForeignKey("CollegeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Universe.Core.Entities.ApplicationUser", "ApplicationUser")
                         .WithOne("Student")
                         .HasForeignKey("Universe.Core.Entities.Student", "Id")
@@ -4897,11 +4190,12 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Navigation("ApplicationUser");
 
+                    b.Navigation("College");
+
                     b.Navigation("ContactInfo")
                         .IsRequired();
 
-                    b.Navigation("MilitaryInfo")
-                        .IsRequired();
+                    b.Navigation("MilitaryInfo");
 
                     b.Navigation("ParentInfo")
                         .IsRequired();
@@ -4962,9 +4256,17 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Universe.Core.Entities.Semester", "Sememester")
+                        .WithMany("StudyLoadByLevels")
+                        .HasForeignKey("SemesterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("AcademicProgram");
 
                     b.Navigation("Level");
+
+                    b.Navigation("Sememester");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadRule", b =>
@@ -5069,6 +4371,8 @@ namespace Universe.Infrastructure.Migrations
 
                     b.Navigation("Services");
 
+                    b.Navigation("Students");
+
                     b.Navigation("Users");
                 });
 
@@ -5141,6 +4445,8 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("ExamTerms");
 
                     b.Navigation("ProgramSchedules");
+
+                    b.Navigation("StudyLoadByLevels");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Service", b =>

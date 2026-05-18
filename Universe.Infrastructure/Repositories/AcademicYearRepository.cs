@@ -65,7 +65,7 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
         => await _context.AcademicYears
         .OrderByDescending(x => x.StartDate)
         .Where(x => x.CollegeId == collegeId && !x.IsDeleted)
-        .Select(x => new AcademicYearResponse(
+        .Select(x => new AcademicYearResponse (
             x.Id,
             x.Name
         ))
@@ -73,14 +73,27 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
 
     public async Task<SemesterResponse?> GetCurrentSemesterAsync(Guid academicYearId, CancellationToken cancellationToken)
         => await _context.Semesters
-            .Where(x => x.AcademicYearId == academicYearId && x.IsCurrent)
-            .Select(x => new SemesterResponse(
+            .Where(x => x.AcademicYearId == academicYearId && 
+             x.StartDate <= DateOnly.FromDateTime(DateTime.Now) && x.EndDate >= DateOnly.FromDateTime(DateTime.Now)
+            )
+            .Select(x => new SemesterResponse (
                 x.Id,
                 x.Name,
                 x.StartDate,
                 x.EndDate
             ))
             .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task<SemesterResponse> GetLastSeenSemesterAsync(Guid academicYearId, CancellationToken cancellationToken)
+        => await _context.Semesters
+            .Where(x => x.AcademicYearId == academicYearId && x.IsCurrent)
+            .Select(x => new SemesterResponse (
+                x.Id,
+                x.Name,
+                x.StartDate,
+                x.EndDate
+            ))
+            .FirstAsync(cancellationToken);
     public async Task<Semester?> GetSemesterByIdAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.Semesters
                 .FirstOrDefaultAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);

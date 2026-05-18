@@ -60,11 +60,9 @@ public class TeachingSessionsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetInstructorSessions(
         [FromQuery] Guid programId,
-        [FromQuery] Guid academicYearId,
-        [FromQuery] TermType termType,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetInstructorSessionsQuery(programId, academicYearId, termType), cancellationToken);
+        var result = await _mediator.Send(new GetInstructorSessionsQuery(programId), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

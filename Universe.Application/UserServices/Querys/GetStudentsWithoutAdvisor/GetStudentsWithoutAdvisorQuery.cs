@@ -5,7 +5,7 @@ using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Querys.GetStudentsWithoutAdvisor;
 
-public record GetStudentsWithoutAdvisorQuery(
+public record GetStudentsWithoutAdvisorQuery (
     [Required] Guid ProgramId,
     FilterRequest Filter
 ) : IRequest<Result<PaginationList<StudentResponse>>>;

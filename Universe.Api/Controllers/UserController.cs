@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
+using Universe.Application.UserServices.Commands.ChangePassword;
 using Universe.Application.UserServices.Commands.RemoveImage;
+using Universe.Application.UserServices.Commands.ResetUserPassword;
+using Universe.Application.UserServices.Commands.UpdateEmail;
 using Universe.Application.UserServices.Commands.UpdateImage;
 using Universe.Application.UserServices.Commands.UploadImage;
 using Universe.Core.Constants;
@@ -44,6 +47,45 @@ public class UserController(IMediator mediator) : ControllerBase
     {
         var command = new RemoveImageCommand(imageUrl);
         var result = await _mediator.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+
+    [HttpPatch("change-password")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.AllRoles}")]
+    public async Task<IActionResult> ChangePassword (
+    [FromBody] ChangePasswordCommand request,
+    CancellationToken cancellationToken)
+    {
+        request = request with { UserId = Guid.Parse(User.GetUserId()!) };
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+
+
+    [HttpPatch("reset-password")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.AllRoles}")]
+    public async Task<IActionResult> ResetUserPassword(
+    [FromBody] ResetUserPasswordCommand request,
+    CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+
+    [HttpPatch("update-email")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.AllRoles}")]
+    public async Task<IActionResult> UpdateEmail (
+    [FromBody] UpdateEmailCommand request,
+    CancellationToken cancellationToken)
+    {
+        request = request with { UserId = Guid.Parse(User.GetUserId()!) };
+        var result = await _mediator.Send(request, cancellationToken);
+
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
 }

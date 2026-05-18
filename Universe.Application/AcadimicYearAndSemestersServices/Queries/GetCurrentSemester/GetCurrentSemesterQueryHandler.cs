@@ -16,9 +16,12 @@ public class GetCurrentSemesterQueryHandler(
             .IsExistAsync(request.AcademicYearId, cancellationToken)
             ) return Result.Failure<SemesterResponse>(AcademicYearErrors.NotFound);
 
-        if(await _unitOfWork.AcademicYearRepository
-            .GetCurrentSemesterAsync(request.AcademicYearId , cancellationToken) is not { } currentSemester
-            ) return Result.Failure<SemesterResponse>(SemesterErrors.NotFound);
+        var currentSemester = await _unitOfWork.AcademicYearRepository
+            .GetCurrentSemesterAsync(request.AcademicYearId , cancellationToken);
+
+        if(currentSemester is null) 
+            currentSemester = await _unitOfWork.AcademicYearRepository
+                .GetLastSeenSemesterAsync(request.AcademicYearId , cancellationToken);
 
         return Result.Success(currentSemester);
     }
