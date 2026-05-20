@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Universe.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateOnStudyLoad : Migration
+    public partial class UpdateStudyLoadByLevelTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,6 +29,27 @@ namespace Universe.Infrastructure.Migrations
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.AddColumn<string>(
+                name: "GraduationProjectName",
+                table: "Students",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "GraduationSemester",
+                table: "Students",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "GraduationYear",
+                table: "Students",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
@@ -37,6 +58,18 @@ namespace Universe.Infrastructure.Migrations
             migrationBuilder.DropColumn(
                 name: "SemesterType",
                 table: "StudyLoadByLevels");
+
+            migrationBuilder.DropColumn(
+                name: "GraduationProjectName",
+                table: "Students");
+
+            migrationBuilder.DropColumn(
+                name: "GraduationSemester",
+                table: "Students");
+
+            migrationBuilder.DropColumn(
+                name: "GraduationYear",
+                table: "Students");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "SemesterId",

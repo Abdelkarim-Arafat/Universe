@@ -18,5 +18,6 @@ public interface IAcademicYearRepository
     Task<Semester?> GetSemesterByTypeAsync(Guid academicYearId, TermType type, CancellationToken cancellationToken);
     Task<bool> IsSemesterExistAsync(Guid Id, CancellationToken cancellationToken);
     Task<Semester?> GetSemesterByIdAsync(Guid Id, CancellationToken cancellationToken);
+    Task<SemesterResponse> GetLastSeenSemesterAsync(Guid academicYearId, CancellationToken cancellationToken);
     Task<bool> IsMakeConflictAsync(Guid CollegeId, string Name, DateOnly start, DateOnly end, Guid? Id, CancellationToken cancellationToken);
 }

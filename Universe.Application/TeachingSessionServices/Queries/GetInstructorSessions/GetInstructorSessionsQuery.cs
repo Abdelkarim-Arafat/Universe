@@ -7,7 +7,5 @@ using Universe.Core.Enums;
 namespace Universe.Application.TeachingSessionServices.Queries.GetInstructorSessions;
 
 public record GetInstructorSessionsQuery(
-    [Required] Guid ProgramId,
-    [Required] Guid AcademicYearId,
-    [Required] TermType TermType
+    [Required] Guid ProgramId
 ) : IRequest<Result<IReadOnlyList<SessionResponse>>>;

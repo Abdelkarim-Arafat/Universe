@@ -23,8 +23,10 @@ public class GetStudentsWithoutAdvisorQueryHandler(
 			)
 			.ApplySearch(filter.SearchValue,
 				x => x.Student.Name,
-				x => x.Student.StudentCode)
-			.Select(x => new StudentResponse(
+				x => x.Student.StudentCode
+			)
+            .OrderBy($"Student.{filter.SortColumn} asc")
+            .Select(x => new StudentResponse (
 				x.Student.Id,
 				x.Student.Name,
 				x.Student.StudentCode,

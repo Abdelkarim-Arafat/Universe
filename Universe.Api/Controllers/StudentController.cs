@@ -8,6 +8,7 @@ using Universe.Application.UserServices.Commands.ChangePassword;
 using Universe.Application.UserServices.Commands.ChangeStudentProgram;
 using Universe.Application.UserServices.Commands.RegisterStudent;
 using Universe.Application.UserServices.Commands.RemoveStudent;
+using Universe.Application.UserServices.Commands.UnAssignAdvisorFromStudents;
 using Universe.Application.UserServices.Commands.UpdateContactData;
 using Universe.Application.UserServices.Commands.UpdateFamilyData;
 using Universe.Application.UserServices.Commands.UpdateMilitaryData;
@@ -24,6 +25,7 @@ using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 using Universe.Application.UserServices.Querys.GetStudentExams;
 using Universe.Application.UserServices.Querys.GetStudentGraduationDetails;
 using Universe.Application.UserServices.Querys.GetStudentSchedule;
+using Universe.Application.UserServices.Querys.GetStudentsWithoutAdvisor;
 using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
@@ -87,9 +89,33 @@ public class StudentController(IMediator mediator) : ControllerBase
         request = request with { CollegeId = collegeId , ProgramId = academicProgramId};
         var result = await _mediator.Send(request, cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+    [HttpPatch("unassign-advisor")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> UnAssignAdvisorFromStudents(
+    [FromBody] UnAssignAdvisorFromStudentsCommand request,
+    CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+    }
+
+    [HttpGet("without-advisor")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> GetStudentsWithoutAdvisor(
+    [FromQuery] Guid programId,
+    [FromQuery] FilterRequest filter,
+    CancellationToken cancellationToken)
+    {
+        var request = new GetStudentsWithoutAdvisorQuery(programId, filter);
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpGet("")]

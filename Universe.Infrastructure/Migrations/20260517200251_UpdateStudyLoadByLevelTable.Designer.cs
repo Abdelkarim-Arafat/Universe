@@ -12,8 +12,8 @@ using Universe.Infrastructure.Persistence;
 namespace Universe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260515144343_again")]
-    partial class again
+    [Migration("20260517200251_UpdateStudyLoadByLevelTable")]
+    partial class UpdateStudyLoadByLevelTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -4045,8 +4045,8 @@ namespace Universe.Infrastructure.Migrations
                     b.Property<int>("MinHours")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SemesterId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("SemesterType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -4059,8 +4059,6 @@ namespace Universe.Infrastructure.Migrations
                     b.HasIndex("AcademicProgramId");
 
                     b.HasIndex("LevelId");
-
-                    b.HasIndex("SemesterId");
 
                     b.ToTable("StudyLoadByLevels");
                 });
@@ -4964,17 +4962,9 @@ namespace Universe.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Universe.Core.Entities.Semester", "Sememester")
-                        .WithMany("StudyLoadByLevels")
-                        .HasForeignKey("SemesterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AcademicProgram");
 
                     b.Navigation("Level");
-
-                    b.Navigation("Sememester");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.StudyLoadRule", b =>
@@ -5151,8 +5141,6 @@ namespace Universe.Infrastructure.Migrations
                     b.Navigation("ExamTerms");
 
                     b.Navigation("ProgramSchedules");
-
-                    b.Navigation("StudyLoadByLevels");
                 });
 
             modelBuilder.Entity("Universe.Core.Entities.Service", b =>

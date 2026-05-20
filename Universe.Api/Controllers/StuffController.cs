@@ -11,6 +11,7 @@ using Universe.Application.UserServices.Commands.RemoveStuff;
 using Universe.Application.UserServices.Commands.UpdateStuff;
 using Universe.Application.UserServices.Querys.GetAdvisorStudents;
 using Universe.Application.UserServices.Querys.GetAllStuff;
+using Universe.Application.UserServices.Querys.GetStudentsWithoutAdvisor;
 using Universe.Application.UserServices.Querys.GetStuff;
 using Universe.Core.Constants;
 
@@ -66,21 +67,22 @@ public class StuffController(IMediator mediator) : ControllerBase
             : result.ToProblem();
     }
 
+
     [HttpGet("advisor-students")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetAdvisorStudents(
+        [FromQuery] Guid? advisorId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var request = new GetAdvisorStudentsQuery(Guid.Parse(User.GetUserId()!) , filter);
+        if (advisorId == null) advisorId = Guid.Parse(User.GetUserId()!);
+
+        var request = new GetAdvisorStudentsQuery(advisorId.Value, filter);
         var result = await _mediator.Send(request, cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-
 
     [HttpPost("")]
     [EnableRateLimiting("WriteLimiter")]
