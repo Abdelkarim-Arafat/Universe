@@ -50,13 +50,13 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
             })
             .ToListAsync(cancellationToken);
 
-        var pagedStudentIds = pagedStudents.Select(s => s.Id).ToList();
+        var studentIds = pagedStudents.Select(s => s.Id).ToList();
 
         var studentsAssessmentsLookUp = await _unitOfWork.StudentAssessmentRepository
-            .GetStudentsAssessmentsLookupAsync(pagedStudentIds, command.CourseOfferingId, cancellationToken);
+            .GetStudentsAssessmentsLookupAsync(studentIds, command.CourseOfferingId, cancellationToken);
 
         var studentsLevelNameDictionary = await _unitOfWork.UserRepository
-            .GetStudentsLevelNameDictionaryAsync(pagedStudentIds, command.AcademicProgramId, cancellationToken);
+            .GetStudentsLevelNameDictionaryAsync(studentIds, command.AcademicProgramId, cancellationToken);
 
         var letterGrades = await _unitOfWork.GradeRepository
             .GetProgramGradesAsync(command.AcademicProgramId, cancellationToken);

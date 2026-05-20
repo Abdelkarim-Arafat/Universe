@@ -33,7 +33,7 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
     {
         return await _context.Grades.FirstOrDefaultAsync(grade => grade.Id == id && !grade.IsDeleted, cancellationToken);
     }
-    public async Task<bool> CheckOverLabedPointsAsync
+    public async Task<bool> CheckOverLappedPointsAsync
         (decimal MinGradePoint, decimal MaxGradePoint, Guid? Id, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         bool isNullableId = Id == null;
@@ -44,7 +44,7 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
                         && g.AcademicProgramId == AcademicProgramId, cancellationToken);
     }
 
-    public async Task<bool> CheckOverLabedScoresAsync
+    public async Task<bool> CheckOverLappedScoresAsync
         (int MinScore, int MaxScore, Guid? Id, Guid AcademicProgramId, CancellationToken cancellationToken = default)
     {
         bool isNullableId = Id == null;

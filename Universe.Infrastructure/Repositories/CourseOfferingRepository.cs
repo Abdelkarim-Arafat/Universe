@@ -119,8 +119,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                         co.IsOptional,
                         co.CreditHours,
                         co.Enrollments.Any(enrollment => !enrollment.IsDeleted
-                                               && enrollment.StudentId == studentId
-                                               && enrollment.Status == EnrollmentStatus.InProgress),
+                                               && enrollment.StudentId == studentId),
                         co.CourseOfferingSessions
                             .Where(cos => !cos.IsDeleted)
                             .Select(cos => new SessionInfo (

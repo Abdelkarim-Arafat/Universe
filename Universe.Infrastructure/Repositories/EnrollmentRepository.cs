@@ -148,7 +148,6 @@ public class EnrollmentRepository(
             .AsNoTracking()
             .Where(e => e.StudentId == studentId
                      && e.CourseOffering.SemesterId == semesterId
-                     && e.Status == EnrollmentStatus.InProgress
                      && !e.IsDeleted)
             .Select(e => e.CourseOfferingId)
             .ToListAsync(cancellationToken);

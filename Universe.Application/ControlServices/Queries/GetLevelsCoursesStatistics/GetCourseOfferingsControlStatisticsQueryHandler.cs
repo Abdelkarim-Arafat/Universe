@@ -1,5 +1,4 @@
 ﻿using Universe.Application.ControlServices.Dtos;
-using Universe.Core.Enums;
 
 namespace Universe.Application.ControlServices.Queries.GetLevelsCoursesStatistics;
 
@@ -39,9 +38,7 @@ public class GetCourseOfferingsControlStatisticsQueryHandler(
                                 co.Course.Code,
 
                                 co.Enrollments
-                                    .Count(e =>
-                                        !e.IsDeleted &&
-                                        e.Status == EnrollmentStatus.InProgress),
+                                    .Count(e => !e.IsDeleted),
 
                                 co.Enrollments
                                     .Where(e => !e.IsDeleted)

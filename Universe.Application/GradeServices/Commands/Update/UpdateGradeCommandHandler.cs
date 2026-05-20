@@ -10,17 +10,29 @@ public class UpdateGradeCommandHandler(IUnitOfWork unitOfWork, ICacheService cac
     {
       
         var grade = await _unitOfWork.GradeRepository.GetByIdAsync(command.Id, cancellationToken);
+
         if (grade is null)
             return Result.Failure<GradeResponse>(GradeErrors.NotFound);
 
-     
-        var isGradeWithOverLabExist = await _unitOfWork.GradeRepository
-            .CheckOverLabedScoresAsync(command.MinScore, command.MaxScore, grade.Id, grade.AcademicProgramId, cancellationToken)
-            || await _unitOfWork.GradeRepository
-            .CheckOverLabedPointsAsync(command.MinGradePoint, command.MaxGradePoint, grade.Id, grade.AcademicProgramId, cancellationToken);
+        var isScoresOverlapped = await _unitOfWork.GradeRepository.CheckOverLappedScoresAsync(
+            command.MinScore,
+            command.MaxScore,
+            grade.Id,
+            grade.AcademicProgramId,
+            cancellationToken);
 
-        if (isGradeWithOverLabExist)
+        var isGradePointsOverlapped = await _unitOfWork.GradeRepository.CheckOverLappedPointsAsync(
+                command.MinGradePoint,
+                command.MaxGradePoint,
+                grade.Id,
+                grade.AcademicProgramId,
+                cancellationToken);
+
+        if (isScoresOverlapped || isGradePointsOverlapped)
+        {
             return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
+        }
+        
 
         command.Adapt(grade);
 
