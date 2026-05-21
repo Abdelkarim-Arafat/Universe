@@ -1,5 +1,4 @@
 ﻿using Universe.Application.ControlServices.Dtos;
-using Universe.Core.Enums;
 
 namespace Universe.Application.ControlServices.Queries.GetLevelsCoursesStatistics;
 

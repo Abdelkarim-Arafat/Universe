@@ -9,30 +9,37 @@ public class CreateGraderequestHandler(IUnitOfWork unitOfWork, ICacheService cac
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;
 
-    public async Task<Result<GradeResponse>> Handle(CreateGradeCommand request, CancellationToken cancellationToken = default)
+    public async Task<Result<GradeResponse>> Handle(CreateGradeCommand command, CancellationToken cancellationToken = default)
     {
 
         if (await _unitOfWork.AcademicProgramRepository
-            .IsExistAsync(request.AcademicProgramId, cancellationToken) is false
+            .IsExistAsync(command.AcademicProgramId, cancellationToken) is false
            ) return Result.Failure<GradeResponse>(AcademicProgramErrors.NotFound);
 
+        var isScoresOverlapped = await _unitOfWork.GradeRepository.CheckOverLappedScoresAsync(
+            command.MinScore,
+            command.MaxScore,
+            null,
+            command.AcademicProgramId,
+            cancellationToken);
 
-        var isGradeWithOverLabExist =
-                await _unitOfWork.GradeRepository.CheckOverLabedScoresAsync
-                    (request.MinScore, request.MaxScore, null, request.AcademicProgramId, cancellationToken)
-             || await _unitOfWork.GradeRepository.CheckOverLabedPointsAsync
-                    (request.MinGradePoint, request.MaxGradePoint, null, request.AcademicProgramId, cancellationToken);
+        var isGradePointsOverlapped = await _unitOfWork.GradeRepository.CheckOverLappedPointsAsync(
+                command.MinGradePoint,
+                command.MaxGradePoint,
+                null,
+                command.AcademicProgramId,
+                cancellationToken);
 
-        if (isGradeWithOverLabExist)
+        if (isScoresOverlapped || isGradePointsOverlapped)
             return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
+     
+        var grade = command.Adapt<Grade>();
 
-         
-        var grade = request.Adapt<Grade>();
         await _unitOfWork.Repository<Grade>().AddAsync(grade, cancellationToken);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        await _cacheService.RemoveByTagAsync(GradeCacheKeys.Tags(request.AcademicProgramId), cancellationToken);
+        await _cacheService.RemoveByTagAsync(GradeCacheKeys.Tags(command.AcademicProgramId), cancellationToken);
 
         return Result.Success(grade.Adapt<GradeResponse>());
     }
