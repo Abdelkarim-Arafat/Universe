@@ -21,7 +21,8 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
             .GetQueryable()
             .AsNoTracking()
             .Where(student => !student.IsDeleted && student.Enrollments.Any(e =>
-                e.CourseOfferingId == command.CourseOfferingId
+                !e.IsDeleted
+                && e.CourseOfferingId == command.CourseOfferingId
                 && ((command.GroupNumber == null) || (e.GroupNumber == command.GroupNumber))
             ));
 
