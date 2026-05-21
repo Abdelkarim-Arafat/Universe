@@ -37,13 +37,17 @@ public class GetAcademicProgramLevelsQueryHandler(
                     .GetQueryable()
                     .AsNoTracking()
                     .Where(l => l.AcademicProgramId == request.ProgramId)
-                    .ApplySearch(filter.SearchValue, x => x.Name)
                     .Select(x => new LevelResponse(
                         x.Id,
                         x.Name,
                         x.MinHours,
                         x.MaxHours
                     ));
+
+                if(!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<LevelResponse>
                     .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);

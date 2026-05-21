@@ -30,13 +30,18 @@ public class GetCoursesQueryHandler(
             {
                 var query = _unitOfWork.Repository<Course>()
                     .GetQueryable()
+                    .AsNoTracking()
                     .Where(x => x.CollegeId == request.CollegeId)
-                    .ApplySearch(filter.SearchValue, x => x.Name , x => x.Code)
                     .Select(x => new CourseResponse (
                         x.Id.ToString(),
                         x.Name,
                         x.Code
                     ));
+
+                if(!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue) || x.Code.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<CourseResponse>
                     .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);

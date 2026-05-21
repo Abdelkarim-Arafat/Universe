@@ -19,8 +19,7 @@ public class GetAdvisorStudentsQueryHandler(
         var source = _unitOfWork.Repository<Student>()
             .GetQueryable()
             .Where(x => x.AdvisorId == request.AdvisorId && !x.IsDeleted)
-            .ApplySearch(filter.SearchValue, x => x.Name, x => x.StudentCode)
-            .ApplySort(filter.SortColumn)
+            .OrderBy($"{filter.SortColumn} asc")
             .Select(x => new StudentResponse (
                 x.Id,
                 x.Name,
@@ -28,6 +27,11 @@ public class GetAdvisorStudentsQueryHandler(
                 x.NationalIdOrPassport,
                 x.Gender
             ));
+
+        if(!string.IsNullOrEmpty(filter.SearchValue))
+        {
+            source = source.Where(x => x.Name.Contains(filter.SearchValue) || x.StudentCode.Contains(filter.SearchValue));
+        }
 
         var response = await PaginationList<StudentResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

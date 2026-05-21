@@ -20,11 +20,15 @@ public class GetAllStuffQueryHandler(
 
 		var source = _unitOfWork.UserRepository
             .GetAllStaffAsync()
-            .ApplySearch(filter.SearchValue , x => x.Name)
             .Select(x => new StuffResponse(
                 x.Id.ToString(),
                 x.Name
             ));
+
+        if(!string.IsNullOrEmpty(filter.SearchValue))
+        {
+            source = source.Where(x => x.Name.Contains(filter.SearchValue));
+        }
 
         var response = await PaginationList<StuffResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

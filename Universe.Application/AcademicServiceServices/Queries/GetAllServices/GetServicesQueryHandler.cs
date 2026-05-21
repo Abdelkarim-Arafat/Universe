@@ -31,7 +31,6 @@ public class GetServicesQueryHandler(
                     .GetQueryable()
                     .AsNoTracking()
                     .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted)
-                    .ApplySearch(filter.SearchValue, x => x.Name)
                     .Select(x => new ServiceResponse (
                         x.Id,
                         x.Name,
@@ -39,6 +38,11 @@ public class GetServicesQueryHandler(
                         x.Price
                         )
                     );
+
+                if(!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<ServiceResponse>
                     .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);

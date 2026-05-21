@@ -22,11 +22,15 @@ public class GetStudentsWithoutAdvisorQueryHandler(
                 x.Currently &&
                 !x.Student.IsDeleted &&
                 x.Student.AdvisorId == null
-            )
-            .ApplySearch(filter.SearchValue,
-                x => x.Student.Name,
-                x => x.Student.StudentCode
             );
+
+        if(!string.IsNullOrEmpty(filter.SearchValue))
+        {
+            query = query.Where(x =>
+                x.Student.Name.Contains(filter.SearchValue) ||
+                x.Student.StudentCode.Contains(filter.SearchValue)
+            );
+        }
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
         {

@@ -33,7 +33,6 @@ public class GetStudyLoadByLevelsQueryHandler(
                     .GetQueryable()
                     .AsNoTracking()
                     .Where(studyLoad => studyLoad.AcademicProgramId == request.ProgramId)
-                    .ApplySearch(filter.SearchValue, x => x.Level.Name)
                     .Select(studyLoad => new StudyLoadByLevelResponse(
                         studyLoad.Id,
                         studyLoad.SemesterType,
@@ -42,6 +41,11 @@ public class GetStudyLoadByLevelsQueryHandler(
                         studyLoad.MinHours,
                         studyLoad.MaxHours
                     ));
+
+                if(!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                   query = query.Where(s => s.LevelName.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<StudyLoadByLevelResponse>
                     .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);

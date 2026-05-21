@@ -28,7 +28,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
         var filter = command.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
-            query = query.ApplySearch(filter.SearchValue, s => s.Name, s => s.StudentCode);
+            query = query.Where(s => s.Name.Contains(filter.SearchValue) || s.StudentCode.Contains(filter.SearchValue));
 
         var totalCount = await query.CountAsync(cancellationToken);
 

@@ -28,14 +28,20 @@ public class GetAcademicProgramsQueryHandler(
             {
                 var query = _unitOfWork.Repository<AcademicProgram>()
                     .GetQueryable()
+                    .AsNoTracking()
                     .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted)
-                    .ApplySearch(filter.SearchValue, x => x.Name , x => x.Code)
                     .Select(x => new GetAcademicProgramsResponse(
                         x.Id,
                         x.Name,
                         x.Code
                         )
                     );
+
+                if(!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue) ||
+                                        x.Code.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<GetAcademicProgramsResponse>
                     .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
