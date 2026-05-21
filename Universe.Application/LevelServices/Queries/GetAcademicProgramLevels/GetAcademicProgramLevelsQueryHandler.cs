@@ -2,7 +2,7 @@
 using Universe.Core.Contracts.Level;
 
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
- 
+
 public class GetAcademicProgramLevelsQueryHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
@@ -13,13 +13,14 @@ public class GetAcademicProgramLevelsQueryHandler(
 
     public async Task<Result<PaginationList<LevelResponse>>> Handle(GetAcademicProgramLevelsQuery request, CancellationToken cancellationToken)
     {
-        if(!(await _unitOfWork.AcademicProgramRepository
+        if (!(await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.ProgramId, cancellationToken)
-           )) return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.NotFound);
-             
+           ))
+            return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.NotFound);
+
         var filter = request.Filter;
 
-        var cacheKey = LevelCacheKeys.List (
+        var cacheKey = LevelCacheKeys.List(
             request.ProgramId,
             filter.SearchValue,
             filter.SortColumn,
@@ -50,7 +51,7 @@ public class GetAcademicProgramLevelsQueryHandler(
                 }
 
                 return await PaginationList<LevelResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags
