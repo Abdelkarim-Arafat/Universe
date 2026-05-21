@@ -14,7 +14,7 @@ public class GetStudyLoadByLevelsQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = StudyLoadByLevelCacheKeys.List (
+        var cacheKey = StudyLoadByLevelCacheKeys.List(
             request.ProgramId,
             filter.SearchValue,
             filter.SortColumn,
@@ -32,23 +32,24 @@ public class GetStudyLoadByLevelsQueryHandler(
                 var query = _unitOfWork.Repository<StudyLoadByLevel>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(studyLoad => studyLoad.AcademicProgramId == request.ProgramId)
-                    .Select(studyLoad => new StudyLoadByLevelResponse(
-                        studyLoad.Id,
-                        studyLoad.SemesterType,
-                        studyLoad.Level.Name,
-                        studyLoad.LevelId,
-                        studyLoad.MinHours,
-                        studyLoad.MaxHours
-                    ));
+                    .Where(studyLoad => studyLoad.AcademicProgramId == request.ProgramId);
 
-                if(!string.IsNullOrEmpty(filter.SearchValue))
+                if (!string.IsNullOrEmpty(filter.SearchValue))
                 {
-                   query = query.Where(s => s.LevelName.Contains(filter.SearchValue));
+                    query = query.Where(s => s.Level.Name.Contains(filter.SearchValue));
                 }
 
+                var source = query.Select(studyLoad => new StudyLoadByLevelResponse(
+                    studyLoad.Id,
+                    studyLoad.SemesterType,
+                    studyLoad.Level.Name,
+                    studyLoad.LevelId,
+                    studyLoad.MinHours,
+                    studyLoad.MaxHours
+                ));
+
                 return await PaginationList<StudyLoadByLevelResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags

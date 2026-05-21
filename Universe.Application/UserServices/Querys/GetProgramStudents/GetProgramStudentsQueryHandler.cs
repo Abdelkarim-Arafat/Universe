@@ -1,5 +1,4 @@
-﻿
-using Universe.Core.Contracts.User;
+﻿using Universe.Core.Contracts.User;
 
 namespace Universe.Application.UserServices.Querys.GetAllStudents;
 
@@ -22,22 +21,29 @@ public class GetProgramStudentsQueryHandler(
             key: cacheKey,
             factory: async () =>
             {
-                var source = _unitOfWork.Repository<StudentAcademicProgram>()
+                var query = _unitOfWork.Repository<StudentAcademicProgram>()
                      .GetQueryable()
-                     .Where(x => x.AcademicProgramId == request.ProgramId && !x.Student.IsDeleted)
-                     .Select(x => new StudentResponse(
-                         x.Student.Id,
-                         x.Student.Name,
-                         x.Student.StudentCode,
-                         x.Student.NationalIdOrPassport,
-                         x.Student.Gender
-                         )
+                     .AsNoTracking()
+                     .Where(x => x.AcademicProgramId == request.ProgramId &&
+                        x.Currently && 
+                        !x.Student.IsDeleted
                      );
 
                 if (!string.IsNullOrEmpty(filter.SearchValue))
                 {
-                    source = source.Where(x => x.Name.Contains(filter.SearchValue) || x.StudentCode.Contains(filter.SearchValue));
+                    query = query.Where(x =>
+                        x.Student.Name.Contains(filter.SearchValue) ||
+                        x.Student.StudentCode.Contains(filter.SearchValue));
                 }
+
+                var source = query.Select(x => new StudentResponse(
+                    x.Student.Id,
+                    x.Student.Name,
+                    x.Student.StudentCode,
+                    x.Student.NationalIdOrPassport,
+                    x.Student.Gender
+                    )
+                );
 
                 return await PaginationList<StudentResponse>
                         .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

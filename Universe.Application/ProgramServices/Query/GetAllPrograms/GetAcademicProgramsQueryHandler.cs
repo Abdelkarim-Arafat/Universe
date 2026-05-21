@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Universe.Core.Contracts.AcademicProgram;
 
-
 namespace Universe.Application.AcademicProgramServices.Query.GetAcademicPrograms;
 
 public class GetAcademicProgramsQueryHandler(
@@ -29,22 +28,22 @@ public class GetAcademicProgramsQueryHandler(
                 var query = _unitOfWork.Repository<AcademicProgram>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted)
-                    .Select(x => new GetAcademicProgramsResponse(
-                        x.Id,
-                        x.Name,
-                        x.Code
-                        )
-                    );
+                    .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted);
 
-                if(!string.IsNullOrEmpty(filter.SearchValue))
+                if (!string.IsNullOrEmpty(filter.SearchValue))
                 {
-                    query = query.Where(x => x.Name.Contains(filter.SearchValue) ||
-                                        x.Code.Contains(filter.SearchValue));
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue) || x.Code.Contains(filter.SearchValue));
                 }
 
+                var source = query.Select(x => new GetAcademicProgramsResponse(
+                    x.Id,
+                    x.Name,
+                    x.Code
+                    )
+                );
+
                 return await PaginationList<GetAcademicProgramsResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags

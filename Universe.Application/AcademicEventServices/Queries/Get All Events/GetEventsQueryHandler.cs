@@ -32,11 +32,19 @@ public class GetEventsQueryHandler(
             key: cacheKey,
             factory: async () =>
             {
-                var source = _unitOfWork.Repository<AcademicEvent>()
+                var query = _unitOfWork.Repository<AcademicEvent>()
                     .GetQueryable()
                     .Where(x =>
                         x.ProgramId == request.ProgramId &&
-                        x.SemesterId == request.SemesterId)
+                        x.SemesterId == request.SemesterId);
+
+                if (!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x =>
+                        x.Type.ToString().Contains(filter.SearchValue));
+                }
+
+                var source = query
                     .OrderBy(x => x.StartDate)
                     .Select(x => new EventResponse(
                         x.Id.ToString(),

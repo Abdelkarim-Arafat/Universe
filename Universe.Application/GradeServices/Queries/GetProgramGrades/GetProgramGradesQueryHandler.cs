@@ -45,7 +45,7 @@ public class GetProgramGradesQueryHandler(IUnitOfWork unitOfWork, ICacheService 
                 }
 
                 if (!string.IsNullOrEmpty(filter.SortColumn))
-                    query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+                    query = query.OrderBy($"{filter.SortColumn} asc");
 
                 var projection = query.Select(x => new GradeResponse(
                     x.Id,

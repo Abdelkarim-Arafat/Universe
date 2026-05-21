@@ -6,7 +6,6 @@ using Universe.Core.Contracts.Service;
 
 namespace Universe.Application.AcademicServiceServices.Queries.GetAllServices;
 
-
 public class GetServicesQueryHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
@@ -14,6 +13,7 @@ public class GetServicesQueryHandler(
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;
+
     public async Task<Result<PaginationList<ServiceResponse>>> Handle(GetServicesQuery request, CancellationToken cancellationToken)
     {
         var filter = request.Filter;
@@ -30,22 +30,23 @@ public class GetServicesQueryHandler(
                 var query = _unitOfWork.Repository<Service>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted)
-                    .Select(x => new ServiceResponse (
-                        x.Id,
-                        x.Name,
-                        x.Description,
-                        x.Price
-                        )
-                    );
+                    .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted);
 
-                if(!string.IsNullOrEmpty(filter.SearchValue))
+                if (!string.IsNullOrEmpty(filter.SearchValue))
                 {
                     query = query.Where(x => x.Name.Contains(filter.SearchValue));
                 }
 
+                var source = query.Select(x => new ServiceResponse(
+                    x.Id,
+                    x.Name,
+                    x.Description,
+                    x.Price
+                    )
+                );
+
                 return await PaginationList<ServiceResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags
@@ -54,4 +55,3 @@ public class GetServicesQueryHandler(
         return Result.Success(response);
     }
 }
-
