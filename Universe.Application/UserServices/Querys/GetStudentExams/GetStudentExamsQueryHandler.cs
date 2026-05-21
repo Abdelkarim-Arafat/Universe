@@ -1,5 +1,4 @@
 ﻿
-using Universe.Core.Contracts.Student;
 
 namespace Universe.Application.UserServices.Querys.GetStudentExams;
 
@@ -18,10 +17,10 @@ internal class GetStudentExamsQueryHandler(
         if (!IsStudentExist)
             return Result.Failure<StudentExamsResponse>(StudentErrors.UserNotFound);
 
-        var currentProgramId = await _unitOfWork.AcademicProgramRepository
+        var studentCurrentProgramId = await _unitOfWork.AcademicProgramRepository
             .GetStudentCurrentProgramIdAsync(StudentId, cancellationToken);
 
-        if (currentProgramId == null)
+        if (studentCurrentProgramId == null)
             return Result.Failure<StudentExamsResponse>(AcademicProgramErrors.NotFound);
 
         var studentCollegeId = await _unitOfWork.UserRepository
@@ -46,7 +45,7 @@ internal class GetStudentExamsQueryHandler(
             .GetRegisteredCourseOfferingIdsInCurrentSemesterAsync(StudentId, currentSemester.Id, cancellationToken);
 
         var examTermsIds = await _unitOfWork.ExamRepository
-            .GetCurrentExamTermIdsAsync(currentProgramId.Value, currentSemester.Id, cancellationToken);
+            .GetCurrentExamTermIdsAsync(studentCurrentProgramId.Value, currentSemester.Id, cancellationToken);
 
         var studentExams = await _unitOfWork.UserRepository
             .GetStudentExamsTablesAsync(StudentId, currentCoursesIds, examTermsIds, cancellationToken);

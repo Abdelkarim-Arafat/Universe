@@ -101,16 +101,19 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
      CancellationToken cancellationToken)
     {
         var passedCoursesIds = _context.Enrollments
-            .Where(e => e.StudentId == studentId && e.Status == EnrollmentStatus.Passed && !e.IsDeleted)
+            .Where(e => e.StudentId == studentId
+            && e.Status == EnrollmentStatus.Passed
+            && e.CourseOffering.SemesterId != semesterId
+            && !e.IsDeleted)
             .Select(e => e.CourseOffering.CourseId);
 
         return await _context.CourseOfferings
-                    .Where(co =>  co.LevelId == levelId
-                              &&  co.SemesterId == semesterId
+                    .Where(co => co.LevelId == levelId
+                              && co.SemesterId == semesterId
                               && !co.IsDeleted
                               && !passedCoursesIds.Contains(co.CourseId)
-                              &&  co.Course.Prerequisites
-                                    .All(p => passedCoursesIds.Contains(p.PrerequisiteCourseId)))
+                              && co.Course.Prerequisites
+                                    .All(p => !p.IsDeleted && passedCoursesIds.Contains(p.PrerequisiteCourseId)))
                     .Select(co => new CourseRegistrationData(
                         co.Id,
                         co.CourseId,
@@ -122,7 +125,7 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
                                                && enrollment.StudentId == studentId),
                         co.CourseOfferingSessions
                             .Where(cos => !cos.IsDeleted)
-                            .Select(cos => new SessionInfo (
+                            .Select(cos => new SessionInfo(
                                 cos.TeachingSessionId,
                                 cos.TeachingSession.Instructor.Name,
                                 cos.TeachingSession.Type,
