@@ -13,11 +13,11 @@ public interface ISessionRepository
         Guid sessionId,
         CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<SessionResponse>> GetInstructorSessionsAsync(
-     Guid programId,
-     Guid instructorId,
-     Guid semesterId,
-     CancellationToken cancellationToken);
+    Task<IReadOnlyList<InstructorSessions>> GetInstructorSessionsAsync(
+    Guid programId,
+    Guid instructorId,
+    Guid semesterId,
+    CancellationToken cancellationToken);
 
     Task<TeachingSession?> GetMatchingSessionAsync(
     Guid courseId,

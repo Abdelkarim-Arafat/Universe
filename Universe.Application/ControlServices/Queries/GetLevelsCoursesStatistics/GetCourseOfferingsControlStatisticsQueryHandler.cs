@@ -39,9 +39,7 @@ public class GetCourseOfferingsControlStatisticsQueryHandler(
                                 co.Course.Code,
 
                                 co.Enrollments
-                                    .Count(e =>
-                                        !e.IsDeleted &&
-                                        e.Status == EnrollmentStatus.InProgress),
+                                    .Count(e => !e.IsDeleted),
 
                                 co.Enrollments
                                     .Where(e => !e.IsDeleted)

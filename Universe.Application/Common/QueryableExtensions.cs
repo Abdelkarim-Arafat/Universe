@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using System.Linq.Dynamic.Core;
 
 namespace Universe.Application.Common;
 
@@ -22,13 +23,15 @@ public static class QueryableExtensions
         );
     }
 
-    public static IQueryable<T> ApplySort<T, TKey>(
+    public static IQueryable<T> ApplySort<T>(
     this IQueryable<T> query,
-    string sortDirection,
-    Expression<Func<T, TKey>> keySelector)
+    string? sortColumn)
     {
-        return sortDirection.ToLower() == "desc"
-            ? query.OrderByDescending(keySelector)
-            : query.OrderBy(keySelector);
+        if (!string.IsNullOrWhiteSpace(sortColumn))
+        {
+            query = query.OrderBy(sortColumn);
+        }
+
+        return query;
     }
 }

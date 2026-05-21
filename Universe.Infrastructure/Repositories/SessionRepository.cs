@@ -11,32 +11,29 @@ namespace Universe.Infrastructure.Repositories;
 public class SessionRepository(ApplicationDbContext context) : ISessionRepository
 {
     private readonly ApplicationDbContext _context = context;
-    public async Task<IReadOnlyList<SessionResponse>> GetInstructorSessionsAsync(
-     Guid programId,
-     Guid instructorId,
-     Guid semesterId,
-     CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<InstructorSessions>> GetInstructorSessionsAsync(
+    Guid programId,
+    Guid instructorId,
+    Guid semesterId,
+    CancellationToken cancellationToken)
     {
-        return await _context.TeachingSessions
+        return await _context.CourseOfferingSessions
             .AsNoTracking()
-            .Where(x =>
-                x.InstructorId == instructorId &&
-                x.CourseOfferingSessions.Any(cos =>
-                    cos.CourseOffering.AcademicProgramId == programId &&
-                    cos.CourseOffering.SemesterId == semesterId
-                )
+            .Where(cos =>
+                cos.CourseOffering.AcademicProgramId == programId &&
+                cos.CourseOffering.SemesterId == semesterId &&
+                cos.TeachingSession.InstructorId == instructorId
             )
-            .Select(x => new SessionResponse(
-                x.Id,
-                x.StartTime,
-                x.EndTime,
-                x.Type,
-                x.Day,
-                x.InstructorId,
-                x.Instructor.Name,
-                x.RoomId,
-                x.Room.Name,
-                x.GroupNumber
+            .GroupBy(cos => cos.TeachingSessionId)
+            .Select(g => g.First())
+            .Select(cos => new InstructorSessions(
+                cos.CourseOffering.Course.Name,
+                cos.TeachingSession.Type,
+                cos.TeachingSession.GroupNumber,
+                cos.TeachingSession.Day,
+                cos.TeachingSession.StartTime,
+                cos.TeachingSession.EndTime,
+                cos.TeachingSession.Room.Name
             ))
             .ToListAsync(cancellationToken);
     }
