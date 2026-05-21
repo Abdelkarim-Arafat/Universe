@@ -112,10 +112,8 @@ public class EnrollmentRepository(
             .Include(e => e.TeachingSessionEnrollments.Where(ts => !ts.IsDeleted))
             .Where(e => !e.IsDeleted
                  && e.StudentId == studentId
-                 && e.Status == EnrollmentStatus.InProgress
                  && e.CourseOffering.SemesterId == semesterId)
             .ToListAsync(cancellationToken);
-
     }
     public async Task<List<StudentExistingEnrollment>> GetExistingEnrollmentsInfoAsync
     (Guid studentId, Guid semesterId, CancellationToken cancellationToken)
@@ -124,7 +122,6 @@ public class EnrollmentRepository(
             .AsNoTracking()
             .Where(te => te.Enrollment.StudentId == studentId
                       && te.Enrollment.CourseOffering.SemesterId == semesterId
-                      && te.Enrollment.Status == EnrollmentStatus.InProgress
                       && !te.Enrollment.IsDeleted
                       && !te.IsDeleted)
             .Select(te => new StudentExistingEnrollment(
@@ -159,7 +156,6 @@ public class EnrollmentRepository(
         return await _context.Enrollments
             .AsNoTracking()
             .Where(e => e.StudentId == studentId
-                     && e.Status == EnrollmentStatus.InProgress
                      && e.CourseOffering.SemesterId == semesterId
                      && !e.IsDeleted)
             .SumAsync(e => e.CourseOffering.CreditHours);

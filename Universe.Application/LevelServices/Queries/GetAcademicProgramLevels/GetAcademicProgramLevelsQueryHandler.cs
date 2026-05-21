@@ -2,7 +2,7 @@
 using Universe.Core.Contracts.Level;
 
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
- 
+
 public class GetAcademicProgramLevelsQueryHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
@@ -13,13 +13,14 @@ public class GetAcademicProgramLevelsQueryHandler(
 
     public async Task<Result<PaginationList<LevelResponse>>> Handle(GetAcademicProgramLevelsQuery request, CancellationToken cancellationToken)
     {
-        if(!(await _unitOfWork.AcademicProgramRepository
+        if (!(await _unitOfWork.AcademicProgramRepository
             .IsExistAsync(request.ProgramId, cancellationToken)
-           )) return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.NotFound);
-             
+           ))
+            return Result.Failure<PaginationList<LevelResponse>>(AcademicProgramErrors.NotFound);
+
         var filter = request.Filter;
 
-        var cacheKey = LevelCacheKeys.List (
+        var cacheKey = LevelCacheKeys.List(
             request.ProgramId,
             filter.SearchValue,
             filter.SortColumn,
@@ -36,17 +37,23 @@ public class GetAcademicProgramLevelsQueryHandler(
                 var query = _unitOfWork.Repository<Level>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(l => l.AcademicProgramId == request.ProgramId)
-                    .ApplySearch(filter.SearchValue, x => x.Name)
-                    .Select(x => new LevelResponse(
-                        x.Id,
-                        x.Name,
-                        x.MinHours,
-                        x.MaxHours
-                    ));
+                    .Where(l => l.AcademicProgramId == request.ProgramId);
+
+                if (!string.IsNullOrEmpty(filter.SearchValue))
+                    query = query.ApplySearch(filter.SearchValue, x => x.Name);
+
+                if (!string.IsNullOrEmpty(filter.SortColumn))
+                    query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+
+                var source = query.Select(x => new LevelResponse(
+                         x.Id,
+                         x.Name,
+                         x.MinHours,
+                         x.MaxHours
+                     ));
 
                 return await PaginationList<LevelResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags
