@@ -37,20 +37,18 @@ public class GetAcademicProgramLevelsQueryHandler(
                 var query = _unitOfWork.Repository<Level>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(l => l.AcademicProgramId == request.ProgramId);
+                    .Where(l => l.AcademicProgramId == request.ProgramId)
+                    .Select(x => new LevelResponse(
+                        x.Id,
+                        x.Name,
+                        x.MinHours,
+                        x.MaxHours
+                    ));
 
-                if (!string.IsNullOrEmpty(filter.SearchValue))
-                    query = query.ApplySearch(filter.SearchValue, x => x.Name);
-
-                if (!string.IsNullOrEmpty(filter.SortColumn))
-                    query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-
-                var source = query.Select(x => new LevelResponse(
-                         x.Id,
-                         x.Name,
-                         x.MinHours,
-                         x.MaxHours
-                     ));
+                if(!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<LevelResponse>
                     .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

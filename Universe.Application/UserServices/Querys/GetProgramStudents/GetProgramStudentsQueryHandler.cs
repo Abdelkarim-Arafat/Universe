@@ -25,7 +25,6 @@ public class GetProgramStudentsQueryHandler(
                 var source = _unitOfWork.Repository<StudentAcademicProgram>()
                      .GetQueryable()
                      .Where(x => x.AcademicProgramId == request.ProgramId && !x.Student.IsDeleted)
-                     .ApplySearch(filter.SearchValue, x => x.Student.Name, x => x.Student.StudentCode)
                      .Select(x => new StudentResponse(
                          x.Student.Id,
                          x.Student.Name,
@@ -34,8 +33,14 @@ public class GetProgramStudentsQueryHandler(
                          x.Student.Gender
                          )
                      );
+
+                if (!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    source = source.Where(x => x.Name.Contains(filter.SearchValue) || x.StudentCode.Contains(filter.SearchValue));
+                }
+
                 return await PaginationList<StudentResponse>
-                            .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
+                        .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
              cancellationToken: cancellationToken,
              tags: tags

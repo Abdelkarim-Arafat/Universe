@@ -45,7 +45,6 @@ public class GetProgramCoursesForExamsQueryHandler(
                         !x.IsDeleted &&
                         x.AcademicProgramId == request.AcademicProgramId &&
                         x.SemesterId == request.SemesterId)
-                    .ApplySearch(filter.SearchValue, x => x.Course.Name, x => x.Course.Code)
                     .Select(x => new CourseOfferingForExamsResponse(
                         x.Id,
                         x.Course.Name,
@@ -56,6 +55,13 @@ public class GetProgramCoursesForExamsQueryHandler(
                                 .Select(coe => coe.Id)
                                 .FirstOrDefault()
                     ));
+
+                if(!string.IsNullOrWhiteSpace(filter.SearchValue))
+                {
+                    query = query.Where(x =>
+                        x.CouresName.Contains(filter.SearchValue) ||
+                        x.CouresCode.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<CourseOfferingForExamsResponse>
                     .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);

@@ -38,7 +38,11 @@ public class GetProgramGradesQueryHandler(IUnitOfWork unitOfWork, ICacheService 
                     .Where(grade => grade.AcademicProgramId == request.AcademicProgramId && !grade.IsDeleted);
 
                 if (!string.IsNullOrEmpty(filter.SearchValue))
-                    query = query.ApplySearch(filter.SearchValue, x => x.Name, x => x.Code);
+                {
+                    query = query.Where(grade =>
+                        grade.Name.Contains(filter.SearchValue) ||
+                        grade.Code.Contains(filter.SearchValue));
+                }
 
                 if (!string.IsNullOrEmpty(filter.SortColumn))
                     query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");

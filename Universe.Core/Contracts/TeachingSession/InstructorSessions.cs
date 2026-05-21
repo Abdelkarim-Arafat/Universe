@@ -6,11 +6,12 @@ using Universe.Core.Enums;
 namespace Universe.Core.Contracts.TeachingSession;
 
 public record InstructorSessions (
+    Guid Id,
     string CourseName,
+    TimeOnly StartTime,
+    TimeOnly EndTime,
     SessionType Type,
-    int GroupNumber,
     Core.Enums.DayOfWeek Day,
-    TimeOnly Start,
-    TimeOnly End,
-    string RoomName
+    string RoomName,
+    int GroupNumber
 );

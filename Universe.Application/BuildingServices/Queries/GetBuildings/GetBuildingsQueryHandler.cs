@@ -24,7 +24,9 @@ public class GetBuildingsQueryHandler(IUnitOfWork unitOfWork, ICacheService cach
                     .Where(building => !building.IsDeleted);
 
                 if (!string.IsNullOrEmpty(filter.SearchValue))
-                    query = query.ApplySearch(filter.SearchValue, x => x.Name, x => x.Code);
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue) || x.Code.Contains(filter.SearchValue));
+                }
 
                 if (!string.IsNullOrEmpty(filter.SortColumn))
                     query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");

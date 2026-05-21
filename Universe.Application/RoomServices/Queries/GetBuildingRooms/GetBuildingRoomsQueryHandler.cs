@@ -26,12 +26,12 @@ public class GetBuildingRoomsQueryHandler(
                     .AsNoTracking()
                     .Where(room => room.BuildingId == request.BuildingId && !room.IsDeleted);
 
-                query = query.ApplySearch(filter.SearchValue, x => x.Name, x => x.RoomNumber.ToString());
+                if (!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue));
+                }
 
-                if (!string.IsNullOrEmpty(filter.SortColumn))
-                    query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-
-                var projection = query.Select(room => new RoomResponse(
+                var source = query.Select(room => new RoomResponse(
                     room.Id,
                     room.Name,
                     room.RoomNumber,
@@ -39,7 +39,8 @@ public class GetBuildingRoomsQueryHandler(
                     room.RoomType.ToString()
                 ));
 
-                return await PaginationList<RoomResponse>.CreateAsync(projection, filter.PageNumber, filter.PageSize, cancellationToken);
+                return await PaginationList<RoomResponse>
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags

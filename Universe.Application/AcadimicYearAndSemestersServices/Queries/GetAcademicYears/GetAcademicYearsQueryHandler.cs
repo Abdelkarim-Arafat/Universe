@@ -30,13 +30,18 @@ public class GetAcademicYearsQueryHandler(
             {
                 var query = _unitOfWork.Repository<AcademicYear>()
                     .GetQueryable()
+                    .AsNoTracking()
                     .Where(d => d.CollegeId == request.CollegeId && !d.IsDeleted)
-                    .ApplySearch(filter.SearchValue, x => x.Name)
                     .Select(x => new AcademicYearResponse(
                         x.Id,
                         x.Name
                         )
                     );
+
+                if(!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Name.Contains(filter.SearchValue));
+                }
 
                 return await PaginationList<AcademicYearResponse>
                     .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);

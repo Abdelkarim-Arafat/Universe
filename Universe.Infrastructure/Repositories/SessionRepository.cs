@@ -17,25 +17,33 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
     Guid semesterId,
     CancellationToken cancellationToken)
     {
-        return await _context.CourseOfferingSessions
+        var sessions = await _context.CourseOfferingSessions
             .AsNoTracking()
             .Where(cos =>
                 cos.CourseOffering.AcademicProgramId == programId &&
                 cos.CourseOffering.SemesterId == semesterId &&
                 cos.TeachingSession.InstructorId == instructorId
             )
-            .GroupBy(cos => cos.TeachingSessionId)
-            .Select(g => g.First())
-            .Select(cos => new InstructorSessions(
+            .Select(cos => new InstructorSessions (
+                cos.TeachingSessionId,
                 cos.CourseOffering.Course.Name,
-                cos.TeachingSession.Type,
-                cos.TeachingSession.GroupNumber,
-                cos.TeachingSession.Day,
                 cos.TeachingSession.StartTime,
                 cos.TeachingSession.EndTime,
-                cos.TeachingSession.Room.Name
+                cos.TeachingSession.Type,
+                cos.TeachingSession.Day,
+                cos.TeachingSession.Room.Name,
+                cos.TeachingSession.GroupNumber
             ))
             .ToListAsync(cancellationToken);
+
+        return sessions
+            .DistinctBy(x => new
+            {
+                x.StartTime,
+                x.EndTime,
+                x.Day,
+            })
+            .ToList();
     }
     public async Task<CourseOfferingSession?> GetCourseOfferingSessionByIdAsync(
         Guid courseId,
