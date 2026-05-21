@@ -31,24 +31,26 @@ public class GetCoursesQueryHandler(
                 var query = _unitOfWork.Repository<Course>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(x => x.CollegeId == request.CollegeId)
-                    .Select(x => new CourseResponse (
-                        x.Id.ToString(),
-                        x.Name,
-                        x.Code
-                    ));
+                    .Where(x => x.CollegeId == request.CollegeId);
 
-                if(!string.IsNullOrEmpty(filter.SearchValue))
+                if (!string.IsNullOrEmpty(filter.SearchValue))
                 {
                     query = query.Where(x => x.Name.Contains(filter.SearchValue) || x.Code.Contains(filter.SearchValue));
                 }
 
+                var source = query.Select(x => new CourseResponse(
+                    x.Id.ToString(),
+                    x.Name,
+                    x.Code
+                ));
+
                 return await PaginationList<CourseResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags
         );
+
         return Result.Success(response);
     }
 }

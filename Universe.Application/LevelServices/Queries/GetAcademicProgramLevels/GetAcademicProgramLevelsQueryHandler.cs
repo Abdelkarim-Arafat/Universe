@@ -1,5 +1,4 @@
-﻿
-using Universe.Core.Contracts.Level;
+﻿using Universe.Core.Contracts.Level;
 
 namespace Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 
@@ -37,18 +36,19 @@ public class GetAcademicProgramLevelsQueryHandler(
                 var query = _unitOfWork.Repository<Level>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(l => l.AcademicProgramId == request.ProgramId)
-                    .Select(x => new LevelResponse(
-                        x.Id,
-                        x.Name,
-                        x.MinHours,
-                        x.MaxHours
-                    ));
+                    .Where(l => l.AcademicProgramId == request.ProgramId);
 
-                if(!string.IsNullOrEmpty(filter.SearchValue))
+                if (!string.IsNullOrEmpty(filter.SearchValue))
                 {
                     query = query.Where(x => x.Name.Contains(filter.SearchValue));
                 }
+
+                var source = query.Select(x => new LevelResponse(
+                    x.Id,
+                    x.Name,
+                    x.MinHours,
+                    x.MaxHours
+                ));
 
                 return await PaginationList<LevelResponse>
                     .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);

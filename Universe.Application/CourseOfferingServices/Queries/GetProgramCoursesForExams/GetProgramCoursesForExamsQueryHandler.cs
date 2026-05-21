@@ -1,4 +1,5 @@
 ﻿using Universe.Core.Contracts.CourseOffering;
+
 namespace Universe.Application.CourseOfferingServices.Queries.GetProgramCoursesForExams;
 
 public class GetProgramCoursesForExamsQueryHandler(
@@ -44,27 +45,28 @@ public class GetProgramCoursesForExamsQueryHandler(
                     .Where(x =>
                         !x.IsDeleted &&
                         x.AcademicProgramId == request.AcademicProgramId &&
-                        x.SemesterId == request.SemesterId)
-                    .Select(x => new CourseOfferingForExamsResponse(
-                        x.Id,
-                        x.Course.Name,
-                        x.Course.Code,
-                        x.Enrollments.Count(e => !e.IsDeleted),
-                        x.CourseOfferingExams
-                                .Where(coe => !coe.IsDeleted && coe.ExamTermId == request.examTermId)
-                                .Select(coe => coe.Id)
-                                .FirstOrDefault()
-                    ));
+                        x.SemesterId == request.SemesterId);
 
-                if(!string.IsNullOrWhiteSpace(filter.SearchValue))
+                if (!string.IsNullOrWhiteSpace(filter.SearchValue))
                 {
                     query = query.Where(x =>
-                        x.CouresName.Contains(filter.SearchValue) ||
-                        x.CouresCode.Contains(filter.SearchValue));
+                        x.Course.Name.Contains(filter.SearchValue) ||
+                        x.Course.Code.Contains(filter.SearchValue));
                 }
 
+                var source = query.Select(x => new CourseOfferingForExamsResponse(
+                    x.Id,
+                    x.Course.Name,
+                    x.Course.Code,
+                    x.Enrollments.Count(e => !e.IsDeleted),
+                    x.CourseOfferingExams
+                            .Where(coe => !coe.IsDeleted && coe.ExamTermId == request.examTermId)
+                            .Select(coe => coe.Id)
+                            .FirstOrDefault()
+                ));
+
                 return await PaginationList<CourseOfferingForExamsResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags

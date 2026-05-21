@@ -14,21 +14,23 @@ public class GetAllStuffQueryHandler(
     ) : IRequestHandler<GetAllStuffQuery, Result<PaginationList<StuffResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
     public async Task<Result<PaginationList<StuffResponse>>> Handle(GetAllStuffQuery request, CancellationToken cancellationToken)
     {
-		var filter = request.Filter;
+        var filter = request.Filter;
 
-		var source = _unitOfWork.UserRepository
-            .GetAllStaffAsync()
-            .Select(x => new StuffResponse(
-                x.Id.ToString(),
-                x.Name
-            ));
+        var query = _unitOfWork.UserRepository
+            .GetAllStaffAsync();
 
-        if(!string.IsNullOrEmpty(filter.SearchValue))
+        if (!string.IsNullOrEmpty(filter.SearchValue))
         {
-            source = source.Where(x => x.Name.Contains(filter.SearchValue));
+            query = query.Where(x => x.Name.Contains(filter.SearchValue));
         }
+
+        var source = query.Select(x => new StuffResponse(
+            x.Id.ToString(),
+            x.Name
+        ));
 
         var response = await PaginationList<StuffResponse>
             .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
