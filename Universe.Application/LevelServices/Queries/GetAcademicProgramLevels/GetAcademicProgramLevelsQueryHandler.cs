@@ -51,7 +51,7 @@ public class GetAcademicProgramLevelsQueryHandler(
                 }
 
                 return await PaginationList<LevelResponse>
-                    .CreateAsync(source, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken,
             tags: tags
