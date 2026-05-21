@@ -36,6 +36,9 @@ public class ExamErrors
     public static readonly Error CourseOfferingExamIsExist =
     new("CourseOfferingExam.CourseOfferingExamIsExist", "the same course has exam term", StatusCodes.Status409Conflict);
 
+    public static readonly Error DateIsNotWithinTermPeriod =
+      new("CourseOfferingExam.DateIsNotWithinTermPeriod", "the date is not within the term period", StatusCodes.Status409Conflict);
+
 
     #endregion
 }

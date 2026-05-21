@@ -32,6 +32,7 @@ public interface IExamRepository
     DateOnly date, TimeOnly startTime, TimeOnly endTime, CancellationToken cancellationToken = default);
     Task<bool> IsCourseOfferingExamExistAsync(Guid courseOfferingId, Guid examTermId, CancellationToken cancellationToken);
     Task<CourseOfferingExam?> GetCourseOfferingExamIncludingCommitteesAndSeatsAsync(Guid Id, CancellationToken cancellationToken);
+    Task<bool> IsDateWithinTermPeriodAsync(Guid examTermId, DateOnly date, CancellationToken cancellationToken);
 
     #endregion
 

@@ -141,6 +141,14 @@ public class ExamRepository
 
         return null;
     }
+
+    public async Task<bool> IsDateWithinTermPeriodAsync(Guid examTermId, DateOnly date, CancellationToken cancellationToken)
+    {
+        return await _context.ExamTerms
+            .AnyAsync(et => et.Id == examTermId
+                     && !et.IsDeleted
+                     && date >= et.StartDate && date <= et.EndDate, cancellationToken);
+    }
     #endregion
 
     #region CourseOfferingCommittees

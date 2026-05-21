@@ -26,6 +26,12 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
         if (!isExamTermExist)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamTermNotFound);
 
+        var isDateWithinTermPeriod = await _unitOfWork.ExamRepository
+            .IsDateWithinTermPeriodAsync(request.ExamTermId, request.Date, cancellationToken);
+
+        if (!isDateWithinTermPeriod)
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.DateIsNotWithinTermPeriod);
+
         var committeesDetails = await _unitOfWork.ExamRepository
             .GetCommitteesDetailsAsync(request.ExamTermId, request.ExamCommitteesIds, cancellationToken);
 
