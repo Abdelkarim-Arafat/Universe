@@ -8,4 +8,4 @@ namespace Universe.Application.TeachingSessionServices.Queries.GetInstructorSess
 
 public record GetInstructorSessionsQuery(
     [Required] Guid ProgramId
-) : IRequest<Result<IReadOnlyList<SessionResponse>>>;
+) : IRequest<Result<IReadOnlyList<InstructorSessions>>>;

@@ -20,7 +20,7 @@ public class GetAdvisorStudentsQueryHandler(
             .GetQueryable()
             .Where(x => x.AdvisorId == request.AdvisorId && !x.IsDeleted)
             .ApplySearch(filter.SearchValue, x => x.Name, x => x.StudentCode)
-            .OrderBy($"{filter.SortColumn} asc")
+            .ApplySort(filter.SortColumn)
             .Select(x => new StudentResponse (
                 x.Id,
                 x.Name,
