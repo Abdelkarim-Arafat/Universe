@@ -8,7 +8,7 @@ namespace Universe.Core.Interfaces.Repositories;
 public interface IEnrollmentRepository
 {
     Task<StudentAcademicHistoryContextDto>
-        GetStudentAcademicHistoryContextAsync
+        GetStudentAcademicHistoryAsync
         (Guid studentId, List<GradeResponse> letterDegrees, CancellationToken cancellationToken);
 
     Task<List<StudentExistingEnrollment>> GetStudentScheduleAsync
@@ -16,7 +16,7 @@ public interface IEnrollmentRepository
     Task<List<Enrollment>> GetExistingEnrollmentIncludingSessionsAsync
     (Guid studentId, Guid semesterId, CancellationToken cancellationToken);
     Task<List<Guid>> GetRegisteredCourseOfferingIdsInCurrentSemesterAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
-    Task<Enrollment?> GetEnrollmentDataByCourseOfferingIdAsync(Guid courseOfferingId, Guid studentId, CancellationToken cancellationToken);
+    Task<Enrollment?> GetEnrollmentByCourseOfferingIdAsync(Guid courseOfferingId, Guid studentId, CancellationToken cancellationToken);
     Task<List<StudentExistingEnrollment>> GetExistingEnrollmentsInfoAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
     Task<decimal> CalculateCurrentRegisteredHoursAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
 }

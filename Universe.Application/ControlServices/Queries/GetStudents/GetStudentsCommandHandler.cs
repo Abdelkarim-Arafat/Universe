@@ -17,26 +17,22 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
         if (! await _unitOfWork.CourseOfferingRepository.IsExistAsync(command.CourseOfferingId, cancellationToken))
             return Result.Failure<PaginationList<StudentInformationResponse>>(CourseOfferingErrors.NotFound);
 
-       
         var query = _unitOfWork.Repository<Student>()
             .GetQueryable()
             .AsNoTracking()
-            .Where(student => !student.IsDeleted &&
-                        student.Enrollments.Any(e => !e.IsDeleted
-                                                  && e.CourseOfferingId == command.CourseOfferingId
-                                                  && (command.GroupNumber == null || e.GroupNumber == command.GroupNumber)));
+            .Where(student => !student.IsDeleted && student.Enrollments.Any(e =>
+                e.CourseOfferingId == command.CourseOfferingId
+                && ((command.GroupNumber == null) || (e.GroupNumber == command.GroupNumber))
+            ));
 
         var filter = command.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
             query = query.ApplySearch(filter.SearchValue, s => s.Name, s => s.StudentCode);
 
-        if (!string.IsNullOrEmpty(filter.SortColumn))
-            query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-
         var totalCount = await query.CountAsync(cancellationToken);
 
-        var pagedStudents = await query
+        var projectedQuery = query
             .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .Select(s => new
@@ -44,11 +40,18 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
                 s.Id,
                 s.Name,
                 s.StudentCode,
-                NumberOfFailed = s.Enrollments.Count(e => !e.IsDeleted
-                                                  && e.CourseOfferingId == command.CourseOfferingId
-                                                  && e.Status == EnrollmentStatus.Failed)
-            })
-            .ToListAsync(cancellationToken);
+                NumberOfFailed = s.Enrollments.Count(e => 
+                      !e.IsDeleted
+                    && e.CourseOfferingId == command.CourseOfferingId
+                    && e.Status == EnrollmentStatus.Failed)
+            });
+
+        if (!string.IsNullOrEmpty(filter.SortColumn))
+        {
+            projectedQuery = projectedQuery.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
+        }
+
+        var pagedStudents = await projectedQuery.ToListAsync(cancellationToken);
 
         var studentIds = pagedStudents.Select(s => s.Id).ToList();
 
@@ -63,7 +66,9 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
 
         var responseItems = pagedStudents.Select(student =>
         {
-            var studentAssessments = studentsAssessmentsLookUp[student.Id].ToList();
+            var studentAssessments = studentsAssessmentsLookUp.Contains(student.Id)
+                ? studentsAssessmentsLookUp[student.Id].ToList()
+                : new List<StudentDegreeValue>();
 
             var totalDegree = studentAssessments.Sum(a => a.DegreeValue ?? 0);
 
@@ -82,14 +87,13 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
                 letterGrade,
                 studentAssessments
             );
-        }).ToList(); 
+        }).ToList();
 
         var response = new PaginationList<StudentInformationResponse>(
             responseItems,
             totalCount,
             filter.PageNumber,
-            filter.PageSize
-        );
+            filter.PageSize);
 
         return Result.Success(response);
     }

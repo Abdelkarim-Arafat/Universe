@@ -20,7 +20,7 @@ public class GetStudentAcademicHistoryQueryHandler(
             .GetProgramGradesAsync(studentCurrentProgramId.Value, cancellationToken);
 
         var studentHistory = await _unitOfWork.EnrollmentRepository
-            .GetStudentAcademicHistoryContextAsync(request.StudentId, letterDegrees, cancellationToken);
+            .GetStudentAcademicHistoryAsync(request.StudentId, letterDegrees, cancellationToken);
 
         var response = new List<StudentSemesterDataResponse>();
 

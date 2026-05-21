@@ -39,7 +39,7 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
             return Result.Failure<UpsertDegreeResponse>(StudentAssessmentErrors.AssessmentDegreeExceedsMaxScore);
 
         var enrollment = await _unitOfWork.EnrollmentRepository
-            .GetEnrollmentDataByCourseOfferingIdAsync(courseData.CourseOfferingId, command.StudentId, cancellationToken);
+            .GetEnrollmentByCourseOfferingIdAsync(courseData.CourseOfferingId, command.StudentId, cancellationToken);
 
         if (enrollment == null)
             return Result.Failure<UpsertDegreeResponse>(EnrollmentErrors.NotFound);

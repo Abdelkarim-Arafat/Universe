@@ -14,7 +14,7 @@ public class EnrollmentRepository(
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<Enrollment?> GetEnrollmentDataByCourseOfferingIdAsync
+    public async Task<Enrollment?> GetEnrollmentByCourseOfferingIdAsync
         (Guid courseOfferingId, Guid studentId, CancellationToken cancellationToken)
     {
         return await _context.Enrollments
@@ -26,7 +26,7 @@ public class EnrollmentRepository(
 
     // check later
 
-    public async Task<StudentAcademicHistoryContextDto> GetStudentAcademicHistoryContextAsync(
+    public async Task<StudentAcademicHistoryContextDto> GetStudentAcademicHistoryAsync(
       Guid studentId,
       List<GradeResponse> letterDegrees,
       CancellationToken cancellationToken)
