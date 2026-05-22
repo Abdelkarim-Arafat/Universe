@@ -1,4 +1,9 @@
-﻿namespace Universe.Application.StudyLoadRuleServices.Query.GetAllStudyLoadRule;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Universe.Core.Contracts.StudyLoadRule;
+
+namespace Universe.Application.StudyLoadRuleServices.Query.GetAllStudyLoadRule;
 
 public class GetAllStudyLoadRuleCommandHandler(
     IUnitOfWork unitOfWork

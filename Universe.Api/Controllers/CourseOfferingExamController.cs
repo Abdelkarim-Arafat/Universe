@@ -32,20 +32,13 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Add (
         [FromRoute] Guid examTermId,
         [FromQuery] Guid courseOfferingId,
-        [FromBody] CreateCourseOfferingExamRequest request,
+        [FromBody] CreateCourseOfferingExamCommand request,
         CancellationToken cancellationToken)
 
     {
-        var command = new CreateCourseOfferingExamCommand (
-            request.Date,
-            request.StartTime,
-            request.EndTime,
-            courseOfferingId,
-            examTermId,
-            request.ExamCommitteesIds
-        );
-
-        var result = await _mediator.Send(command, cancellationToken);
+        request = request with { ExamTermId = examTermId, CourseOfferingId = courseOfferingId };
+        
+        var result = await _mediator.Send(request, cancellationToken);
 
         return result.IsSuccess
             ? CreatedAtAction(nameof(Get),
@@ -65,20 +58,15 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id,
-        [FromBody] UpdateCourseOfferingExamRequest request,
+        [FromBody] UpdateCourseOfferingExamCommand request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateCourseOfferingExamCommand(
-            id,
-            request.Date,
-            request.StartTime,
-            request.EndTime,
-            request.ExamCommitteesIds);
 
-        var result = await _mediator.Send(command, cancellationToken);
-        return result.IsSuccess
-           ? Ok(result.Value)
-           : result.ToProblem();
+        request = request with { Id = id };
+
+        var result = await _mediator.Send(request, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpGet("{id:guid}/committees")]

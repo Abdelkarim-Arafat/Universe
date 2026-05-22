@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
+using Universe.Core.Contracts.Auth;
 using Universe.Application.AuthServices.Commands.Login;
 using Universe.Application.AuthServices.Commands.ResetPassword;
 using Universe.Application.AuthServices.Commands.RevokeRefreshToken;

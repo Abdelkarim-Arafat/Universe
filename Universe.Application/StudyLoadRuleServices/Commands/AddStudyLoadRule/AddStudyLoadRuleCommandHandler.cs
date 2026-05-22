@@ -1,4 +1,9 @@
-﻿namespace Universe.Application.StudyLoadRuleServices.Commands.AddStudyLoadRule;
+﻿using Universe.Core.Contracts.StudyLoadRule;
+using Universe.Core.Contracts.StudyLoadRule;
+
+using Universe.Core.Contracts.User;
+
+namespace Universe.Application.StudyLoadRuleServices.Commands.AddStudyLoadRule;
 
 public class AddStudyLoadRuleCommandHandler(
     IUnitOfWork unitOfWork

@@ -1,4 +1,10 @@
-﻿namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
+﻿using Org.BouncyCastle.Asn1.IsisMtt.X509;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Universe.Core.Contracts.StudyLoadRule;
+
+namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
 
 public class UpdateStudyLoadRuleCommandHandler(
     IUnitOfWork unitOfWork

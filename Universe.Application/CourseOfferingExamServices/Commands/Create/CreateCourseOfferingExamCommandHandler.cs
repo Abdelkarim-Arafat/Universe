@@ -1,8 +1,9 @@
 
 namespace Universe.Application.CourseOfferingExamServices.Commands.Create;
 
-public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork) 
-    : IRequestHandler<CreateCourseOfferingExamCommand, Result<CourseOfferingExamResponse>>
+public class CreateCourseOfferingExamCommandHandler(
+    IUnitOfWork unitOfWork
+    ) : IRequestHandler<CreateCourseOfferingExamCommand, Result<CourseOfferingExamResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -118,13 +119,12 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
                 new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
 
-        var response = new CourseOfferingExamResponse
-            (
+        var response = new CourseOfferingExamResponse (
             courseOfferingExam.Id,
             courseOfferingExam.Date,
             courseOfferingExam.StartTime,
             courseOfferingExam.EndTime
-            );
+        );
 
         return Result.Success(response);
     }

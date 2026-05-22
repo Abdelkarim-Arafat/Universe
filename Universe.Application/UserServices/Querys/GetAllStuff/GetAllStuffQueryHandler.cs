@@ -1,4 +1,13 @@
-﻿namespace Universe.Application.UserServices.Querys.GetAllStuff;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Universe.Core.Contracts.Auth;
+using Universe.Core.Contracts.Course;
+using Universe.Core.Contracts.User;
+using Universe.Core.Entities;
+using Universe.Core.Interfaces;
+
+namespace Universe.Application.UserServices.Querys.GetAllStuff;
 
 public class GetAllStuffQueryHandler(
     IUnitOfWork unitOfWork
