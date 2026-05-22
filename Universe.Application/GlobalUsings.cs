@@ -27,4 +27,9 @@ global using Universe.Core.Contracts.Enrollments;
 global using Universe.Core.Contracts.ExamTerm;
 global using Universe.Core.Contracts.ExamCommittees;
 global using Universe.Core.Contracts.CourseOfferingExams;
+global using Universe.Core.Contracts.Event;
+global using Universe.Core.Contracts.Auth;
+global using Universe.Core.Contracts.StudyLoadRule;
+global using Universe.Core.Contracts.User;
+
 
