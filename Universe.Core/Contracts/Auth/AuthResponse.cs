@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Universe.Application.AuthServices.AuthDtos;
+namespace Universe.Core.Contracts.Auth;
 
 public record AuthResponse(
     string Id,
