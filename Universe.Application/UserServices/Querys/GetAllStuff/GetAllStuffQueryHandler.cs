@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AuthServices.AuthDtos;
+using Universe.Core.Contracts.Auth;
 using Universe.Core.Contracts.Course;
 using Universe.Core.Contracts.User;
 using Universe.Core.Entities;

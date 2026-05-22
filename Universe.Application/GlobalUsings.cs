@@ -12,7 +12,7 @@ global using Microsoft.Extensions.Logging;
 global using System.Reflection;
 global using System.Security.Cryptography;
 global using System.Text;
-global using Universe.Application.AuthServices.AuthDtos;
+global using Universe.Core.Contracts.Auth;
 global using Universe.Application.Common;
 global using Universe.Core.Abstractions;
 global using Universe.Core.Entities;

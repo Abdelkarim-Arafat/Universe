@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Universe.Api.Extensions;
-using Universe.Application.AuthServices.AuthDtos;
+using Universe.Core.Contracts.Auth;
 using Universe.Application.AuthServices.Commands.Login;
 using Universe.Application.AuthServices.Commands.ResetPassword;
 using Universe.Application.AuthServices.Commands.RevokeRefreshToken;

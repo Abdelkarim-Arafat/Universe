@@ -13,10 +13,12 @@ public class UpdateCourseOfferingExamCommandValidator : AbstractValidator<Update
             .NotEmpty();
 
         RuleFor(x => x.ExamCommitteesIds)
-            .Cascade(CascadeMode.Stop)
-            .NotEmpty()
-            .WithMessage("At least one exam committee must be selected.")
+            .Must(x => x.Count != 0)
+            .WithMessage("At least one exam committee must be selected.");
+
+        RuleFor(x => x.ExamCommitteesIds)
             .Must(ids => ids.Distinct().Count() == ids.Count)
+            .When(x => x.ExamCommitteesIds.Count > 0)
             .WithMessage("Exam committee IDs must be unique. Duplicates are not allowed.");
     }
 }

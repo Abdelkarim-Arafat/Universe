@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AcademicEventServices.EvenetDtos;
+using Universe.Core.Contracts.Event;
 using Universe.Core.Contracts.Service;
 
 namespace Universe.Application.AcademicServiceServices.Queries.GetAllServices;

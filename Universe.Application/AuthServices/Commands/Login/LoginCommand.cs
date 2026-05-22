@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.AuthServices.AuthDtos;
+using Universe.Core.Contracts.Auth;
 using Universe.Core.Abstractions;
 
 namespace Universe.Application.AuthServices.Commands.Login;

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using Universe.Application.AuthServices.AuthDtos;
+using Universe.Core.Contracts.Auth;
 using Universe.Core.Abstractions;
 using Universe.Core.Entities;
 using Universe.Core.Errors;

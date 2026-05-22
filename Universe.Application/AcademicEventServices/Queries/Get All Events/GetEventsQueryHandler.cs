@@ -1,4 +1,4 @@
-﻿using Universe.Application.AcademicEventServices.EvenetDtos;
+﻿using Universe.Core.Contracts.Event;
 using Universe.Core.Contracts.User;
 
 namespace Universe.Application.AcademicEventServices.Queries.Get_All_Events;

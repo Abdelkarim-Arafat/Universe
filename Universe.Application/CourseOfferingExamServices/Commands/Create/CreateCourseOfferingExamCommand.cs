@@ -10,11 +10,3 @@ public record CreateCourseOfferingExamCommand
      [Required] Guid ExamTermId,
      List<Guid> ExamCommitteesIds
 ) : IRequest<Result<CourseOfferingExamResponse>>;
-
-public record CreateCourseOfferingExamRequest
-(
-     DateOnly Date,
-     TimeOnly StartTime,
-     TimeOnly EndTime,
-     List<Guid> ExamCommitteesIds
-);

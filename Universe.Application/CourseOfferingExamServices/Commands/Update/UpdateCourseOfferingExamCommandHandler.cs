@@ -128,17 +128,16 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
             await trx.RollbackAsync(cancellationToken);
 
             return Result.Failure<CourseOfferingExamResponse>(
-                new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
+                new Error("500", ex.ToString(), StatusCodes.Status409Conflict));
         }
 
-        var response = new CourseOfferingExamResponse
-            (
+        var response = new CourseOfferingExamResponse (
             courseOfferingExam.Id,
             courseOfferingExam.Date,
             courseOfferingExam.StartTime,
             courseOfferingExam.EndTime
-            );
+        );
 
-        return Result.Success(response);  
+        return Result.Success<CourseOfferingExamResponse>(response);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Universe.Application.StudyLoadRuleServices.Dtos;
+using Universe.Core.Contracts.StudyLoadRule;
 
 namespace Universe.Application.StudyLoadRuleServices.Commands.AddStudyLoadRule;
 
