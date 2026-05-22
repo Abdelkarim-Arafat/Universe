@@ -1,6 +1,6 @@
 ﻿namespace Universe.Core.Contracts.Student;
 
-public record StudentAcademicHistoryContextDto(
+public record StudentAcademicHistoryDto(
     List<StudentSemesterRecord> Semesters
 );
 

@@ -8,12 +8,6 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
     public async Task<Result<CourseOfferingExamResponse>> Handle(CreateCourseOfferingExamCommand request, CancellationToken cancellationToken)
     {
-        var isExamAlreadyExist = await _unitOfWork.ExamRepository
-        .IsCourseOfferingExamExistAsync(request.CourseOfferingId, request.ExamTermId, cancellationToken);
-
-        if (isExamAlreadyExist)
-            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamIsExist);
-
         var isCourseOfferingExist = await _unitOfWork.CourseOfferingRepository
             .IsExistAsync(request.CourseOfferingId, cancellationToken);
 
@@ -26,6 +20,12 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
         if (!isExamTermExist)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamTermNotFound);
 
+        var isExamAlreadyExist = await _unitOfWork.ExamRepository
+        .IsCourseOfferingExamExistAsync(request.CourseOfferingId, request.ExamTermId, cancellationToken);
+
+        if (isExamAlreadyExist)
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamIsExist);
+
         var isDateWithinTermPeriod = await _unitOfWork.ExamRepository
             .IsDateWithinTermPeriodAsync(request.ExamTermId, request.Date, cancellationToken);
 
@@ -34,7 +34,7 @@ public class CreateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         var committeesDetails = await _unitOfWork.ExamRepository
             .GetCommitteesDetailsAsync(request.ExamTermId, request.ExamCommitteesIds, cancellationToken);
-
+        
         if (committeesDetails == null || !committeesDetails.Any())
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamCommitteeNotFound);
 

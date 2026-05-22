@@ -7,7 +7,7 @@ namespace Universe.Core.Interfaces.Repositories;
 
 public interface IEnrollmentRepository
 {
-    Task<StudentAcademicHistoryContextDto>
+    Task<StudentAcademicHistoryDto>
         GetStudentAcademicHistoryAsync
         (Guid studentId, List<GradeResponse> letterDegrees, CancellationToken cancellationToken);
 

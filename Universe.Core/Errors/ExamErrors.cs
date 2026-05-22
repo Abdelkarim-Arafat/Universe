@@ -38,6 +38,8 @@ public class ExamErrors
 
     public static readonly Error DateIsNotWithinTermPeriod =
       new("CourseOfferingExam.DateIsNotWithinTermPeriod", "the date is not within the term period", StatusCodes.Status409Conflict);
+    public static readonly Error DublicatedSessions =
+     new("CourseOfferingExam.DublicatedSessions", "there is two or more sessions with the same id!", StatusCodes.Status409Conflict);
 
 
     #endregion

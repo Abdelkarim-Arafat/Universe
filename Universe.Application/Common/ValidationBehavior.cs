@@ -42,6 +42,21 @@ public class ValidationBehavior<TRequest, TResponse>
             failures: errors
         );
 
-        return (TResponse)Result.Failure(error);
+        if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>))
+        {
+            // بنجيب الـ Type اللي جوه الـ Generic (مثلاً الـ Response Dto بتاعك)
+            var resultDataType = typeof(TResponse).GetGenericArguments()[0];
+
+            // بنادي ميثود الـ Failure الـ Generic الصريحة اللي أنت كاتبها في كلاس الـ Result
+            var failureMethod = typeof(Result)
+                .GetMethods()
+                .First(m => m.Name == nameof(Result.Failure) && m.IsGenericMethod)
+                .MakeGenericMethod(resultDataType);
+
+            return (TResponse)failureMethod.Invoke(null, [error])!;
+        }
+
+
+        return (TResponse)(object)Result.Failure(error);
     }
 }

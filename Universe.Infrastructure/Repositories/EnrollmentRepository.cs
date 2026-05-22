@@ -26,7 +26,7 @@ public class EnrollmentRepository(
 
     // check later
 
-    public async Task<StudentAcademicHistoryContextDto> GetStudentAcademicHistoryAsync(
+    public async Task<StudentAcademicHistoryDto> GetStudentAcademicHistoryAsync(
       Guid studentId,
       List<GradeResponse> letterDegrees,
       CancellationToken cancellationToken)
@@ -77,7 +77,7 @@ public class EnrollmentRepository(
                 )).ToList()
             )).ToList();
 
-        return new StudentAcademicHistoryContextDto(semesterRecords);
+        return new StudentAcademicHistoryDto(semesterRecords);
     }
     public async Task<List<StudentExistingEnrollment>> GetStudentScheduleAsync
         (Guid studentId, Guid currentSemesterId, CancellationToken cancellationToken)

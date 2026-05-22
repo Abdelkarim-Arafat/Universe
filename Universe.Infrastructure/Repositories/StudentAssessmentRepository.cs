@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.Student;
+using Universe.Core.Contracts.StudentAssessments;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -65,4 +66,21 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
 
         return assessmentsList.ToLookup(sa => sa.StudentId, sa => sa.assessments);
      }
+
+    public async Task<List<StudentAssessmentInCourseResponse>> GetStudentAssessmentsInCourseAsync(
+    Guid studentId,
+    Guid courseOfferingId,
+    CancellationToken cancellationToken = default)
+    {
+        return await _context.StudentAssessments
+            .Where(ass => !ass.IsDeleted
+                       && ass.StudentId == studentId
+                       && ass.CourseOfferingAssessment.CourseOfferingId == courseOfferingId)
+            .Select(ass => new StudentAssessmentInCourseResponse(
+                ass.CourseOfferingAssessment.Type.ToString(),
+                ass.CourseOfferingAssessment.MaxScore,
+                ass.degree ?? 0
+            ))
+            .ToListAsync(cancellationToken);
+    }
 }
