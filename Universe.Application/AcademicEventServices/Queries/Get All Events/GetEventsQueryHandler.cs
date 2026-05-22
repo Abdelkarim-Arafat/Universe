@@ -36,13 +36,8 @@ public class GetEventsQueryHandler(
                     .GetQueryable()
                     .Where(x =>
                         x.ProgramId == request.ProgramId &&
-                        x.SemesterId == request.SemesterId);
-
-                if (!string.IsNullOrEmpty(filter.SearchValue))
-                {
-                    query = query.Where(x =>
-                        x.Type.ToString().Contains(filter.SearchValue));
-                }
+                        x.SemesterId == request.SemesterId
+                    );
 
                 var source = query
                     .OrderBy(x => x.StartDate)

@@ -67,5 +67,7 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
                 PasswordHash = DefaultUsers.AcademicAdvisingPassword,
                 CollegeId = CollegeSeed.Id
             }]);
+
+        builder.HasData(ApplicationUserSeed.Data);
     }
 }

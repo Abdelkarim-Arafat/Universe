@@ -14,7 +14,7 @@ using Universe.Core.Constants;
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/services")]
-[ApiController]
+[ApiController , Authorize]
 public class ServiceController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -34,7 +34,7 @@ public class ServiceController(IMediator mediator) : ControllerBase
 
     [HttpPost("{serviceId:guid}/checkout")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AdminOrAdvisorOrStaff} , {Roles.Student}")]
+    [Authorize(Roles = Roles.AllRoles)]
     public async Task<IActionResult> CreateOrder (
         [FromRoute] Guid collegeId,
         [FromRoute] Guid serviceId,
@@ -49,7 +49,7 @@ public class ServiceController(IMediator mediator) : ControllerBase
 
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
-    [Authorize(Roles = $"{Roles.AdminOrAdvisorOrStaff} , {Roles.Student}")]
+    [Authorize(Roles = Roles.AllRoles)]
     public async Task<IActionResult> GetAllServices (
         [FromRoute] Guid collegeId,
         [FromQuery] FilterRequest filter,

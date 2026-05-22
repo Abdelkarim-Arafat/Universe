@@ -13,21 +13,21 @@ public class AcademicEventRepository(ApplicationDbContext context)  : IAcademicE
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<bool> IsOverlabedAsync(Guid programId,
-        Guid semesterId,
-        Core.Enums.EventType eventType,
-        DateOnly startDate,
-        DateOnly endDate,
-        CancellationToken cancellationToken)
+    public async Task<bool> IsOverlabedAsync(
+    Guid programId,
+    Guid semesterId,
+    Core.Enums.EventType eventType,
+    DateOnly startDate,
+    DateOnly endDate,
+    CancellationToken cancellationToken)
     {
         return await _context.AcademicEvents
             .AnyAsync(e =>
                 e.Type == eventType &&
                 e.ProgramId == programId &&
                 e.SemesterId == semesterId &&
-                ((startDate >= e.StartDate && startDate < e.EndDate) ||
-                 (endDate > e.StartDate && endDate <= e.EndDate) ||
-                 (startDate <= e.StartDate && endDate >= e.EndDate)),
+                startDate < e.EndDate &&
+                endDate > e.StartDate,
                 cancellationToken);
     }
 
