@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Universe.Application.StudyLoadRuleServices.Dtos;
+namespace Universe.Core.Contracts.StudyLoadRule;
 
-public record StudyLoadRuleResponse(
+public record StudyLoadRuleResponse (
     string Id,
     decimal GpaFrom,
     decimal GpaTo,

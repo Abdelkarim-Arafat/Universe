@@ -6,8 +6,8 @@ public record CreateCourseOfferingExamCommand
      DateOnly Date,
      TimeOnly StartTime,
      TimeOnly EndTime,
-   [Required] Guid CourseOfferingId,
-   [Required] Guid ExamTermId,
+     [Required] Guid CourseOfferingId,
+     [Required] Guid ExamTermId,
      List<Guid> ExamCommitteesIds
 ) : IRequest<Result<CourseOfferingExamResponse>>;
 

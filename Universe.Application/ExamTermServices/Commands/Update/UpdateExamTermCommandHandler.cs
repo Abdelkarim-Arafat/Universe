@@ -16,9 +16,7 @@ public class UpdateExamTermCommandHandler
             return Result.Failure<ExamTermResponse>(ExamErrors.ExamTermNotFound);
 
         var IsExistExamTermWithOverLabedTime = await _unitOfWork.ExamRepository
-           .IsExistExamTermWithOverLabedTimeAsync
-           (examTerm.Id, examTerm.SemesterId, examTerm.AcademicProgramId,
-            examTerm.StartDate, examTerm.EndDate, cancellationToken);
+           .IsExistExamTermWithOverLabedTimeAsync (examTerm.Id, examTerm.SemesterId, examTerm.AcademicProgramId, examTerm.StartDate, examTerm.EndDate, cancellationToken);
 
         if (IsExistExamTermWithOverLabedTime)
             return Result.Failure<ExamTermResponse>(ExamErrors.OverlappingTime);

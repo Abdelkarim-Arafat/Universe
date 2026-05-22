@@ -304,6 +304,7 @@ public class StudentController(IMediator mediator) : ControllerBase
             ? Ok(result.Value)
             : result.ToProblem();
     }
+
     [HttpGet("academic-history")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
@@ -312,6 +313,7 @@ public class StudentController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new GetStudentAcademicHistoryQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
     [HttpGet("student-schedule")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
@@ -320,6 +322,7 @@ public class StudentController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new GetStudentScheduleQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+
     [HttpGet("student-exams")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]

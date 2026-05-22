@@ -29,25 +29,24 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add
-        (
+    public async Task<IActionResult> Add (
         [FromRoute] Guid examTermId,
         [FromQuery] Guid courseOfferingId,
         [FromBody] CreateCourseOfferingExamRequest request,
         CancellationToken cancellationToken)
 
     {
-        var command = new CreateCourseOfferingExamCommand
-            (
+        var command = new CreateCourseOfferingExamCommand (
             request.Date,
             request.StartTime,
             request.EndTime,
             courseOfferingId,
             examTermId,
             request.ExamCommitteesIds
-            );
+        );
 
         var result = await _mediator.Send(command, cancellationToken);
+
         return result.IsSuccess
             ? CreatedAtAction(nameof(Get),
             new { examTermId = examTermId, id = result.Value.Id }, result.Value)

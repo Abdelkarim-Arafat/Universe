@@ -1,6 +1,5 @@
 namespace Universe.Application.ExamCommitteeServices.Queries.Get;
 
-public record GetExamCommitteeQuery
-(
+public record GetExamCommitteeQuery (
     [Required] Guid Id
 ) : IRequest<Result<ExamCommitteeResponse>>;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Universe.Core.Enums;
 
-namespace Universe.Application.AcademicEventServices.EvenetDtos;
+namespace Universe.Core.Contracts.Event;
 
 public record EventResponse(
     string Id,
