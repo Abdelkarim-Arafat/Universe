@@ -287,7 +287,7 @@ public class UserRepository
         return studentsLevelDictionary;
     }
 
-    public async Task<List<StudentExam>> GetStudentExamsTablesAsync(
+    public async Task<IEnumerable<StudentExam>> GetStudentExamsTablesAsync(
     Guid studentId,
     List<Guid> currentCoursesIds,
     List<Guid> examTermsIds,
@@ -335,9 +335,8 @@ public class UserRepository
                     info.Seat != null ? $"{info.Seat.RoomNumber} - {info.Seat.BuildingName}" : "No Place Assigned",
                     info.Seat?.SeatNumber ?? 0,  
                     info.Seat?.CommitteeNumber ?? 0
-                )).ToList()
-            ))
-            .ToList();
+                ))
+            ));
 
         return result;
     }

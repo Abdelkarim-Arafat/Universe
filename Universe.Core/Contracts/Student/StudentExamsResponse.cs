@@ -4,12 +4,12 @@ public record StudentExamsResponse
 (
     string StudentName,
     string StudentCode,
-    List<StudentExam> Exams
+    IEnumerable<StudentExam> Exams
 );
 public record StudentExam
 (
     string ExamName,
-    List<StudentExamPerCourse> Courses
+    IEnumerable<StudentExamPerCourse> Courses
 );
 public record StudentExamPerCourse
 (

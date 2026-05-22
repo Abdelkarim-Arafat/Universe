@@ -1,6 +1,4 @@
-﻿using Universe.Core.Contracts.Student;
-
-namespace Universe.Core.Contracts.User;
+﻿namespace Universe.Core.Contracts.Student;
 
 public record StudentSemesterDataResponse
 (
@@ -12,5 +10,5 @@ public record StudentSemesterDataResponse
    decimal EarnedHours,
    string SemesterGrade,
    string CumulativeGrade,
-   List<CourseDetailsDto> Courses 
+   IEnumerable<CourseDetailsDto> Courses 
 );

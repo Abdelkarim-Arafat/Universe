@@ -75,8 +75,8 @@ public class EnrollmentRepository(
                      letterDegrees.FirstOrDefault(g =>
                        info.TotalDegree >= g.MinScore && info.TotalDegree <= g.MaxScore)?.Code ?? "-",
                     info.Status == EnrollmentStatus.Passed
-                )).ToList()
-            )).ToList();
+                ))
+            ));
 
         return new StudentAcademicHistoryDto(semesterRecords);
     }

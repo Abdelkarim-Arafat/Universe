@@ -1,6 +1,4 @@
-﻿using Universe.Core.Contracts.User;
-
-namespace Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
+﻿namespace Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 
 public class GetStudentAcademicHistoryQueryHandler(
     IUnitOfWork unitOfWork

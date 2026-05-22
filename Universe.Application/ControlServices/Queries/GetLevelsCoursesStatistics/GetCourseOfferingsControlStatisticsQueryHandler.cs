@@ -38,10 +38,10 @@ public class GetCourseOfferingsControlStatisticsQueryHandler(
                                 co.Course.Code,
 
                                 co.Enrollments
-                                    .Count(e => !e.IsDeleted),
+                                    .Count(e => !e.IsDeleted && !e.Student.IsDeleted),
 
                                 co.Enrollments
-                                    .Where(e => !e.IsDeleted)
+                                    .Where(e => !e.IsDeleted && !e.Student.IsDeleted)
                                     .Count(e => e.Student.StudentAssessments
                                         .Any(sa =>
                                             sa.CourseOfferingAssessment.CourseOfferingId == co.Id &&

@@ -1,7 +1,7 @@
 ﻿namespace Universe.Core.Contracts.Student;
 
 public record StudentAcademicHistoryDto(
-    List<StudentSemesterRecord> Semesters
+    IEnumerable<StudentSemesterRecord> Semesters
 );
 
 public record StudentSemesterRecord(
@@ -9,7 +9,7 @@ public record StudentSemesterRecord(
     string SemesterName,
     string AcademicYearName,
     DateOnly SemesterStartDate,  
-    List<CourseDetailsDto> Courses
+    IEnumerable<CourseDetailsDto> Courses
 );
 
 public record CourseDetailsDto(
