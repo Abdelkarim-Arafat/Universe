@@ -67,6 +67,7 @@ public class EnrollmentRepository(
                 group.Key.AcademicYearName,
                 group.Key.SemesterStartDate,
                 group.Select(info => new CourseDetailsDto(
+                    info.CourseOfferingId,
                     info.CourseCode,
                     info.CourseName,
                     info.CreditHours,

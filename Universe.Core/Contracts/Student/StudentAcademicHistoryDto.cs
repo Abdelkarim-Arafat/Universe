@@ -13,6 +13,7 @@ public record StudentSemesterRecord(
 );
 
 public record CourseDetailsDto(
+    Guid CourseOfferingId,
     string CourseCode,
     string CourseName,
     decimal CreditHours,
