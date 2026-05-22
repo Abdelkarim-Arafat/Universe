@@ -15,6 +15,12 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
         if (courseOfferingExam == null)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.CourseOfferingExamNotFound);
 
+        var isDateWithinTermPeriod = await _unitOfWork.ExamRepository
+            .IsDateWithinTermPeriodAsync(courseOfferingExam.ExamTermId, request.Date, cancellationToken);
+
+        if (!isDateWithinTermPeriod)
+            return Result.Failure<CourseOfferingExamResponse>(ExamErrors.DateIsNotWithinTermPeriod);
+
         var hasOverlappingExam = await _unitOfWork.ExamRepository
          .HasOverlappingExamAsync
          (courseOfferingExam.Id, courseOfferingExam.ExamTermId,

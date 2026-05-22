@@ -1,5 +1,4 @@
-﻿
-using Universe.Core.Enums;
+﻿using Universe.Core.Enums;
  
 namespace Universe.Application.ControlServices.Queries.GetStudents;
 
@@ -11,10 +10,17 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
 
     public async Task<Result<PaginationList<StudentInformationResponse>>> Handle(GetStudentsCommand command, CancellationToken cancellationToken)
     {
-        if (!await _unitOfWork.AcademicProgramRepository.IsExistAsync(command.AcademicProgramId, cancellationToken))
+
+        var isProgramExist = await _unitOfWork.AcademicProgramRepository
+            .IsExistAsync(command.AcademicProgramId, cancellationToken);
+
+        if (!isProgramExist)
             return Result.Failure<PaginationList<StudentInformationResponse>>(AcademicProgramErrors.NotFound);
 
-        if (! await _unitOfWork.CourseOfferingRepository.IsExistAsync(command.CourseOfferingId, cancellationToken))
+        var courseOffering = await _unitOfWork.CourseOfferingRepository
+            .GetByIdAsync(command.CourseOfferingId, cancellationToken);
+
+        if (courseOffering == null)
             return Result.Failure<PaginationList<StudentInformationResponse>>(CourseOfferingErrors.NotFound);
 
         var query = _unitOfWork.Repository<Student>()
@@ -43,7 +49,8 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
                 s.StudentCode,
                 NumberOfFailed = s.Enrollments.Count(e => 
                       !e.IsDeleted
-                    && e.CourseOfferingId == command.CourseOfferingId
+                    && e.CourseOffering.CourseId == courseOffering.CourseId
+                    && e.CourseOffering.SemesterId != courseOffering.SemesterId // في تعديل قادم تتاكد انك بتعد السيميسترز ال قبلك ف التاريخ
                     && e.Status == EnrollmentStatus.Failed)
             });
 
