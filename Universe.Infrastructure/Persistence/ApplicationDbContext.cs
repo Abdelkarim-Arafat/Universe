@@ -67,20 +67,26 @@ public class ApplicationDbContext(
     {
         var entries = ChangeTracker.Entries<BaseEntity>();
 
+        var userId = _httpContext.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        Guid? currentUserId = Guid.TryParse(userId, out var id) ? id : null;
+
         foreach (var entry in entries)
         {
-            var claims = _httpContext.HttpContext!.User;
-            var CurrentUserId = Guid.Parse(claims.FindFirstValue(ClaimTypes.NameIdentifier)!);
             if (entry.State == EntityState.Added)
             {
-                entry.Property(x => x.CreatedById).CurrentValue = CurrentUserId;
+                if (currentUserId.HasValue)
+                    entry.Property(x => x.CreatedById).CurrentValue = currentUserId;
             }
             else if (entry.State == EntityState.Modified)
             {
-                entry.Property(x => x.UpdatedById).CurrentValue = CurrentUserId;
+                if (currentUserId.HasValue)
+                    entry.Property(x => x.UpdatedById).CurrentValue = currentUserId;
+
                 entry.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
             }
         }
+
         return base.SaveChangesAsync(cancellationToken);
     }
+    
 }

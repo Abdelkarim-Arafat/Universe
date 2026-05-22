@@ -20,6 +20,10 @@ public class UpdatePersonalDataCommandValidator : AbstractValidator<UpdatePerson
             .NotEmpty().WithMessage("National ID or Passport is required.")
             .MaximumLength(50).WithMessage("National ID or Passport cannot exceed 50 characters.");
 
+        RuleFor(x => x.MaritalStatus)
+            .NotEmpty().NotNull()
+            .IsInEnum().WithMessage("Invalid marital status value.");
+
         RuleFor(x => x.Religion)
             .NotEmpty().NotNull()
             .IsInEnum().WithMessage("Invalid religion value.");

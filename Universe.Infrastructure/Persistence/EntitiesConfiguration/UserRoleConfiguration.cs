@@ -24,5 +24,7 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<G
                 UserId = DefaultUsers.AcademicAdvisingId,
                 RoleId = RoleSeed.AcademicAdvising.Id
             });
+
+        builder.HasData(UserRoleSeed.Data);
     }
 }
