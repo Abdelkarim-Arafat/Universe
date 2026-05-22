@@ -1,7 +1,4 @@
-﻿using Universe.Application.StudyLoadRuleServices.Dtos;
-using Universe.Core.Contracts.User;
-
-namespace Universe.Application.StudyLoadRuleServices.Commands.AddStudyLoadRule;
+﻿namespace Universe.Application.StudyLoadRuleServices.Commands.AddStudyLoadRule;
 
 public class AddStudyLoadRuleCommandHandler(
     IUnitOfWork unitOfWork

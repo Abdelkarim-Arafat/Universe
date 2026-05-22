@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.AcademicEventServices.EvenetDtos;
+﻿ 
 
 namespace Universe.Application.AcademicEventServices.Commands.Add_Event;
 

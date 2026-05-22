@@ -1,17 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-using Universe.Application.AuthServices.AuthDtos;
-using Universe.Core.Abstractions;
-using Universe.Core.Entities;
-using Universe.Core.Errors;
-using Universe.Core.Interfaces;
-
-namespace Universe.Application.AuthServices.Commands.Login;
+﻿namespace Universe.Application.AuthServices.Commands.Login;
 
 public class LoginCommandHandler(
     UserManager<ApplicationUser> userManager,

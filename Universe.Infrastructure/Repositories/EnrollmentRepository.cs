@@ -45,7 +45,7 @@ public class EnrollmentRepository(
                 e.CourseOfferingId,
                 CourseCode = e.CourseOffering.Course.Code,
                 CourseName = e.CourseOffering.Course.Name,
-                CreditHours = e.CourseOffering.CreditHours,
+                e.CourseOffering.CreditHours,
                 e.Status,
 
                 TotalDegree = _context.StudentAssessments
@@ -159,6 +159,6 @@ public class EnrollmentRepository(
             .Where(e => e.StudentId == studentId
                      && e.CourseOffering.SemesterId == semesterId
                      && !e.IsDeleted)
-            .SumAsync(e => e.CourseOffering.CreditHours);
+            .SumAsync(e => e.CourseOffering.CreditHours, cancellationToken);
     }
 }

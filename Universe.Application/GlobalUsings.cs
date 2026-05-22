@@ -12,7 +12,6 @@ global using Microsoft.Extensions.Logging;
 global using System.Reflection;
 global using System.Security.Cryptography;
 global using System.Text;
-global using Universe.Application.AuthServices.AuthDtos;
 global using Universe.Application.Common;
 global using Universe.Core.Abstractions;
 global using Universe.Core.Entities;
@@ -27,4 +26,9 @@ global using Universe.Core.Contracts.Enrollments;
 global using Universe.Core.Contracts.ExamTerm;
 global using Universe.Core.Contracts.ExamCommittees;
 global using Universe.Core.Contracts.CourseOfferingExams;
+global using Universe.Core.Contracts.Event;
+global using Universe.Core.Contracts.Auth;
+global using Universe.Core.Contracts.StudyLoadRule;
+global using Universe.Core.Contracts.User;
+
 
