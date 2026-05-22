@@ -19,4 +19,5 @@ public interface IEnrollmentRepository
     Task<Enrollment?> GetEnrollmentByCourseOfferingIdAsync(Guid courseOfferingId, Guid studentId, CancellationToken cancellationToken);
     Task<List<StudentExistingEnrollment>> GetExistingEnrollmentsInfoAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
     Task<decimal> CalculateCurrentRegisteredHoursAsync(Guid studentId, Guid semesterId, CancellationToken cancellationToken);
+    Task<bool> HasStudentsWithMissingGradesAsync(Guid programId, Guid semesterId, CancellationToken cancellationToken);
 }

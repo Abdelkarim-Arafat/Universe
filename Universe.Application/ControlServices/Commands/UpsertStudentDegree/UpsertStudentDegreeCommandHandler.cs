@@ -1,9 +1,14 @@
-﻿using Universe.Application.ControlServices.Dtos;
+﻿using Org.BouncyCastle.Asn1.Ocsp;
+using Universe.Application.ControlServices.Dtos;
 namespace Universe.Application.ControlServices.Commands.UpsertStudentDegree;
 
-public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpsertStudentDegreeCommand, Result<UpsertDegreeResponse>>
+public class UpsertStudentDegreeCommandHandler
+    (IUnitOfWork unitOfWork,
+     ICacheService cacheService) : IRequestHandler<UpsertStudentDegreeCommand, Result<UpsertDegreeResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
+
     public async Task<Result<UpsertDegreeResponse>> Handle(UpsertStudentDegreeCommand command, CancellationToken cancellationToken)
     {
         var isStudentExist = await _unitOfWork.UserRepository
@@ -49,7 +54,7 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
 
         var oldDegree = assessmentData.Assessment!.degree;
 
-        var difference = command.Degree - (oldDegree.HasValue ? oldDegree.Value : 0);
+        var difference = command.Degree - (oldDegree ?? 0);
 
         totalDegree += difference;
 
@@ -63,6 +68,12 @@ public class UpsertStudentDegreeCommandHandler(IUnitOfWork unitOfWork) : IReques
         _unitOfWork.Repository<Enrollment>().Update(enrollment);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveAsync(
+                ControlCacheKeys.CourseOfferingsStatistics(
+                command.AcademicProgramId,
+                courseData.SemesterId
+            ), cancellationToken);
 
         var letterGrade = await _unitOfWork.GradeRepository
             .GetLetterGradeByTotalDegree(command.AcademicProgramId, totalDegree, cancellationToken);

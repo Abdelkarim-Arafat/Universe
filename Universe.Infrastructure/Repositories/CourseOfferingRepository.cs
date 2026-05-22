@@ -147,15 +147,16 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
             .Include(co => co.Assessments)
             .FirstOrDefaultAsync(co => !co.IsDeleted && co.Id == Id, cancellationToken);
     }
-    public async Task<CourseOfferingData?> GetCourseOfferingDataByAssessmentIdAsync
+    public async Task<CourseOfferingCustomDto?> GetCourseOfferingDataByAssessmentIdAsync
         (Guid courseOfferingAssessmentId, CancellationToken cancellationToken)
     {
         return await _context.CourseOfferingAssessments
             .Where(co => co.Id == courseOfferingAssessmentId && !co.IsDeleted)
-            .Select(co => new CourseOfferingData(
+            .Select(co => new CourseOfferingCustomDto(
                 co.CourseOffering.IsOpenForControl,
                 co.CourseOffering.SuccessPercentage,
-                co.CourseOfferingId
+                co.CourseOfferingId,
+                co.CourseOffering.SemesterId
             ))
             .FirstOrDefaultAsync(cancellationToken);
     }

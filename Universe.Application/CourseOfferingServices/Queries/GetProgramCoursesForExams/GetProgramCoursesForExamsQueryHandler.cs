@@ -62,7 +62,9 @@ public class GetProgramCoursesForExamsQueryHandler(
                     x.CourseOfferingExams
                             .Where(coe => !coe.IsDeleted && coe.ExamTermId == request.examTermId)
                             .Select(coe => coe.Id)
-                            .FirstOrDefault()
+                            .FirstOrDefault(),
+                    x.CourseOfferingExams
+                            .Any(coe => !coe.IsDeleted && coe.ExamTermId == request.examTermId)
                 ));
 
                 return await PaginationList<CourseOfferingForExamsResponse>

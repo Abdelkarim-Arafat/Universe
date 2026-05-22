@@ -7,8 +7,4 @@ public record StudentAssessmenDto(
     StudentAssessment? Assessment
 );
 
-public record CourseOfferingData(
-     bool IsCourseOpenForControl,
-    decimal SuccessPercentage,
-    Guid CourseOfferingId
-);
+

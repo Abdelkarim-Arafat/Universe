@@ -6,5 +6,6 @@ public record CourseOfferingForExamsResponse (
     string CouresName,
     string CouresCode,
     int NumberOfStudents,
-    Guid CourseOfferingExamId
+    Guid CourseOfferingExamId,
+    bool HasExam
 );

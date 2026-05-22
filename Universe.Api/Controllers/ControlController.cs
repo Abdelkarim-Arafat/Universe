@@ -83,9 +83,10 @@ public class ControlController(IMediator mediator) : ControllerBase
     [HttpPatch("toggle-announce-result")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> ToggleAnnounceResult([FromQuery] Guid SemesterId, CancellationToken cancellationToken)
+    public async Task<IActionResult> ToggleAnnounceResult
+        ([FromQuery] Guid SemesterId, [FromQuery] Guid ProgramId, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new ToggleAnnounceResultCommand(SemesterId), cancellationToken);
+        var result = await _mediator.Send(new ToggleAnnounceResultCommand(SemesterId, ProgramId), cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
     }

@@ -8,8 +8,6 @@ using Universe.Application.AuthServices.Commands.RevokeRefreshToken;
 using Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
 using Universe.Application.AuthServices.Commands.UpdateRefreshToken;
 using Universe.Application.AuthServices.Commands.VerificationResetPasswordCode;
-using Universe.Core.Contracts.Auth;
-
 namespace Universe.Api.Controllers;
 
 [Route("[controller]")]

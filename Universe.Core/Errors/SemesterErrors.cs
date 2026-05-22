@@ -16,6 +16,11 @@ public class SemesterErrors
     public static readonly Error NotFound = new Error(
         "Semester.NotFound",
         "Semester is not found",
-        StatusCodes.Status400BadRequest
+        StatusCodes.Status404NotFound
     );
+
+    public static readonly Error StudentsWithMissingGrades = new Error(
+        "Semester.StudentsWithMissingGrades",
+        "Cannot advertise the results because there are students with missing grades.",
+        StatusCodes.Status409Conflict);
 }

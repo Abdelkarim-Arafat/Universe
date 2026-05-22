@@ -161,4 +161,21 @@ public class EnrollmentRepository(
                      && !e.IsDeleted)
             .SumAsync(e => e.CourseOffering.CreditHours, cancellationToken);
     }
+    public async Task<bool> HasStudentsWithMissingGradesAsync(
+        Guid programId,
+        Guid semesterId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Students
+            .AnyAsync(student => !student.IsDeleted
+
+                && student.Enrollments.Any(enrollment => !enrollment.IsDeleted
+                    && enrollment.CourseOffering.AcademicProgramId == programId
+                    && enrollment.CourseOffering.SemesterId == semesterId
+
+                    && student.StudentAssessments.Any(ass => !ass.IsDeleted
+                        && ass.CourseOfferingAssessment.CourseOfferingId == enrollment.CourseOfferingId
+                        && !ass.degree.HasValue)),
+                     cancellationToken);
+    }
 }

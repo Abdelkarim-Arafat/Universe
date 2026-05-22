@@ -24,7 +24,7 @@ public interface ICourseOfferingRepository
     Task<List<CourseOfferingAssessmentResponse>> GetCourseOfferingAssessmentsForViewAsync(Guid CourseOfferingId, CancellationToken cancellationToken);
     Task<List<Guid>> GetStudentsIdsEnrolledInCourseAsync(Guid courseOfferingId, CancellationToken cancellationToken);
     Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
-    Task<CourseOfferingData?> GetCourseOfferingDataByAssessmentIdAsync(Guid courseOfferingAssessmentId, CancellationToken cancellationToken);
+    Task<CourseOfferingCustomDto?> GetCourseOfferingDataByAssessmentIdAsync(Guid courseOfferingAssessmentId, CancellationToken cancellationToken);
     Task<decimal> CalculateCreditHoursForCoursesAsync(List<Guid> coursesIds, CancellationToken cancellationToken);
     Task<ILookup<Guid, Guid>> GetAssessmentIdsGroupedByOfferingAsync(List<Guid> incomingCourseOfferingIds, CancellationToken cancellationToken);
 }
