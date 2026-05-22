@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
-using Universe.Application.UserServices.Commands.ChangePassword;
 using Universe.Application.UserServices.Commands.ChangeStudentProgram;
 using Universe.Application.UserServices.Commands.RegisterStudent;
 using Universe.Application.UserServices.Commands.RemoveStudent;
@@ -23,6 +22,7 @@ using Universe.Application.UserServices.Querys.GetPersonalData;
 using Universe.Application.UserServices.Querys.GetPreviousQualificationData;
 using Universe.Application.UserServices.Querys.GetStudentAcademicHistory;
 using Universe.Application.UserServices.Querys.GetStudentExams;
+using Universe.Application.UserServices.Querys.GetStudentGradesInCourse;
 using Universe.Application.UserServices.Querys.GetStudentGraduationDetails;
 using Universe.Application.UserServices.Querys.GetStudentSchedule;
 using Universe.Application.UserServices.Querys.GetStudentsWithoutAdvisor;
@@ -328,6 +328,13 @@ public class StudentController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new GetStudentExamsQuery(GetUserId()), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
-
-
+    [HttpGet("assessments-in-course")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
+    public async Task<IActionResult> GetStudentAssessmentsInCourse
+        ([FromQuery] Guid courseOfferingId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetStudentGradesInCourseQuery(GetUserId(), courseOfferingId), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
 }

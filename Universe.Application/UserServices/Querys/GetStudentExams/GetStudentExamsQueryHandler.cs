@@ -1,8 +1,6 @@
-﻿
+﻿namespace Universe.Application.UserServices.Querys.GetStudentExams;
 
-namespace Universe.Application.UserServices.Querys.GetStudentExams;
-
-internal class GetStudentExamsQueryHandler(
+public class GetStudentExamsQueryHandler(
     IUnitOfWork unitOfWork
     ) : IRequestHandler<GetStudentExamsQuery, Result<StudentExamsResponse>>
 {
