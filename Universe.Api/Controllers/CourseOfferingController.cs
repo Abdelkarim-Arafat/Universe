@@ -17,7 +17,7 @@ using Universe.Core.Enums;
 namespace Universe.Api.Controllers;
 
 [Route("programs/{programId:guid}/course-offerings")]
-[ApiController]
+[ApiController , Authorize]
 
 public class CourseOfferingController(IMediator mediator) : ControllerBase
 {

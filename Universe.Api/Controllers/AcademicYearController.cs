@@ -16,7 +16,7 @@ using Universe.Core.Constants;
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/academic-years")]
-[ApiController]
+[ApiController , Authorize]
 
 public class AcademicYearsController(IMediator mediator) : ControllerBase
 {

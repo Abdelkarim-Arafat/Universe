@@ -23,7 +23,7 @@ public class ExamTermController(IMediator mediator) : ControllerBase
 
     [HttpGet]
     [EnableRateLimiting("ReadLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetProgramExams(
         [FromRoute] Guid academicProgramId,
         [FromQuery] Guid SemesterId,
@@ -38,7 +38,7 @@ public class ExamTermController(IMediator mediator) : ControllerBase
 
     [HttpGet("{id:Guid}")]
     [EnableRateLimiting("ReadLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetExamTermQuery(id), cancellationToken);
@@ -47,7 +47,7 @@ public class ExamTermController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Add([FromQuery] Guid SemesterId,
         [FromRoute] Guid academicProgramId,
         [FromBody] CreateExamTermCommand command, CancellationToken cancellationToken)
@@ -64,7 +64,7 @@ public class ExamTermController(IMediator mediator) : ControllerBase
 
     [HttpDelete("{id:Guid}")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new DeleteExamTermCommand(id), cancellationToken);
@@ -72,7 +72,7 @@ public class ExamTermController(IMediator mediator) : ControllerBase
     }
     [HttpPut("{id:Guid}")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Update([FromRoute] Guid id, UpdateExamTermCommand command, CancellationToken cancellationToken)
     {
         command = command with { Id = id };
@@ -81,7 +81,7 @@ public class ExamTermController(IMediator mediator) : ControllerBase
     }
     [HttpPatch("{id:Guid}/toggle-publisher")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> TogglePublisher([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new TogglePublisherCommand(id), cancellationToken);

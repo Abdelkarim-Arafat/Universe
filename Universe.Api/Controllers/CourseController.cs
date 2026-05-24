@@ -15,7 +15,7 @@ namespace Universe.Api.Controllers;
 
 
 [Route("colleges/{collegeId:guid}/courses")]
-[ApiController]
+[ApiController , Authorize]
 public class CourseController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

@@ -13,7 +13,7 @@ public class RoleController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpGet]
-    public async Task<IActionResult> GetAllRoles(
+    public async Task<IActionResult> GetAllRoles (
         [FromQuery] string roleName,
         CancellationToken cancellationToken)
     {

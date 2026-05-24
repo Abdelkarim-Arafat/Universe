@@ -14,7 +14,7 @@ using Universe.Core.Constants;
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/academic-programs")]
-[ApiController]
+[ApiController , Authorize]
 public class AcademicProgramController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
