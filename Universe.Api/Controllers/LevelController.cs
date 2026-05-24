@@ -23,7 +23,7 @@ public class LevelController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetAll(
+    public async Task<IActionResult> GetProgramLevels(
         [FromRoute] Guid academicProgramId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken = default)

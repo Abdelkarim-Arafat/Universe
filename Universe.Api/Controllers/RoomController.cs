@@ -76,7 +76,7 @@ public class RoomController(IMediator mediator) : ControllerBase
     [HttpGet("available-for-committees")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetAvailableRoomsForCommittees(
+    public async Task<IActionResult> GetAvailableRoomsForCreateCommittees(
         [FromRoute] Guid buildingId,
         [FromQuery] Guid examTermId,
         [FromQuery] FilterRequest filter,

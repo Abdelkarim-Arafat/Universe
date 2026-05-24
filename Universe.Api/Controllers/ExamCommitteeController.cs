@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
 using Universe.Application.ExamCommitteeServices.Commands.Create;
@@ -7,17 +9,20 @@ using Universe.Application.ExamCommitteeServices.Commands.Delete;
 using Universe.Application.ExamCommitteeServices.Commands.Update;
 using Universe.Application.ExamCommitteeServices.Queries.Get;
 using Universe.Application.ExamCommitteeServices.Queries.GetExamTermCommittees;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
 [Route("exam-terms/{examTermId:Guid}/committees")]
-[ApiController]
+[ApiController,Authorize]
 public class ExamCommitteeController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
 
     [HttpPost]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
     public async Task<IActionResult> Add(
         [FromRoute] Guid examTermId,
         [FromQuery] Guid RoomId,
@@ -31,6 +36,8 @@ public class ExamCommitteeController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
     public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetExamCommitteeQuery(id), cancellationToken);
@@ -38,6 +45,8 @@ public class ExamCommitteeController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new DeleteExamCommitteeCommand(id), cancellationToken);
@@ -45,6 +54,8 @@ public class ExamCommitteeController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
     public async Task<IActionResult> Update(
        [FromRoute] Guid examTermId, [FromRoute] Guid id,
        [FromBody] UpdateExamCommitteeCommand command, CancellationToken cancellationToken)
@@ -55,6 +66,8 @@ public class ExamCommitteeController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
     public async Task<IActionResult> GetExamTermCommittees(
         [FromRoute] Guid examTermId,
         [FromQuery] FilterRequest filter,

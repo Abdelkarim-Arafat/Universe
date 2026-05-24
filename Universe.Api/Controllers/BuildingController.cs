@@ -32,7 +32,7 @@ public class BuildingController(IMediator mediator) : ControllerBase
     [HttpGet]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetAll([FromQuery] FilterRequest filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBuildings([FromQuery] FilterRequest filter, CancellationToken cancellationToken)
     {
         var query = new GetBuildingsQuery(filter);
         var result = await _mediator.Send(query, cancellationToken);
