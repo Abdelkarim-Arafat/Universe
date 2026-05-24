@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Security.Claims;
 
 namespace Universe.Application.UserServices.Commands.UploadImage;
 
@@ -23,7 +20,7 @@ internal class UploadImageCommandHandler(
         var claims = _httpContext.HttpContext?.User;
 
         var userId = claims?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
+
         var user = await _userManager.FindByIdAsync(userId!);
 
         if (user is null || user.IsDeleted) return Result.Failure<string>(AuthErrors.UserNotFound);

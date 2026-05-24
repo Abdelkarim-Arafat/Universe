@@ -5,7 +5,7 @@ using Universe.Core.Contracts.StudentAssessments;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
- 
+
 namespace Universe.Infrastructure.Repositories;
 
 public class StudentAssessmentRepository(ApplicationDbContext context) : IStudentAssessmentRepository
@@ -56,8 +56,8 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
                       && !sa.IsDeleted)
             .Select(sa => new
             {
-                  sa.StudentId,
-                  assessments = new StudentDegreeValue(
+                sa.StudentId,
+                assessments = new StudentDegreeValue(
                   sa.CourseOfferingAssessmentId,
                   sa.degree
             )
@@ -65,7 +65,7 @@ public class StudentAssessmentRepository(ApplicationDbContext context) : IStuden
             .ToListAsync(cancellationToken);
 
         return assessmentsList.ToLookup(sa => sa.StudentId, sa => sa.assessments);
-     }
+    }
 
     public async Task<List<StudentAssessmentInCourseResponse>> GetStudentAssessmentsInCourseAsync(
     Guid studentId,

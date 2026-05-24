@@ -9,9 +9,9 @@ public class ServiceRepository(ApplicationDbContext context) : IServiceRepositor
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<Service?> GetByIdAsync(Guid id , CancellationToken cancellationToken)
-        => await _context.Services.FirstOrDefaultAsync(x =>  x.Id == id , cancellationToken);
+    public async Task<Service?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        => await _context.Services.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-    public async Task<ServiceRequest?> GetRequestByIdAsync(Guid id , CancellationToken cancellationToken)
-        => await _context.ServiceRequests.FirstOrDefaultAsync(x => x.Id == id , cancellationToken);
+    public async Task<ServiceRequest?> GetRequestByIdAsync(Guid id, CancellationToken cancellationToken)
+        => await _context.ServiceRequests.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 }

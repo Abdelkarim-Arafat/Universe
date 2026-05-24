@@ -6,7 +6,7 @@ namespace Universe.Application.TeachingSessionServices.Queries.GetSchedule;
 public class GetScheduleQueryHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
-    ) : IRequestHandler<GetScheduleQuery , Result<ScheduleResponse>>
+    ) : IRequestHandler<GetScheduleQuery, Result<ScheduleResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;
@@ -28,7 +28,7 @@ public class GetScheduleQueryHandler(
             cancellationToken: cancellationToken
         );
 
-        if (response is null) 
+        if (response is null)
             return Result.Failure<ScheduleResponse>(AcademicProgramErrors.ScheduleNotFound);
 
         return Result.Success(response);

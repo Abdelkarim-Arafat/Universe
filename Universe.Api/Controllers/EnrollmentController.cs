@@ -14,8 +14,7 @@ public class EnrollmentController(IMediator mediator) : ControllerBase
 
     private readonly IMediator _mediator = mediator;
     [HttpGet]
-    public async Task<IActionResult>
-        GetEnrollmentPage([FromQuery] Guid SemesterId, [FromQuery] Guid StudentId, [FromQuery] Guid LevelId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetEnrollmentPage([FromQuery] Guid SemesterId, [FromQuery] Guid StudentId, [FromQuery] Guid LevelId, CancellationToken cancellationToken)
     {
         var query = new GetEnrollmentPageQuery(StudentId, SemesterId, LevelId);
         var result = await _mediator.Send(query, cancellationToken);

@@ -1,0 +1,21 @@
+﻿namespace Universe.Application.StudentServices.Commands.UpdateParentData;
+
+public class UpdateParentDataCommandHandler(
+    IUnitOfWork unitOfWork
+    ) : IRequestHandler<UpdateParentDataCommand, Result<ParentDataResponse>>
+{
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public async Task<Result<ParentDataResponse>> Handle(UpdateParentDataCommand request, CancellationToken cancellationToken)
+    {
+        if (await _unitOfWork.UserRepository
+            .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
+            return Result.Failure<ParentDataResponse>(StudentErrors.UserNotFound);
+
+        request.Adapt(student.ParentInfo);
+        _unitOfWork.Repository<Student>().Update(student);
+        await _unitOfWork.CompleteAsync(cancellationToken);
+
+        return Result.Success(student.ParentInfo.Adapt<ParentDataResponse>());
+    }
+}

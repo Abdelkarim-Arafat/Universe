@@ -23,7 +23,7 @@ public class ToggleCourseOfferingControlCommandHandler(
         _unitOfWork.Repository<CourseOffering>().Update(courseOffering);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        await _cacheService.RemoveAsync(ControlCacheKeys.CourseOfferingsStatistics(courseOffering.AcademicProgramId, courseOffering.SemesterId) , cancellationToken);
+        await _cacheService.RemoveAsync(ControlCacheKeys.CourseOfferingsStatistics(courseOffering.AcademicProgramId, courseOffering.SemesterId), cancellationToken);
 
         return Result.Success();
     }

@@ -37,7 +37,7 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetLevelCourses (
+    public async Task<IActionResult> GetLevelCourses(
         [FromRoute] Guid programId,
         [FromQuery] Guid levelId,
         [FromQuery] Guid academicYearId,
@@ -51,7 +51,7 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     [HttpPost("")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> AddCourseOffering (
+    public async Task<IActionResult> AddCourseOffering(
         [FromRoute] Guid programId,
         [FromBody] AddCourseOfferingCommand request,
         CancellationToken cancellationToken)
@@ -65,13 +65,13 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
     [HttpPut("{id:guid}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> UpdateCourseOffering (
+    public async Task<IActionResult> UpdateCourseOffering(
         [FromRoute] Guid id,
         [FromRoute] Guid programId,
         [FromBody] UpdateCourseOfferingCommand request,
         CancellationToken cancellationToken)
     {
-        request = request with { Id = id , AcademicProgramId = programId };
+        request = request with { Id = id, AcademicProgramId = programId };
         var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }

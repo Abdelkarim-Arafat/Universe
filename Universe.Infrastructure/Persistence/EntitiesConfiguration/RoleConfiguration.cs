@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Universe.Core.Entities;
 using Universe.Infrastructure.SeedData;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 

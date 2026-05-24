@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;
+﻿namespace Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;
 
 public class AddStudyLoadByLevelCommandValidator : AbstractValidator<AddStudyLoadByLevelCommand>
 {

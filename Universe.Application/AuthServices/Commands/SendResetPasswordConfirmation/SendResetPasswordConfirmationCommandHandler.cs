@@ -1,7 +1,4 @@
-﻿
-using static System.Net.WebRequestMethods;
-
-namespace Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
+﻿namespace Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
 
 public class VerificationRsetPasswordCodeCommandHandler(
     UserManager<ApplicationUser> userManager,
@@ -15,10 +12,10 @@ public class VerificationRsetPasswordCodeCommandHandler(
 
     public async Task<Result> Handle(SendResetPasswordConfirmationCommand request, CancellationToken cancellationToken)
     {
-        if(await _userManager.FindByNameAsync(request.UserName) is not { } user)
-            return Result.Success();
+        if (await _userManager.FindByNameAsync(request.UserName) is not { } user
+            ) return Result.Success();
 
-        if(user.Email != request.Email)
+        if (user.Email != request.Email)
             return Result.Success();
 
         if (!user.EmailConfirmed)
@@ -37,7 +34,7 @@ public class VerificationRsetPasswordCodeCommandHandler(
 
         _logger.LogInformation("Reset code: {code}", otp);
 
-        await _emailSender.SendResetPasswordEmail(user , otp);
+        await _emailSender.SendResetPasswordEmail(user, otp);
 
         return Result.Success();
     }

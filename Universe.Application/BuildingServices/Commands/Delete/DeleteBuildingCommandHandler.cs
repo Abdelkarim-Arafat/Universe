@@ -18,7 +18,7 @@ public class DeleteBuildingCommandHandler(IUnitOfWork unitOfWork, ICacheService 
 
         if (isRoomExistInBuilding)
             return Result.Failure(BuildingErrors.RoomsFounded);
- 
+
         _unitOfWork.Repository<Building>().DeletePermanently(building);
         await _unitOfWork.CompleteAsync(cancellationToken);
 

@@ -1,7 +1,4 @@
-﻿using Universe.Application.ControlServices.Dtos;
-
-
-namespace Universe.Application.ControlServices.Queries.GetStudents;
+﻿namespace Universe.Application.ControlServices.Queries.GetStudents;
 
 public record GetStudentsCommand
 (

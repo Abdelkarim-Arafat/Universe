@@ -5,24 +5,24 @@ namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateA
 public class UpdateAcademicYearCommandHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
-    ) : IRequestHandler<UpdateAcademicYearCommand , Result<AcademicYearWithSemesterResponse>>
+    ) : IRequestHandler<UpdateAcademicYearCommand, Result<AcademicYearWithSemesterResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;
 
-    public async Task<Result<AcademicYearWithSemesterResponse>> Handle(UpdateAcademicYearCommand request , CancellationToken cancellationToken)
+    public async Task<Result<AcademicYearWithSemesterResponse>> Handle(UpdateAcademicYearCommand request, CancellationToken cancellationToken)
     {
         string Name = $"{request.StartDate.Year}-{request.EndDate.Year}";
 
         if (await _unitOfWork.CollegeRepository.IsExistAsync(request.CollegeId) is false)
             return Result.Failure<AcademicYearWithSemesterResponse>(CollegeErrors.NotFound);
 
-        if(await _unitOfWork.AcademicYearRepository
-            .GetByIdAsync(request.Id , cancellationToken) is not { } academicYear
+        if (await _unitOfWork.AcademicYearRepository
+            .GetByIdAsync(request.Id, cancellationToken) is not { } academicYear
             ) return Result.Failure<AcademicYearWithSemesterResponse>(AcademicYearErrors.NotFound);
 
         if (await _unitOfWork.AcademicYearRepository
-            .IsMakeConflictAsync(request.CollegeId, Name , request.StartDate, request.EndDate, request.Id, cancellationToken)
+            .IsMakeConflictAsync(request.CollegeId, Name, request.StartDate, request.EndDate, request.Id, cancellationToken)
             ) return Result.Failure<AcademicYearWithSemesterResponse>(AcademicYearErrors.MakeConflict);
 
         var semesters = request.Semesters.OrderBy(s => s.StartDate).ToList();
@@ -58,25 +58,25 @@ public class UpdateAcademicYearCommandHandler(
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-		await _cacheService.RemoveAsync(AcademicYearCacheKeys.ById(request.Id), cancellationToken);
-		await _cacheService.RemoveByTagAsync(AcademicYearCacheKeys.Tags(request.CollegeId), cancellationToken);
+        await _cacheService.RemoveAsync(AcademicYearCacheKeys.ById(request.Id), cancellationToken);
+        await _cacheService.RemoveByTagAsync(AcademicYearCacheKeys.Tags(request.CollegeId), cancellationToken);
 
-	    var response = await _cacheService.GetOrCreateAsync(
-			key: AcademicYearCacheKeys.ById(academicYear.Id),
-			factory: async () => new AcademicYearWithSemesterResponse(
-				academicYear.Id,
-				academicYear.Name,
-				academicYear.StartDate,
-				academicYear.EndDate,
-				academicYear.Semesters.Select(s => new SemesterResponse(
-					s.Id,
-					s.Name,
-					s.StartDate,
-					s.EndDate
-				)).ToList()
-			),
-			cancellationToken: cancellationToken
-		);
-		return Result.Success(response);
-	}
+        var response = await _cacheService.GetOrCreateAsync(
+            key: AcademicYearCacheKeys.ById(academicYear.Id),
+            factory: async () => new AcademicYearWithSemesterResponse(
+                academicYear.Id,
+                academicYear.Name,
+                academicYear.StartDate,
+                academicYear.EndDate,
+                academicYear.Semesters.Select(s => new SemesterResponse(
+                    s.Id,
+                    s.Name,
+                    s.StartDate,
+                    s.EndDate
+                )).ToList()
+            ),
+            cancellationToken: cancellationToken
+        );
+        return Result.Success(response);
+    }
 }

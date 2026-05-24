@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.ServiceRequest;
+﻿using Universe.Core.Contracts.ServiceRequest;
 
 namespace Universe.Application.AcademicServiceRequestServices.Queries.GetServiceRequestHistory;
 

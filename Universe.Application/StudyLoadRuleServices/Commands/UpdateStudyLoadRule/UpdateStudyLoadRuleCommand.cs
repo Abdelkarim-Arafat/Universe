@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.StudyLoadRule;
-
-namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
+﻿namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
 
 public record UpdateStudyLoadRuleCommand(
     [Required] Guid Id,

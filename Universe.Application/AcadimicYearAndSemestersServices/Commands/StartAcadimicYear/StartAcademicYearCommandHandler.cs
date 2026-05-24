@@ -7,7 +7,7 @@ namespace Universe.Application.AcademicYearAndSemestersServices.Commands.StartAc
 internal class StartAcademicYearCommandHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
-	) : IRequestHandler<StartAcademicYearCommand, Result<AcademicYearWithSemesterResponse>>
+    ) : IRequestHandler<StartAcademicYearCommand, Result<AcademicYearWithSemesterResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;
@@ -20,7 +20,7 @@ internal class StartAcademicYearCommandHandler(
             return Result.Failure<AcademicYearWithSemesterResponse>(CollegeErrors.NotFound);
 
         if (await _unitOfWork.AcademicYearRepository
-            .IsMakeConflictAsync(request.CollegeId, Name, request.StartDate, request.EndDate, default , cancellationToken)
+            .IsMakeConflictAsync(request.CollegeId, Name, request.StartDate, request.EndDate, default, cancellationToken)
             ) return Result.Failure<AcademicYearWithSemesterResponse>(AcademicYearErrors.MakeConflict);
 
         var semesters = request.Semesters.OrderBy(s => s.StartDate).ToList();
@@ -37,7 +37,8 @@ internal class StartAcademicYearCommandHandler(
             }
         }
 
-        var academicYear = new AcademicYear {
+        var academicYear = new AcademicYear
+        {
             CollegeId = request.CollegeId,
             Name = Name,
             StartDate = request.StartDate,
@@ -56,7 +57,7 @@ internal class StartAcademicYearCommandHandler(
                 IsCurrent = flag
             });
         }
-        await _unitOfWork.Repository<AcademicYear>().AddAsync(academicYear , cancellationToken);
+        await _unitOfWork.Repository<AcademicYear>().AddAsync(academicYear, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
         await _cacheService.RemoveByTagAsync(AcademicYearCacheKeys.Tags(request.CollegeId), cancellationToken);
@@ -77,6 +78,6 @@ internal class StartAcademicYearCommandHandler(
             ),
             cancellationToken: cancellationToken
         );
-		return Result.Success(response);
+        return Result.Success(response);
     }
 }

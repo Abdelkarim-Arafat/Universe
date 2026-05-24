@@ -1,7 +1,7 @@
 
 namespace Universe.Application.CourseOfferingExamServices.Commands.Update;
 
-public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork) 
+public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateCourseOfferingExamCommand, Result<CourseOfferingExamResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -46,7 +46,7 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
         if (!isThereEnoughSeats)
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.TotalCapacitiesIsNotEnough);
-      
+
         var examSeatsToDelete = new List<ExamSeat>();
         var courseOfferingCommitteesToDelete = new List<CourseOfferingCommittee>();
 
@@ -78,7 +78,7 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
 
             courseOfferingCommitteesToAdd.Add(courseOfferingCommittee);
 
-            for (int index = 0; (index < committee.Capacity) 
+            for (int index = 0; (index < committee.Capacity)
                                 && (seatNumber <= numberOfRegistredStudents); index++, seatNumber++)
             {
                 var studentIndex = seatNumber - 1;
@@ -131,7 +131,7 @@ public class UpdateCourseOfferingExamCommandHandler(IUnitOfWork unitOfWork)
                 new Error("500", ex.ToString(), StatusCodes.Status409Conflict));
         }
 
-        var response = new CourseOfferingExamResponse (
+        var response = new CourseOfferingExamResponse(
             courseOfferingExam.Id,
             courseOfferingExam.Date,
             courseOfferingExam.StartTime,

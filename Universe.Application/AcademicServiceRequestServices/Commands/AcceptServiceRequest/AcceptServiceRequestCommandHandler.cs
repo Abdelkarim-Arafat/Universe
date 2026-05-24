@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Enums;
+﻿using Universe.Core.Enums;
 
 namespace Universe.Application.AcademicServiceRequestServices.Commands.AcceptServiceRequest;
 
@@ -25,7 +22,7 @@ public class AcceptServiceRequestCommandHandler(
         _unitOfWork.Repository<ServiceRequest>().Update(serviceRequest);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        await _cacheService.RemoveByTagAsync(ServiceRequestCacheKeys.Tags(request.CollegeId) , cancellationToken);
+        await _cacheService.RemoveByTagAsync(ServiceRequestCacheKeys.Tags(request.CollegeId), cancellationToken);
 
         return Result.Success();
     }

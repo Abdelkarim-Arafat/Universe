@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.CourseOffering;
+﻿using Universe.Core.Contracts.CourseOffering;
 
 namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 
-internal class UpdateCourseOfferingCommandHandler (
+internal class UpdateCourseOfferingCommandHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
 ) : IRequestHandler<UpdateCourseOfferingCommand, Result<CourseOfferingWithDetailsResponse>>
@@ -54,13 +51,13 @@ internal class UpdateCourseOfferingCommandHandler (
                 CourseOfferingId = course.Id
             });
 
-        
+
         await _unitOfWork.Repository<CourseOfferingAssessment>()
             .AddRangeAsync(newAssessments, cancellationToken);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        
+
         await _cacheService.RemoveAsync(CourseOfferingCacheKeys.ById(course.Id), cancellationToken);
         await _cacheService.RemoveAsync(CourseOfferingCacheKeys.LevelCourses(course.LevelId, course.Id), cancellationToken);
         await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId), cancellationToken);

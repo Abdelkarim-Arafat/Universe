@@ -1,4 +1,4 @@
-﻿ namespace Universe.Core.Contracts.Level;
+﻿namespace Universe.Core.Contracts.Level;
 
 public record LevelResponse(
     Guid Id,

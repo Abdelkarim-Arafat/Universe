@@ -35,7 +35,7 @@ public class CreateCourseOfferingExamCommandHandler(
 
         var committeesDetails = await _unitOfWork.ExamRepository
             .GetCommitteesDetailsAsync(request.ExamTermId, request.ExamCommitteesIds, cancellationToken);
-        
+
         if (committeesDetails == null || !committeesDetails.Any())
             return Result.Failure<CourseOfferingExamResponse>(ExamErrors.ExamCommitteeNotFound);
 
@@ -119,7 +119,7 @@ public class CreateCourseOfferingExamCommandHandler(
                 new Error("500", ex.InnerException?.Message ?? ex.Message, StatusCodes.Status409Conflict));
         }
 
-        var response = new CourseOfferingExamResponse (
+        var response = new CourseOfferingExamResponse(
             courseOfferingExam.Id,
             courseOfferingExam.Date,
             courseOfferingExam.StartTime,

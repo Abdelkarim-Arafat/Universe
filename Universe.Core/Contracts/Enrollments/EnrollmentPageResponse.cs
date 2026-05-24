@@ -5,5 +5,5 @@ namespace Universe.Core.Contracts.Enrollments;
 public record EnrollmentPageResponse(
     StudentInfoResponse Student,
     List<CourseRegistrationData> Courses,
-    List<StudentExistingEnrollment> EnrollmentInfos 
+    List<StudentExistingEnrollment> EnrollmentInfos
 );

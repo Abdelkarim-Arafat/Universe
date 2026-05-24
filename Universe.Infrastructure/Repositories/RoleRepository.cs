@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -12,7 +11,7 @@ public class RoleRepository(
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<IEnumerable<string>> GetUserPermissionsAsync(IEnumerable<string> userRoles, CancellationToken cancellationToken) 
+    public async Task<IEnumerable<string>> GetUserPermissionsAsync(IEnumerable<string> userRoles, CancellationToken cancellationToken)
         => await _context.Roles
                 .Join(_context.RoleClaims,
                     role => role.Id,
@@ -24,7 +23,7 @@ public class RoleRepository(
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
-    public async Task<List<ApplicationRole>> GetAllRolesLessThanOrEqualAsync(int level , CancellationToken cancellationToken)
+    public async Task<List<ApplicationRole>> GetAllRolesLessThanOrEqualAsync(int level, CancellationToken cancellationToken)
         => await _context.Roles
             .Where(x => x.Level >= level)
             .ToListAsync(cancellationToken);

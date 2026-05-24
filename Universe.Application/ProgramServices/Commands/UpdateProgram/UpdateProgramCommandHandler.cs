@@ -12,7 +12,7 @@ public class UpdateAcademicProgramCommandHandler(
 
     public async Task<Result<AcademicProgramResponse>> Handle(UpdateAcademicProgramCommand request, CancellationToken cancellationToken)
     {
-        if(await _unitOfWork.CollegeRepository
+        if (await _unitOfWork.CollegeRepository
             .IsExistAsync(request.CollegeId, cancellationToken) is false)
             return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
 

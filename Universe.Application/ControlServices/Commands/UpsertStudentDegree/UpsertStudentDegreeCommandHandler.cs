@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.Ocsp;
-using Universe.Application.ControlServices.Dtos;
+﻿using Universe.Application.ControlServices.Dtos;
 namespace Universe.Application.ControlServices.Commands.UpsertStudentDegree;
 
 public class UpsertStudentDegreeCommandHandler
@@ -18,7 +17,7 @@ public class UpsertStudentDegreeCommandHandler
             return Result.Failure<UpsertDegreeResponse>(StudentErrors.UserNotFound);
 
         var isProgramExist = await _unitOfWork.AcademicProgramRepository
-            .IsExistAsync(command.AcademicProgramId,cancellationToken);
+            .IsExistAsync(command.AcademicProgramId, cancellationToken);
 
         if (!isProgramExist)
             return Result.Failure<UpsertDegreeResponse>(AcademicProgramErrors.NotFound);

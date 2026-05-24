@@ -1,7 +1,8 @@
 ﻿using Universe.Core.Enums;
 
 namespace Universe.Application.EnrollmentServices.Commands.Update;
-public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork) 
+
+public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<UpdateEnrollmentCommand, Result<List<StudentExistingEnrollment>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -185,7 +186,7 @@ public class UpdateEnrollmentCommandHandler(IUnitOfWork unitOfWork)
         }
 
         var studentSchedule = await _unitOfWork.EnrollmentRepository
-            .GetStudentScheduleAsync(command.StudentId,command.SemesterId, cancellationToken);
+            .GetStudentScheduleAsync(command.StudentId, command.SemesterId, cancellationToken);
 
         return Result.Success(studentSchedule);
     }

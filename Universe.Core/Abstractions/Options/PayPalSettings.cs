@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Core.Abstractions.Options;
+﻿namespace Universe.Core.Abstractions.Options;
 
 public class PayPalSettings
 {

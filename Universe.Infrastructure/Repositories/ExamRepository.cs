@@ -28,7 +28,7 @@ public class ExamRepository
            && (((Id == null)) || (e.Id != Id))
            && (e.StartDate < endDate && startDate < e.EndDate), cancellationToken);
     }
-    public async Task<bool> IsExistExamTermWithSameTypeAsync (Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
+    public async Task<bool> IsExistExamTermWithSameTypeAsync(Guid? Id, Guid SemesterId, Guid AcademicProgramId, ExamType examType, CancellationToken cancellationToken)
     {
         bool isNullableId = Id == null;
 
@@ -101,7 +101,7 @@ public class ExamRepository
     Guid? courseOfferingExamId,
     Guid examTermId,
     List<Guid> examCommitteesIds,
-    DateOnly date,  
+    DateOnly date,
     TimeOnly startTime,
     TimeOnly endTime,
     CancellationToken cancellationToken = default)
@@ -129,7 +129,7 @@ public class ExamRepository
 
         var examCommittees = await _context.ExamCommittees
             .Where(com => !com.IsDeleted
-                        && com.ExamTermId == examTermId 
+                        && com.ExamTermId == examTermId
                         && examCommitteesIds.Contains(com.Id))
             .Select(com => new ExamCommitteesDetails(com.Id, com.CommitteeNumber, com.MaxCapacity))
             .ToListAsync(cancellationToken);
@@ -137,7 +137,7 @@ public class ExamRepository
         bool areAllRequestedIdsExist = examCommittees.Count == uniqueRequestedIdsCount;
 
         if (areAllRequestedIdsExist)
-            return examCommittees;  
+            return examCommittees;
 
         return null;
     }

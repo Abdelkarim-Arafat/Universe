@@ -48,7 +48,7 @@ public class GetEnrollmentPageQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
 
         var existingEnrollmentsInfos = await _unitOfWork.EnrollmentRepository
             .GetExistingEnrollmentsInfoAsync(query.StudentId, query.SemesterId, cancellationToken);
-         
+
         var availableCourses = await _unitOfWork.CourseOfferingRepository
                .GetAvailableCoursesForRegistrationAsync
                (query.StudentId, query.SemesterId, query.LevelId, cancellationToken);

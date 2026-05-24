@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Universe.Core.Contracts.AcademicProgram;
 
-namespace Universe.Core.Contracts.AcademicProgram;
-
-public record GetAcademicProgramsResponse (
+public record GetAcademicProgramsResponse(
     Guid Id,
     string Name,
     string Code

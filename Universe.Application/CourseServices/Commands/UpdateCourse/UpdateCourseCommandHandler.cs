@@ -1,8 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.X509;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Course;
+﻿using Universe.Core.Contracts.Course;
 
 namespace Universe.Application.CourseServices.Commands.UpdateCourse;
 
@@ -42,7 +38,7 @@ public class UpdateCourseCommandHandler(
             if (await _unitOfWork.CourseRepository.IsExistCoursePreRequisiteAsync(preReqId, course.Id, cancellationToken))
                 return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.PrerequisiteCycleDetected);
         }
-        
+
         var directPreReqIds = await _unitOfWork.CourseRepository
             .GetDirectPreRequisitesIdsAsync(course.Id, cancellationToken);
 

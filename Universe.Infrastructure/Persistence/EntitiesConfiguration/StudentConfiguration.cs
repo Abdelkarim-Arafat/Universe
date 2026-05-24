@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
-using Universe.Infrastructure.SeedData;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;
 
@@ -12,7 +11,7 @@ internal class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.HasKey(s => s.Id);
 
-        
+
 
         builder.HasOne(s => s.Advisor)
             .WithMany(u => u.AdvisedStudents)

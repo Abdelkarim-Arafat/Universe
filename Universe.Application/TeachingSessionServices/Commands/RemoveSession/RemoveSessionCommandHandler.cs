@@ -20,10 +20,10 @@ public class RemoveSessionCommandHandler(
         var hasOtherCourses = await _unitOfWork.SessionRepository
                              .HasOtherCoursesAsync(request.SessionId, request.CourseOfferingId, cancellationToken);
 
-        if(!hasOtherCourses)
+        if (!hasOtherCourses)
         {
             var session = await _unitOfWork.SessionRepository.GetByIdAsync(request.SessionId, cancellationToken);
-            if(session != null) _unitOfWork.Repository<TeachingSession>().DeletePermanently(session);
+            if (session != null) _unitOfWork.Repository<TeachingSession>().DeletePermanently(session);
         }
 
         await _unitOfWork.CompleteAsync(cancellationToken);

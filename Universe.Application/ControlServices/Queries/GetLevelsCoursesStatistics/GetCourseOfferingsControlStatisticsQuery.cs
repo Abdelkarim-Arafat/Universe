@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.ControlServices.Dtos;
+﻿using Universe.Application.ControlServices.Dtos;
 
 namespace Universe.Application.ControlServices.Queries;
 

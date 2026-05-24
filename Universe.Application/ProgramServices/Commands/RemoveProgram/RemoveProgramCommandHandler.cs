@@ -1,6 +1,4 @@
-﻿
-using System.Runtime.InteropServices;
-using Universe.Core.Contracts.AcademicProgram;
+﻿using Universe.Core.Contracts.AcademicProgram;
 
 namespace Universe.Application.AcademicProgramServices.Commands.RemoveAcademicProgram;
 
@@ -18,7 +16,7 @@ public class RemoveAcademicProgramCommandHandler(
             .IsExistAsync(request.CollegeId, cancellationToken) is false)
             return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
 
-        if(await _unitOfWork.AcademicProgramRepository
+        if (await _unitOfWork.AcademicProgramRepository
             .GetByIdAsync(request.Id, cancellationToken) is not { } academicProgram
             ) return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
 

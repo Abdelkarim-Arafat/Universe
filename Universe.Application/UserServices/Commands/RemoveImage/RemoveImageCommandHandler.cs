@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Text;
-using Universe.Application.UserServices.Commands.UpdateImage;
+﻿using System.Security.Claims;
 
 namespace Universe.Application.UserServices.Commands.RemoveImage;
 

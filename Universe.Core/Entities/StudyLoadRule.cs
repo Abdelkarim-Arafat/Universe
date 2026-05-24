@@ -6,7 +6,7 @@ namespace Universe.Core.Entities;
 public class StudyLoadRule : BaseEntity
 {
     public Guid Id { get; set; }
-    public StudyLoadRule(){ Id = Guid.CreateVersion7(); }
+    public StudyLoadRule() { Id = Guid.CreateVersion7(); }
     public int MinHours { get; set; }
     public int MaxHours { get; set; }
     public decimal GpaFrom { get; set; }

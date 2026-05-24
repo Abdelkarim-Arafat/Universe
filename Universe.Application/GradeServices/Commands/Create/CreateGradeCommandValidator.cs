@@ -2,7 +2,7 @@
 
 public class CreateGradeCommandValidator : AbstractValidator<CreateGradeCommand>
 {
-    public CreateGradeCommandValidator() 
+    public CreateGradeCommandValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Grade name is required.")

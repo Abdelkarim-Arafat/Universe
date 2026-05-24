@@ -10,7 +10,7 @@ public record CourseErrors
 
     public static readonly Error PrerequisiteAlreadyExists =
     new("CoursePreRequisite.AlreadyExists",
-        "This prerequisite relationship already exists." , StatusCodes.Status409Conflict);
+        "This prerequisite relationship already exists.", StatusCodes.Status409Conflict);
 
     public static readonly Error PrerequisiteCycleDetected =
     new("CoursePreRequisite.CycleDetected",
@@ -23,7 +23,7 @@ public record CourseErrors
         StatusCodes.Status404NotFound);
 
     public static readonly Error SameCourse =
-        new("CoursePreRequisite.SameCourse", "A course cannot be a prerequisite of itself." , StatusCodes.Status409Conflict);
+        new("CoursePreRequisite.SameCourse", "A course cannot be a prerequisite of itself.", StatusCodes.Status409Conflict);
 
     public static readonly Error CourseNotFound = new(
         "Course.NotFound",

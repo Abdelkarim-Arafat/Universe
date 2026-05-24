@@ -17,7 +17,7 @@ public class UpdateExamCommitteeCommandHandler
 
         var IsExistCommitteeWithSameNumber = await _unitOfWork.ExamRepository
             .IsExistCommitteeWithSameNumberAsync
-            (examCommittee.Id, examCommittee.ExamTermId, request.CommitteeNumber, cancellationToken); 
+            (examCommittee.Id, examCommittee.ExamTermId, request.CommitteeNumber, cancellationToken);
 
         if (IsExistCommitteeWithSameNumber)
             return Result.Failure<ExamCommitteeResponse>(ExamErrors.SameCommitteeNumber);

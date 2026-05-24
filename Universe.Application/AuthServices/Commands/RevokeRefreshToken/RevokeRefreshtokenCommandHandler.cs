@@ -1,7 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity.Data;
-
-namespace Universe.Application.AuthServices.Commands.RevokeRefreshToken;
+﻿namespace Universe.Application.AuthServices.Commands.RevokeRefreshToken;
 
 public class RevokeRefreshtokenCommandHandler(
     UserManager<ApplicationUser> userManager
@@ -22,7 +19,7 @@ public class RevokeRefreshtokenCommandHandler(
             .OrderByDescending(x => x.CreatedOn)
             .First(rt => rt.Token == request.refreshToken);
 
-        if(refreshToken.IsExpired || refreshToken.RevokedOn != null)
+        if (refreshToken.IsExpired || refreshToken.RevokedOn != null)
             return Result.Failure<AuthResponse>(AuthErrors.InvalidRefreshToken);
 
         refreshToken.RevokedOn = DateTime.UtcNow;

@@ -36,7 +36,7 @@ public class GetAvailableRoomsForCommitteesQueryHandler(
                                    && !room.IsDeleted
                                    && !room.ExamCommittees.Any(c => !c.IsDeleted && c.ExamTermId == request.examTermId));
 
-          
+
                 if (!string.IsNullOrEmpty(filter.SearchValue))
                     query = query.Where(x => x.Name.Contains(filter.SearchValue) || x.RoomNumber.ToString().Contains(filter.SearchValue));
 

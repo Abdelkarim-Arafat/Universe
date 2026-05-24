@@ -1,6 +1,6 @@
 namespace Universe.Application.ExamCommitteeServices.Queries.Get;
 
-public class GetExamCommitteeQueryHandler(IUnitOfWork unitOfWork) 
+public class GetExamCommitteeQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetExamCommitteeQuery, Result<ExamCommitteeResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -19,7 +19,7 @@ public class GetExamCommitteeQueryHandler(IUnitOfWork unitOfWork)
             .Select(comm => $"{comm.Room.RoomNumber} - {comm.Room.Building.Name}")
             .FirstOrDefaultAsync(cancellationToken) ?? "No Place";
 
-        var response = new ExamCommitteeResponse (
+        var response = new ExamCommitteeResponse(
             examCommittee.Id,
             examCommittee.MaxCapacity,
             examCommittee.CommitteeNumber,

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.AcadimicYearAndSemesters;
+﻿using Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Queries.GetCurrentYear;
@@ -17,7 +14,7 @@ public class GetCurrentYearQueryHandler(
         if (!await _unitOfWork.CollegeRepository.IsExistAsync(request.CollegeId))
             return Result.Failure<AcademicYearResponse>(CollegeErrors.NotFound);
 
-        if(await _unitOfWork.AcademicYearRepository
+        if (await _unitOfWork.AcademicYearRepository
             .GetCurrentYearAsync(request.CollegeId, cancellationToken) is not { } currentYear
             ) return Result.Failure<AcademicYearResponse>(AcademicYearErrors.NotFound);
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.StudyLoadByLevel;
-using Universe.Core.Enums;
+﻿using Universe.Core.Contracts.StudyLoadByLevel;
 
 namespace Universe.Application.StudyLoadByLevelServices.Commands.UpdateStudyLoad;
 

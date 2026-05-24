@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.UserServices.Commands.ChangePassword;
+﻿namespace Universe.Application.UserServices.Commands.ChangePassword;
 
 public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
 {

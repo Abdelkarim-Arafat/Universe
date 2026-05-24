@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Text;
 using Universe.Core.Contracts.Course;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
@@ -50,20 +46,20 @@ public class CourseRepository(ApplicationDbContext context) : ICourseRepository
                        (d.Name == name || d.Code == code) &&
                        (excludeId == null || d.Id != excludeId), cancellationToken);
 
-    public async Task<CoursePrerequisite?> GetCoursePreRequisiteAsync(Guid courseId , Guid PreRequisiteId , CancellationToken cancellationToken)
+    public async Task<CoursePrerequisite?> GetCoursePreRequisiteAsync(Guid courseId, Guid PreRequisiteId, CancellationToken cancellationToken)
         => await _context.CoursePrerequisites
             .SingleOrDefaultAsync(d => d.CourseId == courseId && d.PrerequisiteCourseId == PreRequisiteId, cancellationToken);
 
-    public async Task<IEnumerable<Course>> GetAllPreRequisiteAsync(Guid courseId , CancellationToken cancellationToken)
+    public async Task<IEnumerable<Course>> GetAllPreRequisiteAsync(Guid courseId, CancellationToken cancellationToken)
         => await _context.CoursePrerequisites
             .Where(c => c.CourseId == courseId)
             .Select(c => c.PrerequisiteCourse)
             .ToListAsync(cancellationToken);
-    public async Task<bool> IsExistCoursePreRequisiteAsync(Guid courseId , Guid preRequisiteId , CancellationToken cancellationToken)
+    public async Task<bool> IsExistCoursePreRequisiteAsync(Guid courseId, Guid preRequisiteId, CancellationToken cancellationToken)
         => await _context.CoursePrerequisites
             .AnyAsync(d => d.CourseId == courseId && d.PrerequisiteCourseId == preRequisiteId, cancellationToken);
 
-    public async Task<IList<Guid>> ExistingPreRequisitesIdsAsync(List<Guid> preRequisitesIds , CancellationToken cancellationToken)
+    public async Task<IList<Guid>> ExistingPreRequisitesIdsAsync(List<Guid> preRequisitesIds, CancellationToken cancellationToken)
         => await _context.Courses
             .Where(c => preRequisitesIds.Contains(c.Id) && !c.IsDeleted)
             .Select(c => c.Id)

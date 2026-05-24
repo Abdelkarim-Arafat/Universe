@@ -6,7 +6,7 @@ public class CreateExamTermCommandValidator : AbstractValidator<CreateExamTermCo
     {
         RuleFor(x => x.StartDate)
             .NotEmpty()
-            .LessThanOrEqualTo (x => x.EndDate)
+            .LessThanOrEqualTo(x => x.EndDate)
             .WithMessage("Startdate should be less than endDate");
 
         RuleFor(x => x.EndDate)

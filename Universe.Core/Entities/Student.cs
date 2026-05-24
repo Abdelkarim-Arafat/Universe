@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using Universe.Core.Entities.Core;
+﻿using Universe.Core.Entities.Core;
 using Universe.Core.Entities.StudentInfo;
 using Universe.Core.Enums;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.AcadimicYearAndSemesters;
+﻿using Universe.Core.Contracts.AcadimicYearAndSemesters;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 

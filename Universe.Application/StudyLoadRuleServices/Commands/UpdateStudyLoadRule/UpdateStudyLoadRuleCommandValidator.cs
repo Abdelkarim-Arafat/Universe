@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
+﻿namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
 
 public class UpdateStudyLoadRuleCommandValidator : AbstractValidator<UpdateStudyLoadRuleCommand>
 {

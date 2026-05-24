@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Entities;
+﻿using Universe.Core.Entities;
 using Universe.Core.Enums;
 
 namespace Universe.Infrastructure.SeedData;
@@ -61,7 +58,7 @@ public static class AcademicProgramSeed
             AcademicDegree = AcademicDegree.Bachelor,
             AcademicLoad = AcademicLoad.StudyLevel,
             CollegeId = CollegeSeed.Id,
-            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, DateTimeKind.Utc) 
+            CreatedAt = new DateTime(2026, 5, 4, 8, 0, 0, DateTimeKind.Utc)
         },
         new AcademicProgram
         {

@@ -1,9 +1,4 @@
-﻿using Universe.Core.Contracts.StudyLoadRule;
-using Universe.Core.Contracts.StudyLoadRule;
-
-using Universe.Core.Contracts.User;
-
-namespace Universe.Application.StudyLoadRuleServices.Commands.AddStudyLoadRule;
+﻿namespace Universe.Application.StudyLoadRuleServices.Commands.AddStudyLoadRule;
 
 public class AddStudyLoadRuleCommandHandler(
     IUnitOfWork unitOfWork
@@ -13,9 +8,9 @@ public class AddStudyLoadRuleCommandHandler(
 
     public async Task<Result<StudyLoadRuleResponse>> Handle(AddStudyLoadRuleCommand request, CancellationToken cancellationToken)
     {
-        if((await _unitOfWork.StudyLoadRuleRepository
-            .CheckOverLabedGpaAsync(request.AcademicProgramId, default, request.GpaFrom, request.GpaTo , cancellationToken)))
-                return Result.Failure<StudyLoadRuleResponse>(StudyLoadRuleErrors.OverLabedExist);
+        if ((await _unitOfWork.StudyLoadRuleRepository
+            .CheckOverLabedGpaAsync(request.AcademicProgramId, default, request.GpaFrom, request.GpaTo, cancellationToken)))
+            return Result.Failure<StudyLoadRuleResponse>(StudyLoadRuleErrors.OverLabedExist);
 
         var studyLoadRule = request.Adapt<StudyLoadRule>();
 

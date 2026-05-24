@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.UserServices.Commands.UpdateEmail;
+﻿namespace Universe.Application.UserServices.Commands.UpdateEmail;
 
 public class UpdateEmailCommandHandler(
     UserManager<ApplicationUser> userManager
@@ -26,6 +22,7 @@ public class UpdateEmailCommandHandler(
             return Result.Failure(AuthErrors.DuplicatedEmail);
 
         user.Email = request.Email;
+        user.EmailConfirmed = true;
         user.NormalizedEmail = request.Email.ToUpper();
 
         var result = await _userManager.UpdateAsync(user);

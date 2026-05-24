@@ -1,5 +1,4 @@
-﻿using Mapster;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -22,8 +21,8 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpPost("upload-image")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
-    public async Task<IActionResult> UploadImage([FromForm] IFormFile file , CancellationToken cancellationToken)
+    [Authorize(Roles = Roles.AllRoles)]
+    public async Task<IActionResult> UploadImage([FromForm] IFormFile file, CancellationToken cancellationToken)
     {
         var command = new UploadImageCommand(file);
         var result = await _mediator.Send(command, cancellationToken);
@@ -32,17 +31,17 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpPatch("update-image")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
+    [Authorize(Roles = Roles.AllRoles)]
     public async Task<IActionResult> UpdateImage([FromForm] IFormFile newImageFile, [FromForm] string oldImageUrl, CancellationToken cancellationToken)
     {
         var command = new UpdateImageCommand(oldImageUrl, newImageFile);
-        var result = await _mediator.Send(command , cancellationToken);
+        var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpDelete("remove-image")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AdminOrAdvisor} , {Roles.Student}")]
+    [Authorize(Roles = Roles.AllRoles)]
     public async Task<IActionResult> RemoveImage(string imageUrl, CancellationToken cancellationToken)
     {
         var command = new RemoveImageCommand(imageUrl);
@@ -52,8 +51,8 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpPatch("change-password")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AllRoles}")]
-    public async Task<IActionResult> ChangePassword (
+    [Authorize(Roles = Roles.AllRoles)]
+    public async Task<IActionResult> ChangePassword(
     [FromBody] ChangePasswordCommand request,
     CancellationToken cancellationToken)
     {
@@ -66,7 +65,7 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpPatch("reset-password")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AllRoles}")]
+    [Authorize(Roles = Roles.AllRoles)]
     public async Task<IActionResult> ResetUserPassword(
     [FromBody] ResetUserPasswordCommand request,
     CancellationToken cancellationToken)
@@ -78,8 +77,8 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpPatch("update-email")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AllRoles}")]
-    public async Task<IActionResult> UpdateEmail (
+    [Authorize(Roles = Roles.AllRoles)]
+    public async Task<IActionResult> UpdateEmail(
     [FromBody] UpdateEmailCommand request,
     CancellationToken cancellationToken)
     {

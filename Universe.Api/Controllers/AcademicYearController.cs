@@ -70,7 +70,7 @@ public class AcademicYearsController(IMediator mediator) : ControllerBase
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAcademicYearsQuery(collegeId , filter), cancellationToken);
+        var result = await _mediator.Send(new GetAcademicYearsQuery(collegeId, filter), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)

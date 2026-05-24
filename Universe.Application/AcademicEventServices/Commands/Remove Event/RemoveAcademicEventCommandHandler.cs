@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AcademicEventServices.Commands.Remove_Event;
+﻿namespace Universe.Application.AcademicEventServices.Commands.Remove_Event;
 
 public class RemoveAcademicEventCommandHandler(
     IUnitOfWork unitOfWork,
@@ -19,7 +15,7 @@ public class RemoveAcademicEventCommandHandler(
             is not { } academicEvent) return Result.Failure(AcademicEventErrors.NotFound);
 
         await _cacheService.RemoveByTagAsync(AcademicEventCacheKeys.Tags(academicEvent.ProgramId, academicEvent.SemesterId), cancellationToken);
-        
+
         _unitOfWork.Repository<AcademicEvent>().DeletePermanently(academicEvent);
         await _unitOfWork.CompleteAsync(cancellationToken);
 

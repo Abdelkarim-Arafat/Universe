@@ -8,7 +8,7 @@ public class UpdateGradeCommandHandler(IUnitOfWork unitOfWork, ICacheService cac
 
     public async Task<Result<GradeResponse>> Handle(UpdateGradeCommand command, CancellationToken cancellationToken = default)
     {
-      
+
         var grade = await _unitOfWork.GradeRepository.GetByIdAsync(command.Id, cancellationToken);
 
         if (grade is null)
@@ -32,7 +32,7 @@ public class UpdateGradeCommandHandler(IUnitOfWork unitOfWork, ICacheService cac
         {
             return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
         }
-        
+
 
         command.Adapt(grade);
 

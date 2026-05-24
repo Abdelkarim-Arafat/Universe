@@ -1,0 +1,21 @@
+﻿namespace Universe.Application.StudentServices.Commands.UpdateMilitaryData;
+
+public class UpdateMilitaryDataCommandHandler(
+    IUnitOfWork unitOfWork
+    ) : IRequestHandler<UpdateMilitaryDataCommand, Result<MilitaryDataResponse>>
+{
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public async Task<Result<MilitaryDataResponse>> Handle(UpdateMilitaryDataCommand request, CancellationToken cancellationToken)
+    {
+        if (await _unitOfWork.UserRepository
+           .GetStudentByIdAsync(request.StudentId, cancellationToken) is not { } student)
+            return Result.Failure<MilitaryDataResponse>(StudentErrors.UserNotFound);
+
+        request.Adapt(student.MilitaryInfo);
+        _unitOfWork.Repository<Student>().Update(student);
+        await _unitOfWork.CompleteAsync(cancellationToken);
+
+        return Result.Success(student.MilitaryInfo.Adapt<MilitaryDataResponse>())!;
+    }
+}

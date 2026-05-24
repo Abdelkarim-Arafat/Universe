@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Entities;
 
 namespace Universe.Infrastructure.Persistence.EntitiesConfiguration;

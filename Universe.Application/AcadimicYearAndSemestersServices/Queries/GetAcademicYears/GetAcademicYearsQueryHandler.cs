@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYears;
-using Universe.Core.Contracts.AcademicProgram;
+﻿using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYears;
 using Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 
@@ -38,7 +35,7 @@ public class GetAcademicYearsQueryHandler(
                         )
                     );
 
-                if(!string.IsNullOrEmpty(filter.SearchValue))
+                if (!string.IsNullOrEmpty(filter.SearchValue))
                 {
                     query = query.Where(x => x.Name.Contains(filter.SearchValue));
                 }

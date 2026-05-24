@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.TeachingSessionServices.Commands.AddSession;
+﻿namespace Universe.Application.TeachingSessionServices.Commands.AddSession;
 
 internal class AddSessionCommandValidator : AbstractValidator<AddSessionCommand>
 {

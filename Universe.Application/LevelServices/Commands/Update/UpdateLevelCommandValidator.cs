@@ -1,4 +1,5 @@
 ﻿namespace Universe.Application.LevelServices.Commands.Update;
+
 public class UpdateLevelCommandValidator : AbstractValidator<UpdateLevelCommand>
 {
     public UpdateLevelCommandValidator()
@@ -14,7 +15,7 @@ public class UpdateLevelCommandValidator : AbstractValidator<UpdateLevelCommand>
             .GreaterThanOrEqualTo(0)
             .WithMessage("MinHours must be greater than or equal to 0.");
     }
- 
- 
+
+
 }
 

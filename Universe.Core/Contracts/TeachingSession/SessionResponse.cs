@@ -14,4 +14,4 @@ public record SessionResponse(
     Guid RoomId,
     string RoomName,
     int GroupNumber
-);  
+);

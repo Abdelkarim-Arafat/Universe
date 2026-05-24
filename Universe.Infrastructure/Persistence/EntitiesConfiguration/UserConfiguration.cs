@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Reflection.Emit;
 using Universe.Core.Entities;
 using Universe.Infrastructure.SeedData;
 
@@ -22,7 +20,7 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
             .HasForeignKey<Student>(s => s.Id);
 
 
-        
+
 
         builder.HasIndex(u => u.Name);
 

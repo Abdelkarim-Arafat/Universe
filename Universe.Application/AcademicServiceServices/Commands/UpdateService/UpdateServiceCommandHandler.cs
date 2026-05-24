@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Service;
+﻿using Universe.Core.Contracts.Service;
 
 namespace Universe.Application.AcademicServiceServices.Commands.UpdateService;
 
@@ -15,10 +12,10 @@ public class UpdateServiceCommandHandler(
 
     public async Task<Result<ServiceResponse>> Handle(UpdateServiceCommand request, CancellationToken cancellationToken)
     {
-        if(await _unitOfWork.ServiceRepository
+        if (await _unitOfWork.ServiceRepository
             .GetByIdAsync(request.Id, cancellationToken) is not { } service
             ) return Result.Failure<ServiceResponse>(ServiceErrors.NotFound);
-            
+
         request.Adapt(service);
 
         await _unitOfWork.CompleteAsync(cancellationToken);

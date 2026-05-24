@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Service;
+﻿using Universe.Core.Contracts.Service;
 
 namespace Universe.Application.AcademicServiceServices.Queries.GetAllServices;
 

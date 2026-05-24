@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Course;
+﻿using Universe.Core.Contracts.Course;
 using Universe.Core.Entities;
 
 namespace Universe.Core.Interfaces.Repositories;
@@ -16,6 +13,6 @@ public interface ICourseRepository
     Task<bool> IsExistCoursePreRequisiteAsync(Guid courseId, Guid preRequisiteId, CancellationToken cancellationToken);
     Task<IEnumerable<Course>> GetAllPreRequisiteAsync(Guid courseId, CancellationToken cancellationToken);
     Task<CoursePrerequisite?> GetCoursePreRequisiteAsync(Guid courseId, Guid PreRequisiteId, CancellationToken cancellationToken);
-    Task RemovePrerequisiteAsync(Guid courseId , Guid preReqId,CancellationToken cancellationToken);
+    Task RemovePrerequisiteAsync(Guid courseId, Guid preReqId, CancellationToken cancellationToken);
     Task<IList<Guid>> GetDirectPreRequisitesIdsAsync(Guid courseId, CancellationToken cancellationToken);
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.Common;
+﻿namespace Universe.Application.Common;
 
 public interface ICacheableQuery
 {

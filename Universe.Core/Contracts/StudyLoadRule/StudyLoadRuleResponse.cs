@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Universe.Core.Contracts.StudyLoadRule;
 
-namespace Universe.Core.Contracts.StudyLoadRule;
-
-public record StudyLoadRuleResponse (
+public record StudyLoadRuleResponse(
     string Id,
     decimal GpaFrom,
     decimal GpaTo,

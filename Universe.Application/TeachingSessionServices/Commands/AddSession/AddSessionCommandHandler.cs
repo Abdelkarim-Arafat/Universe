@@ -20,7 +20,7 @@ public class AddSessionCommandHandler(
 
         if (await _unitOfWork.CourseOfferingRepository
             .GetByIdAsync(request.CourseOfferingId, cancellationToken) is not { } course
-            ) return Result.Failure<SessionResponse> (CourseOfferingErrors.NotFound);
+            ) return Result.Failure<SessionResponse>(CourseOfferingErrors.NotFound);
 
         if (course.NumberOfGroups < request.GroupNumber)
             return Result.Failure<SessionResponse>(CourseOfferingErrors.NotValidGroupNumber);
@@ -72,7 +72,7 @@ public class AddSessionCommandHandler(
             TeachingSessionId = session.Id,
             CourseOfferingId = course.Id
         };
-        
+
         await _unitOfWork.Repository<CourseOfferingSession>().AddAsync(courseSession, cancellationToken);
         await _unitOfWork.CompleteAsync(cancellationToken);
 

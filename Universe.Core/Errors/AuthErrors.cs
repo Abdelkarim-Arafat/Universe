@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Universe.Core.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Universe.Core.Errors;
 
@@ -17,7 +14,7 @@ public record AuthErrors
     public static readonly Error InvalidOrExpiredCode =
         new("User.InvalidOrExpiredCode", "Invalid or expired code", StatusCodes.Status400BadRequest);
 
-    public static readonly Error FailedChangedPassword 
+    public static readonly Error FailedChangedPassword
         = new("User.FailedChangedPassword", "Failed to change password, please try again", StatusCodes.Status500InternalServerError);
 
     public static readonly Error DisabledUser =
@@ -47,6 +44,6 @@ public record AuthErrors
     public static readonly Error UserNotFound =
     new("User.UserNotFound", "User is not found", StatusCodes.Status404NotFound);
 
-    public static readonly Error InvalidRoles = 
+    public static readonly Error InvalidRoles =
         new("Role.InvalidRoles", "Invalid roles", StatusCodes.Status400BadRequest);
 }

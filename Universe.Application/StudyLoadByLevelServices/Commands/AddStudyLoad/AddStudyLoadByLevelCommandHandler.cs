@@ -6,7 +6,7 @@ namespace Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;
 public class AddStudyLoadByLevelCommandHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
-    ) : IRequestHandler<AddStudyLoadByLevelCommand , Result<StudyLoadByLevelResponse>>
+    ) : IRequestHandler<AddStudyLoadByLevelCommand, Result<StudyLoadByLevelResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;

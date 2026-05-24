@@ -1,8 +1,7 @@
-﻿using Org.BouncyCastle.Asn1.Ocsp;
-using Universe.Application.LevelServices.Commands.Create;
+﻿using Universe.Application.LevelServices.Commands.Create;
 using Universe.Core.Contracts.Level;
 namespace Universe.Application.LevelServices.Commands.CreateLevel;
- 
+
 public class CreateLevelCommandHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
@@ -17,7 +16,7 @@ public class CreateLevelCommandHandler(
             .IsExistAsync(request.AcademicProgramId, cancellationToken)
            ) return Result.Failure<LevelResponse>(AcademicProgramErrors.NotFound);
 
-        if(await _unitOfWork.LevelRepository
+        if (await _unitOfWork.LevelRepository
             .CheckOverLabedHoursAsync(request.MinHours,
                     request.MaxHours, request.AcademicProgramId, cancellationToken)
             ) return Result.Failure<LevelResponse>(LevelErrors.InvalidHours);

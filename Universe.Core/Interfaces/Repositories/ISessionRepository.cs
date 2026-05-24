@@ -1,5 +1,5 @@
-﻿using Universe.Core.Contracts.TeachingSession;
-using Universe.Core.Contracts.Enrollments;
+﻿using Universe.Core.Contracts.Enrollments;
+using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 

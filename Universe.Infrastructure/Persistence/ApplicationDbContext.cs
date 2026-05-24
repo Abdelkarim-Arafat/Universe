@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -13,7 +12,7 @@ namespace Universe.Infrastructure.Persistence;
 public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options,
     IHttpContextAccessor httpContext
-    ) : IdentityDbContext<ApplicationUser , ApplicationRole , Guid>(options)
+    ) : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
 {
     private readonly IHttpContextAccessor _httpContext = httpContext;
     public DbSet<ServiceRequest> ServiceRequests { get; set; }
@@ -88,5 +87,5 @@ public class ApplicationDbContext(
 
         return base.SaveChangesAsync(cancellationToken);
     }
-    
+
 }

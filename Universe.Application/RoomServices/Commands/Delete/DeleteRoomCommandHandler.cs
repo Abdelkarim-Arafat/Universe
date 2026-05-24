@@ -8,13 +8,13 @@ public class DeleteRoomCommandHandler(IUnitOfWork unitOfWork, ICacheService cach
 
     public async Task<Result> Handle(DeleteRoomCommand command, CancellationToken cancellationToken)
     {
-       
+
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(command.Id, cancellationToken);
 
         if (room is null)
             return Result.Failure(RoomErrors.NotFound);
 
-         var buildingId = room.BuildingId;
+        var buildingId = room.BuildingId;
         _unitOfWork.Repository<Room>().DeletePermanently(room);
 
         await _unitOfWork.CompleteAsync(cancellationToken);

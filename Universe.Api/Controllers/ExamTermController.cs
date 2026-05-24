@@ -9,7 +9,6 @@ using Universe.Application.ExamTermServices.Commands.TogglePublisher;
 using Universe.Application.ExamTermServices.Commands.Update;
 using Universe.Application.ExamTermServices.Queries.Get;
 using Universe.Application.ExamTermServices.Queries.GetProgramExams;
-using Universe.Core.Enums;
 
 namespace Universe.Api.Controllers;
 

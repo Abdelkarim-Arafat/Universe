@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Universe.Core.Entities;
+﻿using Universe.Core.Entities;
 using Universe.Core.Enums;
 
 namespace Universe.Infrastructure.SeedData;

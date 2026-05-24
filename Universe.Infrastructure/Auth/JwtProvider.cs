@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Universe.Core.Abstractions.Options;
-using Universe.Core.Entities;
-using Universe.Core.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using Universe.Core.Abstractions.Options;
+using Universe.Core.Entities;
+using Universe.Core.Interfaces;
 
 namespace Universe.Infrastructure.Auth;
 

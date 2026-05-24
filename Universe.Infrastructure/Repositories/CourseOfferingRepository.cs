@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 using Universe.Core.Contracts.CourseOffering;
 using Universe.Core.Contracts.Enrollments;
 using Universe.Core.Contracts.TeachingSession;
@@ -6,8 +7,6 @@ using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
-using System.Linq.Dynamic.Core;
-using Universe.Core.Contracts.Student;
 
 namespace Universe.Infrastructure.Repositories;
 

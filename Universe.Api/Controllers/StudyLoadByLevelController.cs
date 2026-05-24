@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using MimeKit.IO;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
 using Universe.Application.StudyLoadByLevelServices.Commands.AddStudyLoad;
@@ -21,19 +20,19 @@ public class StudyLoadByLevelController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> GetAll (
+    public async Task<IActionResult> GetAll(
         [FromQuery] FilterRequest filter,
         [FromRoute] Guid programId,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetStudyLoadByLevelsQuery(programId, filter), cancellationToken);
-        return result.IsSuccess? Ok(result.Value) : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPost("{levelId:guid}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> Add (
+    public async Task<IActionResult> Add(
         [FromRoute] Guid programId,
         [FromRoute] Guid levelId,
         [FromBody] AddStudyLoadByLevelCommand request,

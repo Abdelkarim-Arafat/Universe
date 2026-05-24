@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AuthServices.Commands.ResetPassword;
+﻿namespace Universe.Application.AuthServices.Commands.ResetPassword;
 
 public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
 {

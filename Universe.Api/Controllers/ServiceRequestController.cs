@@ -22,7 +22,7 @@ public class ServiceRequestController(IMediator mediator) : ControllerBase
     [HttpPatch("{requestId:guid}/accept")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> AcceptRequest (
+    public async Task<IActionResult> AcceptRequest(
         [FromRoute] Guid collegeId,
         [FromRoute] Guid requestId,
         CancellationToken cancellationToken)
@@ -69,7 +69,7 @@ public class ServiceRequestController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> GetAllServiceRequests (
+    public async Task<IActionResult> GetAllServiceRequests(
     [FromRoute] Guid collegeId,
     [FromQuery] FilterRequest filter,
     CancellationToken cancellationToken)

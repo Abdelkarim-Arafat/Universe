@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Core.Entities.Core;
+﻿namespace Universe.Core.Entities.Core;
 
 internal interface ISoftDeleteable
 {

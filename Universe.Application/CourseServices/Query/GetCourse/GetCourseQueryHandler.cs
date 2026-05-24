@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.AcademicProgram;
-using Universe.Core.Contracts.Course;
+﻿using Universe.Core.Contracts.Course;
 
 namespace Universe.Application.CourseServices.Query.GetCourse;
 
@@ -15,8 +11,8 @@ public class GetCourseQueryHandler(
     private readonly ICacheService _cacheService = cacheService;
     public async Task<Result<CourseWithPreRequisiteResponse>> Handle(GetCourseQuery request, CancellationToken cancellationToken)
     {
-        if(await _unitOfWork.CollegeRepository
-            .IsExistAsync(request.CollegeId , cancellationToken) is false
+        if (await _unitOfWork.CollegeRepository
+            .IsExistAsync(request.CollegeId, cancellationToken) is false
             ) return Result.Failure<CourseWithPreRequisiteResponse>(CollegeErrors.NotFound);
 
         var courseResponse = await _cacheService.GetOrCreateAsync(

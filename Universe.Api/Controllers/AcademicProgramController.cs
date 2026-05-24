@@ -26,7 +26,7 @@ public class AcademicProgramController(IMediator mediator) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAcademicProgramQuery(id) , cancellationToken);
+        var result = await _mediator.Send(new GetAcademicProgramQuery(id), cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
@@ -35,9 +35,9 @@ public class AcademicProgramController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetAll([FromRoute] Guid collegeId , [FromQuery] FilterRequest filter , CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromRoute] Guid collegeId, [FromQuery] FilterRequest filter, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAcademicProgramsQuery(collegeId , filter), cancellationToken);
+        var result = await _mediator.Send(new GetAcademicProgramsQuery(collegeId, filter), cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
@@ -46,11 +46,11 @@ public class AcademicProgramController(IMediator mediator) : ControllerBase
     [HttpPost("")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> Add([FromRoute] Guid collegeId , [FromBody] AddAcademicProgramCommand request , CancellationToken cancellationToken)
+    public async Task<IActionResult> Add([FromRoute] Guid collegeId, [FromBody] AddAcademicProgramCommand request, CancellationToken cancellationToken)
     {
         request = request with { CollegeId = collegeId };
 
-        var result = await _mediator.Send(request , cancellationToken);
+        var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
@@ -58,9 +58,9 @@ public class AcademicProgramController(IMediator mediator) : ControllerBase
     [HttpPut("{id:guid}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> Update([FromRoute] Guid collegeId , [FromRoute] Guid id, UpdateAcademicProgramCommand request , CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromRoute] Guid collegeId, [FromRoute] Guid id, UpdateAcademicProgramCommand request, CancellationToken cancellationToken)
     {
-        request = request with { CollegeId = collegeId , Id = id };
+        request = request with { CollegeId = collegeId, Id = id };
 
         var result = await _mediator.Send(request, cancellationToken);
 
@@ -70,7 +70,7 @@ public class AcademicProgramController(IMediator mediator) : ControllerBase
     [HttpDelete("{id:guid}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> Delete([FromRoute] Guid id , [FromRoute] Guid collegeId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete([FromRoute] Guid id, [FromRoute] Guid collegeId, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new RemoveAcademicProgramCommand(collegeId, id), cancellationToken);
 

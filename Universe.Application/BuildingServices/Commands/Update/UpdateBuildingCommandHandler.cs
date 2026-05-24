@@ -10,7 +10,7 @@ public class UpdateBuildingCommandHandler(IUnitOfWork unitOfWork, ICacheService 
 
     public async Task<Result<BuildingResponse>> Handle(UpdateBuildingCommand command, CancellationToken cancellationToken)
     {
-         
+
         var building = await _unitOfWork.BuildingRepository.GetByIdAsync(command.Id, cancellationToken);
         if (building is null)
             return Result.Failure<BuildingResponse>(BuildingErrors.NotFound);

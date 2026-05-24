@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Event;
-
-namespace Universe.Application.AcademicEventServices.Queries.Get_All_Events;
+﻿namespace Universe.Application.AcademicEventServices.Queries.Get_All_Events;
 
 public record GetEventsQuery(
     [Required] Guid ProgramId,

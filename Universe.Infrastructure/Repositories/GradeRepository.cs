@@ -15,7 +15,7 @@ public class GradeRepository(ApplicationDbContext context) : IGradeRepository
         var grades = await _context.Grades
             .Where(grade => grade.AcademicProgramId == AcademicProgramId && !grade.IsDeleted)
             .OrderBy(grade => grade.MinScore)
-            .Select(grade=> new GradeResponse
+            .Select(grade => new GradeResponse
             (
                 grade.Id,
                 grade.Name,

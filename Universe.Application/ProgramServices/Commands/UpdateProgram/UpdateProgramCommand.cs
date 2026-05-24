@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.AcademicProgram;
+﻿using Universe.Core.Contracts.AcademicProgram;
 
 namespace Universe.Application.AcademicProgramServices.Commands.UpdateAcademicProgram;
 

@@ -1,4 +1,4 @@
-﻿ using Universe.Core.Contracts.Rooms;
+﻿using Universe.Core.Contracts.Rooms;
 
 namespace Universe.Application.RoomServices.Queries.GetBuildingRooms;
 

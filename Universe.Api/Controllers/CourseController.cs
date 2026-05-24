@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
@@ -24,7 +23,7 @@ public class CourseController(IMediator mediator) : ControllerBase
     [HttpGet("{id:guid}")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> Get (
+    public async Task<IActionResult> Get(
         [FromRoute] Guid collegeId,
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
@@ -42,7 +41,7 @@ public class CourseController(IMediator mediator) : ControllerBase
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetCoursesQuery(collegeId , filter), cancellationToken);
+        var result = await _mediator.Send(new GetCoursesQuery(collegeId, filter), cancellationToken);
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
@@ -51,7 +50,7 @@ public class CourseController(IMediator mediator) : ControllerBase
     [HttpPost("")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> Add (
+    public async Task<IActionResult> Add(
         [FromRoute] Guid collegeId,
         [FromBody] AddCourseCommand request,
         CancellationToken cancellationToken)
@@ -88,7 +87,7 @@ public class CourseController(IMediator mediator) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new RemoveCourseCommand(collegeId, id) , cancellationToken);
+        var result = await _mediator.Send(new RemoveCourseCommand(collegeId, id), cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
     }

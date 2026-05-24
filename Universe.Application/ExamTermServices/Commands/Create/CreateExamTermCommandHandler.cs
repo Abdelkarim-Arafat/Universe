@@ -33,7 +33,7 @@ public class CreateExamTermCommandHandler
         var IsExistExamTermWithSameType = await _unitOfWork.ExamRepository.IsExistExamTermWithSameTypeAsync
              (null, request.SemesterId, request.AcademicProgramId, request.ExamType, cancellationToken);
 
-        if (IsExistExamTermWithSameType) 
+        if (IsExistExamTermWithSameType)
             return Result.Failure<ExamTermResponse>(ExamErrors.ExamTermWithSameType);
 
         var examTerm = request.Adapt<ExamTerm>();

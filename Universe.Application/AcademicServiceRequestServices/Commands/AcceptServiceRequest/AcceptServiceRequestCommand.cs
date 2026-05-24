@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Enums;
+﻿namespace Universe.Application.AcademicServiceRequestServices.Commands.AcceptServiceRequest;
 
-namespace Universe.Application.AcademicServiceRequestServices.Commands.AcceptServiceRequest;
-
-public record AcceptServiceRequestCommand (
+public record AcceptServiceRequestCommand(
     [Required] Guid CollegeId,
     [Required] Guid RequestId
 ) : IRequest<Result>;

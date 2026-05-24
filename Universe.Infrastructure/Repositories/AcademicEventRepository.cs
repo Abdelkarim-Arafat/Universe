@@ -1,15 +1,11 @@
-﻿using Microsoft.Data.SqlClient.Internal;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 
 namespace Universe.Infrastructure.Repositories;
 
-public class AcademicEventRepository(ApplicationDbContext context)  : IAcademicEventRepository
+public class AcademicEventRepository(ApplicationDbContext context) : IAcademicEventRepository
 {
     private readonly ApplicationDbContext _context = context;
 
@@ -31,13 +27,13 @@ public class AcademicEventRepository(ApplicationDbContext context)  : IAcademicE
                 cancellationToken);
     }
 
-    public async Task<AcademicEvent?> GetByIdAsync(Guid id , CancellationToken cancellationToken)
+    public async Task<AcademicEvent?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => await _context.AcademicEvents
-            .FirstOrDefaultAsync(e => e.Id == id , cancellationToken);
+            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
-    public async Task<AcademicEvent?> GetByProgramAndSemesterIdsAsync(Guid programId ,
-        Guid semesterId ,
-        Core.Enums.EventType eventType ,
+    public async Task<AcademicEvent?> GetByProgramAndSemesterIdsAsync(Guid programId,
+        Guid semesterId,
+        Core.Enums.EventType eventType,
         CancellationToken cancellationToken)
     {
         return await _context.AcademicEvents
