@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.StudyLoadByLevel;
-using Universe.Core.Interfaces;
+﻿using Universe.Core.Contracts.StudyLoadByLevel;
 
 namespace Universe.Application.StudyLoadByLevelServices.Commands.UpdateStudyLoad;
 
@@ -16,8 +12,8 @@ public class UpdateStudyLoadByLevelCommandHandler(
 
     public async Task<Result<StudyLoadByLevelResponse>> Handle(UpdateStudyLoadByLevelCommand request, CancellationToken cancellationToken)
     {
-        if(await _unitOfWork.StudyLoadByLevelRepository
-            .GetByIdAsync(request.Id , cancellationToken) is not { } studyLoad
+        if (await _unitOfWork.StudyLoadByLevelRepository
+            .GetByIdAsync(request.Id, cancellationToken) is not { } studyLoad
             ) return Result.Failure<StudyLoadByLevelResponse>(StudyLoadByLevelErrors.NotFound);
 
         studyLoad.MaxHours = request.MaxHours;
@@ -25,7 +21,7 @@ public class UpdateStudyLoadByLevelCommandHandler(
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        await _cacheService.RemoveByTagAsync(StudyLoadByLevelCacheKeys.Tags(request.ProgramId) , cancellationToken);
+        await _cacheService.RemoveByTagAsync(StudyLoadByLevelCacheKeys.Tags(request.ProgramId), cancellationToken);
 
         var response = new StudyLoadByLevelResponse(
             studyLoad.Id,

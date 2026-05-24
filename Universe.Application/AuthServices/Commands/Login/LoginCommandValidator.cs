@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AuthServices.Commands.Login;
+﻿namespace Universe.Application.AuthServices.Commands.Login;
 
 public class LoginCommandValidator : AbstractValidator<LoginCommand>
 {

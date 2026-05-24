@@ -14,7 +14,8 @@ public class GetLevelQueryHandler(
     {
         var response = await _cacheService.GetOrCreateAsync(
             key: LevelCacheKeys.ById(request.Id),
-            factory: async () => {
+            factory: async () =>
+            {
                 var level = await unitOfWork.LevelRepository
                         .GetByIdAsync(request.Id, cancellationToken);
 

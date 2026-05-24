@@ -2,7 +2,7 @@
 
 namespace Universe.Application.LevelServices.Commands.Update;
 
-public record UpdateLevelCommand (
+public record UpdateLevelCommand(
     [Required] Guid ProgramId,
     [Required] Guid Id,
     string Name,

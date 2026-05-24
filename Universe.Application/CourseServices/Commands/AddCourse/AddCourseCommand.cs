@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Course;
+﻿using Universe.Core.Contracts.Course;
 using Universe.Core.Enums;
 
 namespace Universe.Application.CourseServices.Commands.AddCourse;

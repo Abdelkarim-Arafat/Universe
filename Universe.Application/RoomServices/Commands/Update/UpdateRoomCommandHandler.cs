@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.Ocsp;
-using Universe.Core.Contracts.Rooms;
+﻿using Universe.Core.Contracts.Rooms;
 
 namespace Universe.Application.RoomServices.Commands.Update;
 
@@ -11,18 +10,18 @@ public class UpdateRoomCommandHandler(IUnitOfWork unitOfWork, ICacheService cach
 
     public async Task<Result<RoomResponse>> Handle(UpdateRoomCommand command, CancellationToken cancellationToken)
     {
-         
+
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(command.Id, cancellationToken);
         if (room is null)
             return Result.Failure<RoomResponse>(RoomErrors.NotFound);
 
-    
+
         var isSameRoomNumberExist = await _unitOfWork.RoomRepository
             .CheckValidRoomNumberAsync(room.Id, room.BuildingId, command.RoomNumber, cancellationToken);
 
         if (isSameRoomNumberExist)
             return Result.Failure<RoomResponse>(RoomErrors.UnvalidNumber);
- 
+
         command.Adapt(room);
         _unitOfWork.Repository<Room>().Update(room);
 

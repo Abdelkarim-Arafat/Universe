@@ -1,7 +1,7 @@
-﻿using Universe.Core.Entities;
+﻿using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.Student;
-using Universe.Core.Contracts.Control;
 using Universe.Core.Contracts.StudentAssessments;
+using Universe.Core.Entities;
 namespace Universe.Core.Interfaces.Repositories;
 
 public interface IStudentAssessmentRepository

@@ -3,7 +3,7 @@ using Universe.Core.Enums;
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateCurrentSemester;
 
-public record UpdateCurrentSemesterCommand (
+public record UpdateCurrentSemesterCommand(
     [Required] Guid AcademicYearId,
     [Required] TermType TermType
 ) : IRequest<Result<SemesterResponse>>;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.ControlServices.Dtos;
+﻿namespace Universe.Application.ControlServices.Dtos;
 
 public record GetCourseOfferingsControlStatisticsResponse(
     Guid LevelId,

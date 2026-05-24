@@ -10,7 +10,7 @@ public class DeleteExamCommitteeCommandHandler
     public async Task<Result> Handle(DeleteExamCommitteeCommand request, CancellationToken cancellationToken)
     {
         var examCommittee = await _unitOfWork.ExamRepository.GetExamCommitteeByIdAsync(request.Id, cancellationToken);
-       
+
         if (examCommittee == null)
             return Result.Failure(ExamErrors.ExamCommitteeNotFound);
 

@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Entities;
 using Universe.Core.Entities.Core;
 using Universe.Core.Interfaces;
 using Universe.Core.Interfaces.Repositories;
@@ -39,7 +35,7 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 
     public IRoomRepository RoomRepository
         => field ??= new RoomRepository(_context);
- 
+
 
     public ILevelRepository LevelRepository
         => field ??= new LevelRepository(_context);
@@ -90,7 +86,7 @@ internal class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     public IGenericRepository<T> Repository<T>() where T : BaseEntity
     {
         var type = typeof(T);
-        if(!_repositories.ContainsKey(type))
+        if (!_repositories.ContainsKey(type))
         {
             _repositories[type] = new GenericRepository<T>(_context);
         }

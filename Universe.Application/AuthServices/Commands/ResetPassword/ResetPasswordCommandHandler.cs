@@ -1,7 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-
-namespace Universe.Application.AuthServices.Commands.ResetPassword;
+﻿namespace Universe.Application.AuthServices.Commands.ResetPassword;
 
 internal class ResetPasswordCommandHandler(
     UserManager<ApplicationUser> userManager
@@ -20,9 +17,9 @@ internal class ResetPasswordCommandHandler(
 
         var otp = user.passwordResetOtps.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
 
-        if(otp is null || otp.IsExpired || !otp.IsVerified)
+        if (otp is null || otp.IsExpired || !otp.IsVerified)
             return Result.Failure(AuthErrors.InvalidOrExpiredCode);
-        
+
         otp.isUsed = true;
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);

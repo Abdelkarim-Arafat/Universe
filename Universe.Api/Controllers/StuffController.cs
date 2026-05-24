@@ -1,24 +1,22 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
-using Universe.Application.UserServices.Commands.AssignAdvisorToStudents;
-using Universe.Application.UserServices.Commands.RegisterStaff;
-using Universe.Application.UserServices.Commands.RemoveStuff;
-using Universe.Application.UserServices.Commands.UpdateStuff;
-using Universe.Application.UserServices.Querys.GetAdvisorStudents;
-using Universe.Application.UserServices.Querys.GetAllStuff;
-using Universe.Application.UserServices.Querys.GetStudentsWithoutAdvisor;
-using Universe.Application.UserServices.Querys.GetStuff;
+using Universe.Application.StaffServices.Commands.AssignAdvisorToStudents;
+using Universe.Application.StaffServices.Commands.RegisterStaff;
+using Universe.Application.StaffServices.Commands.RemoveStaff;
+using Universe.Application.StaffServices.Commands.UpdateStaff;
+using Universe.Application.StaffServices.Queries.GetAdvisorStudents;
+using Universe.Application.StaffServices.Queries.GetAllStaff;
+using Universe.Application.StaffServices.Queries.GetStaff;
 using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/stuff")]
-[ApiController , Authorize]
+[ApiController, Authorize]
 
 public class StuffController(IMediator mediator) : ControllerBase
 {
@@ -30,7 +28,7 @@ public class StuffController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> AssignAdvisorToStudents(
         [FromRoute] Guid advisorId,
-        [FromBody]  AssignAdvisorToStudentsCommand request,
+        [FromBody] AssignAdvisorToStudentsCommand request,
         CancellationToken cancellationToken)
     {
         request = request with { AdvisorId = advisorId };
@@ -46,7 +44,7 @@ public class StuffController(IMediator mediator) : ControllerBase
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAllStuffQuery(collegeId, filter), cancellationToken);
+        var result = await _mediator.Send(new GetAllStaffQuery(collegeId, filter), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -56,11 +54,11 @@ public class StuffController(IMediator mediator) : ControllerBase
     [HttpGet("{id:guid}")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
-    public async Task<IActionResult> GetStuff (
+    public async Task<IActionResult> GetStuff(
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetStuffQuery(id), cancellationToken);
+        var result = await _mediator.Send(new GetStaffQuery(id), cancellationToken);
 
         return result.IsSuccess
             ? Ok(result.Value)
@@ -105,9 +103,9 @@ public class StuffController(IMediator mediator) : ControllerBase
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
 
-    public async Task<IActionResult> UpdateStuff(
+    public async Task<IActionResult> UpdateStaff(
         [FromRoute] Guid id,
-        [FromBody] UpdateStuffCommand request,
+        [FromBody] UpdateStaffCommand request,
         CancellationToken cancellationToken)
     {
         request = request with { UserId = id };
@@ -125,7 +123,7 @@ public class StuffController(IMediator mediator) : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new RemoveStuffCommand(id), cancellationToken);
+        var result = await _mediator.Send(new RemoveStaffCommand(id), cancellationToken);
 
         return result.IsSuccess ? Ok() : result.ToProblem();
     }

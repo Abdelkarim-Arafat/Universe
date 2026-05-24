@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Enums;
 
 namespace Universe.Core.Entities.StudentInfo;

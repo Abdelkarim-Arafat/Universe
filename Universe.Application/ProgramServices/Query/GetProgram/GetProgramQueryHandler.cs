@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.AcademicProgram;
+﻿using Universe.Core.Contracts.AcademicProgram;
 
 namespace Universe.Application.AcademicProgramServices.Query.GetAcademicProgram;
 
-public class GetAcademicProgramQueryHandler (
+public class GetAcademicProgramQueryHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
-    ) : IRequestHandler<GetAcademicProgramQuery , Result<AcademicProgramResponse>>
+    ) : IRequestHandler<GetAcademicProgramQuery, Result<AcademicProgramResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;
@@ -21,7 +18,7 @@ public class GetAcademicProgramQueryHandler (
             cancellationToken: cancellationToken
         );
 
-        if(academicProgram is null)
+        if (academicProgram is null)
             return Result.Failure<AcademicProgramResponse>(AcademicProgramErrors.NotFound);
 
         var response = academicProgram.Adapt<AcademicProgramResponse>();

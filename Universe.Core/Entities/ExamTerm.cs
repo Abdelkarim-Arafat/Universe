@@ -2,10 +2,10 @@
 using Universe.Core.Enums;
 
 namespace Universe.Core.Entities;
- 
+
 public class ExamTerm : BaseEntity
 {
-    public Guid Id { get; set; } 
+    public Guid Id { get; set; }
     public ExamTerm() { Id = Guid.CreateVersion7(); }
     public ExamType ExamType { get; set; }
     public DateOnly StartDate { get; set; }

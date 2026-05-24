@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Infrastructure.SeedData;
+﻿namespace Universe.Infrastructure.SeedData;
 
 // https://generateuuid.online/uuid/v7
 public static class DefaultUsers

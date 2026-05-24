@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Universe.Core.Contracts.AcademicProgram;
+﻿using Universe.Core.Contracts.AcademicProgram;
 
 namespace Universe.Application.AcademicProgramServices.Query.GetAcademicPrograms;
 

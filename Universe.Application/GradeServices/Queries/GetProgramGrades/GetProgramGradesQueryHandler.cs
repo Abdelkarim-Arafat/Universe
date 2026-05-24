@@ -34,7 +34,7 @@ public class GetProgramGradesQueryHandler(IUnitOfWork unitOfWork, ICacheService 
             {
                 var query = _unitOfWork.Repository<Grade>()
                     .GetQueryable()
-                    .AsNoTracking() 
+                    .AsNoTracking()
                     .Where(grade => grade.AcademicProgramId == request.AcademicProgramId && !grade.IsDeleted);
 
                 if (!string.IsNullOrEmpty(filter.SearchValue))

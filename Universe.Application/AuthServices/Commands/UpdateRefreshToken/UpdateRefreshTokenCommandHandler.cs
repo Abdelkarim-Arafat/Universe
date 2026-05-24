@@ -23,7 +23,7 @@ public class UpdateRefreshTokenCommandHandler(
             .OrderByDescending(x => x.CreatedOn)
             .First(rt => rt.Token == request.refreshToken);
 
-        if(refreshToken.IsExpired)
+        if (refreshToken.IsExpired)
             return Result.Failure<AuthResponse>(AuthErrors.InvalidRefreshToken);
 
         if (user.LockoutEnd > DateTime.UtcNow)
@@ -32,7 +32,7 @@ public class UpdateRefreshTokenCommandHandler(
         refreshToken.RevokedOn = DateTime.UtcNow;
 
         var userRoles = await _userManager.GetRolesAsync(user);
-        var userPermissions = await _unitOfWork.RoleRepository.GetUserPermissionsAsync(userRoles , cancellationToken);
+        var userPermissions = await _unitOfWork.RoleRepository.GetUserPermissionsAsync(userRoles, cancellationToken);
 
         var (newToken, expiresIn) = _jwtProvider.GenerateToken(user, userRoles, userPermissions);
 

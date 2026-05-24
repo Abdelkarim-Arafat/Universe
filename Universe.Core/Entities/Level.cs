@@ -1,6 +1,7 @@
 ﻿using Universe.Core.Entities.Core;
 
 namespace Universe.Core.Entities;
+
 public class Level : BaseEntity
 {
     public Guid Id { get; set; }

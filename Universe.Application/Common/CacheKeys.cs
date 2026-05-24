@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.Common;
+﻿namespace Universe.Application.Common;
 
 public static class AcademicProgramCacheKeys
 {
     private static readonly string Prefix = "academic-programs";
     public static string ById(Guid id) => $"{Prefix}:{id}";
     public static string[] Tags(Guid collegeId) => new[] { $"{Prefix}:{collegeId}" };
-    public static string List (
+    public static string List(
        Guid collegeId,
        string? searchValue,
        string? sortColumn,
        string? sortDirection,
-       int pageNumber, 
+       int pageNumber,
        int pageSize)
     {
         return $"{Prefix}:{collegeId}:list:" +
@@ -255,7 +251,7 @@ public static class RoomCacheKeys
                $"{filter.PageNumber}:{filter.PageSize}";
     }
 
- 
+
     public static string[] CommitteeTags(Guid buildingId, Guid examTermId) =>
         new[] { $"{Prefix}:{buildingId}", $"{Prefix}:exam-term:{examTermId}" };
 
@@ -265,7 +261,7 @@ public static class BuildingCacheKeys
 {
     private static readonly string Prefix = "buildings";
     public static string RootTag => $"{Prefix}:all";
-     
+
     public static string List(FilterRequest filter) =>
         $"{RootTag}:list:{filter.SearchValue ?? "null"}:{filter.SortColumn ?? "null"}:{filter.SortDirection ?? "null"}:{filter.PageNumber}:{filter.PageSize}";
 
@@ -287,7 +283,7 @@ public static class CourseOfferingCacheKeys
     {
         return $"{Prefix}:level:{levelId}:semester:{semesterId}";
     }
-    public static string ProgramCoursesForExams (
+    public static string ProgramCoursesForExams(
         Guid programId,
         Guid semesterId,
         string? searchValue,

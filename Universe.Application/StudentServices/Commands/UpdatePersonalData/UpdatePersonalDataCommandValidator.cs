@@ -1,0 +1,34 @@
+﻿namespace Universe.Application.StudentServices.Commands.UpdatePersonalData;
+
+public class UpdatePersonalDataCommandValidator : AbstractValidator<UpdatePersonalDataCommand>
+{
+    public UpdatePersonalDataCommandValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.");
+
+        RuleFor(x => x.StudentCode)
+            .NotEmpty().WithMessage("Student code is required.")
+            .MaximumLength(20).WithMessage("Student code cannot exceed 20 characters.");
+
+        RuleFor(x => x.NationalIdOrPassport)
+            .NotEmpty().WithMessage("National ID or Passport is required.")
+            .MaximumLength(50).WithMessage("National ID or Passport cannot exceed 50 characters.");
+
+        RuleFor(x => x.MaritalStatus)
+            .NotEmpty().NotNull()
+            .IsInEnum().WithMessage("Invalid marital status value.");
+
+        RuleFor(x => x.Religion)
+            .NotEmpty().NotNull()
+            .IsInEnum().WithMessage("Invalid religion value.");
+
+        RuleFor(x => x.Gender)
+            .NotEmpty().NotNull()
+            .IsInEnum().WithMessage("Invalid gender value.");
+
+        RuleFor(x => x.DateOfBirth)
+            .NotEmpty();
+    }
+}

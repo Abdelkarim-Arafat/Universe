@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Core.Contracts.AcadimicYearAndSemesters;
+﻿namespace Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 
 public record AcademicYearResponse(

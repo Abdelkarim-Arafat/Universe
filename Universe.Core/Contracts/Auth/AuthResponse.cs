@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Core.Contracts.Auth;
+﻿namespace Universe.Core.Contracts.Auth;
 
 public record AuthResponse(
     string Id,

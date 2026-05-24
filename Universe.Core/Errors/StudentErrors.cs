@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Universe.Core.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Universe.Core.Errors;
 
 public record StudentErrors
 {
-    public static readonly Error DuplicateStudentCode = 
+    public static readonly Error DuplicateStudentCode =
         new("Student.DuplicateStudentCode", "Another student with the same code is already exists", StatusCodes.Status409Conflict);
 
-    public static readonly Error InvalidStudentsIds = 
+    public static readonly Error InvalidStudentsIds =
         new("Student.InvalidStudentsIds", "Invalid student IDs", StatusCodes.Status400BadRequest);
 
     public static readonly Error DuplicateNationalIdOrPassport =

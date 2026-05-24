@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Universe.Core.Abstractions;
 using Universe.Core.Entities;
-using Universe.Core.Errors;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
 

@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
-using Universe.Core.Contracts.Auth;
 using Universe.Application.AuthServices.Commands.Login;
 using Universe.Application.AuthServices.Commands.ResetPassword;
 using Universe.Application.AuthServices.Commands.RevokeRefreshToken;
 using Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
 using Universe.Application.AuthServices.Commands.UpdateRefreshToken;
 using Universe.Application.AuthServices.Commands.VerificationResetPasswordCode;
+using Universe.Core.Contracts.Auth;
 namespace Universe.Api.Controllers;
 
 [Route("[controller]")]
@@ -18,19 +19,12 @@ public class AuthController(IMediator mediator) : ControllerBase
     private const string AccessToken = "access_token";
     private const string RefreshToken = "refresh_token";
 
-    //[HttpPost("register")]
-    //public async Task<IActionResult> Register([FromBody] RegisterCommand request)
-    //{
-    //    var result = await _mediator.Send(request);
-    //    return result.IsSuccess ? Ok()
-    //        : result.ToProblem();
-    //}
-
     [HttpPost("login")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> Login([FromBody] LoginCommand request)
     {
         var result = await _mediator.Send(request);
-        if(result.IsFailure) return result.ToProblem();
+        if (result.IsFailure) return result.ToProblem();
 
         SetTokensInCookie(result.Value);
 
@@ -38,6 +32,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("update-refresh-token")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> UpdateRefreshToken()
     {
         if (!Request.Cookies.TryGetValue(RefreshToken, out var refreshToken))
@@ -60,13 +55,14 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("revoke-refresh-token")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> RevokeRefreshToken()
     {
         if (!Request.Cookies.TryGetValue(RefreshToken, out var refreshToken))
             return Unauthorized();
 
         var result = await _mediator.Send(new RevokeRefreshTokenCommand(refreshToken));
-        if(result.IsFailure) return result.ToProblem();
+        if (result.IsFailure) return result.ToProblem();
 
         Response.Cookies.Delete(AccessToken);
         Response.Cookies.Delete(RefreshToken);
@@ -74,6 +70,7 @@ public class AuthController(IMediator mediator) : ControllerBase
         return Ok();
     }
     [HttpPost("send-reset-password")]
+    [EnableRateLimiting("EmailLimiter")]
     public async Task<IActionResult> SendResetPasswordConfirmation([FromBody] SendResetPasswordConfirmationCommand request)
     {
         var result = await _mediator.Send(request);
@@ -82,6 +79,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("verification-reset-password-code")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> VerifyResetPasswordCode([FromBody] VerificationResetPasswordCodeCommand request)
     {
         var result = await _mediator.Send(request);
@@ -90,6 +88,8 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("reset-password")]
+    [EnableRateLimiting("AuthStrict")]
+
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand request)
     {
         var result = await _mediator.Send(request);

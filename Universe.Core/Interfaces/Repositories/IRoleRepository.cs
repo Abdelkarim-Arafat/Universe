@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Entities;
+﻿using Universe.Core.Entities;
 
 namespace Universe.Core.Interfaces.Repositories;
 

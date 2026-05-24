@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Universe.Application.Common;
 
-namespace Universe.Application.Common;
-
-public record FilterRequest 
+public record FilterRequest
 {
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;

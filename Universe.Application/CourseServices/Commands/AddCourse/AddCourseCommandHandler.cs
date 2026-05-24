@@ -20,7 +20,7 @@ public class AddCourseCommandHandler(
         var existingPrerequisites = await _unitOfWork.CourseRepository
             .ExistingPreRequisitesIdsAsync(request.PreRequisiteIds, cancellationToken);
 
-        if(existingPrerequisites.Count != request.PreRequisiteIds.Count)
+        if (existingPrerequisites.Count != request.PreRequisiteIds.Count)
             return Result.Failure<CourseWithPreRequisiteResponse>(CourseErrors.PrerequisiteNotFound);
 
         var course = request.Adapt<Course>();
@@ -29,10 +29,10 @@ public class AddCourseCommandHandler(
         foreach (var preReqId in existingPrerequisites)
             await _unitOfWork.Repository<CoursePrerequisite>()
                  .AddAsync(new CoursePrerequisite
-                {
-                    CourseId = course.Id,
-                    PrerequisiteCourseId = preReqId
-                } , cancellationToken);
+                 {
+                     CourseId = course.Id,
+                     PrerequisiteCourseId = preReqId
+                 }, cancellationToken);
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 

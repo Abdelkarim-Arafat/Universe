@@ -1,17 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-using Universe.Core.Contracts.Auth;
-using Universe.Core.Abstractions;
-using Universe.Core.Entities;
-using Universe.Core.Errors;
-using Universe.Core.Interfaces;
-
-namespace Universe.Application.AuthServices.Commands.Login;
+﻿namespace Universe.Application.AuthServices.Commands.Login;
 
 public class LoginCommandHandler(
     UserManager<ApplicationUser> userManager,
@@ -30,14 +17,14 @@ public class LoginCommandHandler(
         var user = await _userManager.FindByNameAsync(request.UserName);
         if (user is null || user.IsDeleted) return Result.Failure<AuthResponse>(StudentErrors.InvalidCredentials);
 
-        var result = await _signInManager.PasswordSignInAsync(user , request.Password , request.RememberMe , true);
+        var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
 
-        if(result.Succeeded)
+        if (result.Succeeded)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
-            var userPermissions = await _unitOfWork.RoleRepository.GetUserPermissionsAsync(userRoles , cancellationToken);
+            var userPermissions = await _unitOfWork.RoleRepository.GetUserPermissionsAsync(userRoles, cancellationToken);
 
-            var (accesstoken , ExpiryIn) = _jwtProvider.GenerateToken(user , userRoles , userPermissions);
+            var (accesstoken, ExpiryIn) = _jwtProvider.GenerateToken(user, userRoles, userPermissions);
             var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
             var refreshTokenExpiration = DateTime.UtcNow.AddDays(request.RememberMe ? 7 : 1);

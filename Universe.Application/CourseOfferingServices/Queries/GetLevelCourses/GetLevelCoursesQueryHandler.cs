@@ -1,5 +1,5 @@
-﻿using Universe.Core.Contracts.CourseOffering;
-using Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
+﻿using Universe.Application.CourseOfferingServices.Query.GetLevelCourses;
+using Universe.Core.Contracts.CourseOffering;
 
 public class GetLevelCoursesQueryHandler(
     IUnitOfWork unitOfWork,

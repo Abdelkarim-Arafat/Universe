@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
+﻿using Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
 
 namespace Universe.Application.AuthServices.Commands.SendResetPasswordConfirmation;
 

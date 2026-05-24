@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Contracts.Enrollments;
+using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
@@ -24,7 +24,7 @@ public class SessionRepository(ApplicationDbContext context) : ISessionRepositor
                 cos.CourseOffering.SemesterId == semesterId &&
                 cos.TeachingSession.InstructorId == instructorId
             )
-            .Select(cos => new InstructorSessions (
+            .Select(cos => new InstructorSessions(
                 cos.TeachingSessionId,
                 cos.CourseOffering.Course.Name,
                 cos.TeachingSession.StartTime,

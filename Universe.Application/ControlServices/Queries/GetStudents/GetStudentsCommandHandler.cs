@@ -1,8 +1,8 @@
 ﻿using Universe.Core.Enums;
- 
+
 namespace Universe.Application.ControlServices.Queries.GetStudents;
 
-public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cacheService) 
+public class GetStudentsCommandHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     : IRequestHandler<GetStudentsCommand, Result<PaginationList<StudentInformationResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -47,7 +47,7 @@ public class GetStudentsCommandHandler(IUnitOfWork unitOfWork,ICacheService cach
                 s.Id,
                 s.Name,
                 s.StudentCode,
-                NumberOfFailed = s.Enrollments.Count(e => 
+                NumberOfFailed = s.Enrollments.Count(e =>
                       !e.IsDeleted
                     && e.CourseOffering.CourseId == courseOffering.CourseId
                     && e.CourseOffering.SemesterId != courseOffering.SemesterId // في تعديل قادم تتاكد انك بتعد السيميسترز ال قبلك ف التاريخ

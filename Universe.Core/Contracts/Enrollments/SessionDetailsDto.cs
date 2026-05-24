@@ -14,4 +14,3 @@ public record SessionDetailsDto
         int capacity,
         int occupiedSeats
 );
- 

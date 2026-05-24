@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 
-namespace Universe.Application.CourseOfferingServices.Commands.UpdateCourseOffering;
 public class UpdateCourseOfferingCommandValidator : AbstractValidator<UpdateCourseOfferingCommand>
 {
     public UpdateCourseOfferingCommandValidator()

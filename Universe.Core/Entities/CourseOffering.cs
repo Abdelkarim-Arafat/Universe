@@ -7,7 +7,7 @@ namespace Universe.Core.Entities;
 public class CourseOffering : BaseEntity
 {
     public Guid Id { get; set; }
-    public CourseOffering(){ Id = Guid.CreateVersion7(); }
+    public CourseOffering() { Id = Guid.CreateVersion7(); }
     public decimal CreditHours { get; set; }
     public decimal TotalGrade { get; set; }
     public decimal SuccessPercentage { get; set; }

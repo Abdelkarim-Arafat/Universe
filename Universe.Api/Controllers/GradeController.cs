@@ -7,14 +7,14 @@ using Universe.Application.Common;
 using Universe.Application.GradeServices.Commands.Create;
 using Universe.Application.GradeServices.Commands.Delete;
 using Universe.Application.GradeServices.Commands.Update;
-using Universe.Application.GradeServices.Queries.GetProgramGrades;
 using Universe.Application.GradeServices.Queries.Get;
+using Universe.Application.GradeServices.Queries.GetProgramGrades;
 using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
 [Route("programs/{academicProgramId:guid}/grades")]
-[ApiController,Authorize]
+[ApiController, Authorize]
 public class GradeController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;

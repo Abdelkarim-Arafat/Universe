@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.CourseServices.Commands.AddCourse;
-
-namespace Universe.Application.CourseServices.Commands.RemoveCourse;
+﻿namespace Universe.Application.CourseServices.Commands.RemoveCourse;
 
 internal class RemoveCourseCommandHandler(
     IUnitOfWork unitOfWork,
@@ -15,7 +10,7 @@ internal class RemoveCourseCommandHandler(
 
     public async Task<Result> Handle(RemoveCourseCommand request, CancellationToken cancellationToken)
     {
-        if(await _unitOfWork.CourseRepository
+        if (await _unitOfWork.CourseRepository
             .GetByIdAsync(request.Id, cancellationToken) is not { } course
             ) return Result.Failure(CourseErrors.CourseNotFound);
 

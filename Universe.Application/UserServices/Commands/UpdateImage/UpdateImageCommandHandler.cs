@@ -26,8 +26,8 @@ internal class UpdateImageCommandHandler(
 
         if (user is null || user.IsDeleted) return Result.Failure<string>(AuthErrors.UserNotFound);
 
-        if(user.ImageUrl != request.OldImageUrl)
-            return Result.Failure<string> (FileErrors.ImageUrlMismatch);
+        if (user.ImageUrl != request.OldImageUrl)
+            return Result.Failure<string>(FileErrors.ImageUrlMismatch);
 
         var imageUrl = await _imageService.UpdateAsync(request.OldImageUrl, request.NewImageFile);
 

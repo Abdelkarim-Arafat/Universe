@@ -5,7 +5,7 @@ namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateC
 
 public class UpdateCurrentSemesterCommandHandler(
     IUnitOfWork unitOfWork
-    ) : IRequestHandler<UpdateCurrentSemesterCommand , Result<SemesterResponse>>
+    ) : IRequestHandler<UpdateCurrentSemesterCommand, Result<SemesterResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     public async Task<Result<SemesterResponse>> Handle(UpdateCurrentSemesterCommand request, CancellationToken cancellationToken)

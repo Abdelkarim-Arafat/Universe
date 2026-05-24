@@ -1,8 +1,6 @@
-﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Universe.Core.Contracts.Student;
-using Universe.Core.Contracts.User;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 using Universe.Core.Interfaces.Repositories;
@@ -20,7 +18,7 @@ public class UserRepository
 
 
     public IQueryable<ApplicationUser> GetAllStaffAsync()
-        =>  _context.Users
+        => _context.Users
             .Join(_context.UserRoles,
                 user => user.Id,
                 userRoles => userRoles.UserId,
@@ -183,17 +181,17 @@ public class UserRepository
             && !x.Student.IsDeleted &&
             (userId == null || x.StudentId != userId), cancellationToken);
 
-	public async Task<bool> IsStudentNationalIdExistsAsync (
-	Guid collegeId,
-	Guid? userId,
-	string nationalId,
-	CancellationToken cancellationToken)
-	=> await _context.StudentAcademicPrograms.AnyAsync(x =>
-		x.AcademicProgram.CollegeId == collegeId &&
-		x.Student.NationalIdOrPassport == nationalId &&
-		!x.Student.IsDeleted &&
-		(userId == null || x.StudentId != userId),
-		cancellationToken);
+    public async Task<bool> IsStudentNationalIdExistsAsync(
+    Guid collegeId,
+    Guid? userId,
+    string nationalId,
+    CancellationToken cancellationToken)
+    => await _context.StudentAcademicPrograms.AnyAsync(x =>
+        x.AcademicProgram.CollegeId == collegeId &&
+        x.Student.NationalIdOrPassport == nationalId &&
+        !x.Student.IsDeleted &&
+        (userId == null || x.StudentId != userId),
+        cancellationToken);
 
     public async Task<decimal> CalculateCreditHoursAsync
         (Guid StudentId, Guid? SemesterId, CancellationToken cancellationToken)
@@ -273,7 +271,7 @@ public class UserRepository
             {
                 StudentId = s.Id,
                 TotalEarnedHours = s.Enrollments
-                    .Where(e => e.Status == EnrollmentStatus.Passed && !e.IsDeleted) 
+                    .Where(e => e.Status == EnrollmentStatus.Passed && !e.IsDeleted)
                     .Sum(e => e.CourseOffering.CreditHours)
             })
             .ToListAsync(cancellationToken);
@@ -333,7 +331,7 @@ public class UserRepository
                     info.StartTime,
                     info.EndTime,
                     info.Seat != null ? $"{info.Seat.RoomNumber} - {info.Seat.BuildingName}" : "No Place Assigned",
-                    info.Seat?.SeatNumber ?? 0,  
+                    info.Seat?.SeatNumber ?? 0,
                     info.Seat?.CommitteeNumber ?? 0
                 ))
             ));

@@ -1,14 +1,11 @@
 ﻿using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scalar.AspNetCore;
 using Serilog;
-using System.ComponentModel;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Universe.Api.ExceptionHandler;
-using Universe.Core.Entities;
 using Universe.Infrastructure;
 
 
@@ -24,18 +21,22 @@ builder.Services.AddControllers()
 
 builder.Services.AddOpenApi();
 
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowedOrigins", policy =>
         policy.SetIsOriginAllowed(origin =>
             origin == "http://localhost:3000" ||
-            origin == "https://playful-torrone-6e1691.netlify.app" 
+            origin == "https://playful-torrone-6e1691.netlify.app"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()
     );
 });
+
+#region RateLimiter
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -62,7 +63,7 @@ builder.Services.AddRateLimiter(options =>
     );
 
     options.AddPolicy("AuthStrict", httpContext =>
-        RateLimitPartition.GetFixedWindowLimiter (
+        RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
             _ => new FixedWindowRateLimiterOptions
             {
@@ -73,25 +74,12 @@ builder.Services.AddRateLimiter(options =>
             })
     );
 
-    options.AddPolicy("SignupLimiter", httpContext =>
-
-        RateLimitPartition.GetFixedWindowLimiter(
-            httpContext.Connection.RemoteIpAddress?.ToString(),
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 3,
-                Window = TimeSpan.FromMinutes(5),
-                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                QueueLimit = 0,
-            })
-    );
-
     options.AddPolicy("EmailLimiter", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
             httpContext.Connection.RemoteIpAddress?.ToString(),
             _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 2,
+                PermitLimit = 3,
                 Window = TimeSpan.FromMinutes(1),
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 0,
@@ -106,6 +94,7 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
+#endregion
 
 builder.Services.AddInfrastructureDependences(builder.Configuration);
 builder.Services.AddApplicationsDependences(builder.Configuration);

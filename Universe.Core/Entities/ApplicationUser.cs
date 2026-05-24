@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Universe.Core.Entities.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Universe.Core.Entities;
 
-public sealed class ApplicationUser : IdentityUser<Guid> , ISoftDeleteable
+public sealed class ApplicationUser : IdentityUser<Guid>, ISoftDeleteable
 {
     public ApplicationUser() { Id = Guid.CreateVersion7(); }
     public string Name { get; set; } = string.Empty;

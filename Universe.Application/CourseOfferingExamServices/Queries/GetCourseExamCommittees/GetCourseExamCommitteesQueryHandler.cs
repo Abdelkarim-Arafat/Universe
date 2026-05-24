@@ -1,8 +1,6 @@
-﻿using Universe.Core.Contracts.ExamCommittees;
+﻿namespace Universe.Application.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
 
-namespace Universe.Application.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
-
-public class GetCourseExamCommitteesQueryHandler(IUnitOfWork unitOfWork) 
+public class GetCourseExamCommitteesQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetCourseExamCommitteesQuery, Result<PaginationList<CourseExamCommitteesResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -25,11 +23,11 @@ public class GetCourseExamCommitteesQueryHandler(IUnitOfWork unitOfWork)
         var filter = request.Filter;
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
-            query = query.Where(com =>com.ExamCommittee.CommitteeNumber.ToString().Contains(filter.SearchValue));
+            query = query.Where(com => com.ExamCommittee.CommitteeNumber.ToString().Contains(filter.SearchValue));
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");
-        
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         var pagedData = await query

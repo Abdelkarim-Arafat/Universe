@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using Universe.Application.PaymentService.Commands.PayPalWebhook;
+﻿using System.Text.Json;
 using Universe.Core.Enums;
 
 namespace Universe.Application.PaymentService.Commands.PayPalWebhook;
 
-internal class PayPalWebhookHandler (
+internal class PayPalWebhookHandler(
     IUnitOfWork unitOfWork,
     IPayPalService payPalService
     ) : IRequestHandler<PayPalWebhookCommand>
@@ -44,6 +38,9 @@ internal class PayPalWebhookHandler (
 
         if (eventType == "PAYMENT.CAPTURE.COMPLETED")
         {
+            var captureId = resource.GetProperty("id").GetString();
+            payment.CaptureId = captureId!;
+            payment.Status = PaymentStatus.Completed;
             var serviceRequest = new ServiceRequest
             {
                 StudentId = payment.StudentId,
@@ -53,7 +50,7 @@ internal class PayPalWebhookHandler (
             };
 
             await _unitOfWork.Repository<ServiceRequest>().AddAsync(serviceRequest, cancellationToken);
-            payment.Status = PaymentStatus.Completed;
+
         }
         else if (eventType == "PAYMENT.CAPTURE.CANCELLED")
         {

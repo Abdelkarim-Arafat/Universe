@@ -1,7 +1,7 @@
 ﻿using Universe.Core.Entities.Core;
 
 namespace Universe.Core.Entities;
- 
+
 public class ExamSeat : BaseEntity
 {
     public int SeatNumber { get; set; }

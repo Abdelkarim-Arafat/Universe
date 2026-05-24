@@ -17,9 +17,8 @@ public class EnrollmentController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
     [HttpGet]
     [EnableRateLimiting("ReadLimiter")]
-    [Authorize(Roles = $"{Roles.AdminOrAdvisor}")]
-    public async Task<IActionResult>
-        GetEnrollmentPage([FromQuery] Guid SemesterId, [FromQuery] Guid StudentId, [FromQuery] Guid LevelId, CancellationToken cancellationToken)
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
+    public async Task<IActionResult> GetEnrollmentPage([FromQuery] Guid SemesterId, [FromQuery] Guid StudentId, [FromQuery] Guid LevelId, CancellationToken cancellationToken)
     {
         var query = new GetEnrollmentPageQuery(StudentId, SemesterId, LevelId);
         var result = await _mediator.Send(query, cancellationToken);
@@ -27,7 +26,7 @@ public class EnrollmentController(IMediator mediator) : ControllerBase
     }
     [HttpPut]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.AdminOrAdvisor}")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> Update(
         [FromBody] UpdateEnrollmentCommand command,
         [FromQuery] Guid StudentId, [FromQuery] Guid SemesterId, CancellationToken cancellationToken)

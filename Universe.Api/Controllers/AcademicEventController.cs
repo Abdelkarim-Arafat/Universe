@@ -12,7 +12,7 @@ using Universe.Core.Constants;
 namespace Universe.Api.Controllers;
 
 [Route("events")]
-[ApiController , Authorize]
+[ApiController, Authorize]
 public class AcademicEventController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -34,7 +34,7 @@ public class AcademicEventController(IMediator mediator) : ControllerBase
     [HttpDelete("{id:guid}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> RemoveEvent (
+    public async Task<IActionResult> RemoveEvent(
         [FromRoute] Guid id,
         CancellationToken cancellationToken
         )
@@ -47,7 +47,7 @@ public class AcademicEventController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> GetEvents (
+    public async Task<IActionResult> GetEvents(
         [FromQuery] Guid programId,
         [FromQuery] Guid semesterId,
         [FromQuery] FilterRequest filterRequest,

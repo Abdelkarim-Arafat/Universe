@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AcademicServiceServices.Commands.Add_Service;
+﻿namespace Universe.Application.AcademicServiceServices.Commands.Add_Service;
 
 public class AddServiceCommandValidator : AbstractValidator<AddServiceCommand>
 {

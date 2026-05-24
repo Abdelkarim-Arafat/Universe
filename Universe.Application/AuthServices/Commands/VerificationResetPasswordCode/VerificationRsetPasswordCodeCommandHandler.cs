@@ -1,8 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using Universe.Core.Errors;
-
-namespace Universe.Application.AuthServices.Commands.VerificationResetPasswordCode;
+﻿namespace Universe.Application.AuthServices.Commands.VerificationResetPasswordCode;
 
 public class VerificationRsetPasswordCodeCommandHandler(
     UserManager<ApplicationUser> userManager,
@@ -16,21 +12,21 @@ public class VerificationRsetPasswordCodeCommandHandler(
     {
         var user = await _userManager.Users
             .Include(x => x.passwordResetOtps)
-            .SingleOrDefaultAsync(x => x.Email == request.Email , cancellationToken);
+            .SingleOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
 
-        if (user is null || user.IsDeleted) 
+        if (user is null || user.IsDeleted)
             return Result.Failure(AuthErrors.UserNotFound);
 
         var otp = user.passwordResetOtps
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefault();
 
-        if(otp is null || otp.IsExpired || otp.IsVerified)
+        if (otp is null || otp.IsExpired || otp.IsVerified)
             return Result.Failure(AuthErrors.InvalidOrExpiredCode);
 
         var inputHash = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(request.Code)));
 
-        if(inputHash != otp.CodeHash)
+        if (inputHash != otp.CodeHash)
         {
             otp.Attempts++;
             await _userManager.UpdateAsync(user);

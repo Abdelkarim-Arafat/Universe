@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.StudyLoadByLevelServices.Commands.UpdateStudyLoad;
+﻿namespace Universe.Application.StudyLoadByLevelServices.Commands.UpdateStudyLoad;
 
 public class UpdateStudyLoadByLevelCommandValidator : AbstractValidator<UpdateStudyLoadByLevelCommand>
 {

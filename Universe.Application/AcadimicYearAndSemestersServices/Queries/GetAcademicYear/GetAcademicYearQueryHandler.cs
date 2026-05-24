@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.AcadimicYearAndSemesters;
+﻿using Universe.Core.Contracts.AcadimicYearAndSemesters;
 
 namespace Universe.Application.AcadimicYearAndSemestersServices.Queries.GetAcademicYear;
 
 public class GetAcademicYearQueryHandler(
     IUnitOfWork unitOfWork,
     ICacheService cacheService
-    ) : IRequestHandler<GetAcademicYearQuery , Result<AcademicYearWithSemesterResponse>>
+    ) : IRequestHandler<GetAcademicYearQuery, Result<AcademicYearWithSemesterResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICacheService _cacheService = cacheService;
@@ -21,7 +18,7 @@ public class GetAcademicYearQueryHandler(
             cancellationToken: cancellationToken
         );
 
-        if(yearResponse is null) 
+        if (yearResponse is null)
             return Result.Failure<AcademicYearWithSemesterResponse>(AcademicYearErrors.NotFound);
 
         return Result.Success(yearResponse);

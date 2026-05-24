@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AcademicEventServices.Commands.Add_Event;
+﻿namespace Universe.Application.AcademicEventServices.Commands.Add_Event;
 
 public class AddEventCommandValidator : AbstractValidator<AddEventCommand>
 {

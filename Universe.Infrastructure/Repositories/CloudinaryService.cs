@@ -15,7 +15,7 @@ internal class CloudinaryService : IImageService
     {
         _cloudinarySettings = cloudinarySettings.Value;
 
-        var account = new Account (
+        var account = new Account(
             _cloudinarySettings.CloudName,
             _cloudinarySettings.ApiKey,
             _cloudinarySettings.ApiSecret
@@ -53,7 +53,7 @@ internal class CloudinaryService : IImageService
         await DeleteAsync(oldUrl);
         return await UploadAsync(file);
     }
-    
+
     private string ExtractPublicId(string url)
     {
         var uri = new Uri(url);

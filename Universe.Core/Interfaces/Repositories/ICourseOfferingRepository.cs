@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.CourseOffering;
+﻿using Universe.Core.Contracts.CourseOffering;
 using Universe.Core.Contracts.Enrollments;
-using Universe.Core.Contracts.Student;
 using Universe.Core.Contracts.TeachingSession;
 using Universe.Core.Entities;
 

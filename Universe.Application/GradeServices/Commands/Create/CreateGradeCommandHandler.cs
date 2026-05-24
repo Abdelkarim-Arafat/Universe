@@ -1,7 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.Ocsp;
-using Universe.Core.Contracts.Level;
-
-namespace Universe.Application.GradeServices.Commands.Create;
+﻿namespace Universe.Application.GradeServices.Commands.Create;
 
 public class CreateGraderequestHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     : IRequestHandler<CreateGradeCommand, Result<GradeResponse>>
@@ -32,7 +29,7 @@ public class CreateGraderequestHandler(IUnitOfWork unitOfWork, ICacheService cac
 
         if (isScoresOverlapped || isGradePointsOverlapped)
             return Result.Failure<GradeResponse>(GradeErrors.InvalidScores);
-     
+
         var grade = command.Adapt<Grade>();
 
         await _unitOfWork.Repository<Grade>().AddAsync(grade, cancellationToken);

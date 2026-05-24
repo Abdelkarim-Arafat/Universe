@@ -1,10 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.IsisMtt.X509;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.StudyLoadRule;
-
-namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
+﻿namespace Universe.Application.StudyLoadRuleServices.Commands.UpdateStudyLoadRule;
 
 public class UpdateStudyLoadRuleCommandHandler(
     IUnitOfWork unitOfWork
@@ -17,7 +11,7 @@ public class UpdateStudyLoadRuleCommandHandler(
             .CheckOverLabedGpaAsync(request.AcademicProgramId, request.Id, request.GpaFrom, request.GpaTo, cancellationToken)))
             return Result.Failure<StudyLoadRuleResponse>(StudyLoadRuleErrors.OverLabedExist);
 
-        if(await _unitOfWork.StudyLoadRuleRepository.GetByIdAsync(request.Id, cancellationToken) is not { } studyLoadRule)
+        if (await _unitOfWork.StudyLoadRuleRepository.GetByIdAsync(request.Id, cancellationToken) is not { } studyLoadRule)
             return Result.Failure<StudyLoadRuleResponse>(StudyLoadRuleErrors.NotFound);
 
         request.Adapt(studyLoadRule);

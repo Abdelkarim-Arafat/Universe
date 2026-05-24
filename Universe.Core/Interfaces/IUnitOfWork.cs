@@ -5,7 +5,7 @@ using Universe.Core.Interfaces.Repositories;
 
 namespace Universe.Core.Interfaces;
 
-public interface IUnitOfWork: IAsyncDisposable
+public interface IUnitOfWork : IAsyncDisposable
 {
     IGenericRepository<T> Repository<T>() where T : BaseEntity;
     IRoleRepository RoleRepository { get; }

@@ -1,14 +1,12 @@
-﻿using Universe.Core.Enums;
-
-namespace Universe.Application.EnrollmentServices.Commands.Update;
+﻿namespace Universe.Application.EnrollmentServices.Commands.Update;
 
 public record UpdateEnrollmentCommand(
     [Required] Guid StudentId,
     [Required] Guid SemesterId,
-    List<SessionAndCourseOfferingIds> newSessions  
+    List<SessionAndCourseOfferingIds> newSessions
 ) : IRequest<Result<List<StudentExistingEnrollment>>>;
 
- 
+
 public record SessionAndCourseOfferingIds(
     Guid SessionId,
     Guid CourseOfferingId

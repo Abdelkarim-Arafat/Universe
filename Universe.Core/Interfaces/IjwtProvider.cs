@@ -1,7 +1,4 @@
 ﻿using Universe.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Universe.Core.Interfaces;
 

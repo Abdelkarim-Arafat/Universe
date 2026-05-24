@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
-
-namespace Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
+﻿namespace Universe.Application.TeachingSessionServices.Commands.UpsertSchedule;
 
 public class UpsertScheduleCommandValidator : AbstractValidator<UpsertScheduleCommand>
 {

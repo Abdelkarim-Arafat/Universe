@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.TeachingSession;
+﻿using Universe.Core.Contracts.TeachingSession;
 
 namespace Universe.Application.TeachingSessionServices.Queries.GetSchedule;
 

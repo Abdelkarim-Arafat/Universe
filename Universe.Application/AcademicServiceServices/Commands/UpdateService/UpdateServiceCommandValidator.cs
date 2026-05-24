@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AcademicServiceServices.Commands.UpdateService;
+﻿namespace Universe.Application.AcademicServiceServices.Commands.UpdateService;
 
 public class UpdateServiceCommandValidator : AbstractValidator<UpdateServiceCommand>
 {

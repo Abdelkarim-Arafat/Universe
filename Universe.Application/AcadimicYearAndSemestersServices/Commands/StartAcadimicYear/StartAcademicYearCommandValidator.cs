@@ -1,9 +1,4 @@
-﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
+﻿namespace Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
 
 public class StartAcademicYearCommandValidator : AbstractValidator<StartAcademicYearCommand>
 {
@@ -11,7 +6,7 @@ public class StartAcademicYearCommandValidator : AbstractValidator<StartAcademic
     {
         RuleFor(x => x.StartDate)
             .NotNull()
-            .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow.Date)); 
+            .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow.Date));
 
         RuleFor(x => x.StartDate)
             .LessThan(x => x.EndDate)

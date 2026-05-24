@@ -16,4 +16,3 @@ public class CourseOfferingExam : BaseEntity
     public CourseOffering CourseOffering { get; set; } = default!;
     public ICollection<CourseOfferingCommittee> CourseOfferingCommittees { get; set; } = [];
 }
- 

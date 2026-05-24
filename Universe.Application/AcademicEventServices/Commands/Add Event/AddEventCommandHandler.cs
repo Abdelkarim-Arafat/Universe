@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Event;
-
-namespace Universe.Application.AcademicEventServices.Commands.Add_Event;
+﻿namespace Universe.Application.AcademicEventServices.Commands.Add_Event;
 
 internal class AddEventCommandHandler(
     IUnitOfWork unitOfWork,
@@ -19,11 +14,11 @@ internal class AddEventCommandHandler(
             .IsExistAsync(request.ProgramId, cancellationToken)
             ) return Result.Failure<EventResponse>(AcademicProgramErrors.NotFound);
 
-        if(!await _unitOfWork.AcademicYearRepository
-            .IsExistSemesterAsync(request.SemesterId , cancellationToken)
+        if (!await _unitOfWork.AcademicYearRepository
+            .IsExistSemesterAsync(request.SemesterId, cancellationToken)
             ) return Result.Failure<EventResponse>(SemesterErrors.NotFound);
 
-        if(await _unitOfWork.AcademicEventRepository
+        if (await _unitOfWork.AcademicEventRepository
             .IsOverlabedAsync(request.ProgramId, request.SemesterId, request.Type,
                 request.StartDate, request.EndDate, cancellationToken)
             ) return Result.Failure<EventResponse>(AcademicEventErrors.OverLabedDateTime);

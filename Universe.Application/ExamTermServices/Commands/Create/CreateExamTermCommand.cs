@@ -1,7 +1,7 @@
 using Universe.Core.Enums;
 
 namespace Universe.Application.ExamTermServices.Commands.Create;
- 
+
 public record CreateExamTermCommand
 (
     ExamType ExamType,

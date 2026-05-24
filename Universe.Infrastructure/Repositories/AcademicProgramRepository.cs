@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Universe.Core.Entities;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -30,17 +29,17 @@ public class AcademicProgramRepository(ApplicationDbContext context) : IAcademic
                        !d.IsDeleted, cancellationToken);
 
 
-    public async Task<ProgramSchedule?> GetScheduleAsync(Guid ProgramId , Guid SemesterId , CancellationToken cancellationToken)
+    public async Task<ProgramSchedule?> GetScheduleAsync(Guid ProgramId, Guid SemesterId, CancellationToken cancellationToken)
         => await _context.ProgramSchedules
                 .Where(x => x.ProgramId == ProgramId && x.SemesterId == SemesterId)
                 .FirstOrDefaultAsync(cancellationToken);
 
-    public async Task<StudentAcademicProgram?> GetCurrentStudentAcademicProgramAsync(Guid studentId , CancellationToken cancellationToken)
+    public async Task<StudentAcademicProgram?> GetCurrentStudentAcademicProgramAsync(Guid studentId, CancellationToken cancellationToken)
         => await _context.StudentAcademicPrograms
                 .Where(x => x.StudentId == studentId && x.Currently)
                 .FirstOrDefaultAsync(cancellationToken);
 
-    public async Task<StudentAcademicProgram?> GetStudentAcademicProgramAsync(Guid programId , Guid studentId , CancellationToken cancellationToken)
+    public async Task<StudentAcademicProgram?> GetStudentAcademicProgramAsync(Guid programId, Guid studentId, CancellationToken cancellationToken)
         => await _context.StudentAcademicPrograms
                .Where(x => x.StudentId == studentId && x.AcademicProgramId == programId)
                .FirstOrDefaultAsync(cancellationToken);

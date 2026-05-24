@@ -32,7 +32,7 @@ public static class ResultExtensions
         if (result.IsSuccess)
             throw new InvalidOperationException("can not convert success result to problem");
 
-        var problem = Results.Problem(statusCode: result.Error.StatusCode , title: result.Error.Code);
+        var problem = Results.Problem(statusCode: result.Error.StatusCode, title: result.Error.Code);
 
 
         var problemDetails = problem.GetType()

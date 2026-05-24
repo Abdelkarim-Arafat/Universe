@@ -28,8 +28,8 @@ public class ControlController(IMediator mediator) : ControllerBase
         [FromQuery] Guid semesterId,
         CancellationToken cancellationToken)
     {
-        var request = new GetCourseOfferingsControlStatisticsQuery(semesterId , programId);
-        var result = await _mediator.Send(request , cancellationToken);
+        var request = new GetCourseOfferingsControlStatisticsQuery(semesterId, programId);
+        var result = await _mediator.Send(request, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
@@ -38,13 +38,13 @@ public class ControlController(IMediator mediator) : ControllerBase
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> ToggleCourseOfferingControl(
-        [FromRoute]Guid courseOfferingId,
+        [FromRoute] Guid courseOfferingId,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new ToggleCourseOfferingControlCommand(courseOfferingId), cancellationToken);
         return result.IsSuccess ? Ok() : result.ToProblem();
     }
-     
+
     [HttpGet("{AcademicProgramId:guid}")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
@@ -68,10 +68,10 @@ public class ControlController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> UpsertStudentsDegree(
        Guid AcademicProgramId,
-       [FromBody] UpsertStudentDegreeCommand command,  
+       [FromBody] UpsertStudentDegreeCommand command,
        CancellationToken cancellationToken)
     {
-        var updatedRequest = command with { AcademicProgramId = AcademicProgramId};
+        var updatedRequest = command with { AcademicProgramId = AcademicProgramId };
 
         var result = await _mediator.Send(updatedRequest, cancellationToken);
 

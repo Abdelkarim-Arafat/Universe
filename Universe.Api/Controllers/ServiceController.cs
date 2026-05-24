@@ -14,7 +14,7 @@ using Universe.Core.Constants;
 namespace Universe.Api.Controllers;
 
 [Route("colleges/{collegeId:guid}/services")]
-[ApiController , Authorize]
+[ApiController, Authorize]
 public class ServiceController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -22,7 +22,7 @@ public class ServiceController(IMediator mediator) : ControllerBase
     [HttpPost("")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> AddService (
+    public async Task<IActionResult> AddService(
         [FromRoute] Guid collegeId,
         [FromBody] AddServiceCommand request,
         CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ public class ServiceController(IMediator mediator) : ControllerBase
     [HttpPost("{serviceId:guid}/checkout")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AllRoles)]
-    public async Task<IActionResult> CreateOrder (
+    public async Task<IActionResult> CreateOrder(
         [FromRoute] Guid collegeId,
         [FromRoute] Guid serviceId,
         CancellationToken cancellationToken)
@@ -50,12 +50,12 @@ public class ServiceController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [EnableRateLimiting("ReadLimiter")]
     [Authorize(Roles = Roles.AllRoles)]
-    public async Task<IActionResult> GetAllServices (
+    public async Task<IActionResult> GetAllServices(
         [FromRoute] Guid collegeId,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetServicesQuery(collegeId , filter), cancellationToken);
+        var result = await _mediator.Send(new GetServicesQuery(collegeId, filter), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 

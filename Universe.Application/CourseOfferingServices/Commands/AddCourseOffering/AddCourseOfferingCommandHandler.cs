@@ -25,18 +25,18 @@ internal class AddCourseOfferingCommandHandler(
                 request.LevelId, request.CourseId, cancellationToken)
             ) return Result.Failure<CourseOfferingWithDetailsResponse>(CourseOfferingErrors.AlreadyExist);
 
-        
-        if(await _unitOfWork.CourseRepository
-            .GetByIdAsync(request.CourseId , cancellationToken) is null) 
+
+        if (await _unitOfWork.CourseRepository
+            .GetByIdAsync(request.CourseId, cancellationToken) is null)
             return Result.Failure<CourseOfferingWithDetailsResponse>(CourseErrors.CourseNotFound);
 
-        
+
         if (await _unitOfWork.LevelRepository
             .GetByIdAsync(request.LevelId, cancellationToken) is null)
             return Result.Failure<CourseOfferingWithDetailsResponse>(LevelErrors.NotFound);
 
         if (await _unitOfWork.AcademicYearRepository
-            .IsExistSemesterAsync(semester.Id , cancellationToken) is false)
+            .IsExistSemesterAsync(semester.Id, cancellationToken) is false)
             return Result.Failure<CourseOfferingWithDetailsResponse>(SemesterErrors.NotFound);
 
         var courseOffering = request.Adapt<CourseOffering>();
@@ -47,7 +47,7 @@ internal class AddCourseOfferingCommandHandler(
         await _unitOfWork.CompleteAsync(cancellationToken);
 
         await _cacheService.RemoveAsync(CourseOfferingCacheKeys.LevelCourses(courseOffering.LevelId, courseOffering.Id), cancellationToken);
-        await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId) , cancellationToken);
+        await _cacheService.RemoveByTagAsync(CourseOfferingCacheKeys.Tags(request.AcademicProgramId), cancellationToken);
 
         var response = (courseOffering).Adapt<CourseOfferingWithDetailsResponse>();
         return Result.Success(response);

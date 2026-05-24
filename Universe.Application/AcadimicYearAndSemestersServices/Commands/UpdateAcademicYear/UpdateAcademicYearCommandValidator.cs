@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.AcademicYearAndSemestersServices.Commands.StartAcademicYear;
-
-namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
+﻿namespace Universe.Application.AcadimicYearAndSemestersServices.Commands.UpdateAcademicYear;
 
 internal class UpdateAcademicYearCommandValidator : AbstractValidator<UpdateAcademicYearCommand>
 {
     public UpdateAcademicYearCommandValidator()
-    { 
+    {
         RuleFor(x => x.StartDate)
             .NotNull()
             .Must(x => x >= DateOnly.FromDateTime(DateTime.UtcNow.Date));

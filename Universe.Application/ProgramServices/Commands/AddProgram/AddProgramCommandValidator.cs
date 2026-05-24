@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.AcademicProgramServices.Commands.AddAcademicProgram;
+﻿namespace Universe.Application.AcademicProgramServices.Commands.AddAcademicProgram;
 
 public class UpdateAcademicProgramCommandValidator : AbstractValidator<AddAcademicProgramCommand>
 {

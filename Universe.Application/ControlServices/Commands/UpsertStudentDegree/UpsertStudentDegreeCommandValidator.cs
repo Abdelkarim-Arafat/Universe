@@ -4,8 +4,8 @@ public class UpsertStudentDegreeCommandValidator : AbstractValidator<UpsertStude
 {
     public UpsertStudentDegreeCommandValidator()
     {
-       RuleFor(x=>x.Degree)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Degree must be greater than or equal to 0.");
+        RuleFor(x => x.Degree)
+             .GreaterThanOrEqualTo(0)
+             .WithMessage("Degree must be greater than or equal to 0.");
     }
 }

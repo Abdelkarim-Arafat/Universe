@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Contracts.AcadimicYearAndSemesters;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
@@ -13,10 +10,10 @@ namespace Universe.Infrastructure.Repositories;
 internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicYearRepository
 {
     private readonly ApplicationDbContext _context = context;
-    public async Task<AcademicYear?> GetByIdAsync(Guid Id , CancellationToken cancellationToken)
+    public async Task<AcademicYear?> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.AcademicYears
                 .Include(x => x.Semesters)
-                .FirstOrDefaultAsync(x => x.Id == Id , cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
     public async Task<bool> IsSemesterExistAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.Semesters
             .AnyAsync(x => x.Id == Id, cancellationToken);
@@ -28,7 +25,7 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
                 x.Name,
                 x.StartDate,
                 x.EndDate,
-                x.Semesters.Select(s => new SemesterResponse (
+                x.Semesters.Select(s => new SemesterResponse(
                     s.Id,
                     s.Name,
                     s.StartDate,
@@ -37,12 +34,12 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
             ))
             .FirstOrDefaultAsync(cancellationToken);
 
-    public async Task<bool> IsExistAsync(Guid Id , CancellationToken cancellationToken)
+    public async Task<bool> IsExistAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.AcademicYears
-                .AnyAsync(x => x.Id == Id && !x.IsDeleted , cancellationToken);
+                .AnyAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);
 
     public async Task<bool> IsExistSemesterAsync(Guid Id, CancellationToken cancellationToken)
-        => await _context.Semesters.AnyAsync(x => x.Id == Id , cancellationToken);
+        => await _context.Semesters.AnyAsync(x => x.Id == Id, cancellationToken);
 
     public async Task<bool> IsMakeConflictAsync(
         Guid CollegeId, string Name,
@@ -56,7 +53,7 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
               ((start >= x.StartDate && start <= x.EndDate)
             || (end >= x.StartDate && end <= x.EndDate))), cancellationToken);
     }
-        
+
     public async Task<Semester?> GetSemesterByTypeAsync(Guid academicYearId, TermType type, CancellationToken cancellationToken)
         => await _context.Semesters
         .FirstOrDefaultAsync(x => x.AcademicYearId == academicYearId && x.Name == type, cancellationToken);
@@ -65,7 +62,7 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
         => await _context.AcademicYears
         .OrderByDescending(x => x.StartDate)
         .Where(x => x.CollegeId == collegeId && !x.IsDeleted)
-        .Select(x => new AcademicYearResponse (
+        .Select(x => new AcademicYearResponse(
             x.Id,
             x.Name
         ))
@@ -73,10 +70,10 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
 
     public async Task<SemesterResponse?> GetCurrentSemesterAsync(Guid academicYearId, CancellationToken cancellationToken)
         => await _context.Semesters
-            .Where(x => x.AcademicYearId == academicYearId && 
+            .Where(x => x.AcademicYearId == academicYearId &&
              x.StartDate <= DateOnly.FromDateTime(DateTime.Now) && x.EndDate >= DateOnly.FromDateTime(DateTime.Now)
             )
-            .Select(x => new SemesterResponse (
+            .Select(x => new SemesterResponse(
                 x.Id,
                 x.Name,
                 x.StartDate,
@@ -87,7 +84,7 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
     public async Task<SemesterResponse> GetLastSeenSemesterAsync(Guid academicYearId, CancellationToken cancellationToken)
         => await _context.Semesters
             .Where(x => x.AcademicYearId == academicYearId && x.IsCurrent)
-            .Select(x => new SemesterResponse (
+            .Select(x => new SemesterResponse(
                 x.Id,
                 x.Name,
                 x.StartDate,

@@ -14,14 +14,14 @@ using Universe.Core.Constants;
 namespace Universe.Api.Controllers;
 
 [Route("exam-terms/{examTermId:guid}/course-offering-exam")]
-[ApiController,Authorize]
+[ApiController , Authorize]
 public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id:guid}")]
     [EnableRateLimiting("ReadLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
 
     public async Task<IActionResult> Get(
         [FromRoute] Guid id,
@@ -35,7 +35,7 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> Add (
         [FromRoute] Guid examTermId,
         [FromQuery] Guid courseOfferingId,
@@ -44,7 +44,7 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 
     {
         request = request with { ExamTermId = examTermId, CourseOfferingId = courseOfferingId };
-        
+
         var result = await _mediator.Send(request, cancellationToken);
 
         return result.IsSuccess
@@ -55,7 +55,7 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 
     [HttpDelete("{id:guid}")]
     [EnableRateLimiting("WriteLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
 
     public async Task<IActionResult> Delete([FromRoute] Guid id,
         CancellationToken cancellationToken)
@@ -82,7 +82,7 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 
     [HttpGet("{id:guid}/committees")]
     [EnableRateLimiting("ReadLimiter")]
-    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
     public async Task<IActionResult> GetCourseExamCommittees(
         [FromRoute] Guid id,
         [FromQuery] FilterRequest filter,

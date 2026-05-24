@@ -1,7 +1,7 @@
 ﻿
 namespace Universe.Core.Contracts.CourseOffering;
 
-public record CourseOfferingForExamsResponse (
+public record CourseOfferingForExamsResponse(
     Guid Id,
     string CouresName,
     string CouresCode,

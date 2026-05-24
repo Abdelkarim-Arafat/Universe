@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Abstractions;
 
 namespace Universe.Core.Errors;
 
 public class StudyLoadRuleErrors
 {
-    public static readonly Error OverLabedExist = 
+    public static readonly Error OverLabedExist =
         new("StudyLoadRule.OverLabedExist",
             "The provided study load rule overlaps with an existing rule.",
             StatusCodes.Status409Conflict);

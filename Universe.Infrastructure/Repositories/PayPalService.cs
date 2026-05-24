@@ -1,17 +1,10 @@
-﻿using Mapster;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
-using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
 using Universe.Core.Abstractions.Options;
 using Universe.Core.Contracts.PayPal;
-using Universe.Core.Enums;
 using Universe.Core.Interfaces;
-using static System.Net.WebRequestMethods;
 
 namespace Universe.Infrastructure.Repositories;
 
@@ -27,7 +20,7 @@ public class PayPalService(HttpClient _httpClient, IOptions<PayPalSettings> payP
 
         var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{secret}"));
 
-        var request = new HttpRequestMessage(HttpMethod.Post , $"{_payPalSettings.BaseUrl}/v1/oauth2/token");
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{_payPalSettings.BaseUrl}/v1/oauth2/token");
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", auth);
 
         request.Content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
@@ -81,8 +74,8 @@ public class PayPalService(HttpClient _httpClient, IOptions<PayPalSettings> payP
                 cancel_url = "https://playful-torrone-6e1691.netlify.app/student/services"
             }
         };
-        
-        var request = new HttpRequestMessage(HttpMethod.Post , $"{_payPalSettings.BaseUrl}/v2/checkout/orders");
+
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{_payPalSettings.BaseUrl}/v2/checkout/orders");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         request.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
 
@@ -99,21 +92,21 @@ public class PayPalService(HttpClient _httpClient, IOptions<PayPalSettings> payP
 
         foreach (var item in links)
         {
-            if(item.GetProperty("rel").GetString() == "approve")
+            if (item.GetProperty("rel").GetString() == "approve")
             {
                 approval = item.GetProperty("href").GetString()!;
                 break;
             }
         }
 
-        return new CreateOrderResponse (id, approval);
+        return new CreateOrderResponse(id, approval);
     }
 
     public async Task CaptureOrderAsync(string orderId)
     {
         var token = await GetAccessToken();
 
-        var request = new HttpRequestMessage (
+        var request = new HttpRequestMessage(
             HttpMethod.Post,
             $"{_payPalSettings.BaseUrl}/v2/checkout/orders/{orderId}/capture"
         );
@@ -142,7 +135,7 @@ public class PayPalService(HttpClient _httpClient, IOptions<PayPalSettings> payP
     {
         var token = await GetAccessToken();
 
-        var request = new HttpRequestMessage (
+        var request = new HttpRequestMessage(
             HttpMethod.Post,
             $"{_payPalSettings.BaseUrl}/v2/payments/captures/{captureId}/refund"
         );
@@ -150,8 +143,15 @@ public class PayPalService(HttpClient _httpClient, IOptions<PayPalSettings> payP
         request.Headers.Authorization =
             new AuthenticationHeaderValue("Bearer", token);
 
+        request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+
         var response = await _httpClient.SendAsync(request);
 
-        return response.IsSuccessStatusCode;
+        var body = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"PayPal Refund Failed: {response.StatusCode} - {body}");
+
+        return true;
     }
 }

@@ -1,7 +1,4 @@
-﻿
-using Universe.Core.Interfaces;
-
-namespace Universe.Application.StudyLoadRuleServices.Commands.RemoveStudyLoadRule;
+﻿namespace Universe.Application.StudyLoadRuleServices.Commands.RemoveStudyLoadRule;
 
 internal class RemoveStudyLoadRuleCommandHandler(
     IUnitOfWork unitOfWork

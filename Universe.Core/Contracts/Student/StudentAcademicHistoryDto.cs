@@ -5,10 +5,10 @@ public record StudentAcademicHistoryDto(
 );
 
 public record StudentSemesterRecord(
-    Guid  SemesterId,
+    Guid SemesterId,
     string SemesterName,
     string AcademicYearName,
-    DateOnly SemesterStartDate,  
+    DateOnly SemesterStartDate,
     IEnumerable<CourseDetailsDto> Courses
 );
 

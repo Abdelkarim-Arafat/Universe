@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Universe.Core.Entities.Core;
 using Universe.Core.Interfaces.Repositories;
 using Universe.Infrastructure.Persistence;
@@ -12,11 +8,11 @@ namespace Universe.Infrastructure.Repositories;
 public class GenericRepository<T>(ApplicationDbContext context) : IGenericRepository<T> where T : BaseEntity
 {
     protected readonly ApplicationDbContext _context = context;
-    public async Task AddAsync(T entity , CancellationToken cancellationToken)
-        => await _context.Set<T>().AddAsync(entity , cancellationToken);
+    public async Task AddAsync(T entity, CancellationToken cancellationToken)
+        => await _context.Set<T>().AddAsync(entity, cancellationToken);
 
-    public async Task AddRangeAsync(IEnumerable<T> entity , CancellationToken cancellationToken)
-        => await _context.AddRangeAsync(entity , cancellationToken);
+    public async Task AddRangeAsync(IEnumerable<T> entity, CancellationToken cancellationToken)
+        => await _context.AddRangeAsync(entity, cancellationToken);
     public IQueryable<T> GetQueryable()
         => _context.Set<T>().Where(x => !x.IsDeleted).AsQueryable();
 

@@ -14,7 +14,7 @@ public class GetCourseOfferingAssessmentsQueryHandler(
     {
         if (!await _unitOfWork.CourseOfferingRepository.IsExistAsync(request.CourseOfferingId, cancellationToken))
             return Result.Failure<List<CourseOfferingAssessmentResponse>>(CourseOfferingErrors.NotFound);
-      
+
         var assessments = await _unitOfWork.CourseOfferingRepository
             .GetCourseOfferingAssessmentsForViewAsync(request.CourseOfferingId, cancellationToken);
 

@@ -10,7 +10,6 @@ using Universe.Application.LevelServices.Commands.Update;
 using Universe.Application.LevelServices.Queries.GetAcademicProgramLevels;
 using Universe.Application.LevelServices.Queries.GetLevel;
 using Universe.Core.Constants;
-using Universe.Core.Entities;
 
 namespace Universe.Api.Controllers;
 

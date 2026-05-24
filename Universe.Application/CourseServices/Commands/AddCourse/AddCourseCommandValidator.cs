@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Universe.Application.CourseServices.Commands.AddCourse;
+﻿namespace Universe.Application.CourseServices.Commands.AddCourse;
 
 public class AddCourseCommandValidator : AbstractValidator<AddCourseCommand>
 {

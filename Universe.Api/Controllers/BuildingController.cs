@@ -46,7 +46,7 @@ public class BuildingController(IMediator mediator) : ControllerBase
     {
         var result = await _mediator.Send(request, cancellationToken);
 
-        
+
         return result.IsSuccess
             ? CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value)
             : result.ToProblem();
@@ -65,7 +65,7 @@ public class BuildingController(IMediator mediator) : ControllerBase
     [HttpPut("{id}")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> Update([FromBody] UpdateBuildingCommand command,[FromRoute] Guid id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Update([FromBody] UpdateBuildingCommand command, [FromRoute] Guid id, CancellationToken cancellationToken = default)
     {
         command = command with { Id = id };
         var result = await _mediator.Send(command, cancellationToken);

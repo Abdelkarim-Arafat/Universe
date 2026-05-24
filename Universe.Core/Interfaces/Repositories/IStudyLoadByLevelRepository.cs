@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Contracts.Level;
+﻿using Universe.Core.Contracts.Level;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 

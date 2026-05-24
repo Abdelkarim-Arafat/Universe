@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Application.AcademicProgramServices.Query.GetAcademicProgram;
-using Universe.Core.Contracts.AcademicProgram;
-using Universe.Core.Contracts.Service;
+﻿using Universe.Core.Contracts.Service;
 
 namespace Universe.Application.AcademicServiceServices.Queries.GetService;
 
@@ -18,7 +13,8 @@ public class GetServiceQueryHandler(
     {
         var response = await _cacheService.GetOrCreateAsync(
             key: ServiceCacheKeys.ById(request.ServiceId),
-            factory: async () => {
+            factory: async () =>
+            {
                 var service = await _unitOfWork.ServiceRepository
                     .GetByIdAsync(request.ServiceId, cancellationToken);
 

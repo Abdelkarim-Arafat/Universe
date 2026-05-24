@@ -24,7 +24,7 @@ public class GetExamTermCommitteesQueryHandler(
 
         if (!string.IsNullOrEmpty(filter.SearchValue))
             query = query.Where(com =>
-                com.CommitteeNumber.ToString().Contains(filter.SearchValue) );
+                com.CommitteeNumber.ToString().Contains(filter.SearchValue));
 
         if (!string.IsNullOrEmpty(filter.SortColumn))
             query = query.OrderBy($"{filter.SortColumn} {filter.SortDirection}");

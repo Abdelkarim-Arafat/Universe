@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Universe.Core.Enums;
+﻿using Universe.Core.Enums;
 
 namespace Universe.Application.AcademicServiceRequestServices.Commands.RejectServiceRequest;
 
@@ -22,9 +19,9 @@ internal class RejectServiceRequestCommandHandler(
             ) return Result.Failure(ServiceErrors.RequestNotFound);
 
         var payment = await _unitOfWork.PaymentRepository
-            .GetByIdAsync(serviceRequest.PaymentId , cancellationToken);
+            .GetByIdAsync(serviceRequest.PaymentId, cancellationToken);
 
-        if (await _paypal.RefundPaymentAsync(payment.OrderId) is false
+        if (await _paypal.RefundPaymentAsync(payment.CaptureId) is false
             ) return Result.Failure(PaymentErrors.FaildRefund);
 
         payment.Status = PaymentStatus.Refunded;
@@ -34,7 +31,7 @@ internal class RejectServiceRequestCommandHandler(
         await _unitOfWork.CompleteAsync(cancellationToken);
 
         await _cacheService.RemoveByTagAsync(ServiceRequestCacheKeys.Tags(request.CollegeId), cancellationToken);
-        
+
         return Result.Success();
     }
 }
