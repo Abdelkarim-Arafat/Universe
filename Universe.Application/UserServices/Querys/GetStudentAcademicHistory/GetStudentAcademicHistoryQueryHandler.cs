@@ -37,7 +37,10 @@ public class GetStudentAcademicHistoryQueryHandler(
             {
                 var gradePoints = letterDegrees
                    .FirstOrDefault(g => course.TotalDegree >= g.MinScore && course.TotalDegree <= g.MaxScore)?
-                   .MinGradePoint ?? 0; // لو شلتها هتضرب
+                   .MaxGradePoint ?? 0; // لو شلتها هتضرب
+
+                if (!course.IsPassed)
+                    gradePoints = 0;
 
                 var coursePoints = gradePoints * course.CreditHours;
 
@@ -65,11 +68,11 @@ public class GetStudentAcademicHistoryQueryHandler(
                 semesterPassedHourse,
                 letterDegrees.FirstOrDefault(ld => 
                    ld.MinGradePoint <= semesterGpa 
-                && ld.MaxGradePoint > semesterGpa)?.Code ?? "-",
+                && ld.MaxGradePoint >= semesterGpa)?.Code ?? "-",
 
                 letterDegrees.FirstOrDefault(ld => 
                    ld.MinGradePoint <= cumulativeGpa 
-                && ld.MaxGradePoint > cumulativeGpa)?.Code ?? "-",
+                && ld.MaxGradePoint >= cumulativeGpa)?.Code ?? "-",
                 courseDetails
             ));
         }
