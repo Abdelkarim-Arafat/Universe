@@ -18,7 +18,7 @@ public class GetStudentAcademicHistoryQueryHandler(
             .GetProgramGradesAsync(studentCurrentProgramId.Value, cancellationToken);
 
         var studentHistory = await _unitOfWork.EnrollmentRepository
-            .GetStudentAcademicHistoryAsync(request.StudentId, letterDegrees, cancellationToken);
+            .GetStudentAcademicHistoryAsync(request.StudentId, cancellationToken);
 
         var response = new List<StudentSemesterDataResponse>();
 
@@ -26,21 +26,28 @@ public class GetStudentAcademicHistoryQueryHandler(
 
         foreach (var semester in studentHistory.Semesters)
         {
+            var coursesDetails = semester.Courses;
 
-            var courseDetails = semester.Courses;
+            decimal semesterPoints = 0, semesterHours = 0, semesterPassedHours = 0;
 
-            decimal semesterPoints = 0;
-            decimal semesterHours = 0;
-            decimal semesterPassedHourse = 0;
-
-            foreach (var course in courseDetails)
+            for (int i = 0; i < coursesDetails.Count(); i++)
             {
-                var gradePoints = letterDegrees
-                   .FirstOrDefault(g => course.TotalDegree >= g.MinScore && course.TotalDegree <= g.MaxScore)?
-                   .MaxGradePoint ?? 0; // لو شلتها هتضرب
+                var course = coursesDetails[i];
+
+                var grade = letterDegrees
+                   .FirstOrDefault(g => course.TotalDegree >= g.MinScore && course.TotalDegree <= g.MaxScore);
+
+                if (grade == null)
+                    return Result.Failure<List<StudentSemesterDataResponse>>(GradeErrors.NotFound);
+
+                var gradePoints = grade.MaxGradePoint;
 
                 if (!course.IsPassed)
                     gradePoints = 0;
+
+                course = course with { LetterGrade = grade.Code };
+
+                coursesDetails[i] = course;
 
                 var coursePoints = gradePoints * course.CreditHours;
 
@@ -48,7 +55,7 @@ public class GetStudentAcademicHistoryQueryHandler(
 
                 semesterHours += course.CreditHours;
 
-                semesterPassedHourse += course.IsPassed ? course.CreditHours : 0;
+                semesterPassedHours += course.IsPassed ? course.CreditHours : 0;
             }
 
             decimal semesterGpa = semesterHours > 0 ? semesterPoints / semesterHours : 0;
@@ -65,15 +72,15 @@ public class GetStudentAcademicHistoryQueryHandler(
                 semesterGpa,
                 cumulativeGpa,
                 semesterHours,
-                semesterPassedHourse,
+                semesterPassedHours,
                 letterDegrees.FirstOrDefault(ld => 
                    ld.MinGradePoint <= semesterGpa 
-                && ld.MaxGradePoint >= semesterGpa)?.Code ?? "-",
+                && ld.MaxGradePoint >= semesterGpa)?.Code ?? "No Grade",
 
                 letterDegrees.FirstOrDefault(ld => 
                    ld.MinGradePoint <= cumulativeGpa 
-                && ld.MaxGradePoint >= cumulativeGpa)?.Code ?? "-",
-                courseDetails
+                && ld.MaxGradePoint >= cumulativeGpa)?.Code ?? "No Grade",
+                coursesDetails
             ));
         }
 

@@ -10,5 +10,5 @@ public record StudentSemesterDataResponse
    decimal EarnedHours,
    string SemesterGrade,
    string CumulativeGrade,
-   IEnumerable<CourseDetailsDto> Courses
+   List<CourseDetailsDto> Courses
 );

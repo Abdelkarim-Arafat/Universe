@@ -24,16 +24,15 @@ public class EnrollmentRepository(
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    // check later
-
     public async Task<StudentAcademicHistoryDto> GetStudentAcademicHistoryAsync(
       Guid studentId,
-      List<GradeResponse> letterDegrees,
       CancellationToken cancellationToken)
     {
         var studentEnrollments = await _context.Enrollments
             .AsNoTracking()
-            .Where(e => e.StudentId == studentId && !e.IsDeleted)
+            .Where(e => e.StudentId == studentId 
+                     && e.CourseOffering.Semester.IsResultAnnounced 
+                     &&!e.IsDeleted)
             .Select(e => new
             {
                 SemesterId = e.CourseOffering.Semester.Id,
@@ -72,11 +71,10 @@ public class EnrollmentRepository(
                     info.CourseName,
                     info.CreditHours,
                     info.TotalDegree,
-                     letterDegrees.FirstOrDefault(g =>
-                       info.TotalDegree >= g.MinScore && info.TotalDegree <= g.MaxScore)?.Code ?? "-",
+                    "",
                     info.Status == EnrollmentStatus.Passed
-                ))
-            ));
+                )).ToList()
+            )).ToList();
 
         return new StudentAcademicHistoryDto(semesterRecords);
     }

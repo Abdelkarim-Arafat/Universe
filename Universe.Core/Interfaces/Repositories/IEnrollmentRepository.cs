@@ -1,5 +1,4 @@
 ﻿using Universe.Core.Contracts.Enrollments;
-using Universe.Core.Contracts.Grades;
 using Universe.Core.Contracts.Student;
 using Universe.Core.Entities;
 
@@ -9,7 +8,7 @@ public interface IEnrollmentRepository
 {
     Task<StudentAcademicHistoryDto>
         GetStudentAcademicHistoryAsync
-        (Guid studentId, List<GradeResponse> letterDegrees, CancellationToken cancellationToken);
+        (Guid studentId, CancellationToken cancellationToken);
 
     Task<List<StudentExistingEnrollment>> GetStudentScheduleAsync
         (Guid studentId, Guid currentSemesterId, CancellationToken cancellationToken);

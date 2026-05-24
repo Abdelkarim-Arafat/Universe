@@ -9,10 +9,13 @@
 	<ItemGroup>
 	  <Compile Remove="RoomTypeServices\**" />
 	  <Compile Remove="TeachingSessionServices\Queries\Get\**" />
+	  <Compile Remove="UserServices\Querys\**" />
 	  <EmbeddedResource Remove="RoomTypeServices\**" />
 	  <EmbeddedResource Remove="TeachingSessionServices\Queries\Get\**" />
+	  <EmbeddedResource Remove="UserServices\Querys\**" />
 	  <None Remove="RoomTypeServices\**" />
 	  <None Remove="TeachingSessionServices\Queries\Get\**" />
+	  <None Remove="UserServices\Querys\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -22,10 +25,6 @@
 	<ItemGroup>
 		<None Include="RoleServices\Queries\GetAllRolesCommand.cs" />
 		<None Include="StudyLoadByLevelServices\Commands\AddStudyLoad\AddStudyLoadByLevelCommandValidator.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="UserServices\Querys\" />
 	</ItemGroup>
 
 	<ItemGroup>
