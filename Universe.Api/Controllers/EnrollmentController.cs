@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.EnrollmentServices.Commands.Update;
 using Universe.Application.EnrollmentServices.Queries.GetEnrollmentPage;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
@@ -14,13 +16,18 @@ public class EnrollmentController(IMediator mediator) : ControllerBase
 
     private readonly IMediator _mediator = mediator;
     [HttpGet]
-    public async Task<IActionResult> GetEnrollmentPage([FromQuery] Guid SemesterId, [FromQuery] Guid StudentId, [FromQuery] Guid LevelId, CancellationToken cancellationToken)
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor}")]
+    public async Task<IActionResult>
+        GetEnrollmentPage([FromQuery] Guid SemesterId, [FromQuery] Guid StudentId, [FromQuery] Guid LevelId, CancellationToken cancellationToken)
     {
         var query = new GetEnrollmentPageQuery(StudentId, SemesterId, LevelId);
         var result = await _mediator.Send(query, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpPut]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.AdminOrAdvisor}")]
     public async Task<IActionResult> Update(
         [FromBody] UpdateEnrollmentCommand command,
         [FromQuery] Guid StudentId, [FromQuery] Guid SemesterId, CancellationToken cancellationToken)

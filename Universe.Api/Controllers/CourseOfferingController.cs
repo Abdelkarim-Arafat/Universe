@@ -102,6 +102,8 @@ public class CourseOfferingController(IMediator mediator) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
     [HttpGet("{id:guid}/assessments")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisorOrStaff)]
     public async Task<IActionResult> GetCourseOfferingAssessments(
         [FromRoute] Guid id,
         CancellationToken cancellationToken)

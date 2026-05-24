@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
 using Universe.Application.Common;
 using Universe.Application.CourseOfferingExamServices.Commands.Create;
@@ -7,16 +9,19 @@ using Universe.Application.CourseOfferingExamServices.Commands.Delete;
 using Universe.Application.CourseOfferingExamServices.Commands.Update;
 using Universe.Application.CourseOfferingExamServices.Queries.Get;
 using Universe.Application.CourseOfferingExamServices.Queries.GetCourseExamCommittees;
+using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
 
 [Route("exam-terms/{examTermId:guid}/course-offering-exam")]
-[ApiController]
+[ApiController,Authorize]
 public class CourseOfferingExamController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{id:guid}")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
 
     public async Task<IActionResult> Get(
         [FromRoute] Guid id,
@@ -29,7 +34,9 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    public async Task<IActionResult> Add (
         [FromRoute] Guid examTermId,
         [FromQuery] Guid courseOfferingId,
         [FromBody] CreateCourseOfferingExamCommand request,
@@ -47,6 +54,8 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
 
     public async Task<IActionResult> Delete([FromRoute] Guid id,
         CancellationToken cancellationToken)
@@ -56,6 +65,8 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [EnableRateLimiting("WriteLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id,
         [FromBody] UpdateCourseOfferingExamCommand request,
@@ -70,7 +81,9 @@ public class CourseOfferingExamController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id:guid}/committees")]
-    public async Task<IActionResult> GetCourseCommittees(
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = $"{Roles.Admin} , {Roles.Staff}")]
+    public async Task<IActionResult> GetCourseExamCommittees(
         [FromRoute] Guid id,
         [FromQuery] FilterRequest filter,
         CancellationToken cancellationToken)
