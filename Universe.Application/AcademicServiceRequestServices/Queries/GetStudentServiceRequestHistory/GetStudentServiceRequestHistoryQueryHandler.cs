@@ -35,9 +35,15 @@ public class GetStudentServiceRequestHistoryQueryHandler(
                 var query = _unitOfWork.Repository<ServiceRequest>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(x => x.StudentId == Guid.Parse(userId))
-                    .OrderByDescending(x => x.CreatedAt)
-                    .Select(x => new ServiceRequestHistoryResponse(
+                    .Where(x => x.StudentId == Guid.Parse(userId));
+
+                if (!string.IsNullOrEmpty(filter.SearchValue))
+                    query = query.Where(x => x.Service.Name.Contains(filter.SearchValue));
+               
+                if (!string.IsNullOrEmpty(filter.SortColumn))
+                    query = query.OrderBy($"{filter.SortColumn} desc");
+
+                var sourse = query.Select(x => new ServiceRequestHistoryResponse(
                         x.Payment.Price,
                         x.Service.Name,
                         x.Student.Name,
@@ -48,7 +54,7 @@ public class GetStudentServiceRequestHistoryQueryHandler(
                     ));
 
                 return await PaginationList<ServiceRequestHistoryResponse>
-                    .CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
+                    .CreateAsync(sourse, filter.PageNumber, filter.PageSize, cancellationToken);
             },
             cancellationToken: cancellationToken
         );
