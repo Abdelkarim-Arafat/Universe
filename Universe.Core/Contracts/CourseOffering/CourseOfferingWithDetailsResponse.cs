@@ -16,5 +16,5 @@ public record CourseOfferingWithDetailsResponse(
     Guid SemesterId,
     Guid AcademicProgramId,
     Guid LevelId,
-    List<CourseOfferingAssessmentResponse> Assessments
+    List<AssessmentDto> Assessments
 );

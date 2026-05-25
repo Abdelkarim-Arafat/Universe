@@ -17,7 +17,7 @@ public interface ICourseOfferingRepository
         Guid semesterId,
         Guid levelId,
         CancellationToken cancellationToken);
-    Task<List<CourseOfferingAssessmentResponse>> GetCourseOfferingAssessmentsForViewAsync(Guid CourseOfferingId, CancellationToken cancellationToken);
+    Task<List<CourseOfferingAssessmentsResponse>> GetCourseOfferingAssessmentsForViewAsync(Guid CourseOfferingId, CancellationToken cancellationToken);
     Task<List<Guid>> GetStudentsIdsEnrolledInCourseAsync(Guid courseOfferingId, CancellationToken cancellationToken);
     Task<CourseOffering?> GetByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<CourseOfferingCustomDto?> GetCourseOfferingDataByAssessmentIdAsync(Guid courseOfferingAssessmentId, CancellationToken cancellationToken);

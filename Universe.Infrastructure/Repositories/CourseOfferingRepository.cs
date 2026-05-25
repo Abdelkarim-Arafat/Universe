@@ -76,11 +76,11 @@ public class CourseOfferingRepository(ApplicationDbContext context) : ICourseOff
         .Where(c => c.CourseOfferingId == CourseOfferingId && !c.IsDeleted)
         .ToListAsync(cancellationToken);
 
-    public async Task<List<CourseOfferingAssessmentResponse>> GetCourseOfferingAssessmentsForViewAsync
+    public async Task<List<CourseOfferingAssessmentsResponse>> GetCourseOfferingAssessmentsForViewAsync
         (Guid CourseOfferingId, CancellationToken cancellationToken)
        => await _context.CourseOfferings
        .Where(c => c.Id == CourseOfferingId && !c.IsDeleted)
-       .Select(c => new CourseOfferingAssessmentResponse(
+       .Select(c => new CourseOfferingAssessmentsResponse(
            c.Assessments
            .Where(a => !a.IsDeleted)
            .Select(a => new AssessmentDto(

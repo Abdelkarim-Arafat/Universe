@@ -3,7 +3,7 @@ using Universe.Core.Enums;
 
 namespace Universe.Core.Contracts.CourseOffering;
 
-public record CourseOfferingAssessmentResponse(
+public record CourseOfferingAssessmentsResponse(
     List<AssessmentDto> Assessments,
     decimal CourseTotalGrade
 );

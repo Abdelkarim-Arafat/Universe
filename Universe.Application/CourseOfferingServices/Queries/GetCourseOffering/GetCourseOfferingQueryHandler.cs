@@ -26,7 +26,31 @@ public class GetCourseOfferingQueryHandler(
                 var semester = await _unitOfWork.AcademicYearRepository
                         .GetSemesterByIdAsync(courseOffering.SemesterId, cancellationToken);
 
-                return (courseOffering).Adapt<CourseOfferingWithDetailsResponse>();
+                if (semester is null)
+                    return null;
+
+                return new CourseOfferingWithDetailsResponse
+                (
+                    courseOffering.Id,
+                    courseOffering.NumberOfGroups,
+                    courseOffering.CreditHours,
+                    courseOffering.TotalGrade,
+                    courseOffering.SuccessPercentage,
+                    courseOffering.IsOptional,
+                    courseOffering.OptionalGroupCode,
+                    courseOffering.IsIncludedInGpa,
+                    semester.Name,
+                    courseOffering.CourseId,
+                    semester.Id,
+                    courseOffering.AcademicProgramId,
+                    courseOffering.LevelId,
+                    courseOffering.Assessments.Select(ass => new AssessmentDto
+                    (
+                        ass.Id,
+                        ass.Type,
+                        ass.MaxScore
+                    )).ToList()
+                );
             },
             cancellationToken: cancellationToken
         );
