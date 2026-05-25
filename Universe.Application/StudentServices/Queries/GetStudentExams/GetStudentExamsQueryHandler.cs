@@ -57,6 +57,9 @@ public class GetStudentExamsQueryHandler(
                 Code = student.StudentCode
             }).FirstOrDefault();
 
-        return Result.Success(new StudentExamsResponse(studentInfo!.Name, studentInfo.Code, studentExams));
+        if (studentInfo == null)
+            return Result.Failure<StudentExamsResponse>(StudentErrors.UserNotFound);
+
+        return Result.Success(new StudentExamsResponse(studentInfo.Name, studentInfo.Code, studentExams));
     }
 }

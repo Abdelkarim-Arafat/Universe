@@ -285,7 +285,7 @@ public class UserRepository
         return studentsLevelDictionary;
     }
 
-    public async Task<IEnumerable<StudentExam>> GetStudentExamsTablesAsync(
+    public async Task<List<StudentExam>> GetStudentExamsTablesAsync(
     Guid studentId,
     List<Guid> currentCoursesIds,
     List<Guid> examTermsIds,
@@ -301,8 +301,8 @@ public class UserRepository
                 coe.Date,
                 coe.StartTime,
                 coe.EndTime,
-                CourseName = coe.CourseOffering.Course.Name,
-                CourseCode = coe.CourseOffering.Course.Code,
+                CourseName = coe.CourseOffering.Course.Name ?? "Unknown Course",
+                CourseCode = coe.CourseOffering.Course.Code ?? "N/A",
 
                 Seat = _context.ExamSeats
                     .Where(seat => !seat.IsDeleted
@@ -323,7 +323,7 @@ public class UserRepository
             .GroupBy(x => x.ExamType)
             .Select(group => new StudentExam
             (
-                group.Key.ToString(),
+                group.Key.ToString() ?? "Unkown Type",
                 group.Select(info => new StudentExamPerCourse(
                     info.Date,
                     info.CourseName,
@@ -333,8 +333,8 @@ public class UserRepository
                     info.Seat != null ? $"{info.Seat.RoomNumber} - {info.Seat.BuildingName}" : "No Place Assigned",
                     info.Seat?.SeatNumber ?? 0,
                     info.Seat?.CommitteeNumber ?? 0
-                ))
-            ));
+                )).ToList()
+            )).ToList();
 
         return result;
     }
