@@ -16,17 +16,11 @@ public class GetStudentServiceRequestHistoryQueryHandler(
         GetStudentServiceRequestHistoryQuery request,
         CancellationToken cancellationToken)
     {
-        var userId = _httpContext.HttpContext!.User
-            .FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        var userId = Guid.Parse(_httpContext.HttpContext!.User
+            .FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         var filter = request.Filter;
-
-        var cacheKey = ServiceRequestCacheKeys.StudentHistory(
-            Guid.Parse(userId),
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize);
+        var cacheKey = ServiceRequestCacheKeys.StudentHistory(userId, filter);
 
         var response = await _cacheService.GetOrCreateAsync(
             key: cacheKey,
@@ -35,7 +29,7 @@ public class GetStudentServiceRequestHistoryQueryHandler(
                 var query = _unitOfWork.Repository<ServiceRequest>()
                     .GetQueryable()
                     .AsNoTracking()
-                    .Where(x => x.StudentId == Guid.Parse(userId));
+                    .Where(x => x.StudentId == userId);
 
                 if (!string.IsNullOrEmpty(filter.SearchValue))
                     query = query.Where(x => x.Service.Name.Contains(filter.SearchValue));

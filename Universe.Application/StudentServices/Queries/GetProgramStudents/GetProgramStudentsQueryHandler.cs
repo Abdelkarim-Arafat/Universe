@@ -12,7 +12,7 @@ public class GetProgramStudentsQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = StudentCacheKeys.List(request.ProgramId, filter.SearchValue, filter.PageNumber, filter.PageSize);
+        var cacheKey = StudentCacheKeys.List(request.ProgramId, filter);
         var tags = StudentCacheKeys.Tags(request.ProgramId);
 
         var response = await _cacheService.GetOrCreateAsync(

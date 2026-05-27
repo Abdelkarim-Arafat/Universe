@@ -14,9 +14,7 @@ public class GetAcademicProgramsQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = AcademicProgramCacheKeys.List(request.CollegeId, filter.SearchValue,
-                        filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
-
+        var cacheKey = AcademicProgramCacheKeys.List(request.CollegeId, filter);
         var tags = AcademicProgramCacheKeys.Tags(request.CollegeId);
 
         var response = await _cacheService.GetOrCreateAsync(

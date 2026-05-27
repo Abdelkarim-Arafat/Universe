@@ -15,6 +15,10 @@ public class RemoveStaffCommandHandler(
 
         if (user is null) return Result.Failure(AuthErrors.UserNotFound);
 
+        if(await _userManager.Users
+            .AnyAsync(x => x.Id == request.Id && x.AdvisedStudents.Any(), cancellationToken)
+            ) return Result.Failure(StaffErrors.StaffHasAdvisedStudents);
+
         user.IsDeleted = true;
         user.DeletedAt = DateTime.UtcNow;
 

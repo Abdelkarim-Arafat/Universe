@@ -37,8 +37,8 @@ public class LoginCommandHandler(
             await _userManager.UpdateAsync(user);
 
             var response = new AuthResponse(
-                user.Id.ToString(),
-                user.CollegeId.ToString(),
+                user.Id,
+                user.CollegeId,
                 user.Name,
                 user.ImageUrl,
                 user.Email!,
@@ -47,7 +47,8 @@ public class LoginCommandHandler(
                 accesstoken,
                 ExpiryIn,
                 refreshToken,
-                refreshTokenExpiration);
+                refreshTokenExpiration
+            );
 
             return Result.Success(response);
         }

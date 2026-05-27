@@ -35,7 +35,7 @@ public class GetProgramExamsQueryHandler(
 
         var source = query.Select(x => x.Adapt<ExamTermResponse>());
 
-        var cacheKey = ExamTermCacheKeys.List(request.AcademicProgramId, filter.SearchValue, filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
+        var cacheKey = ExamTermCacheKeys.List(request.AcademicProgramId, filter);
         var tags = ExamTermCacheKeys.Tags(request.AcademicProgramId);
 
         var response = await _cacheService.GetOrCreateAsync(

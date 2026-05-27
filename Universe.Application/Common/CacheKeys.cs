@@ -7,17 +7,13 @@ public static class AcademicProgramCacheKeys
     public static string[] Tags(Guid collegeId) => new[] { $"{Prefix}:{collegeId}" };
     public static string List(
        Guid collegeId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{collegeId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -28,13 +24,11 @@ public static class StudentCacheKeys
     public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}" };
     public static string List(
        Guid programId,
-       string? searchValue,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{programId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 public static class ServiceCacheKeys
@@ -44,17 +38,13 @@ public static class ServiceCacheKeys
     public static string[] Tags(Guid collegeId) => new[] { $"{Prefix}:{collegeId}" };
     public static string List(
        Guid collegeId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{collegeId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -65,41 +55,28 @@ public static class ServiceRequestCacheKeys
         => $"{Prefix}:{id}";
     public static string[] Tags(Guid collegeId)
         => new[] { $"{Prefix}:{collegeId}" };
-    public static string PendingList(
-        Guid collegeId,
-        string? sortColumn,
-        string? sortDirection,
-        int pageNumber,
-        int pageSize)
+    public static string PendingList(Guid collegeId, FilterRequest filter)
     {
         return $"{Prefix}:{collegeId}:pending:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
-    public static string HistoryList(
-        Guid collegeId,
-        string? sortColumn,
-        string? sortDirection,
-        int pageNumber,
-        int pageSize)
+    public static string HistoryList( Guid collegeId, FilterRequest filter)
     {
         return $"{Prefix}:{collegeId}:history:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
     public static string StudentHistory(
         Guid studentId,
-        string? sortColumn,
-        string? sortDirection,
-        int pageNumber,
-        int pageSize)
+        FilterRequest filter)
     {
         return $"{Prefix}:student:{studentId}:history:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -123,17 +100,13 @@ public static class AcademicYearCacheKeys
     public static string[] Tags(Guid collegeId) => new[] { $"{Prefix}:{collegeId}" };
     public static string List(
        Guid collegeId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{collegeId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -145,17 +118,13 @@ public static class CourseCacheKeys
     public static string[] Tags(Guid collegeId) => new[] { $"{Prefix}:{collegeId}" };
     public static string List(
        Guid collegeId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{collegeId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -166,17 +135,13 @@ public static class StudyLoadByLevelCacheKeys
     public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}" };
     public static string List(
        Guid programId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{programId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -187,17 +152,13 @@ public static class LevelCacheKeys
     public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}" };
     public static string List(
        Guid programId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{programId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -208,17 +169,13 @@ public static class GradeCacheKeys
     public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}" };
     public static string List(
        Guid programId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{programId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -229,17 +186,13 @@ public static class RoomCacheKeys
     public static string[] Tags(Guid buildingId) => new[] { $"{Prefix}:{buildingId}" };
     public static string List(
        Guid buildingId,
-       string? searchValue,
-       string? sortColumn,
-       string? sortDirection,
-       int pageNumber,
-       int pageSize)
+       FilterRequest filter)
     {
         return $"{Prefix}:{buildingId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 
     public static string AvailableForCommittees(Guid buildingId, Guid examTermId, FilterRequest filter)
@@ -286,17 +239,13 @@ public static class CourseOfferingCacheKeys
     public static string ProgramCoursesForExams(
         Guid programId,
         Guid semesterId,
-        string? searchValue,
-        string? sortColumn,
-        string? sortDirection,
-        int pageNumber,
-        int pageSize)
+        FilterRequest filter)
     {
         return $"{Prefix}:{programId}:semester:{semesterId}:list:" +
-               $"{searchValue ?? "null"}:" +
-               $"{sortColumn ?? "null"}:" +
-               $"{sortDirection ?? "null"}:" +
-               $"{pageNumber}:{pageSize}";
+               $"{filter.SearchValue ?? "null"}:" +
+               $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SortDirection ?? "null"}:" +
+               $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
@@ -314,12 +263,14 @@ public static class AcademicEventCacheKeys
     public static string List(
         Guid programId,
         Guid semesterId,
-        string? sortColumn,
-        string? sortDirection,
-        int pageNumber,
-        int pageSize
+        FilterRequest filter
     ) =>
-        $"{Prefix}:{programId}:{semesterId}:{sortColumn}:{sortDirection}:{pageNumber}:{pageSize}";
+        $"{Prefix}:{programId}:" +
+        $"{semesterId}:" +
+        $"{filter.SearchValue ?? "null"}:" +
+        $"{filter.SortColumn ?? "null"}:" +
+        $"{filter.SortDirection ?? "null"}:" +
+        $"{filter.PageNumber}:{filter.PageSize}";
 
     public static string[] Tags(
         Guid programId,
@@ -337,20 +288,17 @@ public static class ExamCommitteeCacheKeys
 
     public static string List(
         Guid examTermId,
-        string? searchValue,
-        string? sortColumn,
-        string? sortDirection,
-        int pageNumber,
-        int pageSize
+        FilterRequest filter
     ) =>
-        $"{Prefix}:{examTermId}:{searchValue}:{sortColumn}:{sortDirection}:{pageNumber}:{pageSize}";
+        $"{Prefix}:" +
+        $"{examTermId}:" +
+        $"{filter.SearchValue ?? "null"}:" +
+        $"{filter.SortColumn ?? "null"}:" +
+        $"{filter.SortDirection ?? "null"}:" +
+        $"{filter.PageNumber}:" +
+        $"{filter.PageSize}";
 
-    public static string[] Tags(
-        Guid examTermId
-    ) =>
-    [
-        $"{Prefix}:{examTermId}"
-    ];
+    public static string[] Tags(Guid examTermId) => [$"{Prefix}:{examTermId}"];
 }
 
 public static class ExamTermCacheKeys
@@ -359,18 +307,15 @@ public static class ExamTermCacheKeys
 
     public static string List(
         Guid programId,
-        string? searchValue,
-        string? sortColumn,
-        string? sortDirection,
-        int pageNumber,
-        int pageSize
+        FilterRequest filter
     ) =>
-        $"{Prefix}:{programId}:{searchValue}:{sortColumn}:{sortDirection}:{pageNumber}:{pageSize}";
+        $"{Prefix}:" +
+        $"{programId}:" +
+        $"{filter.SearchValue ?? "null"}:" +
+        $"{filter.SortColumn ?? "null"}:" +
+        $"{filter.SortDirection ?? "null"}:" +
+        $"{filter.PageNumber}:" +
+        $"{filter.PageSize}";
 
-    public static string[] Tags(
-        Guid programId
-    ) =>
-    [
-        $"{Prefix}:{programId}"
-    ];
+    public static string[] Tags(Guid programId) =>[$"{Prefix}:{programId}"];
 }

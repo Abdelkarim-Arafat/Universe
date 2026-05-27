@@ -8,22 +8,12 @@ public class GetProgramGradesQueryHandler(IUnitOfWork unitOfWork, ICacheService 
 
     public async Task<Result<PaginationList<GradeResponse>>> Handle(GetProgramGradesQuery request, CancellationToken cancellationToken = default)
     {
-        var isAcademicProgramExist = await _unitOfWork.AcademicProgramRepository
-            .IsExistAsync(request.AcademicProgramId, cancellationToken);
-
-        if (!isAcademicProgramExist)
-            return Result.Failure<PaginationList<GradeResponse>>(AcademicProgramErrors.NotFound);
+        if (!(await _unitOfWork.AcademicProgramRepository
+            .IsExistAsync(request.AcademicProgramId, cancellationToken)
+            )) return Result.Failure<PaginationList<GradeResponse>>(AcademicProgramErrors.NotFound);
 
         var filter = request.Filter;
-
-        var cacheKey = GradeCacheKeys.List(
-            request.AcademicProgramId,
-            filter.SearchValue,
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize
-        );
+        var cacheKey = GradeCacheKeys.List(request.AcademicProgramId, filter);
 
 
         var tags = GradeCacheKeys.Tags(request.AcademicProgramId);

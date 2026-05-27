@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowedOrigins", policy =>
         policy.SetIsOriginAllowed(origin =>
             origin == "http://localhost:3000" ||
-            origin == "https://playful-torrone-6e1691.netlify.app"
+            origin == "https://heartfelt-lolly-d30443.netlify.app"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()

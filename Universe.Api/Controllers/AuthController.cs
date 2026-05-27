@@ -8,7 +8,9 @@ using Universe.Application.AuthServices.Commands.RevokeRefreshToken;
 using Universe.Application.AuthServices.Commands.SendResetPasswordCodeAsync;
 using Universe.Application.AuthServices.Commands.UpdateRefreshToken;
 using Universe.Application.AuthServices.Commands.VerificationResetPasswordCode;
+using Universe.Core.Constants;
 using Universe.Core.Contracts.Auth;
+using Universe.Core.Entities;
 namespace Universe.Api.Controllers;
 
 [Route("[controller]")]
@@ -28,7 +30,15 @@ public class AuthController(IMediator mediator) : ControllerBase
 
         SetTokensInCookie(result.Value);
 
-        return Ok(result.Value);
+        return Ok(new 
+        {
+            result.Value.Id,
+            result.Value.CollegeId,
+            result.Value.Name,
+            result.Value.ImageUrl,
+            result.Value.Email,
+            result.Value.Roles
+        });
     }
 
     [HttpPost("update-refresh-token")]
@@ -48,9 +58,9 @@ public class AuthController(IMediator mediator) : ControllerBase
             result.Value.Id,
             result.Value.CollegeId,
             result.Value.Name,
+            result.Value.ImageUrl,
             result.Value.Email,
-            result.Value.Roles,
-            result.Value.Permissions
+            result.Value.Roles
         });
     }
 

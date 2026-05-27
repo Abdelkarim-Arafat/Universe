@@ -22,7 +22,7 @@ public class RemoveStudentCommandHandler(
         user.IsDeleted = true;
         user.DeletedAt = DateTime.UtcNow;
 
-        _unitOfWork.Repository<Core.Entities.Student>().SoftDelete(user.Student);
+        _unitOfWork.Repository<Student>().SoftDelete(user.Student);
         await _unitOfWork.CompleteAsync(cancellationToken);
 
         await _cacheService.RemoveByTagAsync(StudentCacheKeys.Tags(request.ProgramId), cancellationToken);

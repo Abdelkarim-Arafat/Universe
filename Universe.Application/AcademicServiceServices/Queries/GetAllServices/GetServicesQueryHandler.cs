@@ -14,8 +14,7 @@ public class GetServicesQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = ServiceCacheKeys.List(request.CollegeId, filter.SearchValue,
-                        filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
+        var cacheKey = ServiceCacheKeys.List(request.CollegeId, filter);
 
         var tags = ServiceCacheKeys.Tags(request.CollegeId);
 

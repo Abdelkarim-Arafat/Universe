@@ -15,7 +15,7 @@ public class GetBuildingRoomsQueryHandler(
             return Result.Failure<PaginationList<RoomResponse>>(BuildingErrors.NotFound);
 
         var filter = request.filter;
-        var cacheKey = RoomCacheKeys.List(request.BuildingId, filter.SearchValue, filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
+        var cacheKey = RoomCacheKeys.List(request.BuildingId, filter);
         var tags = RoomCacheKeys.Tags(request.BuildingId);
 
         var response = await _cacheService.GetOrCreateAsync(

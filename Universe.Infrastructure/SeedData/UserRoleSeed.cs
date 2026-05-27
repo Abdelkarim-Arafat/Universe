@@ -28,7 +28,6 @@ public static class UserRoleSeed
         //new IdentityUserRole<Guid> { UserId = Guid.Parse("019e0b3a-fc8d-731a-a8b0-4c0c076cbbd5"), RoleId = RoleSeed.Student.Id },
         //new IdentityUserRole<Guid> { UserId = Guid.Parse("019e0b3a-fc8d-731a-a8b0-4c0d122b4ffd"), RoleId = RoleSeed.Student.Id },
 
-
         // Staff
         new IdentityUserRole<Guid> { UserId = Guid.Parse("019e0c87-1cbb-74c7-884a-9916db0669c4"), RoleId = RoleSeed.Staff.Id },
         new IdentityUserRole<Guid> { UserId = Guid.Parse("019e0c87-1cbb-74c7-884a-9916db0669c4"), RoleId = RoleSeed.AcademicAdvising.Id },

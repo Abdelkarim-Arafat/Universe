@@ -16,9 +16,7 @@ public class GetAcademicYearsQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = AcademicYearCacheKeys.List(request.CollegeId, filter.SearchValue,
-                        filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
-
+        var cacheKey = AcademicYearCacheKeys.List(request.CollegeId, filter);
         var tags = AcademicYearCacheKeys.Tags(request.CollegeId);
 
         var response = await _cacheService.GetOrCreateAsync(

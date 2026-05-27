@@ -4,12 +4,10 @@ using System.Security.Claims;
 namespace Universe.Application.UserServices.Commands.UpdateImage;
 
 internal class UpdateImageCommandHandler(
-    IHttpContextAccessor httpContext,
     IImageService imageService,
     UserManager<ApplicationUser> userManager
     ) : IRequestHandler<UpdateImageCommand, Result<string>>
 {
-    private readonly IHttpContextAccessor _httpContext = httpContext;
     private readonly IImageService _imageService = imageService;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
 
@@ -18,11 +16,7 @@ internal class UpdateImageCommandHandler(
         if (request.NewImageFile.Length == 0)
             return Result.Failure<string>(FileErrors.EmptyFile);
 
-        var claims = _httpContext.HttpContext?.User;
-
-        var userId = claims?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        var user = await _userManager.FindByIdAsync(userId!);
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
 
         if (user is null || user.IsDeleted) return Result.Failure<string>(AuthErrors.UserNotFound);
 

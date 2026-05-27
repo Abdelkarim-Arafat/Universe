@@ -16,13 +16,7 @@ public class GetAllServiceRequestsQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = ServiceRequestCacheKeys.PendingList(
-            request.CollegeId,
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize);
-
+        var cacheKey = ServiceRequestCacheKeys.PendingList(request.CollegeId, filter);
         var tags = ServiceRequestCacheKeys.Tags(request.CollegeId);
 
         var response = await _cacheService.GetOrCreateAsync(

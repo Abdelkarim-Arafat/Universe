@@ -1,8 +1,8 @@
 ﻿namespace Universe.Core.Contracts.Auth;
 
 public record AuthResponse(
-    string Id,
-    string CollegeId,
+    Guid Id,
+    Guid CollegeId,
     string Name,
     string? ImageUrl,
     string? Email,

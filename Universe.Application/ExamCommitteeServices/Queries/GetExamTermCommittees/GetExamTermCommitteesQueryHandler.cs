@@ -38,7 +38,7 @@ public class GetExamTermCommitteesQueryHandler(
                   : "No Place"
                   ));
 
-        var cacheKey = ExamCommitteeCacheKeys.List(request.ExamTermId, filter.SearchValue, filter.SortColumn, filter.SortDirection, filter.PageNumber, filter.PageSize);
+        var cacheKey = ExamCommitteeCacheKeys.List(request.ExamTermId, filter);
         var tags = ExamCommitteeCacheKeys.Tags(request.ExamTermId);
 
         var response = await _cacheService.GetOrCreateAsync(

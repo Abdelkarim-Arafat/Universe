@@ -4,7 +4,8 @@ namespace Universe.Application.AuthServices.Commands.UpdateRefreshToken;
 public class UpdateRefreshTokenCommandHandler(
     IUnitOfWork unitOfWork,
     IJwtProvider jwtProvider,
-    UserManager<ApplicationUser> userManager) : IRequestHandler<UpdateRefreshTokenCommand, Result<AuthResponse>>
+    UserManager<ApplicationUser> userManager
+    ) : IRequestHandler<UpdateRefreshTokenCommand, Result<AuthResponse>>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IJwtProvider _jwtProvider = jwtProvider;
@@ -49,8 +50,8 @@ public class UpdateRefreshTokenCommandHandler(
         await _userManager.UpdateAsync(user);
 
         var response = new AuthResponse(
-            user.Id.ToString(),
-            user.CollegeId.ToString(),
+            user.Id,
+            user.CollegeId,
             user.Name,
             user.ImageUrl,
             user.Email,
@@ -59,7 +60,8 @@ public class UpdateRefreshTokenCommandHandler(
             newToken,
             expiresIn,
             newRefreshToken,
-            refreshTokenExpiration);
+            refreshTokenExpiration
+        );
 
         return Result.Success(response);
     }

@@ -16,12 +16,7 @@ public class GetServiceRequestHistoryQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = ServiceRequestCacheKeys.HistoryList(
-            request.CollegeId,
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize);
+        var cacheKey = ServiceRequestCacheKeys.HistoryList(request.CollegeId, request.Filter);
 
         var tags = ServiceRequestCacheKeys.Tags(request.CollegeId);
 

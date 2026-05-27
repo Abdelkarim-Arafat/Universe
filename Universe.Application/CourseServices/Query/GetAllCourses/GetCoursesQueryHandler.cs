@@ -14,14 +14,7 @@ public class GetCoursesQueryHandler(
     {
         var filter = request.filter;
 
-        var cacheKey = CourseCacheKeys.List(
-            request.CollegeId,
-            filter.SearchValue,
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize);
-
+        var cacheKey = CourseCacheKeys.List(request.CollegeId, filter);
         var tags = CourseCacheKeys.Tags(request.CollegeId);
 
         var response = await _cacheService.GetOrCreateAsync(

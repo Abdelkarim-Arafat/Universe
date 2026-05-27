@@ -19,14 +19,7 @@ public class GetAcademicProgramLevelsQueryHandler(
 
         var filter = request.Filter;
 
-        var cacheKey = LevelCacheKeys.List(
-            request.ProgramId,
-            filter.SearchValue,
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize);
-
+        var cacheKey = LevelCacheKeys.List(request.ProgramId, filter);
         var tags = LevelCacheKeys.Tags(request.ProgramId);
 
         var response = await _cacheService.GetOrCreateAsync(

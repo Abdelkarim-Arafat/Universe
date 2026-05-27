@@ -14,15 +14,7 @@ public class GetStudyLoadByLevelsQueryHandler(
     {
         var filter = request.Filter;
 
-        var cacheKey = StudyLoadByLevelCacheKeys.List(
-            request.ProgramId,
-            filter.SearchValue,
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize
-        );
-
+        var cacheKey = StudyLoadByLevelCacheKeys.List(request.ProgramId, filter);
         var tags = StudyLoadByLevelCacheKeys.Tags(request.ProgramId);
 
         var response = await _cacheService.GetOrCreateAsync(

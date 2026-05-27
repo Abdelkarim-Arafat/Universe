@@ -26,6 +26,7 @@ using Universe.Application.StudentServices.Queries.GetStudentGradesInCourse;
 using Universe.Application.StudentServices.Queries.GetStudentGraduationDetails;
 using Universe.Application.StudentServices.Queries.GetStudentSchedule;
 using Universe.Application.StudentServices.Queries.GetStudentsWithoutAdvisor;
+using Universe.Core.Abstractions;
 using Universe.Core.Constants;
 
 namespace Universe.Api.Controllers;
@@ -35,7 +36,7 @@ namespace Universe.Api.Controllers;
 public class StudentController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-    public Guid GetUserId() => Guid.Parse(User.GetUserId()!);
+    private Guid GetUserId() => Guid.Parse(User.GetUserId()!);
 
 
     [HttpPatch("{studentId:guid}/change-program")]
@@ -80,7 +81,7 @@ public class StudentController(IMediator mediator) : ControllerBase
     [HttpPost("")]
     [EnableRateLimiting("WriteLimiter")]
     [Authorize(Roles = Roles.AdminOrAdvisor)]
-    public async Task<IActionResult> RegisterStudent(
+    public async Task<IActionResult> RegisterStudent (
         [FromQuery] Guid collegeId,
         [FromQuery] Guid academicProgramId,
         [FromBody] RegisterStudentCommand request,
@@ -150,13 +151,12 @@ public class StudentController(IMediator mediator) : ControllerBase
         [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
+        var resolvedId = ResolveUserId(studentId);
+        if (!resolvedId.IsSuccess) return resolvedId.ToProblem();
 
-        var result = await _mediator.Send(new GetContactDataQuery(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetContactDataQuery(resolvedId.Value), cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpGet("parent-data")]
@@ -166,13 +166,12 @@ public class StudentController(IMediator mediator) : ControllerBase
        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
+        var resolvedId = ResolveUserId(studentId);
+        if (!resolvedId.IsSuccess) return resolvedId.ToProblem();
 
-        var result = await _mediator.Send(new GetParentDataQuery(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetParentDataQuery(resolvedId.Value), cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpGet("military-data")]
@@ -182,13 +181,12 @@ public class StudentController(IMediator mediator) : ControllerBase
        [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
+        var resolvedId = ResolveUserId(studentId);
+        if (!resolvedId.IsSuccess) return resolvedId.ToProblem();
 
-        var result = await _mediator.Send(new GetMilitaryDataQuery(studentId!.Value), cancellationToken);
+        var result = await _mediator.Send(new GetMilitaryDataQuery(resolvedId.Value), cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpGet("personal-data")]
@@ -198,12 +196,12 @@ public class StudentController(IMediator mediator) : ControllerBase
         [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
-        var result = await _mediator.Send(new GetPersonalDataQuery(studentId!.Value), cancellationToken);
+        var resolvedId = ResolveUserId(studentId);
+        if (!resolvedId.IsSuccess) return resolvedId.ToProblem();
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        var result = await _mediator.Send(new GetPersonalDataQuery(resolvedId.Value), cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpGet("previous-qualification-data")]
@@ -213,12 +211,12 @@ public class StudentController(IMediator mediator) : ControllerBase
         [FromQuery] Guid? studentId,
         CancellationToken cancellationToken)
     {
-        if (User.IsInRole("Student")) studentId = GetUserId();
-        var result = await _mediator.Send(new GetPreviousQualificationDataQuery(studentId!.Value), cancellationToken);
+        var resolvedId = ResolveUserId(studentId);
+        if (!resolvedId.IsSuccess) return resolvedId.ToProblem();
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        var result = await _mediator.Send(new GetPreviousQualificationDataQuery(resolvedId.Value), cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
 
@@ -234,9 +232,7 @@ public class StudentController(IMediator mediator) : ControllerBase
 
         var result = await _mediator.Send(request, cancellationToken);
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPut("parent-data")]
@@ -338,5 +334,21 @@ public class StudentController(IMediator mediator) : ControllerBase
     {
         var result = await _mediator.Send(new GetStudentGradesInCourseQuery(GetUserId(), courseOfferingId), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+
+    private Result<Guid> ResolveUserId(Guid? userId)
+    {
+        if (User.IsInRole(Roles.Student))
+            return Result.Success(GetUserId());
+
+        if (userId is null)
+            return Result.Failure<Guid>(new Error(
+                code: "User.IdRequired",
+                message: "UserId is required for admin operations.",
+                statusCode: StatusCodes.Status400BadRequest
+            ));
+
+        return Result.Success(userId.Value);
     }
 }

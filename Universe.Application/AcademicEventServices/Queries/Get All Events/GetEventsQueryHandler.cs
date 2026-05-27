@@ -14,15 +14,7 @@ public class GetEventsQueryHandler(
     {
         var filter = request.FilterRequest;
 
-        var cacheKey = AcademicEventCacheKeys.List(
-            request.ProgramId,
-            request.SemesterId,
-            filter.SortColumn,
-            filter.SortDirection,
-            filter.PageNumber,
-            filter.PageSize
-        );
-
+        var cacheKey = AcademicEventCacheKeys.List(request.ProgramId, request.SemesterId, filter);
         var tags = AcademicEventCacheKeys.Tags(request.ProgramId, request.SemesterId);
 
         var response = await _cacheService.GetOrCreateAsync(
@@ -31,6 +23,7 @@ public class GetEventsQueryHandler(
             {
                 var query = _unitOfWork.Repository<AcademicEvent>()
                     .GetQueryable()
+                    .AsNoTracking()
                     .Where(x =>
                         x.ProgramId == request.ProgramId &&
                         x.SemesterId == request.SemesterId
