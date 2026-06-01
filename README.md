@@ -6,7 +6,7 @@
 
 ### Enterprise University Management System
 
-A comprehensive, cloud-ready platform for digitalizing and streamlining academic and administrative operations in higher education institutions.
+A comprehensive university management platform designed to digitalize and streamline academic and administrative operations within higher education institutions.
 
 [![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-Latest-239120?style=flat-square&logo=csharp)](https://learn.microsoft.com/en-us/dotnet/csharp/)
