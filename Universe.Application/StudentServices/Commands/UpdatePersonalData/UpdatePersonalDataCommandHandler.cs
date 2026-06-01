@@ -26,7 +26,7 @@ public class UpdatePersonalDataCommandHandler(
 
         await _unitOfWork.CompleteAsync(cancellationToken);
 
-        await _cacheService.RemoveByTagAsync(StudentCacheKeys.Tags(request.ProgramId), cancellationToken);
+        await _cacheService.RemoveByTagAsync(StudentCacheKeys.ProgramTag(request.ProgramId), cancellationToken);
 
         return Result.Success(student.Adapt<PersonalDataResponse>());
     }

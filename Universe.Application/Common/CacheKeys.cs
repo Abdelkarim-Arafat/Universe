@@ -20,8 +20,10 @@ public static class AcademicProgramCacheKeys
 public static class StudentCacheKeys
 {
     private static readonly string Prefix = "students";
+    public static string[] Tags() => new[] { $"{Prefix}:all" };
     public static string ById(Guid id) => $"{Prefix}:{id}";
-    public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}" };
+    public static string[] ProgramTag(Guid programId) => new[] { $"{Prefix}:program:{programId}" };
+    public static string[] Tags(Guid programId) => new[] { $"{Prefix}:{programId}", $"{Prefix}:all" };
     public static string List(
        Guid programId,
        FilterRequest filter)
@@ -65,6 +67,7 @@ public static class ServiceRequestCacheKeys
     public static string HistoryList( Guid collegeId, FilterRequest filter)
     {
         return $"{Prefix}:{collegeId}:history:" +
+               $"{filter.SearchValue ?? "null"}:" +
                $"{filter.SortColumn ?? "null"}:" +
                $"{filter.SortDirection ?? "null"}:" +
                $"{filter.PageNumber}:{filter.PageSize}";
@@ -74,12 +77,46 @@ public static class ServiceRequestCacheKeys
         FilterRequest filter)
     {
         return $"{Prefix}:student:{studentId}:history:" +
-               $"{filter.SortColumn ?? "null"}:" +
+            $"{filter.SortColumn ?? "null"}:" +
+               $"{filter.SearchValue ?? "null"}:" +
                $"{filter.SortDirection ?? "null"}:" +
                $"{filter.PageNumber}:{filter.PageSize}";
     }
 }
 
+public static class MessageCacheKeys
+{
+    private static readonly string Prefix = "messages";
+
+    public static string ById(Guid messageId, Guid userId)
+        => $"{Prefix}:details:{messageId}:{userId}";
+
+    public static string[] Tags(Guid userId)
+        => [$"{Prefix}:{userId}"];
+
+    public static string Inbox(
+        Guid userId,
+        FilterRequest filter)
+        => $"{Prefix}:inbox:" +
+        $"{userId}:" +
+        $"{filter.PageNumber}:" +
+        $"{filter.PageSize}:" +
+        $"{filter.SearchValue ?? "null"}";
+}
+public static class NotificationCacheKeys
+{
+    private static readonly string Prefix = "notifications";
+
+    public static string[] Tags(Guid userId) => [$"{Prefix}:{userId}"];
+
+    public static string List(
+        Guid userId,
+        FilterRequest filter)
+        => $"{Prefix}:" +
+        $"{userId}:" +
+        $"{filter.PageNumber}:" +
+        $"{filter.PageSize}:";
+}
 
 public static class SessionCacheKeys
 {

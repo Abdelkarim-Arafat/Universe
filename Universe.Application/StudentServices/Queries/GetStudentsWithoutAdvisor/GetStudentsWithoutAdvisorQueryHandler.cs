@@ -40,7 +40,8 @@ public class GetStudentsWithoutAdvisorQueryHandler(
             x.Student.Name,
             x.Student.StudentCode,
             x.Student.NationalIdOrPassport,
-            x.Student.Gender
+            x.Student.Gender,
+            x.Student.ApplicationUser.ImageUrl
         ));
 
         var response = await PaginationList<StudentResponse>

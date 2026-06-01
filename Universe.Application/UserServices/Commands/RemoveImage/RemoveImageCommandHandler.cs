@@ -5,11 +5,13 @@ namespace Universe.Application.UserServices.Commands.RemoveImage;
 
 internal class RemoveImageCommandHandler(
     IImageService imageService,
-    UserManager<ApplicationUser> userManager
+    UserManager<ApplicationUser> userManager,
+    ICacheService cacheService
     ) : IRequestHandler<RemoveImageCommand, Result>
 {
     private readonly IImageService _imageService = imageService;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(RemoveImageCommand request, CancellationToken cancellationToken)
     {
@@ -25,6 +27,8 @@ internal class RemoveImageCommandHandler(
         user.ImageUrl = null;
 
         await _userManager.UpdateAsync(user);
+
+        await _cacheService.RemoveByTagAsync(StudentCacheKeys.Tags(), cancellationToken);
 
         return Result.Success();
     }

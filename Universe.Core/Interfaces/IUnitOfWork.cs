@@ -28,6 +28,7 @@ public interface IUnitOfWork : IAsyncDisposable
     IEnrollmentRepository EnrollmentRepository { get; }
     IStudentAssessmentRepository StudentAssessmentRepository { get; }
     IExamRepository ExamRepository { get; }
+    INotificationRepository NotificationRepository { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);
     Task<IDbContextTransaction> BeginTransactionIsolatedAsync(CancellationToken cancellationToken);
 }

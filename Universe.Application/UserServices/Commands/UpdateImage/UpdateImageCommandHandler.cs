@@ -5,10 +5,12 @@ namespace Universe.Application.UserServices.Commands.UpdateImage;
 
 internal class UpdateImageCommandHandler(
     IImageService imageService,
+    ICacheService cacheService,
     UserManager<ApplicationUser> userManager
     ) : IRequestHandler<UpdateImageCommand, Result<string>>
 {
     private readonly IImageService _imageService = imageService;
+    private readonly ICacheService _cacheService = cacheService;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     public async Task<Result<string>> Handle(UpdateImageCommand request, CancellationToken cancellationToken)
@@ -28,6 +30,8 @@ internal class UpdateImageCommandHandler(
         user.ImageUrl = imageUrl;
 
         await _userManager.UpdateAsync(user);
+
+        await _cacheService.RemoveByTagAsync(StudentCacheKeys.Tags(), cancellationToken);
 
         return Result.Success(imageUrl);
     }

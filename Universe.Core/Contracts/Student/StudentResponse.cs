@@ -7,5 +7,6 @@ public record StudentResponse(
     string Name,
     string StudentCode,
     string NationalIdOrPassport,
-    Gender? Gender
+    Gender? Gender,
+    string? ImageUrl
 );

@@ -1,8 +1,12 @@
 ﻿namespace Universe.Application.StudentServices.Commands.ChangeStudentProgram;
 
-public class ChangeStudentProgramCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<ChangeStudentProgramCommand, Result>
+public class ChangeStudentProgramCommandHandler(
+    IUnitOfWork unitOfWork,
+    ICacheService cacheService
+    ) : IRequestHandler<ChangeStudentProgramCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result> Handle(ChangeStudentProgramCommand request, CancellationToken cancellationToken)
     {
@@ -44,6 +48,10 @@ public class ChangeStudentProgramCommandHandler(IUnitOfWork unitOfWork) : IReque
         }
 
         await _unitOfWork.CompleteAsync(cancellationToken);
+
+        await _cacheService.RemoveByTagAsync(StudentCacheKeys.ProgramTag(currentProgram.AcademicProgramId), cancellationToken);
+        await _cacheService.RemoveByTagAsync(StudentCacheKeys.ProgramTag(request.NewProgramId), cancellationToken);
+
         return Result.Success();
     }
 }

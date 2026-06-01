@@ -5,12 +5,13 @@ namespace Universe.Application.PaymentService.Commands.PayPalWebhook;
 
 internal class PayPalWebhookHandler(
     IUnitOfWork unitOfWork,
-    IPayPalService payPalService
+    IPayPalService payPalService,
+    INotificationRealtimeService notificationRealtimeService
     ) : IRequestHandler<PayPalWebhookCommand>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPayPalService _payPalService = payPalService;
-
+    private readonly INotificationRealtimeService _notificationRealtimeService = notificationRealtimeService;
     public async Task Handle(PayPalWebhookCommand request, CancellationToken cancellationToken)
     {
         var json = JsonDocument.Parse(request.Payload);

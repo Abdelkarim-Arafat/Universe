@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Universe.Api.Extensions;
+using Universe.Application.AcadimicYearAndSemestersServices.Queries.GetResultAnnouncementStatus;
 using Universe.Application.Common;
 using Universe.Application.ControlServices.Commands.ToggleAnnounceResult;
 using Universe.Application.ControlServices.Commands.ToggleCourseOfferingControl;
@@ -78,6 +79,16 @@ public class ControlController(IMediator mediator) : ControllerBase
         return result.IsSuccess
             ? Ok(result.Value)
             : result.ToProblem();
+    }
+
+    [HttpGet("result-announce-status")]
+    [EnableRateLimiting("ReadLimiter")]
+    [Authorize(Roles = Roles.AdminOrAdvisor)]
+    public async Task<IActionResult> GetResultAnnounceStatus([FromQuery] Guid semesterId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetResultAnnouncementStatusQuery(semesterId), cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
     [HttpPatch("toggle-announce-result")]

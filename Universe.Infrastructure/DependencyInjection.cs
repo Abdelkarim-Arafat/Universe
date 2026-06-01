@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,8 @@ using Universe.Infrastructure.Auth;
 using Universe.Infrastructure.Messaging.Email;
 using Universe.Infrastructure.Persistence;
 using Universe.Infrastructure.Repositories;
+using Universe.Infrastructure.SignalR.Common;
+using Universe.Infrastructure.SignalR.Services;
 
 
 namespace Universe.Infrastructure;
@@ -45,6 +48,10 @@ public static class InfrastructureDependences
         services.AddScoped<IImageService, CloudinaryService>();
 
         services.AddScoped<ICacheService, HybridCacheService>();
+
+        services.AddScoped<IMessageRealtimeService, MessageRealtimeService>();
+        services.AddScoped<INotificationRealtimeService, NotificationRealtimeService>();
+        services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
         services.AddFluentValidationConfig();
         services.AddBackgroundJobsConfig(configuration);

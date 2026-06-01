@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Universe.Api.ExceptionHandler;
 using Universe.Infrastructure;
+using Universe.Infrastructure.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +29,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowedOrigins", policy =>
         policy.SetIsOriginAllowed(origin =>
             origin == "http://localhost:3000" ||
-            origin == "https://heartfelt-lolly-d30443.netlify.app"
+            origin == "https://univers-nine.vercel.app"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
@@ -99,6 +100,8 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddInfrastructureDependences(builder.Configuration);
 builder.Services.AddApplicationsDependences(builder.Configuration);
 
+builder.Services.AddSignalR();
+
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
@@ -142,6 +145,9 @@ app.UseHangfireDashboard("/jobs", new DashboardOptions
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<MessageHub>("/hubs/messages");
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.MapControllers();
 

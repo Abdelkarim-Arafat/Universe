@@ -1,6 +1,7 @@
 ﻿using Universe.Application.AcademicServiceRequestServices.Queries.GetServiceRequestHistory;
 using Universe.Core.Contracts.ServiceRequest;
 using Universe.Core.Enums;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class GetServiceRequestHistoryQueryHandler(
     IUnitOfWork unitOfWork,
@@ -24,13 +25,20 @@ public class GetServiceRequestHistoryQueryHandler(
             key: cacheKey,
             factory: async () =>
             {
-                var source = _unitOfWork.Repository<ServiceRequest>()
+                var query = _unitOfWork.Repository<ServiceRequest>()
                     .GetQueryable()
                     .AsNoTracking()
                     .Where(x => x.Service.CollegeId == request.CollegeId &&
-                                x.Status != RequestStatus.Pending)
+                                x.Status != RequestStatus.Pending);
+
+                if (!string.IsNullOrEmpty(filter.SearchValue))
+                {
+                    query = query.Where(x => x.Student.Name.Contains(filter.SearchValue));
+                }
+
+                var source = query
                     .OrderByDescending(x => x.CreatedAt)
-                    .Select(x => new ServiceRequestHistoryResponse(
+                    .Select(x => new ServiceRequestHistoryResponse (
                         x.Payment.Price,
                         x.Service.Name,
                         x.Student.Name,

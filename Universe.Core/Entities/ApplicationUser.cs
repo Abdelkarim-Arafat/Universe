@@ -29,4 +29,5 @@ public sealed class ApplicationUser : IdentityUser<Guid>, ISoftDeleteable
     public ICollection<PasswordResetOtp> passwordResetOtps { get; set; } = [];
     public ICollection<IdentityUserRole<Guid>> UserRoles { get; set; } = [];
     public ICollection<TeachingSession> TeachingSessions { get; set; } = [];
+    public ICollection<Notification> Notifications { get; set; } = [];
 }

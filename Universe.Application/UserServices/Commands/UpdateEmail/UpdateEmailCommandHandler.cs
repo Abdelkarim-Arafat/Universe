@@ -25,14 +25,8 @@ public class UpdateEmailCommandHandler(
         user.EmailConfirmed = true;
         user.NormalizedEmail = request.Email.ToUpper();
 
-        var result = await _userManager.UpdateAsync(user);
+         await _userManager.UpdateAsync(user);
 
-        return result.Succeeded
-            ? Result.Success()
-            : Result.Failure(new Error(
-                "User.UpdateEmailFailed",
-                "Failed to update email",
-                StatusCodes.Status400BadRequest
-            ));
+        return Result.Success();
     }
 }

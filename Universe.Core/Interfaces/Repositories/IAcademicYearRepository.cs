@@ -1,4 +1,5 @@
-﻿using Universe.Core.Contracts.AcadimicYearAndSemesters;
+﻿using Universe.Core.Contracts.AcademicYearAndSemesters;
+using Universe.Core.Contracts.AcadimicYearAndSemesters;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
 
@@ -17,4 +18,5 @@ public interface IAcademicYearRepository
     Task<Semester?> GetSemesterByIdAsync(Guid Id, CancellationToken cancellationToken);
     Task<SemesterResponse> GetLastSeenSemesterAsync(Guid academicYearId, CancellationToken cancellationToken);
     Task<bool> IsMakeConflictAsync(Guid CollegeId, string Name, DateOnly start, DateOnly end, Guid? Id, CancellationToken cancellationToken);
+    Task<ResultAnnounceStatusResponse?> GetResultAnnounceAsync(Guid id, CancellationToken cancellationToken);
 }

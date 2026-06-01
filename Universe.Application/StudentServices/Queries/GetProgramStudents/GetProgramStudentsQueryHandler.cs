@@ -34,12 +34,13 @@ public class GetProgramStudentsQueryHandler(
                         x.Student.StudentCode.Contains(filter.SearchValue));
                 }
 
-                var source = query.Select(x => new StudentResponse(
+                var source = query.Select(x => new StudentResponse (
                     x.Student.Id,
                     x.Student.Name,
                     x.Student.StudentCode,
                     x.Student.NationalIdOrPassport,
-                    x.Student.Gender
+                    x.Student.Gender,
+                    x.Student.ApplicationUser.ImageUrl
                     )
                 );
 

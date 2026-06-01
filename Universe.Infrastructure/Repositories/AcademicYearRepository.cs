@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Universe.Core.Contracts.AcademicYearAndSemesters;
 using Universe.Core.Contracts.AcadimicYearAndSemesters;
 using Universe.Core.Entities;
 using Universe.Core.Enums;
@@ -94,4 +95,11 @@ internal class AcademicYearRepository(ApplicationDbContext context) : IAcademicY
     public async Task<Semester?> GetSemesterByIdAsync(Guid Id, CancellationToken cancellationToken)
         => await _context.Semesters
                 .FirstOrDefaultAsync(x => x.Id == Id && !x.IsDeleted, cancellationToken);
+
+    public async Task<ResultAnnounceStatusResponse?> GetResultAnnounceAsync(Guid id, CancellationToken cancellationToken)
+        => await _context.Semesters
+               .Where(x => x.Id == id)
+               .Select(x => new ResultAnnounceStatusResponse(x.IsResultAnnounced))
+               .FirstOrDefaultAsync(cancellationToken);
+
 }

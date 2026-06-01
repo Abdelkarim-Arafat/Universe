@@ -31,7 +31,8 @@ public class GetAdvisorStudentsQueryHandler(
                 x.Name,
                 x.StudentCode,
                 x.NationalIdOrPassport,
-                x.Gender
+                x.Gender,
+                x.ImageUrl
             ));
 
         var response = await PaginationList<StudentResponse>
