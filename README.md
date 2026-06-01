@@ -8,7 +8,7 @@
 
 A comprehensive university management platform designed to digitalize and streamline academic and administrative operations within higher education institutions.
 
-[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-Latest-239120?style=flat-square&logo=csharp)](https://learn.microsoft.com/en-us/dotnet/csharp/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-Database-CC2927?style=flat-square&logo=microsoftsqlserver)](https://www.microsoft.com/en-us/sql-server)
 [![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=flat-square&logo=redis)](https://redis.io/)
@@ -51,8 +51,7 @@ Built as a **Graduation Project**, Universe demonstrates enterprise-grade softwa
 
 ### 🏛️ Student Affairs Management
 
-<details>
-<summary><strong>Academic Structure</strong></summary>
+<strong>Academic Structure</strong>
 
 - Create and manage colleges and academic programs
 - Define academic levels, credit hours, and workload rules
@@ -60,51 +59,40 @@ Built as a **Graduation Project**, Universe demonstrates enterprise-grade softwa
 - Configure per-semester course offerings
 - Open and manage academic years and semesters
 
-</details>
 
-<details>
-<summary><strong>Campus Management</strong></summary>
+<strong>Campus Management</strong>
 
 - Manage university buildings and classrooms
 - Organize and track academic facilities
 
-</details>
 
-<details>
-<summary><strong>Student Management</strong></summary>
+<strong>Student Management</strong>
 
 - Register new students and manage full profiles
 - Manage personal, contact, family, military, and qualification data
 - Transfer students between academic programs
 
-</details>
 
-<details>
-<summary><strong>Staff & Advising</strong></summary>
+<strong>Staff & Advising</strong>
 
 - Add and manage staff members
 - Assign staff as academic advisors with dedicated student groups
 - View and manage advisor–student relationships
 
-</details>
 
-<details>
-<summary><strong>Registration & Scheduling</strong></summary>
+<strong>Registration & Scheduling</strong>
 
 - Register students in courses each semester
 - Auto-generate course schedules
 - Define and publish examination schedules
 
-</details>
 
-<details>
-<summary><strong>Assessment Control</strong></summary>
+<strong>Assessment Control</strong>
 
 - Enable or disable grade entry per semester
 - Record and update student grades
 - Control result visibility and publish final semester results
 
-</details>
 
 ---
 
@@ -177,12 +165,12 @@ Universe follows **Clean Architecture** principles, ensuring strict separation o
 └───────────────────┬─────────────────┘
                     │
 ┌───────────────────▼─────────────────┐
-│           Domain Layer              │  Entities, Aggregates & Business Rules
-│      (Core Business Logic)          │
+│           Domain Layer              │  Entities, interfaces, Dtos,
+│      (Core Business Logic)          │  Enums & Abstractions
 └───────────────────┬─────────────────┘
                     │
 ┌───────────────────▼─────────────────┐
-│       Infrastructure Layer          │  EF Core, Redis, SignalR,
+│       Infrastructure Layer          │  EF Core, Repositories, SignalR,
 │   (External Concerns & Services)    │  Cloudinary, PayPal, Background Jobs
 └─────────────────────────────────────┘
 ```
@@ -271,11 +259,13 @@ Universe follows **Clean Architecture** principles, ensuring strict separation o
 
 ## 📖 API Documentation
 
-Interactive API documentation is available via **Swagger UI** after running the application:
+Interactive API documentation is available via **Scalar API Reference** after running the application:
 
 ```
-https://localhost:{port}/swagger
+https://localhost:{port}/scalar
 ```
+
+Scalar provides a modern, interactive API documentation experience with built-in endpoint exploration, authentication support, and OpenAPI integration.
 
 ---
 
@@ -283,7 +273,7 @@ https://localhost:{port}/swagger
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - [SQL Server](https://www.microsoft.com/en-us/sql-server)
 - [Redis](https://redis.io/) (or a Redis Cloud instance)
 
@@ -316,8 +306,8 @@ dotnet run
 ```
 
 ```bash
-# 5. Open Swagger
-# Navigate to https://localhost:{port}/swagger
+# 5. Open Scalar
+# Navigate to https://localhost:{port}/scalar
 ```
 
 ---
