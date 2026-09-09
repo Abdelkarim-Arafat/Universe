@@ -1,0 +1,91 @@
+services:
+
+  sqlserver-permissions:
+    image: alpine
+    container_name: universe-sqlserver-permissions
+    volumes:
+      - universe-sql-data:/var/opt/mssql/data
+    command: sh -c "chown -R 10001:10001 /var/opt/mssql/data"
+    
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: universe-sqlserver-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
+    networks:
+      - universe-net
+    entrypoint: >
+      bash -c "
+      /opt/mssql-tools18/bin/sqlcmd -S sqlserver,1433 -U sa -P \"$$MSSQL_SA_PASSWORD\" -N -C -Q \"
+      IF DB_ID('UniverseDb') IS NULL CREATE DATABASE UniverseDb;
+      IF DB_ID('UniverseHangfire') IS NULL CREATE DATABASE UniverseHangfire;
+      \"
+      "
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: universe-sqlserver
+
+    depends_on:
+      sqlserver-permissions:
+        condition: service_completed_successfully
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - universe-sql-data:/var/opt/mssql/data
+    networks:
+      - universe-net 
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -N -C -Q \"SELECT 1\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: universe-api
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=UniverseDb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__HangfireConnection: "Server=sqlserver,1433;Database=UniverseHangfire;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__RedisConnection: "${REDIS_CONNECTION}"
+      Jwt__Key: "${JWT_KEY}"
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Cloudinary__CloudName: "${CLOUDINARY_CLOUD_NAME}"
+      Cloudinary__ApiKey: "${CLOUDINARY_API_KEY}"
+      Cloudinary__ApiSecret: "${CLOUDINARY_API_SECRET}"
+      PayPal__BaseUrl: "https://api-m.sandbox.paypal.com"
+      PayPal__ClientId: "${PAYPAL_CLIENT_ID}"
+      PayPal__Secret: "${PAYPAL_SECRET}"
+      MailSettings__DisplayName: "${MAIL_DISPLAY_NAME}"
+      MailSettings__Mail: "${MAIL_ADDRESS}"
+      MailSettings__Password: "${MAIL_PASSWORD}"
+      MailSettings__Host: "${MAIL_HOST}"
+      MailSettings__Port: "${MAIL_PORT}"
+      HangfireSettings__Username: "${HANGFIRE_USERNAME}"
+      HangfireSettings__Password: "${HANGFIRE_PASSWORD}"
+    networks:
+      - universe-net
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      sqlserver-init:
+        condition: service_completed_successfully
+
+
+volumes:
+  universe-sql-data:
+
+networks:
+  universe-net:
