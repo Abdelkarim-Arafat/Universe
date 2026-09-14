@@ -13,6 +13,8 @@ A comprehensive university management platform designed to digitalize and stream
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-Database-CC2927?style=flat-square&logo=microsoftsqlserver)](https://www.microsoft.com/en-us/sql-server)
 [![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=flat-square&logo=redis)](https://redis.io/)
 [![SignalR](https://img.shields.io/badge/SignalR-Real--Time-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr)
+[xUnit](https://xunit.net/) ([image](https://img.shields.io/badge/xUnit-Unit%20Testing-512BD4?style=flat-square&logo=xunit))
+[Docker](https://www.docker.com/) ([image](https://img.shields.io/badge/Docker-Containerized-2496ED?style=flat-square&logo=docker))
 [![License](https://img.shields.io/badge/License-Academic-blue?style=flat-square)](#-license)
 
 </div>
