@@ -1,6 +1,7 @@
 <Solution>
+  <Project Path="Universe.Api/Universe.Api.csproj" />
   <Project Path="Universe.Application/Universe.Application.csproj" />
   <Project Path="Universe.Core/Universe.Core.csproj" />
   <Project Path="Universe.Infrastructure/Universe.Infrastructure.csproj" />
-  <Project Path="Universe.Api/Universe.Api.csproj" />
+  <Project Path="Universe.Tests/Universe.Tests.csproj" Id="cf390664-43a8-4719-96a4-32bcfde76bd5" />
 </Solution>
