@@ -1,35 +1,27 @@
 ﻿using FluentAssertions;
 using Moq;
-using Universe.Application.LevelServices.Commands.Create;
-using Universe.Application.LevelServices.Commands.CreateLevel;
-using Universe.Application.LevelServices.Commands.Remove;
+using Universe.Application.Common;
 using Universe.Application.LevelServices.Commands.Update;
 using Universe.Core.Entities;
 using Universe.Core.Errors;
 using Universe.Core.Interfaces;
 using Universe.Core.Interfaces.Repositories;
 
-namespace Universe.Tests.Universe.Application.Tests.LevelServices.Commands.Create;
+namespace Universe.Tests.Universe.Application.Tests.LevelServices.Commands.Update;
 
-public class CreateLevelCommandHandlerTests
+public class UpdateLevelCommandHandlerTests
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly Mock<IAcademicProgramRepository> _academicProgramRepositoryMock;
     private readonly Mock<ILevelRepository> _levelRepositoryMock;
     private readonly Mock<IGenericRepository<Level>> _genericLevelRepositoryMock;
     private readonly Mock<ICacheService> _cacheServiceMock;
 
-    public CreateLevelCommandHandlerTests()
+    public UpdateLevelCommandHandlerTests()
     {
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _academicProgramRepositoryMock = new Mock<IAcademicProgramRepository>();
         _levelRepositoryMock = new Mock<ILevelRepository>();
         _genericLevelRepositoryMock = new Mock<IGenericRepository<Level>>();
         _cacheServiceMock = new Mock<ICacheService>();
-
-        _unitOfWorkMock
-            .Setup(x => x.AcademicProgramRepository)
-            .Returns(_academicProgramRepositoryMock.Object);
 
         _unitOfWorkMock
             .Setup(x => x.LevelRepository)
@@ -41,22 +33,23 @@ public class CreateLevelCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenAcademicProgramDoesNotExist_ShouldReturnNotFound()
+    public async Task Handle_WhenLevelDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        var command = new CreateLevelCommand(
+        var command = new UpdateLevelCommand(
+            Guid.NewGuid(),
             Guid.NewGuid(),
             "Level 1",
             10,
             20);
 
-        _academicProgramRepositoryMock
-            .Setup(x => x.IsExistAsync(
-                command.AcademicProgramId,
+        _levelRepositoryMock
+            .Setup(x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .ReturnsAsync((Level?)null);
 
-        var handler = new CreateLevelCommandHandler(
+        var handler = new UpdateLevelCommandHandler(
             _unitOfWorkMock.Object,
             _cacheServiceMock.Object);
 
@@ -67,11 +60,11 @@ public class CreateLevelCommandHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().Be(AcademicProgramErrors.NotFound);
+        result.Error.Should().Be(LevelErrors.NotFound);
 
-        _academicProgramRepositoryMock.Verify(
-            x => x.IsExistAsync(
-                command.AcademicProgramId,
+        _levelRepositoryMock.Verify(
+            x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()),
             Times.Once);
 
@@ -80,22 +73,28 @@ public class CreateLevelCommandHandlerTests
                 It.IsAny<int>(),
                 It.IsAny<int>(),
                 It.IsAny<Guid>(),
+                It.IsAny<Guid>(),
                 It.IsAny<CancellationToken>()),
             Times.Never);
 
         _genericLevelRepositoryMock.Verify(
-            x => x.AddAsync(
-                It.IsAny<Level>(),
-                It.IsAny<CancellationToken>()),
+            x => x.Update(It.IsAny<Level>()),
             Times.Never);
 
         _unitOfWorkMock.Verify(
-            x => x.CompleteAsync(It.IsAny<CancellationToken>()),
+            x => x.CompleteAsync(
+                It.IsAny<CancellationToken>()),
             Times.Never);
 
         _cacheServiceMock.Verify(
             x => x.RemoveByTagAsync(
                 It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
+
+        _cacheServiceMock.Verify(
+            x => x.RemoveAsync(
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()),
             Times.Never);
     }
@@ -104,27 +103,41 @@ public class CreateLevelCommandHandlerTests
     public async Task Handle_WhenHoursAreInvalid_ShouldReturnInvalidHours()
     {
         // Arrange
-        var command = new CreateLevelCommand(
-            Guid.NewGuid(),
+        var levelId = Guid.NewGuid();
+        var academicProgramId = Guid.NewGuid();
+
+        var command = new UpdateLevelCommand(
+            academicProgramId,
+            levelId,
             "Level 1",
             10,
             20);
 
-        _academicProgramRepositoryMock
-            .Setup(x => x.IsExistAsync(
-                command.AcademicProgramId,
+        var level = new Level
+        {
+            Id = levelId,
+            AcademicProgramId = academicProgramId,
+            Name = "Level 1",
+            MinHours = 10,
+            MaxHours = 20
+        };
+
+        _levelRepositoryMock
+            .Setup(x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(level);
 
         _levelRepositoryMock
             .Setup(x => x.CheckOverLabedHoursAsync(
                 command.MinHours,
                 command.MaxHours,
-                command.AcademicProgramId,
+                level.Id,
+                level.AcademicProgramId,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        var handler = new CreateLevelCommandHandler(
+        var handler = new UpdateLevelCommandHandler(
             _unitOfWorkMock.Object,
             _cacheServiceMock.Object);
 
@@ -137,9 +150,9 @@ public class CreateLevelCommandHandlerTests
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().Be(LevelErrors.InvalidHours);
 
-        _academicProgramRepositoryMock.Verify(
-            x => x.IsExistAsync(
-                command.AcademicProgramId,
+        _levelRepositoryMock.Verify(
+            x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()),
             Times.Once);
 
@@ -147,18 +160,18 @@ public class CreateLevelCommandHandlerTests
             x => x.CheckOverLabedHoursAsync(
                 command.MinHours,
                 command.MaxHours,
-                command.AcademicProgramId,
+                level.Id,
+                level.AcademicProgramId,
                 It.IsAny<CancellationToken>()),
             Times.Once);
 
         _genericLevelRepositoryMock.Verify(
-            x => x.AddAsync(
-                It.IsAny<Level>(),
-                It.IsAny<CancellationToken>()),
+            x => x.Update(It.IsAny<Level>()),
             Times.Never);
 
         _unitOfWorkMock.Verify(
-            x => x.CompleteAsync(It.IsAny<CancellationToken>()),
+            x => x.CompleteAsync(
+                It.IsAny<CancellationToken>()),
             Times.Never);
 
         _cacheServiceMock.Verify(
@@ -166,44 +179,61 @@ public class CreateLevelCommandHandlerTests
                 It.IsAny<string[]>(),
                 It.IsAny<CancellationToken>()),
             Times.Never);
+
+        _cacheServiceMock.Verify(
+            x => x.RemoveAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
-    public async Task Handle_WhenCompleteAsyncThrows_ShouldThrowException()
+    public async Task Handle_WhenCompleteAsyncThrowsException_ShouldThrowException()
     {
         // Arrange
-        var command = new CreateLevelCommand(
-            Guid.NewGuid(),
-            "Level 1",
-            10,
-            20);
+        var levelId = Guid.NewGuid();
+        var academicProgramId = Guid.NewGuid();
 
-        _academicProgramRepositoryMock
-            .Setup(x => x.IsExistAsync(
-                command.AcademicProgramId,
+        var command = new UpdateLevelCommand(
+            academicProgramId,
+            levelId,
+            "Updated Level",
+            15,
+            25);
+
+        var level = new Level
+        {
+            Id = levelId,
+            AcademicProgramId = academicProgramId,
+            Name = "Level 1",
+            MinHours = 10,
+            MaxHours = 20
+        };
+
+        _levelRepositoryMock
+            .Setup(x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(level);
 
         _levelRepositoryMock
             .Setup(x => x.CheckOverLabedHoursAsync(
                 command.MinHours,
                 command.MaxHours,
-                command.AcademicProgramId,
+                level.Id,
+                level.AcademicProgramId,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         _genericLevelRepositoryMock
-            .Setup(x => x.AddAsync(
-                It.IsAny<Level>(),
-                It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .Setup(x => x.Update(It.IsAny<Level>()));
 
         _unitOfWorkMock
             .Setup(x => x.CompleteAsync(
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("Database error"));
 
-        var handler = new CreateLevelCommandHandler(
+        var handler = new UpdateLevelCommandHandler(
             _unitOfWorkMock.Object,
             _cacheServiceMock.Object);
 
@@ -218,9 +248,9 @@ public class CreateLevelCommandHandlerTests
             .ThrowAsync<Exception>()
             .WithMessage("Database error");
 
-        _academicProgramRepositoryMock.Verify(
-            x => x.IsExistAsync(
-                command.AcademicProgramId,
+        _levelRepositoryMock.Verify(
+            x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()),
             Times.Once);
 
@@ -228,14 +258,13 @@ public class CreateLevelCommandHandlerTests
             x => x.CheckOverLabedHoursAsync(
                 command.MinHours,
                 command.MaxHours,
-                command.AcademicProgramId,
+                level.Id,
+                level.AcademicProgramId,
                 It.IsAny<CancellationToken>()),
             Times.Once);
 
         _genericLevelRepositoryMock.Verify(
-            x => x.AddAsync(
-                It.IsAny<Level>(),
-                It.IsAny<CancellationToken>()),
+            x => x.Update(It.IsAny<Level>()),
             Times.Once);
 
         _unitOfWorkMock.Verify(
@@ -248,40 +277,58 @@ public class CreateLevelCommandHandlerTests
                 It.IsAny<string[]>(),
                 It.IsAny<CancellationToken>()),
             Times.Never);
+
+        _cacheServiceMock.Verify(
+            x => x.RemoveAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
-    public async Task Handle_WhenRequestIsValid_ShouldCreateLevel()
+    public async Task Handle_WhenRequestIsValid_ShouldUpdateLevelAndReturnSuccess()
     {
         // Arrange
-        var command = new CreateLevelCommand(
-            Guid.NewGuid(),
-            "Level 1",
-            10,
-            20);
+        var levelId = Guid.NewGuid();
+        var academicProgramId = Guid.NewGuid();
 
-        _academicProgramRepositoryMock
-            .Setup(x => x.IsExistAsync(
-                command.AcademicProgramId,
+        var command = new UpdateLevelCommand(
+            academicProgramId,
+            levelId,
+            "Updated Level",
+            15,
+            25);
+
+        var level = new Level
+        {
+            Id = levelId,
+            AcademicProgramId = academicProgramId,
+            Name = "Level 1",
+            MinHours = 10,
+            MaxHours = 20
+        };
+
+        _levelRepositoryMock
+            .Setup(x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(level);
 
         _levelRepositoryMock
             .Setup(x => x.CheckOverLabedHoursAsync(
                 command.MinHours,
                 command.MaxHours,
-                command.AcademicProgramId,
+                level.Id,
+                level.AcademicProgramId,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         _genericLevelRepositoryMock
-            .Setup(x => x.AddAsync(
-                It.IsAny<Level>(),
-                It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .Setup(x => x.Update(It.IsAny<Level>()));
 
         _unitOfWorkMock
-            .Setup(x => x.CompleteAsync(It.IsAny<CancellationToken>()))
+            .Setup(x => x.CompleteAsync(
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
 
         _cacheServiceMock
@@ -290,7 +337,13 @@ public class CreateLevelCommandHandlerTests
                 It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var handler = new CreateLevelCommandHandler(
+        _cacheServiceMock
+            .Setup(x => x.RemoveAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var handler = new UpdateLevelCommandHandler(
             _unitOfWorkMock.Object,
             _cacheServiceMock.Object);
 
@@ -301,11 +354,14 @@ public class CreateLevelCommandHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Id.Should().NotBe(Guid.Empty);
 
-        _academicProgramRepositoryMock.Verify(
-            x => x.IsExistAsync(
-                command.AcademicProgramId,
+        result.Value.Name.Should().Be(command.Name);
+        result.Value.MinHours.Should().Be(command.MinHours);
+        result.Value.MaxHours.Should().Be(command.MaxHours);
+
+        _levelRepositoryMock.Verify(
+            x => x.GetByIdAsync(
+                command.Id,
                 It.IsAny<CancellationToken>()),
             Times.Once);
 
@@ -313,18 +369,19 @@ public class CreateLevelCommandHandlerTests
             x => x.CheckOverLabedHoursAsync(
                 command.MinHours,
                 command.MaxHours,
-                command.AcademicProgramId,
+                level.Id,
+                level.AcademicProgramId,
                 It.IsAny<CancellationToken>()),
             Times.Once);
 
         _genericLevelRepositoryMock.Verify(
-            x => x.AddAsync(
+            x => x.Update(
                 It.Is<Level>(x =>
+                    x.Id == command.Id &&
                     x.Name == command.Name &&
                     x.MinHours == command.MinHours &&
                     x.MaxHours == command.MaxHours &&
-                    x.AcademicProgramId == command.AcademicProgramId),
-                It.IsAny<CancellationToken>()),
+                    x.AcademicProgramId == level.AcademicProgramId)),
             Times.Once);
 
         _unitOfWorkMock.Verify(
@@ -334,7 +391,13 @@ public class CreateLevelCommandHandlerTests
 
         _cacheServiceMock.Verify(
             x => x.RemoveByTagAsync(
-                It.IsAny<string[]>(),
+                LevelCacheKeys.Tags(command.ProgramId),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        _cacheServiceMock.Verify(
+            x => x.RemoveAsync(
+                LevelCacheKeys.ById(level.Id),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
